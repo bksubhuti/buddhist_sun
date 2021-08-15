@@ -29,7 +29,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.3
   intl: ^0.17.0
   flutter_spinkit: "^5.0.0"
   solar_calculator: ^1.0.2
@@ -42,7 +41,7 @@ dependencies:
   sqflite: ^2.0.0+3
   shared_preferences: ^2.0.6
   geolocator: ^7.4.0
-  convex_bottom_bar: ^3.0.0
+  
 
 dev_dependencies:
   flutter_test:

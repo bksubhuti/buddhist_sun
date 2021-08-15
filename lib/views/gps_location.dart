@@ -9,8 +9,9 @@ class GPSLocation extends StatefulWidget {
 
 class _GPSLocationState extends State<GPSLocation> {
   Geolocator geoLocator = Geolocator();
+  bool _initPerformed = false;
 
-  String _message = "";
+  String _message = "Please wait for GPS";
 
   @override
   void initState() {
@@ -24,40 +25,41 @@ class _GPSLocationState extends State<GPSLocation> {
   }
 
   void initGps() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    if (!_initPerformed) {
+      bool serviceEnabled;
+      LocationPermission permission;
 
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        _message = 'Location permissions are denied';
+      // Test if location services are enabled.
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Location services are not enabled don't continue
+        // accessing the position and request users of the
+        // App to enable the location services.
+        return Future.error('Location services are disabled.');
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      _message =
-          'Location permissions are permanently denied, we cannot request permissions.';
-    }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // Permissions are denied, next time you could try
+          // requesting permissions again (this is also where
+          // Android's shouldShowRequestPermissionRationale
+          // returned true. According to Android guidelines
+          // your App should show an explanatory UI now.
+          _message = 'Location permissions are denied';
+        }
+      }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        _message =
+            'Location permissions are permanently denied, we cannot request permissions.';
+      }
 
+      // When we reach here, permissions are granted and we can
+      // continue accessing the position of the device.
+    } // no finished with init of gps.
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
 
@@ -67,22 +69,14 @@ class _GPSLocationState extends State<GPSLocation> {
     prefs.setDouble("lng", position.longitude);
 
     _message = 'GPS is set to ${position.latitude}, ${position.longitude}';
-
     setState(() {});
   }
 
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        title: Text('$_message'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: Text("Use GPS here"),
+    return Container(
+      child: Text("$_message"),
     );
   }
 }

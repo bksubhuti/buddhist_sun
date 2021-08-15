@@ -19,22 +19,15 @@ class _ChooseLocationState extends State<ChooseLocation> {
 
   @override
   void dispose() {
-    dbService.dispose(); // TODO: implement dispose
+    dbService.dispose();
     super.dispose();
   }
 
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        title: Text('Choose a Location'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: Padding(
+    return Container(
+      child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
           child: Column(
@@ -76,7 +69,7 @@ class _ChooseLocationState extends State<ChooseLocation> {
                                     "lat", snapshot.data![index].lat);
                                 prefs.setDouble(
                                     "lng", snapshot.data![index].lng);
-                                Navigator.pop(context);
+                                //Navigator.pop(context);
                                 print(
                                     'tapped ${snapshot.data![index].cityAscii},  ${snapshot.data![index].lat},  ${snapshot.data![index].lng}');
                               },

@@ -5,6 +5,7 @@ import 'package:buddhist_sun/views/choose_location.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
+import 'package:buddhist_sun/views/base_home_page.dart';
 import 'dart:io' show Platform;
 
 void main() {
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         //
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: HomePageContainer(),
     );
   }
 }
