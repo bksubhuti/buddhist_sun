@@ -1,6 +1,9 @@
 # buddhist_sun
 
-Flutter projecto for monk sun tools
+Flutter project for monk sun tools
+
+sqlite database is creative commons attrib
+https://simplemaps.com/data/world-cities
 
 ## Getting Started
 
