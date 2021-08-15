@@ -1,8 +1,10 @@
+import 'package:buddhist_sun/views/choose_offset.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/choose_location.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:buddhist_sun/views/gps_location.dart';
 import 'dart:io' show Platform;
 
 void main() {
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
 //      '/': (context) => const Loading(),
         '/home': (context) => const Home(),
         '/location': (context) => ChooseLocation(),
+        '/gps': (context) => GPSLocation(),
+        '/offset': (context) => ChooseOffset(),
       },
 
       title: 'Flutter Demo',
