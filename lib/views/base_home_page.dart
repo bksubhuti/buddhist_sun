@@ -90,9 +90,13 @@ class Home_PageContainerState extends State<HomePageContainer> {
           curve: Curves.easeIn,
           selectedIndex: _currentIndex,
           onItemSelected: (index) {
+            int oldIndex = _currentIndex;
+            int milliTime = (oldIndex - index) * 200;
+            milliTime = (milliTime < 0) ? milliTime * -1 : milliTime;
             setState(() => _currentIndex = index);
             _pageController.animateToPage(index,
-                duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                duration: Duration(milliseconds: milliTime),
+                curve: Curves.easeIn);
           },
           items: <BottomNavyBarItem>[
             BottomNavyBarItem(title: Text(page1), icon: Icon(Icons.home)),
