@@ -20,10 +20,16 @@ class Home_PageContainerState extends State<HomePageContainer> {
   final String page4 = "GMT";
   final String title = "Buddhist Sun";
 
+  void goToHome() {
+    _currentIndex = 0;
+    _currentPage = _page1;
+    setState(() {});
+  }
+
   final _page1 = Home();
-  final _page2 = ChooseLocation();
-  final _page3 = GPSLocation();
-  final _page4 = ChooseOffset();
+  late ChooseLocation _page2;
+  late GPSLocation _page3;
+  late ChooseOffset _page4;
 
   int _currentIndex = 0;
   Widget _currentPage = Home();
@@ -33,9 +39,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
     super.initState();
 
     // _page1 = Home();
-    //_page2 = ChooseLocation();
-    //_page3 = GPSLocation();
-    //_page4 = ChooseOffset();
+    _page2 = ChooseLocation(goToHome: goToHome);
+    _page3 = GPSLocation(goToHome: goToHome);
+    _page4 = ChooseOffset(goToHome: goToHome);
+    _page3 = GPSLocation(goToHome: goToHome);
 
     _pages = [_page1, _page2, _page3, _page4];
 

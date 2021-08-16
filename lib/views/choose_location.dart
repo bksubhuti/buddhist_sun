@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseLocation extends StatefulWidget {
+  const ChooseLocation({Key? key, required this.goToHome}) : super(key: key);
+  final VoidCallback goToHome;
+
   @override
   _ChooseLocationState createState() => _ChooseLocationState();
 }
@@ -69,7 +72,7 @@ class _ChooseLocationState extends State<ChooseLocation> {
                                     "lat", snapshot.data![index].lat);
                                 prefs.setDouble(
                                     "lng", snapshot.data![index].lng);
-                                //Navigator.pop(context);
+                                widget.goToHome();
                                 print(
                                     'tapped ${snapshot.data![index].cityAscii},  ${snapshot.data![index].lat},  ${snapshot.data![index].lng}');
                               },

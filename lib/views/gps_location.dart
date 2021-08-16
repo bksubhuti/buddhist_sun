@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 
 class GPSLocation extends StatefulWidget {
+  GPSLocation({required this.goToHome});
+  final VoidCallback goToHome;
   @override
   _GPSLocationState createState() => _GPSLocationState();
 }
@@ -70,6 +72,7 @@ class _GPSLocationState extends State<GPSLocation> {
 
     _message = 'GPS is set to ${position.latitude}, ${position.longitude}';
     setState(() {});
+    widget.goToHome();
   }
 
   var controller = TextEditingController();
