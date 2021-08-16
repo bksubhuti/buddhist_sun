@@ -3,6 +3,7 @@ import 'package:buddhist_sun/views/choose_offset.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class HomePageContainer extends StatefulWidget {
 
 class Home_PageContainerState extends State<HomePageContainer> {
   late List<Widget> _pages;
+  late PageController _pageController;
 
   final String page1 = "Home";
   final String page2 = "Cities";
@@ -22,7 +24,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   void goToHome() {
     _currentIndex = 0;
-    _currentPage = _page1;
+    _pageController.jumpToPage(_currentIndex);
     setState(() {});
   }
 
@@ -37,6 +39,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
 
     // _page1 = Home();
     _page2 = ChooseLocation(goToHome: goToHome);
@@ -48,6 +51,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     _currentIndex = 0;
     _currentPage = _page1;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void changeTab(int index) {
@@ -71,25 +80,41 @@ class Home_PageContainerState extends State<HomePageContainer> {
     return Scaffold(
       appBar: AppBar(title: Text("Buddhist Sun")),
       backgroundColor: bgColor,
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavyBar(
           //iconSize: 4, // ADD THIS
           //unselectedFontSize: 10, // ADD THIS
           //style: TabStyle.react,
           backgroundColor: Colors.blue[200],
-          onTap: (index) => changeTab(index),
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          items: [
-            BottomNavigationBarItem(label: page1, icon: Icon(Icons.home)),
-            BottomNavigationBarItem(
-                label: page2, icon: Icon(Icons.location_city)),
-            BottomNavigationBarItem(
-                label: page3, icon: Icon(Icons.gps_fixed_rounded)),
-            BottomNavigationBarItem(label: page4, icon: Icon(Icons.add)),
+          showElevation: true,
+          itemCornerRadius: 24,
+          curve: Curves.easeIn,
+          selectedIndex: _currentIndex,
+          onItemSelected: (index) {
+            setState(() => _currentIndex = index);
+            _pageController.animateToPage(index,
+                duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+          },
+          items: <BottomNavyBarItem>[
+            BottomNavyBarItem(title: Text(page1), icon: Icon(Icons.home)),
+            BottomNavyBarItem(
+                title: Text(page2), icon: Icon(Icons.location_city)),
+            BottomNavyBarItem(
+                title: Text(page3), icon: Icon(Icons.gps_fixed_rounded)),
+            BottomNavyBarItem(title: Text(page4), icon: Icon(Icons.add)),
           ]),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(child: _currentPage),
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index);
+          },
+          children: <Widget>[
+            _page1,
+            _page2,
+            _page3,
+            _page4,
+          ],
+        ),
       ),
     );
   }

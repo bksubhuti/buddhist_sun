@@ -12,12 +12,11 @@ class GPSLocation extends StatefulWidget {
 class _GPSLocationState extends State<GPSLocation> {
   Geolocator geoLocator = Geolocator();
   bool _initPerformed = false;
-
+  late Position _position;
   String _message = "Please wait for GPS";
 
   @override
   void initState() {
-    initGps();
     super.initState();
   }
 
@@ -61,17 +60,20 @@ class _GPSLocationState extends State<GPSLocation> {
 
       // When we reach here, permissions are granted and we can
       // continue accessing the position of the device.
+      _initPerformed = true;
     } // no finished with init of gps.
-    Position position = await Geolocator.getCurrentPosition(
+    _position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
 
+    _message = 'GPS Position is: ${_position.latitude}, ${_position.longitude}';
+    setState(() {});
+  }
+
+  void saveGps() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("cityName", "GPS Generated");
-    prefs.setDouble("lat", position.latitude);
-    prefs.setDouble("lng", position.longitude);
-
-    _message = 'GPS is set to ${position.latitude}, ${position.longitude}';
-    setState(() {});
+    prefs.setDouble("lat", _position.latitude);
+    prefs.setDouble("lng", _position.longitude);
     widget.goToHome();
   }
 
@@ -79,7 +81,26 @@ class _GPSLocationState extends State<GPSLocation> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("$_message"),
-    );
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text("$_message"),
+      SizedBox(height: 6.0),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ElevatedButton.icon(
+          icon: Icon(Icons.gps_fixed),
+          onPressed: () {
+            initGps();
+          },
+          label: Text("Get GPS"),
+        ),
+        SizedBox(width: 6.0),
+        ElevatedButton.icon(
+          icon: Icon(Icons.save),
+          onPressed: () {
+            saveGps();
+          },
+          label: Text("Save GPS"),
+        ),
+      ]),
+    ]));
   }
 }
