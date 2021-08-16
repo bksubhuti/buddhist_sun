@@ -104,7 +104,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
                 title: Text(page2), icon: Icon(Icons.location_city)),
             BottomNavyBarItem(
                 title: Text(page3), icon: Icon(Icons.gps_fixed_rounded)),
-            BottomNavyBarItem(title: Text(page4), icon: Icon(Icons.add)),
+            BottomNavyBarItem(title: Text(page4), icon: Icon(Icons.more_time)),
           ]),
       body: SizedBox.expand(
         child: PageView(

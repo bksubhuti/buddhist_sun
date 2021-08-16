@@ -15,8 +15,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Map data = {};
   String cityName = "Not Set";
-  double lat = 1.1;
-  double lng = 1.1;
+  double _lat = 1.1;
+  double _lng = 1.1;
   double _offset = 6.5;
 
   @override
@@ -29,8 +29,8 @@ class _HomeState extends State<Home> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       cityName = prefs.getString("cityName") ?? "not set2";
-      lat = prefs.getDouble("lat") ?? 1.1;
-      lng = prefs.getDouble("lng") ?? 1.1;
+      _lat = prefs.getDouble("lat") ?? 1.1;
+      _lng = prefs.getDouble("lng") ?? 1.1;
 
       if (prefs.getDouble("offset") == null) {
         prefs.setDouble("offset", 6.5);
@@ -57,33 +57,72 @@ class _HomeState extends State<Home> {
         day: now.day,
         hour: now.hour,
         timeZoneOffset: _offset);
-    SolarCalculator calc = SolarCalculator(instant, lat, lng);
+    SolarCalculator calc = SolarCalculator(instant, _lat, _lng);
     print('time of noon: ${calc.sunTransitTime}');
     Instant inst2 = calc.sunTransitTime;
     print('${inst2}');
+    String inst2Minute = (inst2.minute < 10)
+        ? "0" + inst2.minute.toString()
+        : inst2.minute.toString();
     //DateTime dt =
     //  DateTime(inst2.year, inst2.month, inst2.day, inst2.hour, inst2.minute);
 
     //print('adjusted time');
     //print(dt);
 
-    return Container(
-        child: Container(
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 120.0, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 0),
         child: Column(children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('$cityName \nSolar Noon',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 28, letterSpacing: 2)),
-            ],
+          Text('City: $cityName',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 28, letterSpacing: 2)),
+          Divider(
+            height: 50.0,
+            color: Colors.grey,
           ),
-          SizedBox(height: 20),
-          Text('${inst2}', style: TextStyle(color: Colors.white, fontSize: 40)),
+          Text('Date: ${inst2.day}.${inst2.month}.${inst2.year}',
+              style: TextStyle(color: Colors.white, fontSize: 22)),
+          Divider(
+            height: 50.0,
+            color: Colors.grey,
+          ),
+          Text('${inst2.hour}:$inst2Minute',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold)),
+          SizedBox(height: 10.0),
+          Text('Solar Noon',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 30, letterSpacing: 2)),
+          Padding(
+              padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage("assets/buddhist_sun.png"),
+                      radius: 40.0,
+                    ),
+                  ),
+                  SizedBox(height: 30.0),
+                  Text('Gps: $_lat, $_lng',
+                      style: TextStyle(
+                          fontSize: 12.8,
+                          color: Colors.grey,
+                          letterSpacing: 2.0)),
+                  SizedBox(height: 10.0),
+                  Text("offset: $_offset hours",
+                      style: TextStyle(
+                          fontSize: 12.8,
+                          color: Colors.grey,
+                          letterSpacing: 2.0)),
+                ],
+              )),
         ]),
       ),
-    ));
+    );
   }
 }
