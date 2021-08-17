@@ -76,9 +76,13 @@ class _GPSLocationState extends State<GPSLocation> {
 
   void saveGps() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    DateTime now = DateTime.now();
+    var timezoneOffset = now.timeZoneOffset;
+
     prefs.setString("cityName", "GPS");
     prefs.setDouble("lat", _position.latitude);
     prefs.setDouble("lng", _position.longitude);
+    prefs.setDouble("offset", timezoneOffset.inMinutes / 60);
     widget.goToHome();
   }
 

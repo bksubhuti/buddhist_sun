@@ -42,6 +42,7 @@ dependencies:
   shared_preferences: ^2.0.6
   geolocator: ^7.4.0
   bottom_navy_bar: ^6.0.0
+  circular_countdown_timer: ^0.2.0
 
   
 

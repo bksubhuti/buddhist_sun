@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
 
     print(timezoneOffset);
 
-    late String solarNoon = 'not set';
+    //late String solarNoon = 'not set';
 
     Instant instant = Instant(
         year: now.year,
