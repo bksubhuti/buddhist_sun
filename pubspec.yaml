@@ -43,6 +43,7 @@ dependencies:
   geolocator: ^7.4.0
   bottom_navy_bar: ^6.0.0
   circular_countdown_timer: ^0.2.0
+  flutter_tts: ^3.2.2
 
   
 

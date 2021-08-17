@@ -1,9 +1,11 @@
 import 'dart:async';
-
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -14,6 +16,8 @@ class CountdownTimerView extends StatefulWidget {
   _CountdownTimerViewState createState() => _CountdownTimerViewState();
 }
 
+enum TtsState { playing, stopped, paused, continued }
+
 class _CountdownTimerViewState extends State<CountdownTimerView> {
   Duration _duration = Duration(seconds: 1);
   late Timer _timer;
@@ -23,7 +27,32 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   DateTime _now = DateTime.now();
   DateTime _dtSolar = DateTime.now();
 
-  void _startTTS() {}
+  /////////////////////////////////////////////////////////////////
+  late FlutterTts flutterTts;
+  String? language;
+  String? engine;
+  double volume = 0.5;
+  double pitch = 1.0;
+  double rate = 0.5;
+  bool isCurrentLanguageInstalled = false;
+
+  String? _newVoiceText;
+  int? _inputLength;
+
+  TtsState ttsState = TtsState.stopped;
+
+  get isPlaying => ttsState == TtsState.playing;
+  get isStopped => ttsState == TtsState.stopped;
+  get isPaused => ttsState == TtsState.paused;
+  get isContinued => ttsState == TtsState.continued;
+
+  bool get isIOS => !kIsWeb && Platform.isIOS;
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  bool get isWeb => kIsWeb;
+///////////////////////////////////////////////////////////////////////
+  void _startTTS() {
+    _speak();
+  }
 
   @override
   void initState() {
@@ -46,6 +75,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
     });
 
     GetSolarTime();
+    initTts();
     super.initState();
   }
 
@@ -76,7 +106,135 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   @override
   void dispose() {
     _timer.cancel();
+    flutterTts.stop();
     super.dispose();
+  }
+
+  Future _getDefaultEngine() async {
+    var engine = await flutterTts.getDefaultEngine;
+    if (engine != null) {
+      print(engine);
+    }
+  }
+
+  initTts() {
+    flutterTts = FlutterTts();
+
+    if (isAndroid) {
+      _getDefaultEngine();
+    }
+
+    flutterTts.setStartHandler(() {
+      setState(() {
+        print("Playing");
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        print("Complete");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setCancelHandler(() {
+      setState(() {
+        print("Cancel");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    if (isWeb || isIOS) {
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
+    }
+
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        print("error: $msg");
+        ttsState = TtsState.stopped;
+      });
+    });
+  }
+
+  Future _speak() async {
+    if (_countdownString != "") {
+      if (_countdownString.isNotEmpty) {
+        await flutterTts.awaitSpeakCompletion(true);
+        await flutterTts.speak(_countdownString);
+      }
+    }
+  }
+
+  Future<dynamic> _getLanguages() => flutterTts.getLanguages;
+
+  Future<dynamic> _getEngines() => flutterTts.getEngines;
+
+  Future _stop() async {
+    var result = await flutterTts.stop();
+    if (result == 1) setState(() => ttsState = TtsState.stopped);
+  }
+
+  Future _pause() async {
+    var result = await flutterTts.pause();
+    if (result == 1) setState(() => ttsState = TtsState.paused);
+  }
+
+  List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(dynamic engines) {
+    var items = <DropdownMenuItem<String>>[];
+    for (dynamic type in engines) {
+      items.add(DropdownMenuItem(
+          value: type as String?, child: Text(type as String)));
+    }
+    return items;
+  }
+
+  void changedEnginesDropDownItem(String? selectedEngine) {
+    flutterTts.setEngine(selectedEngine!);
+    language = null;
+    setState(() {
+      engine = selectedEngine;
+    });
+  }
+
+  List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(
+      dynamic languages) {
+    var items = <DropdownMenuItem<String>>[];
+    for (dynamic type in languages) {
+      items.add(DropdownMenuItem(
+          value: type as String?, child: Text(type as String)));
+    }
+    return items;
+  }
+
+  void changedLanguageDropDownItem(String? selectedType) {
+    setState(() {
+      language = selectedType;
+      flutterTts.setLanguage(language!);
+      if (isAndroid) {
+        flutterTts
+            .isLanguageInstalled(language!)
+            .then((value) => isCurrentLanguageInstalled = (value as bool));
+      }
+    });
+  }
+
+  void _onChange(String text) {
+    setState(() {
+      _newVoiceText = text;
+    });
   }
 
   @override
@@ -132,7 +290,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
             ElevatedButton.icon(
                 label: Text("Start TTS"),
                 icon: Icon(Icons.timelapse),
-                onPressed: _startTTS)
+                onPressed: () {
+                  _speak();
+                }),
           ]),
         ),
       ),
