@@ -26,6 +26,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   String _countdownString = "";
   DateTime _now = DateTime.now();
   DateTime _dtSolar = DateTime.now();
+  bool _speakIsOn = false;
+  bool _initialVoicing = false;
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -36,8 +38,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
 
-  String? _newVoiceText;
-  int? _inputLength;
+  //int? _inputLength;
 
   TtsState ttsState = TtsState.stopped;
 
@@ -50,9 +51,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
   bool get isWeb => kIsWeb;
 ///////////////////////////////////////////////////////////////////////
-  void _startTTS() {
-    _speak();
-  }
 
   @override
   void initState() {
@@ -66,6 +64,51 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
 
       _countdownString =
           "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+
+      if (_speakIsOn) {
+        if (_initialVoicing == false) {
+          _initialVoicing = true;
+          _speak();
+        }
+        if ((min == 30) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 20) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 15) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 10) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 8) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 6) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 5) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 4) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 3) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 2) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 1) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 0) && (seconds == 0)) {
+          _speak(true);
+          _timer.cancel();
+          _speakIsOn = false;
+        }
+      }
 
       setState(() {
 //        if (_counter > 0) {
@@ -169,19 +212,24 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
     });
   }
 
-  Future _speak() async {
+  Future _speak([bool? finished]) async {
     if (_countdownString != "") {
       if (_countdownString.isNotEmpty) {
         await flutterTts.awaitSpeakCompletion(true);
-        await flutterTts.speak(_countdownString);
+        if (finished != null) {
+          await flutterTts.speak("Your Time has passed");
+        } else {
+          await flutterTts.speak(_countdownString);
+        }
       }
     }
   }
 
-  Future<dynamic> _getLanguages() => flutterTts.getLanguages;
+  //Future<dynamic> _getLanguages() => flutterTts.getLanguages;
 
-  Future<dynamic> _getEngines() => flutterTts.getEngines;
+  //Future<dynamic> _getEngines() => flutterTts.getEngines;
 
+/*
   Future _stop() async {
     var result = await flutterTts.stop();
     if (result == 1) setState(() => ttsState = TtsState.stopped);
@@ -230,12 +278,12 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
       }
     });
   }
-
   void _onChange(String text) {
     setState(() {
-      _newVoiceText = text;
+      //_newVoiceText = text;
     });
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -291,6 +339,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
                 label: Text("Start TTS"),
                 icon: Icon(Icons.timelapse),
                 onPressed: () {
+                  _speakIsOn = true;
                   _speak();
                 }),
           ]),

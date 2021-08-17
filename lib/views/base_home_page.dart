@@ -26,7 +26,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   final String title = "Buddhist Sun";
   final _bgcolorBlue = Colors.indigo[700];
   final _bgcolorGrey = Colors.grey[200];
-  Color bgColor = Color(255);
+  Color bgColor = Colors.indigo[700]!;
 
   void goToHome() {
     _currentIndex = 0;
