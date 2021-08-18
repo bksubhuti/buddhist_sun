@@ -6,6 +6,8 @@ import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:flutter_background/flutter_background.dart';
+import 'dart:io' show Platform;
 
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({Key? key}) : super(key: key);
@@ -48,6 +50,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
     super.initState();
     _pageController = PageController();
 
+    if (Platform.isAndroid) {
+      setupBackground();
+    }
+
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
     _page3 = GPSLocation(goToHome: goToHome);
@@ -74,6 +80,22 @@ class Home_PageContainerState extends State<HomePageContainer> {
       // need to update the state._page1.;
     });
   }
+
+  void setupBackground() async {
+    bool success =
+        await FlutterBackground.initialize(androidConfig: androidConfig);
+    print("result from setup backgroud is $success");
+  }
+
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: "flutter_background example app",
+    notificationText:
+        "Background notification for keeping the example app running in the background",
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(
+        name: 'background_icon',
+        defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
 
   @override
   Widget build(BuildContext context) {

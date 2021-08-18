@@ -28,6 +28,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   DateTime _dtSolar = DateTime.now();
   bool _speakIsOn = false;
   bool _initialVoicing = false;
+  String _voiceMessage = "Starting TTS";
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -64,6 +65,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
 
       _countdownString =
           "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+      _voiceMessage = "${min.toString()} minutes remaining";
 
       if (_speakIsOn) {
         if (_initialVoicing == false) {
@@ -213,13 +215,16 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   }
 
   Future _speak([bool? finished]) async {
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
     if (_countdownString != "") {
       if (_countdownString.isNotEmpty) {
         await flutterTts.awaitSpeakCompletion(true);
         if (finished != null) {
           await flutterTts.speak("Your Time has passed");
         } else {
-          await flutterTts.speak(_countdownString);
+          await flutterTts.speak(_voiceMessage);
         }
       }
     }
