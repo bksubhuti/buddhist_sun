@@ -105,6 +105,45 @@ class Home_PageContainerState extends State<HomePageContainer> {
     return Scaffold(
       appBar: AppBar(title: Text("Buddhist Sun")),
       backgroundColor: bgColor,
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                children: [
+                  Text('Buddhist Sun',
+                      style: TextStyle(fontSize: 17, color: Colors.white)),
+                  SizedBox(height: 15.0),
+                  CircleAvatar(
+                    backgroundImage: AssetImage("assets/buddhist_sun.png"),
+                    radius: 40.0,
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('About'),
+              onTap: () {
+                showAboutDialog(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Licences'),
+              onTap: () {
+                showLicenseDialog(context);
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavyBar(
           backgroundColor: Colors.blue[200],
           showElevation: true,
@@ -152,6 +191,80 @@ class Home_PageContainerState extends State<HomePageContainer> {
           ],
         ),
       ),
+    );
+  }
+
+  showAboutDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("About"),
+      content: SingleChildScrollView(
+        child: Text(
+            "Buddhist Sun is a small app for Buddhist monks, 10 and 8 precept yogis "
+            "to follow the exact Solar Noon time.  It is intended for those tight moments when you "
+            "have little time to eat and repeatedly need to look at your phone for the time."
+            "This solves the problem with tts.\n  Be sure to set the offset time if not using gps or if there needs an adjustment for Day Light Savings Time"
+            "\nI recommend LunaSoCal (Android) for other features.  This is meant for \"present moment\" use"
+            "\nIn android it will work in the background even when the screen is off."),
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showLicenseDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog license = AlertDialog(
+      title: Text("License"),
+      content: SingleChildScrollView(
+        child: Text(
+            "This is an Open Source Project.  Licenses for the Flutter development Packages used here are found on the repository website\n\n"
+            ''' github.com/bksubhuti/buddhist_sun/  '''
+            "\n\n"
+            '''
+sun picture derived by creativecommons cc-sa-attrib
+Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
+
+
+citydb.db created from source information thatis creative commons attrib
+https://simplemaps.com/data/world-cities'''),
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return license;
+      },
     );
   }
 }

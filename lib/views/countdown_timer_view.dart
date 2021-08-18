@@ -29,6 +29,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   bool _speakIsOn = false;
   bool _initialVoicing = false;
   String _voiceMessage = "Starting TTS";
+  bool _switchTTSValue = false;
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -63,10 +64,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
       int min = _dtSolar.difference(_now).inMinutes;
       int seconds = (_dtSolar.difference(_now).inSeconds) % 60;
 
-      _countdownString =
-          "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-      _voiceMessage = "${min.toString()} minutes remaining";
-
+      if (min > 0) {
+        _countdownString =
+            "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+        _voiceMessage = "${min.toString()} minutes remaining";
+      } else {
+        _countdownString = "Late";
+        _voiceMessage = "I'm sorry, but the time has passed.";
+      }
       if (_speakIsOn) {
         if (_initialVoicing == false) {
           _initialVoicing = true;
@@ -109,6 +114,13 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
           _speak(true);
           _timer.cancel();
           _speakIsOn = false;
+        }
+        if (min < 0) {
+          _speak(true);
+          _timer.cancel();
+          setState(() {
+            _speakIsOn = false;
+          });
         }
       }
 
@@ -215,9 +227,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   }
 
   Future _speak([bool? finished]) async {
-    await flutterTts.setVolume(volume);
     await flutterTts.setSpeechRate(rate);
-    await flutterTts.setPitch(pitch);
     if (_countdownString != "") {
       if (_countdownString.isNotEmpty) {
         await flutterTts.awaitSpeakCompletion(true);
@@ -340,13 +350,26 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
             SizedBox(
               height: 30,
             ),
-            ElevatedButton.icon(
-                label: Text("Start TTS"),
-                icon: Icon(Icons.timelapse),
-                onPressed: () {
-                  _speakIsOn = true;
-                  _speak();
-                }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("TTS", style: TextStyle(fontSize: 20, color: Colors.blue)),
+                SizedBox(
+                  width: 20,
+                ),
+                Transform.scale(
+                  scale: 1.9,
+                  child: Switch(
+                      value: _speakIsOn,
+                      onChanged: (bValue) {
+                        setState(() {
+                          _speakIsOn = bValue;
+                          if (_speakIsOn) _speak();
+                        });
+                      }),
+                ),
+              ],
+            ),
           ]),
         ),
       ),
