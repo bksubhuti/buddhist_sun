@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:wakelock/wakelock.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -30,6 +31,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   bool _initialVoicing = false;
   String _voiceMessage = "Starting TTS";
   bool _switchTTSValue = false;
+  bool _wakeOn = false;
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -64,7 +66,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
       int min = _dtSolar.difference(_now).inMinutes;
       int seconds = (_dtSolar.difference(_now).inSeconds) % 60;
 
-      if (min > 0) {
+      if (min >= 0) {
         _countdownString =
             "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
         _voiceMessage = "${min.toString()} minutes remaining";
@@ -164,6 +166,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   void dispose() {
     _timer.cancel();
     flutterTts.stop();
+    Wakelock.disable();
     super.dispose();
   }
 
@@ -311,40 +314,40 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
             ),
             Text(_solarTime,
                 style: TextStyle(
-                    color: Colors.orange[600],
-                    fontSize: 55,
-                    fontWeight: FontWeight.bold)),
+                    color: Colors.blue,
+                    fontSize: 45,
+                    fontWeight: FontWeight.normal)),
             Text("Solar Noon:",
                 style: TextStyle(
-                    color: Colors.orange[600],
+                    color: Colors.blue,
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
             Divider(
-              height: 30.0,
+              height: 25.0,
               color: Colors.grey,
             ),
             Text(_nowString,
                 style: TextStyle(
                     color: Colors.blue,
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold)),
+                    fontSize: 45,
+                    fontWeight: FontWeight.normal)),
             Text("Current Time",
                 style: TextStyle(
                     color: Colors.blue,
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
             Divider(
-              height: 30.0,
+              height: 25.0,
               color: Colors.grey,
             ),
             Text(_countdownString,
                 style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 60,
+                    color: Colors.blue,
+                    fontSize: 45,
                     fontWeight: FontWeight.bold)),
             Text("Time Left",
                 style: TextStyle(
-                    color: Colors.green,
+                    color: Colors.blue,
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
             SizedBox(
@@ -353,9 +356,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("TTS", style: TextStyle(fontSize: 20, color: Colors.blue)),
+                Text("Text to Speech    ",
+                    style: TextStyle(fontSize: 20, color: Colors.blue)),
                 SizedBox(
-                  width: 20,
+                  width: 30,
                 ),
                 Transform.scale(
                   scale: 1.9,
@@ -365,6 +369,30 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
                         setState(() {
                           _speakIsOn = bValue;
                           if (_speakIsOn) _speak();
+                        });
+                      }),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Screen Always On",
+                    style: TextStyle(fontSize: 20, color: Colors.blue)),
+                SizedBox(
+                  width: 20,
+                ),
+                Transform.scale(
+                  scale: 1.9,
+                  child: Switch(
+                      value: _wakeOn,
+                      onChanged: (bValue) {
+                        setState(() {
+                          _wakeOn = bValue;
+                          Wakelock.toggle(enable: bValue);
                         });
                       }),
                 ),

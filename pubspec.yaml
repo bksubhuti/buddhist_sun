@@ -44,6 +44,7 @@ dependencies:
   bottom_navy_bar: ^6.0.0
   circular_countdown_timer: ^0.2.0
   flutter_tts: ^3.2.2
+  wakelock: ^0.5.3+3
   flutter_background: ^1.0.2+1
 
   

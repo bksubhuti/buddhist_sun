@@ -51,7 +51,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _pageController = PageController();
 
     if (Platform.isAndroid) {
-      setupBackground();
+      //setupBackground();
     }
 
     _page1 = Home();

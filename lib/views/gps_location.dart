@@ -14,16 +14,32 @@ class _GPSLocationState extends State<GPSLocation> {
   Geolocator geoLocator = Geolocator();
   bool _initPerformed = false;
   late Position _position;
-  String _message = "Press save and wait for GPS";
+  double _lat = 1.1;
+  double _lng = 1.1;
+  String _message = "Press and wait for new GPS.";
+  String _currentGPSText = "";
 
   @override
   void initState() {
     super.initState();
+    getGpsPrefs();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void getGpsPrefs() async {
+    super.initState();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _lat = prefs.getDouble("lat") ?? 1.1;
+    _lng = prefs.getDouble("lng") ?? 1.1;
+
+    setState(() {
+      _currentGPSText = "Current GPS is:\nlat: $_lat\nlng: $_lng";
+    });
   }
 
   void initGps() async {
@@ -92,14 +108,14 @@ class _GPSLocationState extends State<GPSLocation> {
     return Container(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(height: 8),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        SizedBox(height: 25),
         Text(
           "$_message",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 12.0),
-        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(height: 25.0),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton.icon(
             icon: Icon(Icons.gps_fixed),
             onPressed: () {
@@ -120,6 +136,12 @@ class _GPSLocationState extends State<GPSLocation> {
             label: Text("Save GPS"),
           ),
         ]),
+        SizedBox(height: 80.0),
+        Text(
+          "$_currentGPSText",
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+        ),
       ]),
     ));
   }
