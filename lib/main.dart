@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/offset': (context) => ChooseOffset(),
       },*/
 
-      title: 'Flutter Demo',
+      title: 'Buddhist Sun',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
