@@ -7,6 +7,9 @@ import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:flutter_background/flutter_background.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -32,6 +35,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   String _voiceMessage = "Starting TTS";
   bool _switchTTSValue = false;
   bool _wakeOn = false;
+  bool _backgroundOn = false;
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -126,17 +130,30 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
         }
       }
 
-      setState(() {
-//        if (_counter > 0) {
-        //        _counter--;
-        //    }
-      });
+      setState(() {});
     });
 
     GetSolarTime();
     initTts();
     super.initState();
   }
+
+  Future<bool> setupBackground() async {
+    bool success =
+        await FlutterBackground.initialize(androidConfig: androidConfig);
+    print("result from setup backgroud is $success");
+    return success;
+  }
+
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: "flutter_background example app",
+    notificationText:
+        "Background notification for keeping the example app running in the background",
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(
+        name: 'background_icon',
+        defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
 
   void GetSolarTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -243,65 +260,76 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
     }
   }
 
-  //Future<dynamic> _getLanguages() => flutterTts.getLanguages;
-
-  //Future<dynamic> _getEngines() => flutterTts.getEngines;
-
-/*
-  Future _stop() async {
-    var result = await flutterTts.stop();
-    if (result == 1) setState(() => ttsState = TtsState.stopped);
-  }
-
-  Future _pause() async {
-    var result = await flutterTts.pause();
-    if (result == 1) setState(() => ttsState = TtsState.paused);
-  }
-
-  List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(dynamic engines) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in engines) {
-      items.add(DropdownMenuItem(
-          value: type as String?, child: Text(type as String)));
-    }
-    return items;
-  }
-
-  void changedEnginesDropDownItem(String? selectedEngine) {
-    flutterTts.setEngine(selectedEngine!);
-    language = null;
-    setState(() {
-      engine = selectedEngine;
-    });
-  }
-
-  List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(
-      dynamic languages) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in languages) {
-      items.add(DropdownMenuItem(
-          value: type as String?, child: Text(type as String)));
-    }
-    return items;
-  }
-
-  void changedLanguageDropDownItem(String? selectedType) {
-    setState(() {
-      language = selectedType;
-      flutterTts.setLanguage(language!);
-      if (isAndroid) {
-        flutterTts
-            .isLanguageInstalled(language!)
-            .then((value) => isCurrentLanguageInstalled = (value as bool));
+  void _backgroundSwitchChange(bSwitch) async {
+    bool successEnabled = false;
+    bool bkrunning = false;
+    bool successInit = false;
+    bool hasPermissions = await FlutterBackground.hasPermissions;
+    if (bSwitch) {
+      if (!hasPermissions) {
+        _displayMotionToast(context, "Permission is needed only once.");
       }
-    });
-  }
-  void _onChange(String text) {
+      successInit =
+          await FlutterBackground.initialize(androidConfig: androidConfig);
+      if (successInit) {
+        _displayMotionToast(context, "Background Initialized");
+        if (successInit) {
+          bkrunning = FlutterBackground.isBackgroundExecutionEnabled;
+          if (!bkrunning) {
+            successEnabled =
+                await FlutterBackground.enableBackgroundExecution();
+          } // bkrunning
+        } // has permission
+        if (successEnabled || bkrunning) {
+          _displayMotionToast(context, "Background Enabled");
+        } // successEnabled || bkrunning
+        else {
+          _displayErrorMotionToast(context, "Background not set");
+
+          bSwitch = false;
+        }
+      } else {
+        _displayErrorMotionToast(context, "Background initialize error");
+
+        bSwitch = false;
+      }
+    } // switch enabled
+    else {
+      if (FlutterBackground.isBackgroundExecutionEnabled) {
+        await FlutterBackground.disableBackgroundExecution();
+        _displayMotionToast(context, "Background disabled");
+      }
+    } // else no switch on
     setState(() {
-      //_newVoiceText = text;
+      _backgroundOn = bSwitch;
     });
   }
-*/
+
+  _displayMotionToast(BuildContext context, String message) {
+    MotionToast(
+      title: "Notification",
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
+      description: message,
+      descriptionStyle: TextStyle(fontSize: 14),
+      layoutOrientation: ORIENTATION.RTL,
+      animationType: ANIMATION.FROM_RIGHT,
+      width: 300,
+//      height: 90,
+      icon: Icons.battery_charging_full,
+      color: Colors.blue,
+    ).show(context);
+  }
+
+  _displayErrorMotionToast(BuildContext context, String message) {
+    MotionToast.error(
+      title: "Error",
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
+      description: message,
+      animationType: ANIMATION.FROM_LEFT,
+      position: MOTION_TOAST_POSITION.TOP,
+      width: 300,
+    ).show(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -395,6 +423,22 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
                           Wakelock.toggle(enable: bValue);
                         });
                       }),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("TTS with screen off ",
+                    style: TextStyle(fontSize: 20, color: Colors.blue)),
+                SizedBox(
+                  width: 20,
+                ),
+                Transform.scale(
+                  scale: 1.9,
+                  child: Switch(
+                      value: _backgroundOn,
+                      onChanged: (isAndroid) ? _backgroundSwitchChange : null),
                 ),
               ],
             ),

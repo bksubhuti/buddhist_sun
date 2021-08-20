@@ -18,6 +18,7 @@ class _GPSLocationState extends State<GPSLocation> {
   double _lng = 1.1;
   String _message = "Press and wait for new GPS.";
   String _currentGPSText = "";
+  bool isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
 
   @override
   void initState() {
@@ -118,21 +119,17 @@ class _GPSLocationState extends State<GPSLocation> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton.icon(
             icon: Icon(Icons.gps_fixed),
-            onPressed: () {
-              initGps();
-            },
+            onPressed: (isDesktop)
+                ? null
+                : () {
+                    initGps();
+                  },
             label: Text("Get GPS"),
           ),
           SizedBox(width: 6.0),
           ElevatedButton.icon(
             icon: Icon(Icons.save),
-            onPressed: () {
-              if (Platform.isAndroid || Platform.isIOS) {
-                saveGps();
-              } else {
-                initGps();
-              }
-            },
+            onPressed: (isDesktop) ? null : saveGps,
             label: Text("Save GPS"),
           ),
         ]),

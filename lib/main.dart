@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       },*/
 
       title: 'Flutter Demo',
-      //debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //

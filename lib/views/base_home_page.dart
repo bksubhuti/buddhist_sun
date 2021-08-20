@@ -6,8 +6,6 @@ import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:flutter_background/flutter_background.dart';
-import 'dart:io' show Platform;
 
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({Key? key}) : super(key: key);
@@ -50,10 +48,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     super.initState();
     _pageController = PageController();
 
-    if (Platform.isAndroid) {
-      //setupBackground();
-    }
-
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
     _page3 = GPSLocation(goToHome: goToHome);
@@ -81,29 +75,23 @@ class Home_PageContainerState extends State<HomePageContainer> {
     });
   }
 
-  void setupBackground() async {
-    bool success =
-        await FlutterBackground.initialize(androidConfig: androidConfig);
-    print("result from setup backgroud is $success");
-  }
-
-  final androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: "flutter_background example app",
-    notificationText:
-        "Background notification for keeping the example app running in the background",
-    notificationImportance: AndroidNotificationImportance.Default,
-    notificationIcon: AndroidResource(
-        name: 'background_icon',
-        defType: 'drawable'), // Default is ic_launcher from folder mipmap
-  );
-
   @override
   Widget build(BuildContext context) {
 //    data = ModalRoute.of(context)!.settings.arguments as Map;
     //  print(data);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Buddhist Sun")),
+      appBar: AppBar(
+        title: Text("Buddhist Sun"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showHelpDialog(context);
+              },
+              icon: Icon(Icons.help),
+              color: Colors.yellow[50]),
+        ],
+      ),
       backgroundColor: bgColor,
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -205,15 +193,22 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("About"),
+      title: Text("About", style: TextStyle(fontSize: 15, color: Colors.blue)),
       content: SingleChildScrollView(
         child: Text(
-            "Buddhist Sun is a small app for Buddhist monks, 10 and 8 precept yogis "
-            "to follow the exact Solar Noon time.  It is intended for those tight moments when you "
-            "have little time to eat and repeatedly need to look at your phone for the time."
-            "This solves the problem with tts.\n  Be sure to set the offset time if not using gps or if there needs an adjustment for Day Light Savings Time"
-            "\nI recommend LunaSoCal (Android) for other features.  This is meant for \"present moment\" use"
-            "\nIn android it will work in the background even when the screen is off."),
+            "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. "
+            "Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. "
+            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  My family had a rule: \nNo phone during"
+            "mealtimes.\n (We only had one wired house phones back then.)  Because Myanmar considers green tea as a food, I do not drink green tea "
+            "in the afternoon, so the timer comes in handy also for drinking tea"
+            "I enjoy using the app, I hope that you do too."
+            "\n\nWhy is this important?\n"
+            "Those who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun rather than a clock. "
+            "They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may this app useful too.\n"
+            "\nI recommend LunaSoCal (Android) for other features or verifying the accuracy of this application.  TimeandDate.com is also a good "
+            "resource. This application meant for \"present moment/location\" use"
+            "\n\nMay this help you reach Nibbāna safely and quickly!",
+            style: TextStyle(fontSize: 16, color: Colors.blue)),
       ),
       actions: [
         okButton,
@@ -252,7 +247,27 @@ Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/license
 
 
 citydb.db created from source information thatis creative commons attrib
-https://simplemaps.com/data/world-cities'''),
+https://simplemaps.com/data/world-cities'''
+            '''
+External Packages used:  (see pub.dev)
+  intl: ^0.17.0
+  flutter_spinkit: "^5.0.0"
+  solar_calculator: ^1.0.2
+  path_provider: ^2.0.2
+  cupertino_icons: ^1.0.2
+  sqflite_common_ffi: ^2.0.0+1
+  sqflite: ^2.0.0+3
+  shared_preferences: ^2.0.6
+  geolocator: ^7.4.0
+  bottom_navy_bar: ^6.0.0
+  circular_countdown_timer: ^0.2.0
+  flutter_tts: ^3.2.2
+  wakelock: ^0.5.3+3
+  flutter_background: ^1.0.2+1
+  motion_toast: ^1.3.0
+
+''',
+            style: TextStyle(fontSize: 16, color: Colors.blue)),
       ),
       actions: [
         okButton,
@@ -264,6 +279,55 @@ https://simplemaps.com/data/world-cities'''),
       context: context,
       builder: (BuildContext context) {
         return license;
+      },
+    );
+  }
+
+  showHelpDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog help = AlertDialog(
+      title: Text("Help"),
+      content: SingleChildScrollView(
+        child: Text(
+            "HOME:\n"
+            "The Home screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. "
+            "\n\nGPS:\n"
+            "GPS will automatically set the GMT offset.  However, if you select your own city, you will need to set the offset yourself.  "
+            "However, if you use GPS first, and you are in the same timezone, the offset should be correct.  It is recommended that you "
+            "use the GPS settings for your location because the Solar Noon will be most accurate this way and the GMT offset is automatic "
+            "although it was not tested in \"Day Light Savings\" locations. \n\n"
+            "\nTimer:\n"
+            "The Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your music volum.  "
+            "Under normal conditions the TTS only works while the screen is on.  To counter this, you can make the screen stay awake with the \"Screen Always On\" switch, "
+            "or you can switch on \"TTS with screen off.\"\n  This will enable background operation while your screen is off and prevent from sleeping."
+            "You should test this background feature a few times before relying on it.  Some phones might be too aggressive in battery saving mode. "
+            "We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  This feature is disabled for iOS users."
+            "\n\nPrivacy:\n"
+            "We do not collect information and we do not establish an internet "
+            "connection.  The Application does not run in the background when the app is closed.  GPS is engaged for the single request ONLY "
+            "when you press the GPS button. "
+            "You are quite safe as far as I know, however, this app was used with packages from the pub.dev website. "
+            "A list of those packages listed in the Licence file",
+            style: TextStyle(fontSize: 16, color: Colors.blue)),
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return help;
       },
     );
   }
