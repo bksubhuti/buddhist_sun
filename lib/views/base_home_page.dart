@@ -2,10 +2,20 @@ import 'package:buddhist_sun/views/choose_location.dart';
 import 'package:buddhist_sun/views/choose_offset.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
+import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'dart:io' show Platform;
+
+// #docregion LocalizationDelegatesImport
+//import 'package:flutter_localizations/flutter_localizations.dart';
+
+// #enddocregion LocalizationDelegatesImport
+// #docregion AppLocalizationsImport
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// #enddocregion AppLocalizationsImport
 
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({Key? key}) : super(key: key);
@@ -16,6 +26,9 @@ class HomePageContainer extends StatefulWidget {
 
 class Home_PageContainerState extends State<HomePageContainer> {
   //late List<Widget> _pages;
+  final bool isDesktop =
+      Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+
   late PageController _pageController;
 
   final String page1 = "Home";
@@ -39,6 +52,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   late GPSLocation _page3;
   late ChooseLocation _page4;
   late ChooseOffset _page5;
+  late DummyPage _dummyPage;
 
   int _currentIndex = 0;
   //Widget _currentPage = Home();
@@ -53,6 +67,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _page3 = GPSLocation(goToHome: goToHome);
     _page4 = ChooseLocation(goToHome: goToHome);
     _page5 = ChooseOffset(goToHome: goToHome);
+    _dummyPage = DummyPage();
 
     //_pages = [_page1, _page2, _page3, _page4, _page5];
 
@@ -82,7 +97,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Buddhist Sun"),
+        title: Text(AppLocalizations.of(context)!.buddhistSun),
         actions: [
           IconButton(
               onPressed: () {
@@ -139,13 +154,15 @@ class Home_PageContainerState extends State<HomePageContainer> {
           curve: Curves.easeIn,
           selectedIndex: _currentIndex,
           onItemSelected: (index) {
-            int oldIndex = _currentIndex;
-            int milliTime = (oldIndex - index) * 200;
-            milliTime = (milliTime < 0) ? milliTime * -1 : milliTime;
+            int diffIndex = _currentIndex - index;
+            diffIndex = (diffIndex < 0) ? diffIndex * -1 : diffIndex;
             setState(() => _currentIndex = index);
-            _pageController.animateToPage(index,
-                duration: Duration(milliseconds: milliTime),
-                curve: Curves.easeIn);
+            if (diffIndex == 1) {
+              _pageController.animateToPage(index,
+                  duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+            } else {
+              _pageController.jumpToPage(index);
+            }
           },
           items: <BottomNavyBarItem>[
             BottomNavyBarItem(title: Text(page1), icon: Icon(Icons.home)),
@@ -173,7 +190,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
           children: <Widget>[
             _page1,
             _page2,
-            _page3,
+            (isDesktop) ? _dummyPage : _page3,
             _page4,
             _page5,
           ],
@@ -198,16 +215,16 @@ class Home_PageContainerState extends State<HomePageContainer> {
         child: Text(
             "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. "
             "Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. "
-            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  My family had a rule: \nNo phone during"
-            "mealtimes.\n (We only had one wired house phones back then.)  Because Myanmar considers green tea as a food, I do not drink green tea "
-            "in the afternoon, so the timer comes in handy also for drinking tea"
-            "I enjoy using the app, I hope that you do too."
+            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  My family had a rule: \nNo phone during "
+            "mealtimes.\n (We only had wired house phones back then.)  Because Myanmar considers green tea as a food, I do not drink green tea "
+            "in the afternoon, so the timer comes in handy also for drinking tea. "
+            "I enjoy using the app, and I hope that you do too."
             "\n\nWhy is this important?\n"
-            "Those who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun rather than a clock. "
-            "They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may this app useful too.\n"
-            "\nI recommend LunaSoCal (Android) for other features or verifying the accuracy of this application.  TimeandDate.com is also a good "
-            "resource. This application meant for \"present moment/location\" use"
-            "\n\nMay this help you reach Nibbāna safely and quickly!",
+            "Those who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. "
+            "They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n"
+            "\nI recommend https://TimeandDate.com to verify this app's accuracy.  "
+            "This application is meant for \"present moment/location\" use.  "
+            "\n\nMay this help you to reach Nibbāna quickly and safely!",
             style: TextStyle(fontSize: 16, color: Colors.blue)),
       ),
       actions: [
@@ -238,8 +255,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
       title: Text("License"),
       content: SingleChildScrollView(
         child: Text(
-            "This is an Open Source Project.  Licenses for the Flutter development Packages used here are found on the repository website\n\n"
-            ''' github.com/bksubhuti/buddhist_sun/  '''
+            "This is an Open Source Project.  Licenses for the Flutter and Flutter development Packages used here are found on the repository website\n\n"
+            ''' https://github.com/bksubhuti/buddhist_sun/  
+
+            and
+            
+             https://github.com/flutter/flutter/blob/master/LICENSE '''
             "\n\n"
             '''
 sun picture derived by creativecommons cc-sa-attrib
@@ -250,21 +271,42 @@ citydb.db created from source information thatis creative commons attrib
 https://simplemaps.com/data/world-cities'''
             '''
 External Packages used:  (see pub.dev)
-  intl: ^0.17.0
+
   flutter_spinkit: "^5.0.0"
+  https://pub.flutter-io.cn/packages?q=flutter_spinkit
+
   solar_calculator: ^1.0.2
+  https://pub.flutter-io.cn/packages/solar_calculator
+
   path_provider: ^2.0.2
-  cupertino_icons: ^1.0.2
+  https://pub.flutter-io.cn/packages/path_provider
+
   sqflite_common_ffi: ^2.0.0+1
+  https://pub.flutter-io.cn/packages/sqflite_common_ffi
+
   sqflite: ^2.0.0+3
+  https://pub.flutter-io.cn/packages/sqflite
+
   shared_preferences: ^2.0.6
+  https://pub.flutter-io.cn/packages/shared_preferences
+
   geolocator: ^7.4.0
+  https://pub.flutter-io.cn/packages/geolocator
+
   bottom_navy_bar: ^6.0.0
-  circular_countdown_timer: ^0.2.0
+  https://pub.flutter-io.cn/packages/bottom_navy_bar
+
   flutter_tts: ^3.2.2
+  https://pub.flutter-io.cn/packages/flutter_tts
+
   wakelock: ^0.5.3+3
+  https://pub.flutter-io.cn/packages/wakelock
+
   flutter_background: ^1.0.2+1
+  https://pub.flutter-io.cn/packages/flutter_background
+
   motion_toast: ^1.3.0
+  https://pub.flutter-io.cn/packages/motion_toast
 
 ''',
             style: TextStyle(fontSize: 16, color: Colors.blue)),
@@ -305,17 +347,22 @@ External Packages used:  (see pub.dev)
             "use the GPS settings for your location because the Solar Noon will be most accurate this way and the GMT offset is automatic "
             "although it was not tested in \"Day Light Savings\" locations. \n\n"
             "\nTimer:\n"
-            "The Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your music volum.  "
+            "The Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your media volume.  "
             "Under normal conditions the TTS only works while the screen is on.  To counter this, you can make the screen stay awake with the \"Screen Always On\" switch, "
-            "or you can switch on \"TTS with screen off.\"\n  This will enable background operation while your screen is off and prevent from sleeping."
-            "You should test this background feature a few times before relying on it.  Some phones might be too aggressive in battery saving mode. "
-            "We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  This feature is disabled for iOS users."
+            "or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. "
+            "You should test this background feature a few times before relying on it.  Some phones or battery saving modes may not allow it to work. "
+            "We are not responsible for anything nor will we pay for trips to India for bathing in the Ganges.  When you close the applicaton, a method "
+            "is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your "
+            "phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon.  "
+            "This feature is not available for iOS users.\n"
+            "The timings of TTS announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0"
             "\n\nPrivacy:\n"
-            "We do not collect information and we do not establish an internet "
+            "A full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n"
+            "\nWe do not collect information and we do not establish an internet "
             "connection.  The Application does not run in the background when the app is closed.  GPS is engaged for the single request ONLY "
             "when you press the GPS button. "
             "You are quite safe as far as I know, however, this app was used with packages from the pub.dev website. "
-            "A list of those packages listed in the Licence file",
+            "A list of those packages are listed in the license page of this app or on github code repository listed there too.",
             style: TextStyle(fontSize: 16, color: Colors.blue)),
       ),
       actions: [

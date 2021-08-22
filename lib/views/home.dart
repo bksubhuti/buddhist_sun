@@ -114,7 +114,7 @@ class _HomeState extends State<Home> {
                           color: Colors.grey,
                           letterSpacing: 2.0)),
                   SizedBox(height: 10.0),
-                  Text("offset: $_offset hours",
+                  Text("GMT Offset: $_offset hours",
                       style: TextStyle(
                           fontSize: 12.8,
                           color: Colors.grey,

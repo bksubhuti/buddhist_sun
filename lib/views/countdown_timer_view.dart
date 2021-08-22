@@ -83,6 +83,12 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
           _initialVoicing = true;
           _speak();
         }
+        if ((min == 50) && (seconds == 0)) {
+          _speak();
+        }
+        if ((min == 40) && (seconds == 0)) {
+          _speak();
+        }
         if ((min == 30) && (seconds == 0)) {
           _speak();
         }
@@ -267,7 +273,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
     bool hasPermissions = await FlutterBackground.hasPermissions;
     if (bSwitch) {
       if (!hasPermissions) {
-        _displayMotionToast(context, "Permission is needed only once.");
+        await showBackgroundInfoDialog(context);
       }
       successInit =
           await FlutterBackground.initialize(androidConfig: androidConfig);
@@ -445,6 +451,39 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
           ]),
         ),
       ),
+    );
+  }
+
+  Future showBackgroundInfoDialog(BuildContext context) async {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog help = AlertDialog(
+      title: Text("Background Permission"),
+      content: SingleChildScrollView(
+        child: Text(
+            "Permission will be requested for background use.  This permission is needed to enable tts to run properly without "
+            "the need to have the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  "
+            "Permission will be requested only one time if accepted.",
+            style: TextStyle(fontSize: 16, color: Colors.blue)),
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return help;
+      },
     );
   }
 }
