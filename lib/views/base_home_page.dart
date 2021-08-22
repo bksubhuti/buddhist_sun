@@ -49,10 +49,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   late Home _page1;
   late CountdownTimerView _page2;
-  late GPSLocation _page3;
+  late StatefulWidget _page3;
   late ChooseLocation _page4;
   late ChooseOffset _page5;
-  late DummyPage _dummyPage;
+  //late DummyPage _dummyPage;
 
   int _currentIndex = 0;
   //Widget _currentPage = Home();
@@ -62,12 +62,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
     super.initState();
     _pageController = PageController();
 
+//    _dummyPage = DummyPage();
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
-    _page3 = GPSLocation(goToHome: goToHome);
+    _page3 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
     _page4 = ChooseLocation(goToHome: goToHome);
     _page5 = ChooseOffset(goToHome: goToHome);
-    _dummyPage = DummyPage();
 
     //_pages = [_page1, _page2, _page3, _page4, _page5];
 
@@ -190,7 +190,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
           children: <Widget>[
             _page1,
             _page2,
-            (isDesktop) ? _dummyPage : _page3,
+            _page3,
             _page4,
             _page5,
           ],

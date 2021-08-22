@@ -387,66 +387,78 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
             SizedBox(
               height: 30,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Text to Speech    ",
-                    style: TextStyle(fontSize: 20, color: Colors.blue)),
-                SizedBox(
-                  width: 30,
-                ),
-                Transform.scale(
-                  scale: 1.9,
-                  child: Switch(
-                      value: _speakIsOn,
-                      onChanged: (bValue) {
-                        setState(() {
-                          _speakIsOn = bValue;
-                          if (_speakIsOn) _speak();
-                        });
-                      }),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Screen Always On",
-                    style: TextStyle(fontSize: 20, color: Colors.blue)),
-                SizedBox(
-                  width: 20,
-                ),
-                Transform.scale(
-                  scale: 1.9,
-                  child: Switch(
-                      value: _wakeOn,
-                      onChanged: (bValue) {
-                        setState(() {
-                          _wakeOn = bValue;
-                          Wakelock.toggle(enable: bValue);
-                        });
-                      }),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("TTS with screen off ",
-                    style: TextStyle(fontSize: 20, color: Colors.blue)),
-                SizedBox(
-                  width: 20,
-                ),
-                Transform.scale(
-                  scale: 1.9,
-                  child: Switch(
-                      value: _backgroundOn,
-                      onChanged: (isAndroid) ? _backgroundSwitchChange : null),
-                ),
-              ],
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("Text to Speech",
+                          style: TextStyle(fontSize: 17, color: Colors.blue)),
+                      SizedBox(
+                        width: 0,
+                        height: 25,
+                      ),
+                      Text("Screen Always On",
+                          style: TextStyle(fontSize: 17, color: Colors.blue)),
+                      SizedBox(
+                        width: 0,
+                        height: 25,
+                      ),
+                      Text("TTS with screen off ",
+                          style: TextStyle(fontSize: 17, color: Colors.blue)),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Transform.scale(
+                          scale: 1.5,
+                          child: Switch(
+                              value: _speakIsOn,
+                              onChanged: (bValue) {
+                                setState(() {
+                                  _speakIsOn = bValue;
+                                  if (_speakIsOn) _speak();
+                                });
+                              }),
+                        ),
+                        SizedBox(
+                          width: 30,
+                          height: 8,
+                        ),
+                        Transform.scale(
+                          scale: 1.5,
+                          child: Switch(
+                              value: _wakeOn,
+                              onChanged: (bValue) {
+                                setState(() {
+                                  _wakeOn = bValue;
+                                  Wakelock.toggle(enable: bValue);
+                                });
+                              }),
+                        ),
+                        SizedBox(
+                          width: 30,
+                          height: 8,
+                        ),
+                        Transform.scale(
+                          scale: 1.5,
+                          child: Switch(
+                              value: _backgroundOn,
+                              onChanged:
+                                  (isAndroid) ? _backgroundSwitchChange : null),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ]),
         ),
