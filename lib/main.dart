@@ -51,7 +51,9 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         Locale('en', ''), // English, no country code
         Locale('es', ''), // Spanish, no country code
-        Locale('mm', ''), // Myanmar, no country code
+        Locale('my', ''), // Myanmar, no country code
+        Locale('si', ''), // Myanmar, no country code
+        Locale('zh', ''), // Myanmar, no country code
       ],
       home: HomePageContainer(),
     );
