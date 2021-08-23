@@ -10,6 +10,7 @@ import 'package:wakelock/wakelock.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+//import 'package:volume/volume.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -41,7 +42,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   late FlutterTts flutterTts;
   String? language;
   String? engine;
-  double volume = 0.5;
+  double _volume = 0.5;
   double pitch = 1.0;
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
@@ -83,44 +84,24 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
           _initialVoicing = true;
           _speak();
         }
-        if ((min == 50) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 40) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 30) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 20) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 15) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 10) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 8) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 6) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 5) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 4) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 3) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 2) && (seconds == 0)) {
-          _speak();
-        }
-        if ((min == 1) && (seconds == 0)) {
-          _speak();
+        switch (min) {
+          case 50:
+          case 40:
+          case 30:
+          case 20:
+          case 15:
+          case 10:
+          case 8:
+          case 6:
+          case 5:
+          case 4:
+          case 3:
+          case 2:
+          case 1:
+            if (seconds == 0) {
+              _speak();
+            }
+            break;
         }
         if ((min == 0) && (seconds == 0)) {
           _speak(true);
@@ -254,6 +235,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
 
   Future _speak([bool? finished]) async {
     await flutterTts.setSpeechRate(rate);
+    await flutterTts.setVolume(_volume);
     if (_countdownString != "") {
       if (_countdownString.isNotEmpty) {
         await flutterTts.awaitSpeakCompletion(true);
@@ -340,128 +322,162 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            SizedBox(
-              width: 30,
-            ),
-            Text(_solarTime,
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 45,
-                    fontWeight: FontWeight.normal)),
-            Text("Solar Noon:",
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Divider(
-              height: 25.0,
-              color: Colors.grey,
-            ),
-            Text(_nowString,
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 45,
-                    fontWeight: FontWeight.normal)),
-            Text("Current Time",
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            Divider(
-              height: 25.0,
-              color: Colors.grey,
-            ),
-            Text(_countdownString,
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold)),
-            Text("Time Left",
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      child: Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          SizedBox(
+            width: 30,
+          ),
+          Text(_solarTime,
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 42,
+                  fontWeight: FontWeight.normal)),
+          Text("Solar Noon:",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)),
+          Divider(
+            height: 15.0,
+            color: Colors.grey,
+          ),
+          Text(_nowString,
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 42,
+                  fontWeight: FontWeight.normal)),
+          Text("Current Time",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)),
+          Divider(
+            height: 15.0,
+            color: Colors.grey,
+          ),
+          Text(_countdownString,
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold)),
+          Text("Time Left",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)),
+          Card(
+            margin: const EdgeInsets.fromLTRB(25, 0, 25, 10),
+            color: Colors.grey[200],
+            shadowColor: Colors.blue,
+            elevation: 1,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  SizedBox(
+                    width: 0,
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Text to Speech",
-                          style: TextStyle(fontSize: 17, color: Colors.blue)),
-                      SizedBox(
-                        width: 0,
-                        height: 25,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text("Text to Speech",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                          SizedBox(
+                            width: 0,
+                            height: 25,
+                          ),
+                          Text("Screen Always On",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                          SizedBox(
+                            width: 0,
+                            height: 25,
+                          ),
+                          Text("TTS with screen off ",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                        ],
                       ),
-                      Text("Screen Always On",
-                          style: TextStyle(fontSize: 17, color: Colors.blue)),
-                      SizedBox(
-                        width: 0,
-                        height: 25,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 0,
+                              height: 5,
+                            ),
+                            Transform.scale(
+                              scale: 1.7,
+                              child: Switch(
+                                  value: _speakIsOn,
+                                  onChanged: (bValue) {
+                                    setState(() {
+                                      _speakIsOn = bValue;
+                                      if (_speakIsOn) _speak();
+                                    });
+                                  }),
+                            ),
+                            SizedBox(
+                              width: 35,
+                              height: 0,
+                            ),
+                            Transform.scale(
+                              scale: 1.7,
+                              child: Switch(
+                                  value: _wakeOn,
+                                  onChanged: (bValue) {
+                                    setState(() {
+                                      _wakeOn = bValue;
+                                      Wakelock.toggle(enable: bValue);
+                                    });
+                                  }),
+                            ),
+                            SizedBox(
+                              width: 30,
+                              height: 0,
+                            ),
+                            Transform.scale(
+                              scale: 1.7,
+                              child: Switch(
+                                  value: _backgroundOn,
+                                  onChanged: (isAndroid)
+                                      ? _backgroundSwitchChange
+                                      : null),
+                            ),
+                          ],
+                        ),
                       ),
-                      Text("TTS with screen off ",
-                          style: TextStyle(fontSize: 17, color: Colors.blue)),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Transform.scale(
-                          scale: 1.5,
-                          child: Switch(
-                              value: _speakIsOn,
-                              onChanged: (bValue) {
-                                setState(() {
-                                  _speakIsOn = bValue;
-                                  if (_speakIsOn) _speak();
-                                });
-                              }),
-                        ),
-                        SizedBox(
-                          width: 30,
-                          height: 8,
-                        ),
-                        Transform.scale(
-                          scale: 1.5,
-                          child: Switch(
-                              value: _wakeOn,
-                              onChanged: (bValue) {
-                                setState(() {
-                                  _wakeOn = bValue;
-                                  Wakelock.toggle(enable: bValue);
-                                });
-                              }),
-                        ),
-                        SizedBox(
-                          width: 30,
-                          height: 8,
-                        ),
-                        Transform.scale(
-                          scale: 1.5,
-                          child: Switch(
-                              value: _backgroundOn,
-                              onChanged:
-                                  (isAndroid) ? _backgroundSwitchChange : null),
-                        ),
-                      ],
-                    ),
-                  ),
+                  Slider(
+                      value: _volume,
+                      onChanged: (newVolume) async {
+                        //_volume = newVolume;
+
+                        setState() {}
+                        _volume = newVolume;
+
+                        ;
+                      },
+                      min: 0.0,
+                      max: 1.0,
+                      divisions: 100,
+                      label: "Volume: $_volume"),
+                  Text("Volume",
+                      style: TextStyle(fontSize: 15, color: Colors.blue)),
                 ],
               ),
             ),
-          ]),
-        ),
+          ),
+        ]),
       ),
     );
   }

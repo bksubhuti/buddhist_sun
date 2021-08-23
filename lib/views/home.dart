@@ -58,7 +58,15 @@ class _HomeState extends State<Home> {
         hour: now.hour,
         timeZoneOffset: _offset);
     SolarCalculator calc = SolarCalculator(instant, _lat, _lng);
-    print('time of noon: ${calc.sunTransitTime}');
+    print('    Begining: ${calc.morningNauticalTwilight.begining}');
+    print('    Ending: ${calc.morningNauticalTwilight.ending}');
+
+    print('Morning civil twilight:');
+    print('    Begining: ${calc.morningCivilTwilight.begining}');
+    print('    Ending: ${calc.morningCivilTwilight.ending}');
+
+
+
     Instant inst2 = calc.sunTransitTime;
     print('${inst2}');
     String inst2Minute = (inst2.minute < 10)

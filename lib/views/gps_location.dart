@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:io' show Platform;
 
 class GPSLocation extends StatefulWidget {
@@ -11,9 +12,10 @@ class GPSLocation extends StatefulWidget {
 }
 
 class _GPSLocationState extends State<GPSLocation> {
-  Geolocator geoLocator = Geolocator();
+//  Geolocator geoLocator = Geolocator();
   bool _initPerformed = false;
   late Position _position;
+  bool _bLoading = false;
   double _lat = 1.1;
   double _lng = 1.1;
   String _message = "Press and wait for new GPS.";
@@ -45,6 +47,9 @@ class _GPSLocationState extends State<GPSLocation> {
 
   void initGps() async {
     if (Platform.isAndroid || Platform.isIOS) {
+      setState(() {
+        _bLoading = true;
+      });
       if (!_initPerformed) {
         bool serviceEnabled;
         LocationPermission permission;
@@ -89,6 +94,8 @@ class _GPSLocationState extends State<GPSLocation> {
       _message = 'GPS is not supported on Desktops}';
     }
     ;
+    _bLoading = false;
+
     setState(() {});
   }
 
@@ -112,10 +119,15 @@ class _GPSLocationState extends State<GPSLocation> {
       padding: const EdgeInsets.all(8.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         SizedBox(height: 25),
-        Text(
-          "$_message",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        (_bLoading)
+            ? SpinKitPulse(
+                color: Colors.blue,
+                size: 50.0,
+              )
+            : Text(
+                "$_message",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
         SizedBox(height: 25.0),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton.icon(
