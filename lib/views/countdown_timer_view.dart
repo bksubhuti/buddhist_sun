@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,7 @@ class CountdownTimerView extends StatefulWidget {
 
 enum TtsState { playing, stopped, paused, continued }
 
-class _CountdownTimerViewState extends State<CountdownTimerView> {
+class _CountdownTimerViewState extends State<CountdownTimerView> with SolarTimerDelegate {
   Duration _duration = Duration(seconds: 1);
   late Timer _timer;
   String _solarTime = "";
@@ -513,5 +514,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView> {
         return help;
       },
     );
+  }
+
+  @override
+  void update() {
+    // TODO: Implement Update
   }
 }

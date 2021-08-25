@@ -1,3 +1,8 @@
+mixin SolarTimerDelegate {
+
+  void update();
+}
+
 
 class SolarTimerService {
 
@@ -9,6 +14,7 @@ class SolarTimerService {
 
   SolarTimerService._internal();
 
+  SolarTimerDelegate? delegate;
   bool textToSpeech = true;
-  
+
 }
