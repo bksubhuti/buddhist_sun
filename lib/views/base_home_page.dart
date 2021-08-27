@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'dart:io' show Platform;
+import 'package:buddhist_sun/src/models/prefs.dart';
 
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
@@ -62,6 +63,11 @@ class Home_PageContainerState extends State<HomePageContainer> {
     super.initState();
     _pageController = PageController();
 
+    // these toggles always get set to false
+    Prefs.backgroundOn = false;
+    Prefs.screenAlwaysOn = false;
+    Prefs.speakIsOn = false;
+
 //    _dummyPage = DummyPage();
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
@@ -77,6 +83,14 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   @override
   void dispose() {
+    // cleanup the switches to always false
+    // this does not get called.. but it is here anyway.
+    // no dispose on exit is called. :)
+    Prefs.backgroundOn = false;
+    Prefs.screenAlwaysOn = false;
+    Prefs.speakIsOn = false;
+    print("set the toggles in prefs to false");
+
     _pageController.dispose();
     super.dispose();
   }

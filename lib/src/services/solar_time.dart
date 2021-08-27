@@ -47,7 +47,6 @@ class SolarTimerService {
 
   String? language;
   String? engine;
-  double _volume = 0.5;
   double pitch = 1.0;
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
@@ -71,9 +70,6 @@ class SolarTimerService {
 ///////////////////////////////////////////////////////////////////////
 
   bool _isDoingTimerStuff = false;
-  void set speakIsOn(speakOnValue) {
-    _speakIsOn = speakOnValue;
-  }
 
   bool get speakIsOn => _speakIsOn;
 
@@ -98,17 +94,20 @@ class SolarTimerService {
   }
 
   Future _speak() async {
-    await flutterTts.setSpeechRate(rate);
-    await flutterTts.setVolume(_volume);
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.speak(_voiceMessage);
+    if (!_bLate) {
+      await flutterTts.setSpeechRate(rate);
+      await flutterTts.setVolume(Prefs.volume);
+      await flutterTts.awaitSpeakCompletion(true);
+      await flutterTts.speak(_voiceMessage);
+    }
   }
 
   timerCallback() {
     // cannot debug without putting code outside of timer
 
     // if speak is on.. we speak..
-    _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
+    _speakIsOn = Prefs.speakIsOn;
+
     _now = DateTime.now();
     _nowString =
         "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}";
@@ -141,7 +140,16 @@ class SolarTimerService {
         delegate!.update(); // full set state if possible
       }
     }
+    if (min < 0) {
+      doLateTime();
+      /*Prefs.speakIsOn = false;
+      _countdownString = "Late";
+      delegate!.setCountdownString(_countdownString);
+      delegate!.setSpeakIsOn(_speakIsOn);
 
+      delegate!.update(); // full set state if possible
+      */
+    }
     print(min);
     print("countdown is:  $_countdownString");
     print(_countdownString);
@@ -177,26 +185,33 @@ class SolarTimerService {
           }
           break;
         case 0:
-          if (_bLate) break;
-
-          if (seconds == 0) {
-            // countdown finished
-            // flick the switch on parent
-            _speakIsOn = false;
-            Prefs.instance.setBool(SPEAKISON, _speakIsOn);
-            delegate!.setSpeakIsOn(_speakIsOn);
-
-            // set final tts message and speak
-            _voiceMessage = "Your time has passed";
-            _speak(); // speaking has finished.
-            _countdownString = "Late";
-            delegate!.setCountdownString(_countdownString);
-            delegate!.update(); // full set state if possible
-            _bLate = true;
+          if (!_bLate) {
+            if (seconds == 0) {
+              // countdown finished
+              // flick the switch on parent
+              doLateTime();
+            }
           }
+          break;
       } // switch
 
     }
+  }
+
+  doLateTime() {
+    if (Prefs.speakIsOn) {
+      _speakIsOn = false;
+      Prefs.speakIsOn = false;
+      delegate!.setSpeakIsOn(_speakIsOn);
+
+      // set final tts message and speak
+      _voiceMessage = "Your time has passed";
+      _speak(); // speaking has finished.
+    }
+    _countdownString = "Late";
+    delegate!.setCountdownString(_countdownString);
+    delegate!.update(); // full set state if possible
+    _bLate = true;
   }
 
   initTts() {

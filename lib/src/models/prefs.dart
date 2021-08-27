@@ -4,17 +4,25 @@
 // Shared prefs package import
 import 'package:shared_preferences/shared_preferences.dart';
 
+// preference names
 const String CITYNAME = "cityName";
 const String LAT = "lat";
 const String LNG = "lng";
 const String OFFSET = "offset";
 const String SPEAKISON = "speakIsOn";
+const String SCREEN_ALWAYS_ON = "screenAlwaysOn";
+const String BACKGROUND_ON = "backgroundOn";
+const String VOLUME = "volume";
 
+// default pref values
 const String DEFAULT_CITYNAME = "Not Set";
 const double DEFAULT_LAT = 1.1;
 const double DEFAULT_LNG = 1.1;
 const double DEFAULT_OFFSET = 6.5;
 const bool DEFAULT_SPEAKISON = false;
+const bool DEFAULT_SCREEN_ALWAYS_ON = false;
+const bool DEFAULT_BACKGROUND_ON = false;
+const double DEFAULT_VOLUME = 0.5;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -36,6 +44,18 @@ class Prefs {
   static double get offset => instance.getDouble(OFFSET) ?? DEFAULT_OFFSET;
   static set offset(double value) => instance.setDouble(OFFSET, value);
 
-  static bool get speakIsOn => instance.getBool(cityName) ?? DEFAULT_SPEAKISON;
+  static bool get speakIsOn => instance.getBool(SPEAKISON) ?? DEFAULT_SPEAKISON;
   static set speakIsOn(bool value) => instance.setBool(SPEAKISON, value);
+
+  static bool get screenAlwaysOn =>
+      instance.getBool(SCREEN_ALWAYS_ON) ?? DEFAULT_SCREEN_ALWAYS_ON;
+  static set screenAlwaysOn(bool value) =>
+      instance.setBool(SCREEN_ALWAYS_ON, value);
+
+  static bool get backgroundOn =>
+      instance.getBool(BACKGROUND_ON) ?? DEFAULT_BACKGROUND_ON;
+  static set backgroundOn(bool value) => instance.setBool(BACKGROUND_ON, value);
+
+  static double get volume => instance.getDouble(VOLUME) ?? DEFAULT_VOLUME;
+  static set volume(double value) => instance.setDouble(VOLUME, value);
 }

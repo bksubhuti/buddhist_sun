@@ -6,7 +6,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:wakelock/wakelock.dart';
@@ -39,7 +38,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   bool _disposed = false;
 
   /////////////////////////////////////////////////////////////////
-  double _volume = 0.5;
+  double _volume = Prefs.volume;
   SolarTimerService service =
       SolarTimerService(); // always return singleton instance anywhere, also you can set delegate to null
   @override
@@ -81,6 +80,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   void initState() {
     _disposed = false;
     service.delegate = this;
+    _backgroundOn = Prefs.backgroundOn;
+    _wakeOn = Prefs.screenAlwaysOn;
 
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
     service.doTimerStuff();
@@ -178,6 +179,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         _displayMotionToast(context, "Background disabled");
       }
     } // else no switch on
+    Prefs.backgroundOn = bSwitch;
     setState(() {
       _backgroundOn = bSwitch;
     });
@@ -256,7 +258,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                   fontSize: 20,
                   fontWeight: FontWeight.bold)),
           Card(
-            margin: const EdgeInsets.fromLTRB(25, 0, 25, 10),
+            margin: const EdgeInsets.fromLTRB(15, 0, 25, 10),
             color: Colors.grey[200],
             shadowColor: Colors.blue,
             elevation: 1,
@@ -266,7 +268,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                 children: [
                   SizedBox(
                     width: 0,
-                    height: 10,
+                    height: 15,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -277,25 +279,25 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         children: [
                           Text("Text to Speech",
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                                  TextStyle(fontSize: 15, color: Colors.blue)),
                           SizedBox(
                             width: 0,
                             height: 25,
                           ),
                           Text("Screen Always On",
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                                  TextStyle(fontSize: 15, color: Colors.blue)),
                           SizedBox(
                             width: 0,
                             height: 25,
                           ),
                           Text("TTS with screen off ",
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.blue)),
+                                  TextStyle(fontSize: 15, color: Colors.blue)),
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,7 +315,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                       Prefs.instance.setBool(SPEAKISON, bValue);
                                       _speakIsOn = bValue;
                                       if (_speakIsOn)
-                                        service.speakIsOn = _speakIsOn;
+                                        Prefs.speakIsOn = _speakIsOn;
                                       else {
                                         service.initialVoicing = false;
                                       }
@@ -330,6 +332,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                   value: _wakeOn,
                                   onChanged: (bValue) {
                                     setState(() {
+                                      Prefs.screenAlwaysOn = bValue;
                                       _wakeOn = bValue;
                                       Wakelock.toggle(enable: bValue);
                                     });
@@ -354,13 +357,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                   ),
                   Slider(
                       value: _volume,
-                      onChanged: (newVolume) async {
-                        //_volume = newVolume;
-
-                        //setState() {}
-                        //_volume = newVolume;
-
-                        ;
+                      onChanged: (newVolume) {
+                        setState(() => _volume = newVolume);
+                        Prefs.volume = _volume;
                       },
                       min: 0.0,
                       max: 1.0,
