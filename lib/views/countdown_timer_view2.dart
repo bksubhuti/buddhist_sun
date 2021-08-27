@@ -1,9 +1,5 @@
-import 'dart:async';
+/*import 'dart:async';
 import 'dart:io' show Platform;
-
-import 'package:buddhist_sun/src/services/solar_time.dart';
-import 'package:buddhist_sun/src/models/prefs.dart';
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +9,9 @@ import 'package:wakelock/wakelock.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:buddhist_sun/src/services/solar_timer_service2.dart';
+
+//import 'package:volume/volume.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -23,71 +22,42 @@ class CountdownTimerView extends StatefulWidget {
   _CountdownTimerViewState createState() => _CountdownTimerViewState();
 }
 
-class _CountdownTimerViewState extends State<CountdownTimerView>
-    with SolarTimerDelegate {
-  Duration _duration = Duration(seconds: 1);
+class _CountdownTimerViewState extends State<CountdownTimerView> {
   String _solarTime = "";
   String _nowString = "";
   String _countdownString = "";
-  DateTime _now = DateTime.now();
-  DateTime _dtSolar = DateTime.now();
+
+// switch variables
   bool _speakIsOn = false;
-  bool _switchTTSValue = false;
   bool _wakeOn = false;
   bool _backgroundOn = false;
-  bool get isAndroid => !kIsWeb && Platform.isAndroid;
-  bool _disposed = false;
-
-  /////////////////////////////////////////////////////////////////
-  double _volume = 0.5;
-  SolarTimerService service =
-      SolarTimerService(); // always return singleton instance anywhere, also you can set delegate to null
-  @override
-  void update() {
-    if (!_disposed) {
-      setState(() {});
-    } // from mixin delegate
-  }
-
-  @override
-  setCountdownString(countdownString) {
-    if (!_disposed) {
-      setState(() {
-        this._countdownString = countdownString;
-      });
-    }
-  }
-
-  @override
-  void setSpeakIsOn(speakIsOn) {
-    if (!_disposed) {
-      setState(() {
-        _speakIsOn = speakIsOn;
-      });
-    }
-  }
-
-  @override
-  void setNowString(nowString) {
-    if (!_disposed) {
-      setState(() {
-        _nowString = nowString;
-        print(nowString);
-      });
-    }
-  }
+  SolarTimerService solarTimerService = SolarTimerService();
 
   @override
   void initState() {
-    _disposed = false;
-    service.delegate = this;
-
-    _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
-    service.doTimerStuff();
-
     GetSolarTime();
-
+    initTts();
     super.initState();
+  }
+
+  void setPageState() {
+    setState(() {});
+  }
+
+  Future getTogglesFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _speakIsOn = prefs.getBool("speakIsOn") ?? _speakIsOn;
+    _wakeOn = prefs.getBool("wakeOn") ?? _wakeOn;
+    _backgroundOn = prefs.getBool("backgroundIsOn") ?? _backgroundOn;
+  }
+
+  Future setTogglesToPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool("speakIsOn", _speakIsOn);
+    prefs.setBool("wakeOn", _wakeOn);
+    prefs.setBool("backgroundIsOn", _backgroundOn);
   }
 
   Future<bool> setupBackground() async {
@@ -108,9 +78,11 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   );
 
   void GetSolarTime() async {
-    double lat = Prefs.instance.getDouble(LAT) ?? 1.1;
-    double lng = Prefs.instance.getDouble(LNG) ?? 1.1;
-    double offset = Prefs.instance.getDouble(OFFSET) ?? 6.5;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    double lat = prefs.getDouble("lat") ?? 1.1;
+    double lng = prefs.getDouble("lng") ?? 1.1;
+    double offset = prefs.getDouble("offset") ?? 1.1;
 
     DateTime nw = DateTime.now();
     Instant instant = Instant(
@@ -131,10 +103,13 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   @override
   void dispose() {
-    _disposed = true;
-    //_timer.cancel();
-    //flutterTts.stop();
-    //Wakelock.disable();
+    if (_speakIsOn) {
+      _voiceMessage = "The Speach Engine will close.";
+      _speak();
+    }
+    _timer.cancel();
+    flutterTts.stop();
+    Wakelock.disable();
     super.dispose();
   }
 
@@ -142,6 +117,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     bool successEnabled = false;
     bool bkrunning = false;
     bool successInit = false;
+    _backgroundOn = bSwitch;
+
+    setTogglesToPrefs();
     bool hasPermissions = await FlutterBackground.hasPermissions;
     if (bSwitch) {
       if (!hasPermissions) {
@@ -310,13 +288,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                   value: _speakIsOn,
                                   onChanged: (bValue) {
                                     setState(() {
-                                      Prefs.instance.setBool(SPEAKISON, bValue);
                                       _speakIsOn = bValue;
-                                      if (_speakIsOn)
-                                        service.speakIsOn = _speakIsOn;
-                                      else {
-                                        service.initialVoicing = false;
-                                      }
+                                      setTogglesToPrefs();
+                                      if (_speakIsOn) _speak();
                                     });
                                   }),
                             ),
@@ -332,6 +306,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                     setState(() {
                                       _wakeOn = bValue;
                                       Wakelock.toggle(enable: bValue);
+                                      setTogglesToPrefs();
                                     });
                                   }),
                             ),
@@ -343,9 +318,11 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                               scale: 1.7,
                               child: Switch(
                                   value: _backgroundOn,
-                                  onChanged: (isAndroid)
-                                      ? _backgroundSwitchChange
-                                      : null),
+                                  onChanged: (!isAndroid)
+                                      ? null
+                                      : (newValue) {
+                                          _backgroundSwitchChange(newValue);
+                                        }),
                             ),
                           ],
                         ),
@@ -357,8 +334,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                       onChanged: (newVolume) async {
                         //_volume = newVolume;
 
-                        //setState() {}
-                        //_volume = newVolume;
+                        setState() {
+                          _volume = newVolume;
+                        }
 
                         ;
                       },
@@ -409,4 +387,4 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       },
     );
   }
-}
+}*/

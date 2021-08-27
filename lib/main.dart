@@ -5,19 +5,27 @@ import 'package:buddhist_sun/views/base_home_page.dart';
 import 'dart:io' show Platform;
 // #docregion LocalizationDelegatesImport
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
 
 // #enddocregion LocalizationDelegatesImport
 // #docregion AppLocalizationsImport
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
 
-void main() {
+void main() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
     sqfliteFfiInit();
+
     // Change the default factory
     databaseFactory = databaseFactoryFfi;
   }
+
+  // Required for async calls in `main`
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize SharedPrefs instance.
+  await Prefs.init();
+
   runApp(MyApp());
 }
 

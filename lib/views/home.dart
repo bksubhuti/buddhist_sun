@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
+
 //import 'package:buddhist_sun/views/gps_location.dart';
 //import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
@@ -26,24 +27,19 @@ class _HomeState extends State<Home> {
   }
 
   getPrefsData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      cityName = prefs.getString("cityName") ?? "not set2";
-      _lat = prefs.getDouble("lat") ?? 1.1;
-      _lng = prefs.getDouble("lng") ?? 1.1;
+      cityName = Prefs.cityName;
+      _lat = Prefs.lat;
+      _lng = Prefs.lng;
 
-      if (prefs.getDouble("offset") == null) {
-        prefs.setDouble("offset", 6.5);
-      }
-      _offset = prefs.getDouble("offset") ?? 6.5;
+      _offset = Prefs.offset;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-//    data = ModalRoute.of(context)!.settings.arguments as Map;
-    //  print(data);
-
+    // make sure there are no lingering keyboards when this page is shown
+    FocusScope.of(context).unfocus();
     DateTime now = DateTime.now();
     var timezoneOffset = now.timeZoneOffset;
 
@@ -64,8 +60,6 @@ class _HomeState extends State<Home> {
     print('Morning civil twilight:');
     print('    Begining: ${calc.morningCivilTwilight.begining}');
     print('    Ending: ${calc.morningCivilTwilight.ending}');
-
-
 
     Instant inst2 = calc.sunTransitTime;
     print('${inst2}');
