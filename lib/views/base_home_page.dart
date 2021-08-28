@@ -147,6 +147,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
               ),
             ),
             ListTile(
+              title: const Text('Help'),
+              onTap: () {
+                showHelpDialog(context);
+              },
+            ),
+            ListTile(
               title: const Text('About'),
               onTap: () {
                 showAboutDialog(context);
@@ -229,8 +235,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
         child: Text(
             "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. "
             "Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. "
-            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  My family had a rule: \nNo phone during "
-            "mealtimes.\n (We only had wired house phones back then.)  Because Myanmar considers green tea as a food, I do not drink green tea "
+            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  Because Myanmar considers "
+            "green tea as a food, I do not drink green tea "
             "in the afternoon, so the timer comes in handy also for drinking tea. "
             "I enjoy using the app, and I hope that you do too."
             "\n\nWhy is this important?\n"
@@ -281,7 +287,7 @@ sun picture derived by creativecommons cc-sa-attrib
 Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
 
 
-citydb.db created from source information thatis creative commons attrib
+citydb.db created from source information that is creative commons attrib
 https://simplemaps.com/data/world-cities'''
             '''
 External Packages used:  (see pub.dev)
@@ -353,7 +359,10 @@ External Packages used:  (see pub.dev)
       title: Text("Help"),
       content: SingleChildScrollView(
         child: Text(
-            "HOME:\n"
+            "Calculations:\n"
+            "The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. "
+            "Please consider stopping well before the stated time. "
+            "\n\nHOME:\n"
             "The Home screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. "
             "\n\nGPS:\n"
             "GPS will automatically set the GMT offset.  However, if you select your own city, you will need to set the offset yourself.  "
