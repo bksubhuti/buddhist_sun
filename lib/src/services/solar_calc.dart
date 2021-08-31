@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-//import 'package:buddhist_sun/src/services/solar_calc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:one_context/one_context.dart';
 
 String getNowString() {
   DateTime now = DateTime.now();
@@ -97,7 +100,7 @@ Instant getCivilTwilight() {
 
 String getCivilTwilightString() {
   Instant inst = getCivilTwilight();
-  return '${inst.hour}:${inst.minute.toString().padLeft(2,'0')}';
+  return '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
 }
 
 Instant getAstronomicalTwilight() {
@@ -107,7 +110,7 @@ Instant getAstronomicalTwilight() {
 
 String getAstronomicalTwilightString() {
   Instant inst = getAstronomicalTwilight();
-  return '${inst.hour}:${inst.minute.toString().padLeft(2,'0')}';
+  return '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
 }
 
 Instant getSunrise30() {
@@ -121,7 +124,7 @@ Instant getSunrise30() {
 
 String getSunrise30String() {
   Instant inst = getSunrise30();
-  return '${inst.hour}:${inst.minute.toString().padLeft(2,'0')}';
+  return '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
 }
 
 Instant getSunrise40() {
@@ -135,7 +138,7 @@ Instant getSunrise40() {
 
 String getSunrise40String() {
   Instant inst = getSunrise40();
-  return '${inst.hour}:${inst.minute.toString().padLeft(2,'0')}';
+  return '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
 }
 
 Instant getSunrise() {
@@ -146,7 +149,7 @@ Instant getSunrise() {
 
 String getSunriseString() {
   Instant inst = getSunrise();
-  return '${inst.hour}:${inst.minute.toString().padLeft(2,'0')}';
+  return '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
 }
 
 String getSolarNoonTimeString() {

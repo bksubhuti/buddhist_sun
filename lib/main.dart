@@ -16,6 +16,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/theme_data.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
+// for one context
+import 'package:one_context/one_context.dart';
+
 void main() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
@@ -39,6 +42,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: OneContext().builder,
+      navigatorKey: OneContext().key,
       title: "Buddhist Sun",
       themeMode: ThemeMode.light,
       //theme: ThemeData(brightness: Brightness.light, accentColor: Colors.blue),

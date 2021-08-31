@@ -284,19 +284,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             fontSize: 15,
           )),
       content: SingleChildScrollView(
-        child: Text(
-            "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. "
-            "Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. "
-            "Now I am able to know how much time is left while I'm eating without the need to touch my phone.  Because Myanmar considers "
-            "green tea as a food, I do not drink green tea "
-            "in the afternoon, so the timer comes in handy also for drinking tea. "
-            "I enjoy using the app, and I hope that you do too."
-            "\n\nWhy is this important?\n"
-            "Those who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. "
-            "They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n"
-            "\nI recommend https://TimeandDate.com to verify this app's accuracy.  "
-            "This application is meant for \"present moment/location\" use.  "
-            "\n\nMay this help you to reach Nibbāna quickly and safely!",
+        child: Text(AppLocalizations.of(context)!.about_content,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 16,
@@ -414,47 +402,9 @@ External Packages used:  (see pub.dev)
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text("Help"),
+      title: Text(AppLocalizations.of(context)!.help),
       content: SingleChildScrollView(
-        child: Text(
-            "Calculations:\n"
-            "The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. "
-            "Please consider stopping well before the stated time. "
-            "\n\nNOON:\n"
-            "The Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. "
-            "All times reflect the safety from settings.  (see below) "
-            "\n\nDAWN:\n"
-            "The Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. "
-            "All times reflect the safety from settings.  (see below) "
-            "\n\nGPS:\n"
-            "GPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you "
-            "use the GPS settings for your location because the Solar Noon will be most accurate this way and the GMT offset is automatic "
-            "although it was not tested in \"Day Light Savings\" locations. "
-            "\n\nSETTINGS:\n"
-            "Offset:\n"
-            "This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). "
-            "\nSaftey:\n"
-            "This subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute "
-            "so the default safety is 1 minute. "
-            "\nDawn:\n"
-            "Choose your prefered Dawnrise.  Greek Bhante suggests Sunrise -30 (safest) or Sunrise -35 (earlier).  Safety will add x-Minutes to this time. "
-            "\nTimer:\n"
-            "The Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your media volume.  "
-            "Under normal conditions the TTS only works while the screen is on.  To counter this, you can make the screen stay awake with the \"Screen Always On\" switch, "
-            "or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. "
-            "You should test this background feature a few times before relying on it.  Some phones or battery saving modes may not allow it to work. "
-            "We are not responsible for anything nor will we pay for trips to India for bathing in the Ganges.  When you close the applicaton, a method "
-            "is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your "
-            "phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon.  "
-            "This feature is not available for iOS users.\n"
-            "The timings of TTS announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0"
-            "\n\nPrivacy:\n"
-            "A full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n"
-            "\nWe do not collect information and we do not establish an internet "
-            "connection.  The Application does not run in the background when the app is closed.  GPS is engaged for the single request ONLY "
-            "when you press the GPS button. "
-            "You are quite safe as far as I know, however, this app was used with packages from the pub.dev website. "
-            "A list of those packages are listed in the license page of this app or on github code repository listed there too.",
+        child: Text(AppLocalizations.of(context)!.help_content,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 16,
