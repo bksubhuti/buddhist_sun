@@ -130,7 +130,7 @@ String getSunrise30String() {
 Instant getSunrise40() {
   SolarCalculator calc = getSolarCalcInstant();
   Instant inst = calc.sunriseTime;
-  Duration dur = Duration(minutes: 30);
+  Duration dur = Duration(minutes: 40);
   Instant instNew = inst.subtract(dur);
 
   return addSafety(instNew);
