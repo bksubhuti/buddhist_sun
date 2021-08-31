@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:geocoding/geocoding.dart';
 import 'dart:io' show Platform;
+import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GPSLocation extends StatefulWidget {
   GPSLocation({required this.goToHome});
@@ -16,14 +19,14 @@ class _GPSLocationState extends State<GPSLocation> {
   bool _initPerformed = false;
   late Position _position;
   bool _bLoading = false;
-  double _lat = 1.1;
-  double _lng = 1.1;
   String _message = "Press and wait for new GPS.";
   String _currentGPSText = "";
   bool isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+  String _cityName = "";
 
   @override
   void initState() {
+    _message = AppLocalizations.of(context)!.gmt_offset;
     super.initState();
     getGpsPrefs();
   }
@@ -37,11 +40,9 @@ class _GPSLocationState extends State<GPSLocation> {
     super.initState();
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    _lat = prefs.getDouble("lat") ?? 1.1;
-    _lng = prefs.getDouble("lng") ?? 1.1;
-
     setState(() {
-      _currentGPSText = "Current GPS is:\nlat: $_lat\nlng: $_lng";
+      _currentGPSText =
+          "${AppLocalizations.of(this.context)!.previous_gps_is}:\nlat: ${Prefs.lat}\nlng: ${Prefs.lng}";
     });
   }
 
@@ -89,7 +90,15 @@ class _GPSLocationState extends State<GPSLocation> {
       } // no finished with init of gps.
       _position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
-      _message = 'GPS: ${_position.latitude}, ${_position.longitude}';
+      _message =
+          '${AppLocalizations.of(context)!.gps}: ${_position.latitude}, ${_position.longitude}';
+      _cityName = "${AppLocalizations.of(context)!.gps}: ";
+      if (Prefs.retrieveCityName == true) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            _position.latitude, _position.longitude);
+        _cityName += placemarks[0].subAdministrativeArea ?? "Unknown";
+        print(placemarks);
+      }
     } else {
       _message = 'GPS is not supported on Desktops}';
     }
@@ -100,14 +109,13 @@ class _GPSLocationState extends State<GPSLocation> {
   }
 
   void saveGps() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     DateTime now = DateTime.now();
     var timezoneOffset = now.timeZoneOffset;
 
-    prefs.setString("cityName", "GPS");
-    prefs.setDouble("lat", _position.latitude);
-    prefs.setDouble("lng", _position.longitude);
-    prefs.setDouble("offset", timezoneOffset.inMinutes / 60);
+    Prefs.cityName = _cityName;
+    Prefs.lat = _position.latitude;
+    Prefs.lng = _position.longitude;
+    Prefs.offset = timezoneOffset.inMinutes / 60;
     widget.goToHome();
   }
 
@@ -126,7 +134,10 @@ class _GPSLocationState extends State<GPSLocation> {
               )
             : Text(
                 "$_message",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
               ),
         SizedBox(height: 25.0),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -137,20 +148,48 @@ class _GPSLocationState extends State<GPSLocation> {
                 : () {
                     initGps();
                   },
-            label: Text("Get GPS"),
+            label: Text("${AppLocalizations.of(context)!.get_gps}"),
           ),
           SizedBox(width: 6.0),
           ElevatedButton.icon(
             icon: Icon(Icons.save),
             onPressed: (isDesktop) ? null : saveGps,
-            label: Text("Save GPS"),
+            label: Text("${AppLocalizations.of(context)!.save_gps}"),
           ),
         ]),
+        CheckboxListTile(
+          title: Text(
+            "${AppLocalizations.of(context)!.set_gps_city}",
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          value: Prefs.retrieveCityName,
+          onChanged: (newValue) {
+            setState(() {
+              Prefs.retrieveCityName = newValue!;
+            });
+          },
+          controlAffinity:
+              ListTileControlAffinity.leading, //  <-- leading Checkbox
+        ),
         SizedBox(height: 80.0),
         Text(
           "$_currentGPSText",
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+            color: Theme.of(context).primaryColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 80.0),
+        Text(
+          "$_cityName",
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ]),
     ));
@@ -173,7 +212,10 @@ class _GPSLocationState extends State<GPSLocation> {
             "Permission will be requested for GPS use. This allows for GPS Location Data to be gathered for determining the sun's position. "
             "GPS is only collected once for each time the GPS button is pressed.  No information "
             "is collected or sent back to us or a third party. Permission will be requested only one time if accepted.",
-            style: TextStyle(fontSize: 16, color: Colors.blue)),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+            )),
       ),
       actions: [
         okButton,

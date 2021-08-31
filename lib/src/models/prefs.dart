@@ -1,5 +1,5 @@
 // import to copy////////////////////
-//import 'package:buddhist_sun/src/models/prefs.dart'
+//import 'package:buddhist_sun/src/models/prefs.dart';
 
 // Shared prefs package import
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +13,9 @@ const String SPEAKISON = "speakIsOn";
 const String SCREEN_ALWAYS_ON = "screenAlwaysOn";
 const String BACKGROUND_ON = "backgroundOn";
 const String VOLUME = "volume";
+const String SAFETY = "safety";
+const String DAWNVAL = "dawnVal";
+const String RETRIEVE_CITYNAME = "retrieveCityName";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -23,6 +26,9 @@ const bool DEFAULT_SPEAKISON = false;
 const bool DEFAULT_SCREEN_ALWAYS_ON = false;
 const bool DEFAULT_BACKGROUND_ON = false;
 const double DEFAULT_VOLUME = 0.5;
+const String DEFAULT_SAFETY = "1 minute";
+const String DEFAULT_DAWNVAL = "Nauticle Twilight";
+const bool DEFAULT_RETRIEVE_CITYNAME = false;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -56,6 +62,17 @@ class Prefs {
       instance.getBool(BACKGROUND_ON) ?? DEFAULT_BACKGROUND_ON;
   static set backgroundOn(bool value) => instance.setBool(BACKGROUND_ON, value);
 
+  static bool get retrieveCityName =>
+      instance.getBool(RETRIEVE_CITYNAME) ?? DEFAULT_RETRIEVE_CITYNAME;
+  static set retrieveCityName(bool value) =>
+      instance.setBool(RETRIEVE_CITYNAME, value);
+
   static double get volume => instance.getDouble(VOLUME) ?? DEFAULT_VOLUME;
   static set volume(double value) => instance.setDouble(VOLUME, value);
+
+  static String get safety => instance.getString(SAFETY) ?? DEFAULT_SAFETY;
+  static set safety(String value) => instance.setString(SAFETY, value);
+
+  static String get dawnVal => instance.getString(DAWNVAL) ?? DEFAULT_DAWNVAL;
+  static set dawnVal(String value) => instance.setString(DAWNVAL, value);
 }

@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:solar_calculator/solar_calculator.dart';
-import 'package:solar_calculator/src/instant.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -24,14 +24,11 @@ class CountdownTimerView extends StatefulWidget {
 
 class _CountdownTimerViewState extends State<CountdownTimerView>
     with SolarTimerDelegate {
-  Duration _duration = Duration(seconds: 1);
+  //Duration _duration = Duration(seconds: 1);
   String _solarTime = "";
   String _nowString = "";
   String _countdownString = "";
-  DateTime _now = DateTime.now();
-  DateTime _dtSolar = DateTime.now();
   bool _speakIsOn = false;
-  bool _switchTTSValue = false;
   bool _wakeOn = false;
   bool _backgroundOn = false;
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
@@ -86,8 +83,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
     service.doTimerStuff();
 
-    GetSolarTime();
-
     super.initState();
   }
 
@@ -99,36 +94,13 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   }
 
   final androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: "flutter_background example app",
-    notificationText:
-        "Background notification for keeping the example app running in the background",
+    notificationTitle: "Buddhist Sun Running In Background",
+    notificationText: "Buddhist Sun is running in the background",
     notificationImportance: AndroidNotificationImportance.Default,
     notificationIcon: AndroidResource(
         name: 'background_icon',
         defType: 'drawable'), // Default is ic_launcher from folder mipmap
   );
-
-  void GetSolarTime() async {
-    double lat = Prefs.instance.getDouble(LAT) ?? 1.1;
-    double lng = Prefs.instance.getDouble(LNG) ?? 1.1;
-    double offset = Prefs.instance.getDouble(OFFSET) ?? 6.5;
-
-    DateTime nw = DateTime.now();
-    Instant instant = Instant(
-        year: nw.year,
-        month: nw.month,
-        day: nw.day,
-        hour: nw.hour,
-        timeZoneOffset: offset);
-    SolarCalculator calc = SolarCalculator(instant, lat, lng);
-    Instant inst2 = calc.sunTransitTime;
-
-    _dtSolar = DateTime(
-        nw.year, nw.month, nw.day, inst2.hour, inst2.minute, inst2.second);
-
-    _solarTime =
-        "${inst2.hour.toString().padLeft(2, "0")}:${inst2.minute.toString().padLeft(2, "0")}";
-  }
 
   @override
   void dispose() {
@@ -188,9 +160,11 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
       title: "Notification",
-      titleStyle: TextStyle(fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
       description: message,
-      descriptionStyle: TextStyle(fontSize: 14),
+      descriptionStyle:
+          TextStyle(color: Theme.of(context).primaryColor, fontSize: 14),
       layoutOrientation: ORIENTATION.RTL,
       animationType: ANIMATION.FROM_RIGHT,
       width: 300,
@@ -203,7 +177,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   _displayErrorMotionToast(BuildContext context, String message) {
     MotionToast.error(
       title: "Error",
-      titleStyle: TextStyle(fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
       description: message,
       animationType: ANIMATION.FROM_LEFT,
       position: MOTION_TOAST_POSITION.TOP,
@@ -219,48 +194,44 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           SizedBox(
             width: 30,
           ),
-          Text(_solarTime,
+          Text(getSolarNoonTimeString(),
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 42,
                   fontWeight: FontWeight.normal)),
-          Text("Solar Noon:",
+          Text("${AppLocalizations.of(context)!.solar_noon}:",
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold)),
           Divider(
             height: 15.0,
-            color: Colors.grey,
           ),
           Text(_nowString,
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 42,
                   fontWeight: FontWeight.normal)),
-          Text("Current Time",
+          Text("${AppLocalizations.of(context)!.current_time}",
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold)),
           Divider(
             height: 15.0,
-            color: Colors.grey,
           ),
           Text(_countdownString,
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 45,
                   fontWeight: FontWeight.bold)),
-          Text("Time Left",
+          Text("${AppLocalizations.of(context)!.time_left}",
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold)),
           Card(
             margin: const EdgeInsets.fromLTRB(15, 0, 25, 10),
-            color: Colors.grey[200],
-            shadowColor: Colors.blue,
             elevation: 1,
             child: Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
@@ -277,23 +248,34 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text("Text to Speech",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.blue)),
+                          Text("${AppLocalizations.of(context)!.speech_notify}",
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .appBarTheme
+                                      .backgroundColor,
+                                  fontSize: 15)),
                           SizedBox(
                             width: 0,
                             height: 25,
                           ),
-                          Text("Screen Always On",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.blue)),
+                          Text(
+                              "${AppLocalizations.of(context)!.screen_always_on}",
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .appBarTheme
+                                      .backgroundColor,
+                                  fontSize: 15)),
                           SizedBox(
                             width: 0,
                             height: 25,
                           ),
-                          Text("TTS with screen off ",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.blue)),
+                          Text(
+                              "${AppLocalizations.of(context)!.speech_in_background} ",
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .appBarTheme
+                                      .backgroundColor,
+                                  fontSize: 15)),
                         ],
                       ),
                       Padding(
@@ -364,9 +346,13 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                       min: 0.0,
                       max: 1.0,
                       divisions: 100,
-                      label: "Volume: $_volume"),
-                  Text("Volume",
-                      style: TextStyle(fontSize: 15, color: Colors.blue)),
+                      label:
+                          "${AppLocalizations.of(context)!.volume}: $_volume"),
+                  Text("${AppLocalizations.of(context)!.volume}",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15,
+                      )),
                 ],
               ),
             ),
@@ -393,7 +379,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
             "Permission will be requested for background use.  This permission is needed to enable tts to run properly without "
             "the need to have the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  "
             "Permission will be requested only one time if accepted.",
-            style: TextStyle(fontSize: 16, color: Colors.blue)),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+            )),
       ),
       actions: [
         okButton,

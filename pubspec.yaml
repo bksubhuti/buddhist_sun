@@ -51,6 +51,9 @@ dependencies:
   wakelock: ^0.5.3+3
   flutter_background: ^1.0.2+1
   motion_toast: ^1.3.0
+  geocoding: ^2.0.1
+  flex_color_scheme: ^3.0.1
+  easy_localization: ^3.0.0
   
   
 

@@ -12,6 +12,10 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
 
+// theme stuff
+import 'package:buddhist_sun/src/models/theme_data.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 void main() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
@@ -35,21 +39,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      /*routes: {
-//      '/': (context) => const Loading(),
-        '/home': (context) => const Home(),
-        '/location': (context) => ChooseLocation(),
-        '/gps': (context) => GPSLocation(),
-        '/offset': (context) => ChooseOffset(),
-      },*/
+      title: "Buddhist Sun",
+      themeMode: ThemeMode.light,
+      //theme: ThemeData(brightness: Brightness.light, accentColor: Colors.blue),
+      //darkTheme: ThemeData(
+      //  brightness: Brightness.dark, accentColor: Colors.amber[700]),
+      theme: FlexColorScheme.light(colors: myScheme1Light).toTheme,
+      darkTheme: FlexColorScheme.dark(colors: myScheme1Dark).toTheme,
 
-      title: 'Buddhist Sun',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        primarySwatch: Colors.blue,
-      ),
       localizationsDelegates: [
         AppLocalizations.delegate, // Add this line
         GlobalMaterialLocalizations.delegate,

@@ -1,15 +1,16 @@
 //import 'package:buddhist_sun/src/services/solar_timer_service.dart';
 
+import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:solar_calculator/solar_calculator.dart';
-import 'package:solar_calculator/src/instant.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
 //import 'package:logging/logging.dart';
-import 'package:intl/intl.dart' show DateFormat;
+//import 'package:intl/intl.dart' show DateFormat;
+import 'package:solar_calculator/solar_calculator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
@@ -33,14 +34,14 @@ class SolarTimerService {
 
   DateTime _now = DateTime.now();
   String _voiceMessage = "Starting TTS";
-  bool _switchTTSValue = false;
+  //bool _switchTTSValue = false;
   bool initialVoicing = false;
-  String _solarTime = "";
   String _nowString = "";
   String _countdownString = "";
 
   DateTime _dtSolar = DateTime.now();
   Duration _duration = Duration(seconds: 1);
+  String _solarTime = "";
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -81,7 +82,6 @@ class SolarTimerService {
     //
     initTts();
 
-    getSolarTime();
     if (!_isDoingTimerStuff) {
       _bLate = false;
       // only set the time once.. this gets called
@@ -109,6 +109,9 @@ class SolarTimerService {
     _speakIsOn = Prefs.speakIsOn;
 
     _now = DateTime.now();
+    Instant inst = getSolarNoon();
+    _dtSolar =
+        DateTime(inst.year, inst.month, inst.day, inst.hour, inst.minute);
     _nowString =
         "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}";
     print("speak on is $_speakIsOn");
@@ -258,27 +261,5 @@ class SolarTimerService {
     if (engine != null) {
       print(engine);
     }
-  }
-
-  void getSolarTime() async {
-    double lat = Prefs.instance.getDouble(LAT) ?? 1.1;
-    double lng = Prefs.instance.getDouble(LNG) ?? 1.1;
-    double offset = Prefs.instance.getDouble(OFFSET) ?? 1.1;
-
-    DateTime nw = DateTime.now();
-    Instant instant = Instant(
-        year: nw.year,
-        month: nw.month,
-        day: nw.day,
-        hour: nw.hour,
-        timeZoneOffset: offset);
-    SolarCalculator calc = SolarCalculator(instant, lat, lng);
-    Instant inst2 = calc.sunTransitTime;
-
-    _dtSolar = DateTime(
-        nw.year, nw.month, nw.day, inst2.hour, inst2.minute, inst2.second);
-
-    _solarTime =
-        "${inst2.hour.toString().padLeft(2, "0")}:${inst2.minute.toString().padLeft(2, "0")}";
   }
 }

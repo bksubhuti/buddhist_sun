@@ -2,5 +2,176 @@
     "buddhistSun": "Buddhist Sun",
     "@buddhistSun": {
       "description": "Title for app"
+    },
+    "noon": "Noon",
+    "@noon": {
+      "description": "Noon"
+    },
+    "dawn": "Dawn",
+    "@dawn": {
+      "description": "Dawn"
+    },
+    "timer": "Timer",
+    "@timer": {
+      "description": "Timer"
+    },
+    "gps": "GPS",
+    "@gps": {
+      "description": "GPS"
+    },
+    "settings": "Settings",
+    "@settings": {
+      "description": "Settings"
+    },
+    "help": "Help",
+    "@help": {
+      "description": "Help"
+    },
+    "about": "About",
+    "@about": {
+      "description": "About"
+    },
+    "licenses": "Licenses",
+    "@licenses": {
+      "description": "Licenses"
+    },
+    "not_set": "Not Set",
+    "@not_set": {
+      "description": "Home screen when city is not set"
+    },
+    "solar_noon": "Solar Noon",
+    "@solar_noon": {
+      "description": "Time of High Noon .. sun at zenith"
+    },
+    "gmt_offset": "GMT Offset",
+    "@gmt_offset": {
+      "description": "local offset from GMT "
+    },
+    "hours": "hours",
+    "@hours": {
+      "description": "hours on home screen"
+    },
+    "astronomical_twilight": "Astronomical Twilight",
+    "@astronomical_twilight": {
+      "description": "Astronomical Twilight"
+    },
+    "nautical_twilight": "Nautical Twilight",
+    "@nautical_twilight": {
+      "description": "Nautical Twilight"
+    },
+    "civil_twilight": "Civil Twilight",
+    "@civil_twilight": {
+      "description": "Civil Twilight"
+    },
+    "sunrise": "Sunrise",
+    "@sunrise": {
+      "description": "Sunrise"
+    },
+    "date": "Date",
+    "@date": {
+      "description": "Date"
+    },
+    "current_time": "Current TIme",
+    "@current_time": {
+      "description": "Current Time"
+    },
+    "late": "Late",
+    "@late": {
+      "description": "Late"
+    },
+    "time_left": "Time Left",
+    "@time_left": {
+      "description": "Time Left in timer"
+    },
+    "speech_notify": "Speech Notify",
+    "@speech_notify": {
+      "description": "computer speech to announce the time"
+    },
+    "screen_always_on": "Screen Always On",
+    "@screen_always_on": {
+      "description": "switch for keeping the screen on (no sleeping)"
+    },
+    "speech_in_background": "Speech in backgroun",
+    "@speech_in_background": {
+      "description": "switch for letting the speech work in background"
+    },
+    "volume": "Volume",
+    "@volume": {
+      "description": "Adjust Volume Control of speech"
+    },
+    "press_wait": "Press and wait for new GPS.",
+    "@press_wait": {
+      "description": "Message for button to get GPS"
+    },
+    "get_gps": "Get GPS",
+    "@get_gps": {
+      "description": "Button Title to get GPS"
+    },
+    "save_gps": "Save GPS",
+    "@save_gps": {
+      "description": "Button Title to save GPS"
+    },
+    "set_gps_city": "Set GPS city name by Internet",
+    "@set_gps_city": {
+      "description": "Message to tell the user to have the internet turned on for GPS City name lookup"
+    },
+    "previous_gps_is": "Previous GPS is",
+    "@previous_gps_is": {
+      "description": "Message to tell the previous GPS reading"
+    },
+    "decimal_number": "Decimal Number",
+    "@decimal_number": {
+      "description": "Message to tell the user to type decimal number."
+    },
+    "current_offset_is": "Current offset is",
+    "@current_offset_is": {
+      "description": "Message to tell the current local offset from GMT."
+    },
+    "safety": "Safety",
+    "@safety": {
+      "description": "This is a number that will make the time earlier for safety of not going over.  Like a safety buffer"
+    },
+    "none": "none",
+    "@none": {
+      "description": "no safety"
+    },
+    "minute1": "1 minute",
+    "@minute1": {
+      "description": "time"
+    },
+    "minutes2": "2 minutes",
+    "@minutes2": {
+      "description": "time"
+    },
+    "minutes3": "3 minutes",
+    "@minutes3": {
+      "description": "3 minutes"
+    },
+    "minutes4": "4 minutes",
+    "@minutes4": {
+      "description": "4 minutes"
+    },
+    "minutes5": "5 minutes",
+    "@minutes5": {
+      "description": "5 minutes"
+    },
+    "minutes10": "10 minutes",
+    "@minutes10": {
+      "description": "10 minutes"
+    },
+    "pa_auk": "Pa-Auk",
+    "@pa_auk": {
+      "description": "Pa-Auk monastery standar of Dawnrise time"
+    },
+    "na_uyana": "Na-Uyana",
+    "@na_uyana": {
+      "description": "Na-Uyana monastery standar of Dawnrise time."
+    },
+    "search_for_city": "Search for city",
+    "@search_for_city": {
+      "description": "instructions to type the city name inside edit field."
     }
+
+
+
 }

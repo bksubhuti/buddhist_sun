@@ -1,20 +1,21 @@
+import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 //import 'package:buddhist_sun/views/gps_location.dart';
 //import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class DawnPage extends StatefulWidget {
+  const DawnPage({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  DawnPageState createState() => DawnPageState();
 }
 
-class _HomeState extends State<Home> {
+class DawnPageState extends State<DawnPage> {
   Map data = {};
+
   @override
   void initState() {
     super.initState();
@@ -22,37 +23,58 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // make sure there are no lingering keyboards when this page is shown
-    FocusScope.of(context).unfocus();
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 0),
         child: Column(children: <Widget>[
-          Text(Prefs.cityName,
+          Text('${AppLocalizations.of(context)!.astronomical_twilight}: ${getAstronomicalTwilightString()}',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
-                  fontSize: 23,
+                  fontSize: 15,
                   letterSpacing: 2)),
           Divider(
-            height: 50.0,
+            height: 15.0,
+          ),
+          Text('${AppLocalizations.of(context)!.nautical_twilight}: ${getNauticalTwilightString()}',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 15,
+                  letterSpacing: 2)),
+          Divider(
+            height: 15.0,
+          ),
+          Text('${AppLocalizations.of(context)!.civil_twilight}: ${getCivilTwilightString()}',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 15,
+                  letterSpacing: 2)),
+          Divider(
+            height: 15.0,
+          ),
+          Text('${AppLocalizations.of(context)!.sunrise}: ${getSunriseString()}',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 15,
+                  letterSpacing: 2)),
+          Divider(
+            height: 15.0,
           ),
           Text(getNowString(),
               style: TextStyle(
-                  color: Theme.of(context).primaryColor, fontSize: 22)),
+                  color: Theme.of(context).primaryColor, fontSize: 20)),
           Divider(
-            height: 50.0,
+            height: 20.0,
           ),
-          Text(getSolarNoonTimeString(),
+          Text(getDawnString(),
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
-                  fontSize: 60,
+                  fontSize: 55,
                   fontWeight: FontWeight.bold)),
           SizedBox(height: 10.0),
-          Text('${AppLocalizations.of(context)!.solar_noon}',
+          Text(Prefs.dawnVal, //_dawnMethod,
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
-                  fontSize: 30,
+                  fontSize: 20,
                   letterSpacing: 2)),
           Padding(
               padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),

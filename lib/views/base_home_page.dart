@@ -1,5 +1,5 @@
-import 'package:buddhist_sun/views/choose_location.dart';
-import 'package:buddhist_sun/views/choose_offset.dart';
+import 'package:buddhist_sun/views/settings_page.dart';
+import 'package:buddhist_sun/views/dawn_page.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:buddhist_sun/views/dummy_page.dart';
@@ -9,7 +9,6 @@ import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
-
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -18,8 +17,13 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
 
+// for the theme
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 class HomePageContainer extends StatefulWidget {
-  const HomePageContainer({Key? key}) : super(key: key);
+  const HomePageContainer({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Home_PageContainerState createState() => Home_PageContainerState();
@@ -32,15 +36,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   late PageController _pageController;
 
-  final String page1 = "Home";
-  final String page2 = "TMR";
-  final String page3 = "GPS";
-  final String page4 = "Cities";
-  final String page5 = "GMT";
+  final String page1 = "Noon";
+  final String page2 = "Dawn";
+  final String page3 = "TMR";
+  final String page4 = "GPS";
+  final String page5 = "Settings";
   final String title = "Buddhist Sun";
-  final _bgcolorBlue = Colors.indigo[700];
-  final _bgcolorGrey = Colors.grey[200];
-  Color bgColor = Colors.indigo[700]!;
 
   void goToHome() {
     _currentIndex = 0;
@@ -49,10 +50,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   late Home _page1;
-  late CountdownTimerView _page2;
-  late StatefulWidget _page3;
-  late ChooseLocation _page4;
-  late ChooseOffset _page5;
+  late DawnPage _page2;
+  late CountdownTimerView _page3;
+  late StatefulWidget _page4;
+  late SettingsPage _page5;
   //late DummyPage _dummyPage;
 
   int _currentIndex = 0;
@@ -67,13 +68,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
     Prefs.backgroundOn = false;
     Prefs.screenAlwaysOn = false;
     Prefs.speakIsOn = false;
-
-//    _dummyPage = DummyPage();
+    //    _dummyPage = DummyPage();
     _page1 = Home();
-    _page2 = CountdownTimerView(goToHome: goToHome);
-    _page3 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
-    _page4 = ChooseLocation(goToHome: goToHome);
-    _page5 = ChooseOffset(goToHome: goToHome);
+    _page2 = DawnPage();
+    _page3 = CountdownTimerView(goToHome: goToHome);
+    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
+    _page5 = SettingsPage(goToHome: goToHome);
 
     //_pages = [_page1, _page2, _page3, _page4, _page5];
 
@@ -90,7 +90,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     Prefs.screenAlwaysOn = false;
     Prefs.speakIsOn = false;
     print("set the toggles in prefs to false");
-
     _pageController.dispose();
     super.dispose();
   }
@@ -114,14 +113,14 @@ class Home_PageContainerState extends State<HomePageContainer> {
         title: Text(AppLocalizations.of(context)!.buddhistSun),
         actions: [
           IconButton(
-              onPressed: () {
-                showHelpDialog(context);
-              },
-              icon: Icon(Icons.help),
-              color: Colors.yellow[50]),
+            onPressed: () {
+              showHelpDialog(context);
+            },
+            icon: Icon(Icons.help),
+          ),
         ],
       ),
-      backgroundColor: bgColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
@@ -131,15 +130,18 @@ class Home_PageContainerState extends State<HomePageContainer> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
+              decoration: BoxDecoration(),
               child: Column(
                 children: [
                   Text('Buddhist Sun',
-                      style: TextStyle(fontSize: 17, color: Colors.white)),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 17,
+                      )),
                   SizedBox(height: 15.0),
                   CircleAvatar(
+                    backgroundColor:
+                        Theme.of(context).appBarTheme.backgroundColor,
                     backgroundImage: AssetImage("assets/buddhist_sun.png"),
                     radius: 40.0,
                   ),
@@ -147,19 +149,28 @@ class Home_PageContainerState extends State<HomePageContainer> {
               ),
             ),
             ListTile(
-              title: const Text('Help'),
+              title: Text('Help',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  )),
               onTap: () {
                 showHelpDialog(context);
               },
             ),
             ListTile(
-              title: const Text('About'),
+              title: Text('About',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  )),
               onTap: () {
                 showAboutDialog(context);
               },
             ),
             ListTile(
-              title: const Text('Licences'),
+              title: Text('Licences',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  )),
               onTap: () {
                 showLicenseDialog(context);
               },
@@ -168,7 +179,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
         ),
       ),
       bottomNavigationBar: BottomNavyBar(
-          backgroundColor: Colors.blue[200],
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           showElevation: true,
           itemCornerRadius: 24,
           curve: Curves.easeIn,
@@ -185,13 +196,54 @@ class Home_PageContainerState extends State<HomePageContainer> {
             }
           },
           items: <BottomNavyBarItem>[
-            BottomNavyBarItem(title: Text(page1), icon: Icon(Icons.home)),
-            BottomNavyBarItem(title: Text(page2), icon: Icon(Icons.timer)),
             BottomNavyBarItem(
-                title: Text(page3), icon: Icon(Icons.gps_fixed_rounded)),
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  page1,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(Icons.brightness_5_sharp,
+                    color: Theme.of(context).appBarTheme.foregroundColor)),
             BottomNavyBarItem(
-                title: Text(page4), icon: Icon(Icons.location_city)),
-            BottomNavyBarItem(title: Text(page5), icon: Icon(Icons.more_time)),
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  page2,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(Icons.brightness_4,
+                    color: Theme.of(context).appBarTheme.foregroundColor)),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  page3,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(Icons.timer,
+                    color: Theme.of(context).appBarTheme.foregroundColor)),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  page4,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(
+                  Icons.gps_fixed_rounded,
+                  color: Theme.of(context).appBarTheme.foregroundColor,
+                )),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  page5,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(Icons.settings,
+                    color: Theme.of(context).appBarTheme.foregroundColor)),
+//            BottomNavyBarItem(title: Text(page5), icon: Icon(Icons.more_time)),
           ]),
       body: SizedBox.expand(
         child: PageView(
@@ -199,10 +251,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
           onPageChanged: (index) {
             setState(() {
               _currentIndex = index;
-              if (_currentIndex < 1) {
-                bgColor = _bgcolorBlue!;
-              } else
-                bgColor = _bgcolorGrey!;
             });
 
             //setState(() => _currentIndex = index);
@@ -230,7 +278,11 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("About", style: TextStyle(fontSize: 15, color: Colors.blue)),
+      title: Text("About",
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 15,
+          )),
       content: SingleChildScrollView(
         child: Text(
             "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. "
@@ -245,7 +297,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
             "\nI recommend https://TimeandDate.com to verify this app's accuracy.  "
             "This application is meant for \"present moment/location\" use.  "
             "\n\nMay this help you to reach Nibbāna quickly and safely!",
-            style: TextStyle(fontSize: 16, color: Colors.blue)),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+            )),
       ),
       actions: [
         okButton,
@@ -329,7 +384,10 @@ External Packages used:  (see pub.dev)
   https://pub.flutter-io.cn/packages/motion_toast
 
 ''',
-            style: TextStyle(fontSize: 16, color: Colors.blue)),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+            )),
       ),
       actions: [
         okButton,
@@ -362,13 +420,24 @@ External Packages used:  (see pub.dev)
             "Calculations:\n"
             "The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. "
             "Please consider stopping well before the stated time. "
-            "\n\nHOME:\n"
-            "The Home screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. "
+            "\n\nNOON:\n"
+            "The Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. "
+            "All times reflect the safety from settings.  (see below) "
+            "\n\nDAWN:\n"
+            "The Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. "
+            "All times reflect the safety from settings.  (see below) "
             "\n\nGPS:\n"
-            "GPS will automatically set the GMT offset.  However, if you select your own city, you will need to set the offset yourself.  "
-            "However, if you use GPS first, and you are in the same timezone, the offset should be correct.  It is recommended that you "
+            "GPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you "
             "use the GPS settings for your location because the Solar Noon will be most accurate this way and the GMT offset is automatic "
-            "although it was not tested in \"Day Light Savings\" locations. \n\n"
+            "although it was not tested in \"Day Light Savings\" locations. "
+            "\n\nSETTINGS:\n"
+            "Offset:\n"
+            "This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). "
+            "\nSaftey:\n"
+            "This subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute "
+            "so the default safety is 1 minute. "
+            "\nDawn:\n"
+            "Choose your prefered Dawnrise.  Greek Bhante suggests Sunrise -30 (safest) or Sunrise -35 (earlier).  Safety will add x-Minutes to this time. "
             "\nTimer:\n"
             "The Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your media volume.  "
             "Under normal conditions the TTS only works while the screen is on.  To counter this, you can make the screen stay awake with the \"Screen Always On\" switch, "
@@ -386,7 +455,10 @@ External Packages used:  (see pub.dev)
             "when you press the GPS button. "
             "You are quite safe as far as I know, however, this app was used with packages from the pub.dev website. "
             "A list of those packages are listed in the license page of this app or on github code repository listed there too.",
-            style: TextStyle(fontSize: 16, color: Colors.blue)),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+            )),
       ),
       actions: [
         okButton,
