@@ -2,6 +2,7 @@ import 'package:buddhist_sun/src/models/world_cities.dart';
 import 'package:buddhist_sun/src/services/get_world_cities.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.goToHome}) : super(key: key);
@@ -15,23 +16,9 @@ class _SettingsPageState extends State<SettingsPage> {
   final dbService = DatabaseService();
   String searchKey = "Mand";
   late double _offset = 0;
-  List<String> safetyItems = <String>[
-    "none",
-    "1 minute",
-    "2 minutes",
-    "3 minutes",
-    "4 minutes",
-    "5 minutes",
-    "10 minutes",
-  ];
+  List<String> _safetyItems = <String>[];
 
-  List<String> _dawnMethodItems = <String>[
-    "Nauticle Twilight",
-    "Pa-Auk",
-    "Na-Uyana",
-    "Civil Twilight",
-    "Sunrise",
-  ];
+  List<String> _dawnMethodItems = <String>[];
 
   @override
   void initState() {
@@ -44,9 +31,36 @@ class _SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 
+  _addSafetyItemsToMemberList() {
+    if (_safetyItems.isEmpty) {
+      _safetyItems.add(AppLocalizations.of(context)!.none);
+      _safetyItems.add(AppLocalizations.of(context)!.minute1);
+      _safetyItems.add(AppLocalizations.of(context)!.minutes2);
+      _safetyItems.add(AppLocalizations.of(context)!.minutes3);
+      _safetyItems.add(AppLocalizations.of(context)!.minutes4);
+      _safetyItems.add(AppLocalizations.of(context)!.minutes5);
+      _safetyItems.add(AppLocalizations.of(context)!.minutes10);
+    }
+  }
+
+  _addDawnMethodItemsToMemberList() {
+    if (_dawnMethodItems.isEmpty) {
+      _dawnMethodItems.add(AppLocalizations.of(context)!.nautical_twilight);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.pa_auk);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.na_uyana);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.civil_twilight);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.sunrise);
+    }
+  }
+
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+// here we must add the localized values to the menu buttons.
+// when we have an active context.
+    _addSafetyItemsToMemberList();
+    _addDawnMethodItemsToMemberList();
+
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -72,7 +86,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .backgroundColor,
                                   fontSize: 15),
                               decoration: InputDecoration(
-                                  labelText: "Decimal number",
+                                  labelText: AppLocalizations.of(context)!
+                                      .decimal_number,
                                   border: OutlineInputBorder()),
                               onChanged: (String data) async {
                                 _offset = double.parse(data);
@@ -92,7 +107,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                       SizedBox(height: 6.0),
-                      Text("Current offset is ${Prefs.offset}"),
+                      Text(
+                          "${AppLocalizations.of(context)!.current_offset_is} ${Prefs.offset}"),
                     ],
                   ),
                 ),
@@ -106,24 +122,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Row(
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Safety:",
+                      Text(AppLocalizations.of(context)!.safety,
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 18,
                           )),
                       SizedBox(width: 10.0),
                       DropdownButton<String>(
-                          value: Prefs.safety,
+                          value: _safetyItems[Prefs.safety],
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                           ),
                           isDense: true,
                           onChanged: (newValue) {
                             setState(() {
-                              Prefs.safety = newValue!;
+                              Prefs.safety = _safetyItems.indexOf(newValue!);
                             });
                           },
-                          items: safetyItems.map<DropdownMenuItem<String>>(
+                          items: _safetyItems.map<DropdownMenuItem<String>>(
                             (String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -154,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Row(
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Dawn:",
+                      Text("${AppLocalizations.of(context)!.dawn}:",
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 16,
@@ -164,14 +180,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         height: 20,
                       ),
                       DropdownButton<String>(
-                          value: Prefs.dawnVal,
+                          value: _dawnMethodItems[Prefs.dawnVal],
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                           ),
                           isDense: true,
                           onChanged: (newValue) {
                             setState(() {
-                              Prefs.dawnVal = newValue!;
+                              Prefs.dawnVal =
+                                  _dawnMethodItems.indexOf(newValue!);
                             });
                           },
                           items: _dawnMethodItems.map<DropdownMenuItem<String>>(
@@ -199,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                     color: Theme.of(context).primaryColor, fontSize: 20),
                 decoration: InputDecoration(
-                    labelText: "Search for city",
+                    labelText: AppLocalizations.of(context)!.search_for_city,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)))),
                 controller: controller,

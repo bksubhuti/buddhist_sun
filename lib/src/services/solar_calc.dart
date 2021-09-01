@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:one_context/one_context.dart';
 
 String getNowString() {
   DateTime now = DateTime.now();
@@ -15,54 +12,34 @@ String getNowString() {
       hour: now.hour,
       timeZoneOffset: Prefs.offset);
 
-  String nowString = 'Date: ${instant.day}.${instant.month}.${instant.year}';
+  String nowString = '${instant.day}.${instant.month}.${instant.year}';
   return nowString;
 }
 
-String getDawnString() {
-  String sDawn = "";
-  switch (Prefs.dawnVal) {
-    case "Nauticle Twilight":
-      sDawn = getNauticalTwilightString();
-      break;
-    case "Pa-Auk":
-      sDawn = getSunrise40String();
-      break;
-    case "Na-Uyana":
-      sDawn = getSunrise30String();
-      break;
-    case "Civil Twilight":
-      sDawn = getCivilTwilightString();
-      break;
-    case "Sunrise":
-      sDawn = getSunriseString();
-      break;
-  }
-  return sDawn;
-}
+
 
 int getSafetyOffset() {
   int safetyOffset = 1;
   switch (Prefs.safety) {
-    case "none":
+    case 0:
       safetyOffset = 0;
       break;
-    case "1 minute":
+    case 1:
       safetyOffset = 1;
       break;
-    case "2 minutes":
+    case 2:
       safetyOffset = 2;
       break;
-    case "3 minutes":
+    case 3:
       safetyOffset = 3;
       break;
-    case "4 minutes":
+    case 4:
       safetyOffset = 4;
       break;
-    case "5 minutes":
+    case 5:
       safetyOffset = 5;
       break;
-    case "10 minutes":
+    case 6:
       safetyOffset = 10;
       break;
   }
@@ -71,7 +48,6 @@ int getSafetyOffset() {
 
 SolarCalculator getSolarCalcInstant() {
   DateTime now = DateTime.now();
-  var timezoneOffset = now.timeZoneOffset;
 
   Instant instant = Instant(
       year: now.year,

@@ -38,10 +38,10 @@ class SolarTimerService {
   bool initialVoicing = false;
   String _nowString = "";
   String _countdownString = "";
+  static const String LATE = "Late";
 
   DateTime _dtSolar = DateTime.now();
   Duration _duration = Duration(seconds: 1);
-  String _solarTime = "";
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -138,7 +138,7 @@ class SolarTimerService {
         delegate!.setCountdownString(_countdownString);
         delegate!.update(); // full set state if possible
       } else {
-        _countdownString = "Late";
+        _countdownString = LATE;
         delegate!.setCountdownString(_countdownString);
         delegate!.update(); // full set state if possible
       }
@@ -211,7 +211,7 @@ class SolarTimerService {
       _voiceMessage = "Your time has passed";
       _speak(); // speaking has finished.
     }
-    _countdownString = "Late";
+    _countdownString = LATE;
     delegate!.setCountdownString(_countdownString);
     delegate!.update(); // full set state if possible
     _bLate = true;

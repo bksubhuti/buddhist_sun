@@ -24,8 +24,6 @@ class CountdownTimerView extends StatefulWidget {
 
 class _CountdownTimerViewState extends State<CountdownTimerView>
     with SolarTimerDelegate {
-  //Duration _duration = Duration(seconds: 1);
-  String _solarTime = "";
   String _nowString = "";
   String _countdownString = "";
   bool _speakIsOn = false;
@@ -49,7 +47,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   setCountdownString(countdownString) {
     if (!_disposed) {
       setState(() {
-        this._countdownString = countdownString;
+        // for localization.. sometimes the countdown string is
+        // the word "Late" instead of a time
+        // this needs localization done with a context.
+        if (countdownString == SolarTimerService.LATE) {
+          this._countdownString = AppLocalizations.of(context)!.late;
+        } else {
+          this._countdownString = countdownString;
+        }
       });
     }
   }
@@ -105,9 +110,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   @override
   void dispose() {
     _disposed = true;
-    //_timer.cancel();
-    //flutterTts.stop();
-    //Wakelock.disable();
     super.dispose();
   }
 
@@ -123,7 +125,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       successInit =
           await FlutterBackground.initialize(androidConfig: androidConfig);
       if (successInit) {
-        _displayMotionToast(context, "Background Initialized");
+        _displayMotionToast(
+            context, AppLocalizations.of(context)!.background_initialized);
         if (successInit) {
           bkrunning = FlutterBackground.isBackgroundExecutionEnabled;
           if (!bkrunning) {
@@ -132,15 +135,18 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           } // bkrunning
         } // has permission
         if (successEnabled || bkrunning) {
-          _displayMotionToast(context, "Background Enabled");
+          _displayMotionToast(
+              context, AppLocalizations.of(context)!.background_enabled);
         } // successEnabled || bkrunning
         else {
-          _displayErrorMotionToast(context, "Background not set");
+          _displayErrorMotionToast(
+              context, AppLocalizations.of(context)!.background_not_set);
 
           bSwitch = false;
         }
       } else {
-        _displayErrorMotionToast(context, "Background initialize error");
+        _displayErrorMotionToast(
+            context, AppLocalizations.of(context)!.background_init_error);
 
         bSwitch = false;
       }
@@ -148,7 +154,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     else {
       if (FlutterBackground.isBackgroundExecutionEnabled) {
         await FlutterBackground.disableBackgroundExecution();
-        _displayMotionToast(context, "Background disabled");
+        _displayMotionToast(
+            context, AppLocalizations.of(context)!.background_disabled);
       }
     } // else no switch on
     Prefs.backgroundOn = bSwitch;
@@ -159,7 +166,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
-      title: "Notification",
+      title: AppLocalizations.of(context)!.notification,
       titleStyle: TextStyle(
           color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
       description: message,
@@ -176,7 +183,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   _displayErrorMotionToast(BuildContext context, String message) {
     MotionToast.error(
-      title: "Error",
+      title: AppLocalizations.of(context)!.error,
       titleStyle: TextStyle(
           color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
       description: message,
@@ -365,7 +372,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   Future showBackgroundInfoDialog(BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text(AppLocalizations.of(context)!.ok),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -373,12 +380,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text("Background Permission"),
+      title: Text(AppLocalizations.of(context)!.background_permission),
       content: SingleChildScrollView(
-        child: Text(
-            "Permission will be requested for background use.  This permission is needed to enable tts to run properly without "
-            "the need to have the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  "
-            "Permission will be requested only one time if accepted.",
+        child: Text(AppLocalizations.of(context)!.background_permission_content,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 16,

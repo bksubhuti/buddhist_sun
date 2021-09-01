@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 
 class GPSLocation extends StatefulWidget {
   GPSLocation({required this.goToHome});
@@ -26,9 +28,7 @@ class _GPSLocationState extends State<GPSLocation> {
 
   @override
   void initState() {
-    _message = AppLocalizations.of(context)!.gmt_offset;
     super.initState();
-    getGpsPrefs();
   }
 
   @override
@@ -38,7 +38,6 @@ class _GPSLocationState extends State<GPSLocation> {
 
   void getGpsPrefs() async {
     super.initState();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
       _currentGPSText =
@@ -93,11 +92,20 @@ class _GPSLocationState extends State<GPSLocation> {
       _message =
           '${AppLocalizations.of(context)!.gps}: ${_position.latitude}, ${_position.longitude}';
       _cityName = "${AppLocalizations.of(context)!.gps}: ";
+      saveGps();// first success save settings
+      //refresh internet connection checker.
       if (Prefs.retrieveCityName == true) {
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-            _position.latitude, _position.longitude);
-        _cityName += placemarks[0].subAdministrativeArea ?? "Unknown";
-        print(placemarks);
+        bool hasInternet = await InternetConnectionChecker().hasConnection;
+        if (hasInternet) {
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+              _position.latitude, _position.longitude);
+          _cityName += placemarks[0].subAdministrativeArea ?? "Unknown";
+          saveGps(); // full success save settings with city name
+          print(placemarks);
+        } else {
+          _displayMotionToast(
+              context, AppLocalizations.of(context)!.set_gps_city);
+        }
       }
     } else {
       _message = 'GPS is not supported on Desktops}';
@@ -116,12 +124,14 @@ class _GPSLocationState extends State<GPSLocation> {
     Prefs.lat = _position.latitude;
     Prefs.lng = _position.longitude;
     Prefs.offset = timezoneOffset.inMinutes / 60;
-    widget.goToHome();
+    //widget.goToHome();
   }
 
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    getGpsPrefs();
+
     return Container(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -150,12 +160,12 @@ class _GPSLocationState extends State<GPSLocation> {
                   },
             label: Text("${AppLocalizations.of(context)!.get_gps}"),
           ),
-          SizedBox(width: 6.0),
+          /*SizedBox(width: 6.0),
           ElevatedButton.icon(
             icon: Icon(Icons.save),
             onPressed: (isDesktop) ? null : saveGps,
             label: Text("${AppLocalizations.of(context)!.save_gps}"),
-          ),
+          ),*/
         ]),
         CheckboxListTile(
           title: Text(
@@ -198,7 +208,7 @@ class _GPSLocationState extends State<GPSLocation> {
   Future showGpsPermissionInfoDialog(BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text(AppLocalizations.of(context)!.ok),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -206,12 +216,9 @@ class _GPSLocationState extends State<GPSLocation> {
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text("GPS Permission"),
+      title: Text(AppLocalizations.of(context)!.gps_permission),
       content: SingleChildScrollView(
-        child: Text(
-            "Permission will be requested for GPS use. This allows for GPS Location Data to be gathered for determining the sun's position. "
-            "GPS is only collected once for each time the GPS button is pressed.  No information "
-            "is collected or sent back to us or a third party. Permission will be requested only one time if accepted.",
+        child: Text(AppLocalizations.of(context)!.gps_permission_content,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 16,
@@ -229,5 +236,22 @@ class _GPSLocationState extends State<GPSLocation> {
         return help;
       },
     );
+  }
+
+  _displayMotionToast(BuildContext context, String message) {
+    MotionToast(
+      title: AppLocalizations.of(context)!.notification,
+      titleStyle: TextStyle(
+          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+      description: message,
+      descriptionStyle:
+          TextStyle(color: Theme.of(context).primaryColor, fontSize: 14),
+      layoutOrientation: ORIENTATION.RTL,
+      animationType: ANIMATION.FROM_RIGHT,
+      width: 300,
+//      height: 90,
+      icon: Icons.battery_charging_full,
+      color: Colors.blue,
+    ).show(context);
   }
 }

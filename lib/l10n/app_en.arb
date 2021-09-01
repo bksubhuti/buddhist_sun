@@ -71,7 +71,7 @@
     "@date": {
       "description": "Date"
     },
-    "current_time": "Current TIme",
+    "current_time": "Current Time",
     "@current_time": {
       "description": "Current Time"
     },
@@ -171,16 +171,70 @@
     "@search_for_city": {
       "description": "instructions to type the city name inside edit field."
     },
-
-    "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNauyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way and the GMT offset is automatic although it was not tested in \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Greek Bhante suggests Sunrise -30 (safest) or Sunrise -35 (earlier).  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  TTS means \"Text to Speech\".  The TTS volume is controlled by your media volume.  Under normal conditions the TTS only works while the screen is on.  To counter this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones or battery saving modes may not allow it to work. We are not responsible for anything nor will we pay for trips to India for bathing in the Ganges.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The timings of TTS announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information and we do not establish an internet connection.  The Application does not run in the background when the app is closed.  GPS is engaged for the single request ONLY when you press the GPS button. You are quite safe as far as I know, however, this app was used with packages from the pub.dev website. A list of those packages are listed in the license page of this app or on github code repository listed there too.",
+    "gps_permission": "GPS Permission",
+    "@gps_permission": {
+      "description": "Title for GPS Permission Dialog."
+    },
+    "background_permission": "Background Permission",
+    "@background_permission": {
+      "description": "Title for Background Permission Dialog."
+    },
+    "error": "Error",
+    "@error": {
+      "description": "Title for error dialog."
+    },
+    "notification": "Notification",
+    "@notification": {
+      "description": "Title for notification dialog."
+    },
+    "running_in_background": "Buddhist Sun Running In Background",
+    "@running_in_background": {
+      "description": "message running in background."
+    },
+    "background_initialized": "Background Initialized",
+    "@background_initialized": {
+      "description": "message initialized."
+    },
+    "background_enabled": "Background Enabled",
+    "@background_enabled": {
+      "description": "notification for enabled."
+    },
+    "background_not_set": "Background not set",
+    "@background_not_set": {
+      "description": "background not set notification."
+    },
+    "background_init_error": "Background initialize error",
+    "@background_init_error": {
+      "description": "error message on init."
+    },
+    "background_disabled": "Background disabled",
+    "@background_disabled": {
+      "description": "message to inform background disabled."
+    },
+    "ok": "OK",
+    "@ok": {
+      "description": "close dialog button."
+    },
+    "gps_not_available": "GPS is not available",
+    "@gps_not_available": {
+      "description": "gps not available."
+    },
+    "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNa-uyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way.  This was not tested with \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Na-Uyana uses Sunrise -30 minutes, and Pa-Auk uses Sunrise -40 minutes.  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  Speech means \"Text to Speech\".  The volume is controlled by the slider.  Under normal conditions the speech notifications only work while the screen is on.  To fix this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones may not allow it. We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The speech announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information.",
     "@help_content": {
       "description": "instructions to use app."
     },
-    "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time without any flipping through screens, etc. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. Now I am able to know how much time is left while I'm eating without the need to touch my phone.  Because Myanmar considers green tea as a food, I do not drink green tea in the afternoon, so the timer comes in handy also for drinking tea. I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://TimeandDate.com to verify this app's accuracy.This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
+    "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time specific to Buddhist monastic needs. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. The timer with voice notifications turned on helps me know the time left for eating.  I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://TimeandDate.com to verify this app's accuracy.This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
     "@about_content": {
     "description": "about content for menu item."
+    },
+    "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
+    "@gps_permission_content": {
+      "description": "Notification to request gps permission."
+    },
+    "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
+    "@background_permission_content": {
+      "description": "Ask for permission for background."
     }
-  
  }
 
 

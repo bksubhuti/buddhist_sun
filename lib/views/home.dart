@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
           Divider(
             height: 50.0,
           ),
-          Text(getNowString(),
+          Text(AppLocalizations.of(context)!.date + ":  " + getNowString(),
               style: TextStyle(
                   color: Theme.of(context).primaryColor, fontSize: 22)),
           Divider(

@@ -21,13 +21,36 @@ class DawnPageState extends State<DawnPage> {
     super.initState();
   }
 
+  String getDawnString() {
+    String sDawn = "";
+    switch (Prefs.dawnVal) {
+      case 0:
+        sDawn = getNauticalTwilightString();
+        break;
+      case 1:
+        sDawn = getSunrise40String();
+        break;
+      case 2:
+        sDawn = getSunrise30String();
+        break;
+      case 3:
+        sDawn = getCivilTwilightString();
+        break;
+      case 4:
+        sDawn = getSunriseString();
+        break;
+    }
+    return sDawn;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 0),
         child: Column(children: <Widget>[
-          Text('${AppLocalizations.of(context)!.astronomical_twilight}: ${getAstronomicalTwilightString()}',
+          Text(
+              '${AppLocalizations.of(context)!.astronomical_twilight}: ${getAstronomicalTwilightString()}',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 15,
@@ -35,7 +58,8 @@ class DawnPageState extends State<DawnPage> {
           Divider(
             height: 15.0,
           ),
-          Text('${AppLocalizations.of(context)!.nautical_twilight}: ${getNauticalTwilightString()}',
+          Text(
+              '${AppLocalizations.of(context)!.nautical_twilight}: ${getNauticalTwilightString()}',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 15,
@@ -43,7 +67,8 @@ class DawnPageState extends State<DawnPage> {
           Divider(
             height: 15.0,
           ),
-          Text('${AppLocalizations.of(context)!.civil_twilight}: ${getCivilTwilightString()}',
+          Text(
+              '${AppLocalizations.of(context)!.civil_twilight}: ${getCivilTwilightString()}',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 15,
@@ -51,7 +76,8 @@ class DawnPageState extends State<DawnPage> {
           Divider(
             height: 15.0,
           ),
-          Text('${AppLocalizations.of(context)!.sunrise}: ${getSunriseString()}',
+          Text(
+              '${AppLocalizations.of(context)!.sunrise}: ${getSunriseString()}',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 15,
@@ -59,7 +85,7 @@ class DawnPageState extends State<DawnPage> {
           Divider(
             height: 15.0,
           ),
-          Text(getNowString(),
+          Text(AppLocalizations.of(context)!.date + ":  " + getNowString(),
               style: TextStyle(
                   color: Theme.of(context).primaryColor, fontSize: 20)),
           Divider(
@@ -71,7 +97,7 @@ class DawnPageState extends State<DawnPage> {
                   fontSize: 55,
                   fontWeight: FontWeight.bold)),
           SizedBox(height: 10.0),
-          Text(Prefs.dawnVal, //_dawnMethod,
+          Text(getDawnMethodString(context), //_dawnMethod,
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 20,
@@ -90,13 +116,15 @@ class DawnPageState extends State<DawnPage> {
                     ),
                   ),
                   SizedBox(height: 30.0),
-                  Text('${AppLocalizations.of(context)!.gps}: ${Prefs.lat}, ${Prefs.lng}',
+                  Text(
+                      '${AppLocalizations.of(context)!.gps}: ${Prefs.lat}, ${Prefs.lng}',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 12.8,
                           letterSpacing: 2.0)),
                   SizedBox(height: 10.0),
-                  Text("${AppLocalizations.of(context)!.gmt_offset}: ${Prefs.offset} hours",
+                  Text(
+                      "${AppLocalizations.of(context)!.gmt_offset}: ${Prefs.offset} hours",
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 12.8,
@@ -106,5 +134,27 @@ class DawnPageState extends State<DawnPage> {
         ]),
       ),
     );
+  }
+
+  String getDawnMethodString(BuildContext context) {
+    String dawnMethod = "";
+    switch (Prefs.dawnVal) {
+      case 0:
+        dawnMethod = AppLocalizations.of(context)!.nautical_twilight;
+        break;
+      case 1:
+        dawnMethod = AppLocalizations.of(context)!.pa_auk;
+        break;
+      case 2:
+        dawnMethod = AppLocalizations.of(context)!.na_uyana;
+        break;
+      case 3:
+        dawnMethod = AppLocalizations.of(context)!.civil_twilight;
+        break;
+      case 4:
+        dawnMethod = AppLocalizations.of(context)!.sunrise;
+        break;
+    }
+    return dawnMethod;
   }
 }

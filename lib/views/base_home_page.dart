@@ -17,9 +17,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
 
-// for the theme
-import 'package:flex_color_scheme/flex_color_scheme.dart';
-
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({
     Key? key,
@@ -36,11 +33,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   late PageController _pageController;
 
-  final String page1 = "Noon";
-  final String page2 = "Dawn";
-  final String page3 = "TMR";
-  final String page4 = "GPS";
-  final String page5 = "Settings";
   final String title = "Buddhist Sun";
 
   void goToHome() {
@@ -199,7 +191,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  page1,
+                  AppLocalizations.of(context)!.noon,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
@@ -208,7 +200,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  page2,
+                  AppLocalizations.of(context)!.dawn,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
@@ -217,7 +209,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  page3,
+                  AppLocalizations.of(context)!.timer,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
@@ -226,7 +218,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  page4,
+                  AppLocalizations.of(context)!.gps,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
@@ -237,7 +229,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  page5,
+                  AppLocalizations.of(context)!.settings,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
@@ -270,7 +262,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   showAboutDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text(AppLocalizations.of(context)!.ok),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -307,7 +299,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   showLicenseDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text(AppLocalizations.of(context)!.ok),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -394,7 +386,7 @@ External Packages used:  (see pub.dev)
   showHelpDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text(AppLocalizations.of(context)!.ok),
       onPressed: () {
         Navigator.pop(context);
       },

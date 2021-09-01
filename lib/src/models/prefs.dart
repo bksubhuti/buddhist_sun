@@ -26,9 +26,9 @@ const bool DEFAULT_SPEAKISON = false;
 const bool DEFAULT_SCREEN_ALWAYS_ON = false;
 const bool DEFAULT_BACKGROUND_ON = false;
 const double DEFAULT_VOLUME = 0.5;
-const String DEFAULT_SAFETY = "1 minute";
-const String DEFAULT_DAWNVAL = "Nauticle Twilight";
-const bool DEFAULT_RETRIEVE_CITYNAME = false;
+const int DEFAULT_SAFETY = 1;
+const int DEFAULT_DAWNVAL = 1;
+const bool DEFAULT_RETRIEVE_CITYNAME = true;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -70,9 +70,9 @@ class Prefs {
   static double get volume => instance.getDouble(VOLUME) ?? DEFAULT_VOLUME;
   static set volume(double value) => instance.setDouble(VOLUME, value);
 
-  static String get safety => instance.getString(SAFETY) ?? DEFAULT_SAFETY;
-  static set safety(String value) => instance.setString(SAFETY, value);
+  static int get safety => instance.getInt(SAFETY) ?? DEFAULT_SAFETY;
+  static set safety(int value) => instance.setInt(SAFETY, value);
 
-  static String get dawnVal => instance.getString(DAWNVAL) ?? DEFAULT_DAWNVAL;
-  static set dawnVal(String value) => instance.setString(DAWNVAL, value);
+  static int get dawnVal => instance.getInt(DAWNVAL) ?? DEFAULT_DAWNVAL;
+  static set dawnVal(int value) => instance.setInt(DAWNVAL, value);
 }

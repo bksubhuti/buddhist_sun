@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DummyPage extends StatefulWidget {
   const DummyPage({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _DummyPageState extends State<DummyPage> {
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text("GPS is not available"),
+        child: Text(AppLocalizations.of(context)!.gps_not_available),
       ),
     );
   }
