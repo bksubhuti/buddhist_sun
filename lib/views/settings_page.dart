@@ -22,6 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
+    // debug mode to reset Prefs.instance.clear();
     super.initState();
   }
 

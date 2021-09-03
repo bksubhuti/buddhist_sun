@@ -92,7 +92,7 @@ class _GPSLocationState extends State<GPSLocation> {
       _message =
           '${AppLocalizations.of(context)!.gps}: ${_position.latitude}, ${_position.longitude}';
       _cityName = "${AppLocalizations.of(context)!.gps}: ";
-      saveGps();// first success save settings
+      saveGps(); // first success save settings
       //refresh internet connection checker.
       if (Prefs.retrieveCityName == true) {
         bool hasInternet = await InternetConnectionChecker().hasConnection;
@@ -131,6 +131,10 @@ class _GPSLocationState extends State<GPSLocation> {
   @override
   Widget build(BuildContext context) {
     getGpsPrefs();
+    if (Prefs.lat == 1.1 && _bLoading == false) {
+      Future.delayed(
+          Duration.zero, () => showAskGPSDialog(context)); // import 'dart:asy;
+    }
 
     return Container(
         child: Padding(
@@ -246,12 +250,49 @@ class _GPSLocationState extends State<GPSLocation> {
       description: message,
       descriptionStyle:
           TextStyle(color: Theme.of(context).primaryColor, fontSize: 14),
-      layoutOrientation: ORIENTATION.RTL,
-      animationType: ANIMATION.FROM_RIGHT,
+      position: MOTION_TOAST_POSITION.TOP,
+      animationType: ANIMATION.FROM_TOP,
       width: 300,
 //      height: 90,
       icon: Icons.battery_charging_full,
-      color: Colors.blue,
+      color: Colors.orange,
     ).show(context);
+  }
+
+  Future showAskGPSDialog(BuildContext context) async {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(AppLocalizations.of(context)!.cancel),
+      onPressed: () {
+        Prefs.lat = 1.2;
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(AppLocalizations.of(context)!.yes),
+      onPressed: () {
+        initGps();
+        Navigator.pop(context);
+        ;
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(AppLocalizations.of(context)!.get_gps),
+      content: Text(AppLocalizations.of(context)!.gps_recommend),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

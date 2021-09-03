@@ -206,7 +206,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                   color: Theme.of(context).primaryColor,
                   fontSize: 42,
                   fontWeight: FontWeight.normal)),
-          Text("${AppLocalizations.of(context)!.solar_noon}:",
+          Text("${AppLocalizations.of(context)!.solar_noon}",
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 20,

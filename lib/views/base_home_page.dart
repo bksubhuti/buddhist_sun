@@ -42,19 +42,19 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   late Home _page1;
-  late DawnPage _page2;
-  late CountdownTimerView _page3;
+  late DawnPage _page3;
+  late CountdownTimerView _page2;
   late StatefulWidget _page4;
   late SettingsPage _page5;
   //late DummyPage _dummyPage;
 
-  int _currentIndex = 0;
+  int _currentIndex = (Prefs.lat == 1.1) ? 3 : 0;
   //Widget _currentPage = Home();
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(initialPage: _currentIndex);
 
     // these toggles always get set to false
     Prefs.backgroundOn = false;
@@ -62,15 +62,11 @@ class Home_PageContainerState extends State<HomePageContainer> {
     Prefs.speakIsOn = false;
     //    _dummyPage = DummyPage();
     _page1 = Home();
-    _page2 = DawnPage();
-    _page3 = CountdownTimerView(goToHome: goToHome);
+    _page2 = CountdownTimerView(goToHome: goToHome);
+    _page3 = DawnPage();
     _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
     _page5 = SettingsPage(goToHome: goToHome);
 
-    //_pages = [_page1, _page2, _page3, _page4, _page5];
-
-    _currentIndex = 0;
-    //_currentPage = _page1;
   }
 
   @override
@@ -97,9 +93,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   @override
   Widget build(BuildContext context) {
-//    data = ModalRoute.of(context)!.settings.arguments as Map;
-    //  print(data);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.buddhistSun),
@@ -200,20 +193,21 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
                 title: Text(
-                  AppLocalizations.of(context)!.dawn,
-                  style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
-                ),
-                icon: Icon(Icons.brightness_4,
-                    color: Theme.of(context).appBarTheme.foregroundColor)),
-            BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
-                title: Text(
                   AppLocalizations.of(context)!.timer,
                   style: TextStyle(
                       color: Theme.of(context).appBarTheme.foregroundColor),
                 ),
                 icon: Icon(Icons.timer,
+                    color: Theme.of(context).appBarTheme.foregroundColor)),
+
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).bottomAppBarColor,
+                title: Text(
+                  AppLocalizations.of(context)!.dawn,
+                  style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor),
+                ),
+                icon: Icon(Icons.brightness_4,
                     color: Theme.of(context).appBarTheme.foregroundColor)),
             BottomNavyBarItem(
                 activeColor: Theme.of(context).bottomAppBarColor,
