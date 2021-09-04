@@ -16,6 +16,8 @@ const String VOLUME = "volume";
 const String SAFETY = "safety";
 const String DAWNVAL = "dawnVal";
 const String RETRIEVE_CITYNAME = "retrieveCityName";
+const String LANGUAGEVAL = "languageVal";
+const String THEME_INDEX = "themeIndex";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -29,6 +31,8 @@ const double DEFAULT_VOLUME = 0.5;
 const int DEFAULT_SAFETY = 1;
 const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
+const int DEFAULT_LANGUAGEVAL = 0;
+const int DEFAULT_THEME_INDEX = 24;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -75,4 +79,12 @@ class Prefs {
 
   static int get dawnVal => instance.getInt(DAWNVAL) ?? DEFAULT_DAWNVAL;
   static set dawnVal(int value) => instance.setInt(DAWNVAL, value);
+
+  static int get languageVal =>
+      instance.getInt(LANGUAGEVAL) ?? DEFAULT_LANGUAGEVAL;
+  static set languageVal(int value) => instance.setInt(LANGUAGEVAL, value);
+
+  static int get themeIndex =>
+      instance.getInt(THEME_INDEX) ?? DEFAULT_THEME_INDEX;
+  static set themeIndex(int value) => instance.setInt(THEME_INDEX, value);
 }

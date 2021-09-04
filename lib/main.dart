@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
@@ -13,8 +14,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
 
 // theme stuff
-import 'package:buddhist_sun/src/models/theme_data.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
+import 'package:buddhist_sun/src/provider/theme_change_notifier.dart';
 
 // for one context
 //import 'package:one_context/one_context.dart';
@@ -40,31 +41,40 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Buddhist Sun",
-      themeMode: ThemeMode.light,
-      //theme: ThemeData(brightness: Brightness.light, accentColor: Colors.blue),
-      //darkTheme: ThemeData(
-      //  brightness: Brightness.dark, accentColor: Colors.amber[700]),
-      theme: FlexColorScheme.light(colors: myScheme1Light).toTheme,
-      darkTheme: FlexColorScheme.dark(colors: myScheme1Dark).toTheme,
-
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        AppLocalizations.delegate, // Add this line
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        Locale('en', ''), // English, no country code
-        Locale('es', ''), // Spanish, no country code
-        Locale('my', ''), // Myanmar, no country code
-        Locale('si', ''), // Myanmar, no country code
-        Locale('zh', ''), // Myanmar, no country code
-      ],
-      home: HomePageContainer(),
-    );
-  }
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ThemeChangeNotifier>(
+            create: (context) => ThemeChangeNotifier(),
+          ),
+          ChangeNotifierProvider<LocaleChangeNotifier>(
+            create: (context) => LocaleChangeNotifier(),
+          ),
+        ],
+        builder: (context, _) {
+          final themeChangeNotifier = Provider.of<ThemeChangeNotifier>(context);
+          final localChangeNotifier =
+              Provider.of<LocaleChangeNotifier>(context);
+          return MaterialApp(
+            title: "Buddhist Sun",
+            themeMode: themeChangeNotifier.themeMode,
+            theme: themeChangeNotifier.themeData,
+            locale: Locale(localChangeNotifier.locale, ''),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              AppLocalizations.delegate, // Add this line
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              Locale('en', ''), // English, no country code
+              Locale('es', ''), // Spanish, no country code
+              Locale('my', ''), // Myanmar, no country code
+              Locale('si', ''), // Myanmar, no country code
+              Locale('zh', ''), // Myanmar, no country code
+            ],
+            home: HomePageContainer(),
+          );
+        }, // builder
+      );
 }

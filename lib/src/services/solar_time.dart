@@ -10,7 +10,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 //import 'package:logging/logging.dart';
 //import 'package:intl/intl.dart' show DateFormat;
 import 'package:solar_calculator/solar_calculator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 

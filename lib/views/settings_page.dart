@@ -3,6 +3,8 @@ import 'package:buddhist_sun/src/services/get_world_cities.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:buddhist_sun/src/models/select_language_widget.dart';
+import 'package:buddhist_sun/src/models/select_theme_widget.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.goToHome}) : super(key: key);
@@ -68,6 +70,30 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Card(
+                margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                elevation: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(AppLocalizations.of(context)!.theme + ":",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                        )),
+                    SizedBox(width: 12.0),
+                    SelectThemeWidget(),
+                    SizedBox(width: 32.0),
+                    Text(AppLocalizations.of(context)!.language + ":",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                        )),
+                    SizedBox(width: 12.0),
+                    SelectLanguageWidget(),
+                  ],
+                ),
+              ),
               Card(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                 elevation: 2,
