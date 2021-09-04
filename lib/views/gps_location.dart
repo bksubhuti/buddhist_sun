@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 
 class GPSLocation extends StatefulWidget {
   GPSLocation({required this.goToHome});
@@ -261,6 +262,10 @@ class _GPSLocationState extends State<GPSLocation> {
 
   Future showAskGPSDialog(BuildContext context) async {
     // set up the buttons
+    _bLoading = true; // prevent double dialog see build function if statement
+    await showSetLocaleDialog(context); // import 'dart:asy;
+    _bLoading = false;
+
     Widget cancelButton = TextButton(
       child: Text(AppLocalizations.of(context)!.cancel),
       onPressed: () {
@@ -288,7 +293,7 @@ class _GPSLocationState extends State<GPSLocation> {
     );
 
     // show the dialog
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return alert;

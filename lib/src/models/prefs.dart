@@ -16,7 +16,7 @@ const String VOLUME = "volume";
 const String SAFETY = "safety";
 const String DAWNVAL = "dawnVal";
 const String RETRIEVE_CITYNAME = "retrieveCityName";
-const String LANGUAGEVAL = "languageVal";
+const String LOCALEVAL = "localeVal";
 const String THEME_INDEX = "themeIndex";
 
 // default pref values
@@ -31,7 +31,7 @@ const double DEFAULT_VOLUME = 0.5;
 const int DEFAULT_SAFETY = 1;
 const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
-const int DEFAULT_LANGUAGEVAL = 0;
+const int DEFAULT_LOCALEVAL = 0;
 const int DEFAULT_THEME_INDEX = 24;
 
 class Prefs {
@@ -80,9 +80,8 @@ class Prefs {
   static int get dawnVal => instance.getInt(DAWNVAL) ?? DEFAULT_DAWNVAL;
   static set dawnVal(int value) => instance.setInt(DAWNVAL, value);
 
-  static int get languageVal =>
-      instance.getInt(LANGUAGEVAL) ?? DEFAULT_LANGUAGEVAL;
-  static set languageVal(int value) => instance.setInt(LANGUAGEVAL, value);
+  static int get localeVal => instance.getInt(LOCALEVAL) ?? DEFAULT_LOCALEVAL;
+  static set localeVal(int value) => instance.setInt(LOCALEVAL, value);
 
   static int get themeIndex =>
       instance.getInt(THEME_INDEX) ?? DEFAULT_THEME_INDEX;

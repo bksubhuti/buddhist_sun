@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
             title: "Buddhist Sun",
             themeMode: themeChangeNotifier.themeMode,
             theme: themeChangeNotifier.themeData,
-            locale: Locale(localChangeNotifier.locale, ''),
+            locale: Locale(localChangeNotifier.localeString, ''),
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
               AppLocalizations.delegate, // Add this line

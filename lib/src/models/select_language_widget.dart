@@ -4,22 +4,22 @@ import 'package:provider/provider.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
 class SelectLanguageWidget extends StatelessWidget {
-   SelectLanguageWidget({Key? key}) : super(key: key);
-  final   _languageItmes = <String>['en', 'my', 'si', 'zh'];
+  SelectLanguageWidget({Key? key}) : super(key: key);
+  final _languageItmes = <String>['English', 'မြန်မာ', 'සිංහල', '中国人'];
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-        value: _languageItmes[Prefs.languageVal],
+        value: _languageItmes[Prefs.localeVal],
         style: TextStyle(
           color: Theme.of(context).primaryColor,
         ),
         isDense: true,
         onChanged: (newValue) {
-          Prefs.languageVal = _languageItmes.indexOf(newValue!);
+          Prefs.localeVal = _languageItmes.indexOf(newValue!);
           final localeProvider =
               Provider.of<LocaleChangeNotifier>(context, listen: false);
-          localeProvider.locale = newValue;
+          localeProvider.localeVal = Prefs.localeVal;
         },
         items: _languageItmes.map<DropdownMenuItem<String>>(
           (String value) {

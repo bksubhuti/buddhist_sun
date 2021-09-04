@@ -16,9 +16,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 // #docregion AppLocalizationsImport
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // #enddocregion AppLocalizationsImport
-import 'package:buddhist_sun/src/models/change_theme_widget.dart';
-
-
 
 class HomePageContainer extends StatefulWidget {
   const HomePageContainer({
@@ -69,7 +66,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _page3 = DawnPage();
     _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
     _page5 = SettingsPage(goToHome: goToHome);
-
   }
 
   @override
