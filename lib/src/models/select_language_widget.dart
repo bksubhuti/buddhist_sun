@@ -29,7 +29,7 @@ class SelectLanguageWidget extends StatelessWidget {
                 value,
                 style: TextStyle(
                     color: Theme.of(context).appBarTheme.backgroundColor,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
             );

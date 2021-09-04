@@ -79,15 +79,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(AppLocalizations.of(context)!.theme + ":",
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 18,
+                          fontSize: 14,
                         )),
                     SizedBox(width: 12.0),
                     SelectThemeWidget(),
-                    SizedBox(width: 32.0),
+                    SizedBox(width: 20.0),
                     Text(AppLocalizations.of(context)!.language + ":",
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 18,
+                          fontSize: 14,
                         )),
                     SizedBox(width: 12.0),
                     SelectLanguageWidget(),
