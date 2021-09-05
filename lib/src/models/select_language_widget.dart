@@ -5,7 +5,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 
 class SelectLanguageWidget extends StatelessWidget {
   SelectLanguageWidget({Key? key}) : super(key: key);
-  final _languageItmes = <String>['English', 'မြန်မာ', 'සිංහල', '中国人'];
+  final _languageItmes = <String>['English', 'မြန်မာ', 'සිංහල', '中文'];
 
   @override
   Widget build(BuildContext context) {
