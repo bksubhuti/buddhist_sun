@@ -3,12 +3,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/theme_data.dart';
 
-
-
-
-
 class ThemeChangeNotifier extends ChangeNotifier {
-  ThemeMode themeMode = ThemeMode.dark;
+  ThemeMode themeMode = (Prefs.lightThemeOn) ? ThemeMode.light : ThemeMode.dark;
   int _themeIndex = 1;
 
   set themeIndex(int val) {
@@ -16,9 +12,9 @@ class ThemeChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isDarkMode => themeMode == ThemeMode.dark;
+  bool get isLightMode => themeMode == ThemeMode.light;
   toggleTheme(bool isOn) {
-    themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
+    themeMode = isOn ? ThemeMode.light : ThemeMode.dark;
     notifyListeners();
   }
 

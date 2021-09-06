@@ -15,6 +15,7 @@ Future showSetLocaleDialog(BuildContext context) async {
   AlertDialog alert = AlertDialog(
     title: Text("Set Locale"),
     content: Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
             "Set Language \nသင်၏ဘာသာစကားကိုရွေးပါ\nඔබේ භාෂාව තෝරන්න\n选择你的语言\n"),

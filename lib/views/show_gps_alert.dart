@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
 
 Future showGpsPermissionInfoDialog(BuildContext context) async {
   // set up the button
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: Text("OK",
+        style: TextStyle(
+          color: (Prefs.lightThemeOn)
+              ? Theme.of(context).primaryColor
+              : Colors.white,
+        )),
     onPressed: () {
       Navigator.pop(context);
     },

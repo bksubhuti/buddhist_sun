@@ -2,6 +2,7 @@ import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/models/colored_text.dart';
 
 class SelectLanguageWidget extends StatelessWidget {
   SelectLanguageWidget({Key? key}) : super(key: key);
@@ -25,10 +26,12 @@ class SelectLanguageWidget extends StatelessWidget {
           (String value) {
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(
+              child: ColoredText(
                 value,
                 style: TextStyle(
-                    color: Theme.of(context).appBarTheme.backgroundColor,
+                    color: (Prefs.lightThemeOn)
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),

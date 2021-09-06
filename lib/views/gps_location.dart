@@ -9,6 +9,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
+import 'package:buddhist_sun/src/models/colored_text.dart';
 
 class GPSLocation extends StatefulWidget {
   GPSLocation({required this.goToHome});
@@ -147,12 +148,9 @@ class _GPSLocationState extends State<GPSLocation> {
                 color: Colors.blue,
                 size: 50.0,
               )
-            : Text(
+            : ColoredText(
                 "$_message",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
         SizedBox(height: 25.0),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -165,19 +163,11 @@ class _GPSLocationState extends State<GPSLocation> {
                   },
             label: Text("${AppLocalizations.of(context)!.get_gps}"),
           ),
-          /*SizedBox(width: 6.0),
-          ElevatedButton.icon(
-            icon: Icon(Icons.save),
-            onPressed: (isDesktop) ? null : saveGps,
-            label: Text("${AppLocalizations.of(context)!.save_gps}"),
-          ),*/
         ]),
         CheckboxListTile(
-          title: Text(
+          title: ColoredText(
             "${AppLocalizations.of(context)!.set_gps_city}",
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-            ),
+            style: TextStyle(),
           ),
           value: Prefs.retrieveCityName,
           onChanged: (newValue) {
@@ -189,19 +179,17 @@ class _GPSLocationState extends State<GPSLocation> {
               ListTileControlAffinity.leading, //  <-- leading Checkbox
         ),
         SizedBox(height: 80.0),
-        Text(
+        ColoredText(
           "$_currentGPSText",
           style: TextStyle(
-            color: Theme.of(context).primaryColor,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 80.0),
-        Text(
+        ColoredText(
           "$_cityName",
           style: TextStyle(
-            color: Theme.of(context).primaryColor,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -213,7 +201,12 @@ class _GPSLocationState extends State<GPSLocation> {
   Future showGpsPermissionInfoDialog(BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok),
+      child: Text(AppLocalizations.of(context)!.ok,
+          style: TextStyle(
+            color: (Prefs.lightThemeOn)
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+          )),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -221,11 +214,10 @@ class _GPSLocationState extends State<GPSLocation> {
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.gps_permission),
+      title: ColoredText(AppLocalizations.of(context)!.gps_permission),
       content: SingleChildScrollView(
-        child: Text(AppLocalizations.of(context)!.gps_permission_content,
+        child: ColoredText(AppLocalizations.of(context)!.gps_permission_content,
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
               fontSize: 16,
             )),
       ),
@@ -246,11 +238,9 @@ class _GPSLocationState extends State<GPSLocation> {
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
       title: AppLocalizations.of(context)!.notification,
-      titleStyle: TextStyle(
-          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
       description: message,
-      descriptionStyle:
-          TextStyle(color: Theme.of(context).primaryColor, fontSize: 14),
+      descriptionStyle: TextStyle(fontSize: 14),
       position: MOTION_TOAST_POSITION.TOP,
       animationType: ANIMATION.FROM_TOP,
       width: 300,
@@ -267,14 +257,14 @@ class _GPSLocationState extends State<GPSLocation> {
     _bLoading = false;
 
     Widget cancelButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.cancel),
+      child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle()),
       onPressed: () {
         Prefs.lat = 1.2;
         Navigator.pop(context);
       },
     );
     Widget continueButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.yes),
+      child: Text(AppLocalizations.of(context)!.yes, style: TextStyle()),
       onPressed: () {
         initGps();
         Navigator.pop(context);
@@ -284,8 +274,8 @@ class _GPSLocationState extends State<GPSLocation> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.get_gps),
-      content: Text(AppLocalizations.of(context)!.gps_recommend),
+      title: ColoredText(AppLocalizations.of(context)!.get_gps),
+      content: ColoredText(AppLocalizations.of(context)!.gps_recommend),
       actions: [
         cancelButton,
         continueButton,

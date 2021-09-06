@@ -9,6 +9,8 @@ import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/models/colored_text.dart';
+
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -102,7 +104,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
             },
             icon: Icon(Icons.help),
           ),
-          //ChangeThemeWidget(),
         ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -118,9 +119,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
               decoration: BoxDecoration(),
               child: Column(
                 children: [
-                  Text('Buddhist Sun',
+                  ColoredText('Buddhist Sun',
                       style: TextStyle(
-                        color: Theme.of(context).primaryColor,
                         fontSize: 17,
                       )),
                   SizedBox(height: 15.0),
@@ -134,28 +134,19 @@ class Home_PageContainerState extends State<HomePageContainer> {
               ),
             ),
             ListTile(
-              title: Text('Help',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                  )),
+              title: ColoredText('Help', style: TextStyle()),
               onTap: () {
                 showHelpDialog(context);
               },
             ),
             ListTile(
-              title: Text('About',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                  )),
+              title: ColoredText('About', style: TextStyle()),
               onTap: () {
                 showAboutDialog(context);
               },
             ),
             ListTile(
-              title: Text('Licences',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                  )),
+              title: ColoredText('Licences', style: TextStyle()),
               onTap: () {
                 showLicenseDialog(context);
               },
@@ -256,7 +247,14 @@ class Home_PageContainerState extends State<HomePageContainer> {
   showAboutDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok),
+      child: Text(
+        AppLocalizations.of(context)!.ok,
+        style: TextStyle(
+          color: (Prefs.lightThemeOn)
+              ? Theme.of(context).primaryColor
+              : Colors.white,
+        ),
+      ),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -264,15 +262,13 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("About",
+      title: ColoredText("About",
           style: TextStyle(
-            color: Theme.of(context).primaryColor,
             fontSize: 15,
           )),
       content: SingleChildScrollView(
-        child: Text(AppLocalizations.of(context)!.about_content,
+        child: ColoredText(AppLocalizations.of(context)!.about_content,
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
               fontSize: 16,
             )),
       ),
@@ -293,7 +289,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
   showLicenseDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok),
+      child: Text(AppLocalizations.of(context)!.ok,
+          style: TextStyle(
+            color: (Prefs.lightThemeOn)
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+          )),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -301,9 +302,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     // set up the AlertDialog
     AlertDialog license = AlertDialog(
-      title: Text("License"),
+      title: ColoredText("License"),
       content: SingleChildScrollView(
-        child: Text(
+        child: ColoredText(
             "This is an Open Source Project.  Licenses for the Flutter and Flutter development Packages used here are found on the repository website\n\n"
             ''' https://github.com/bksubhuti/buddhist_sun/  
 
@@ -357,9 +358,13 @@ External Packages used:  (see pub.dev)
   motion_toast: ^1.3.0
   https://pub.flutter-io.cn/packages/motion_toast
 
+
+<a href="https://iconscout.com/icons/moon" target="_blank">Moon Icon</a> by <a href="https://iconscout.com/contributors/daniel-bruce">Daniel Bruce</a> on <a href="https://iconscout.com">Iconscout</a>
+sun by Alexandra Hawkhead from the Noun Project
+
+
 ''',
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
               fontSize: 16,
             )),
       ),
@@ -380,7 +385,12 @@ External Packages used:  (see pub.dev)
   showHelpDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok),
+      child: Text(AppLocalizations.of(context)!.ok,
+          style: TextStyle(
+            color: (Prefs.lightThemeOn)
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+          )),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -388,11 +398,10 @@ External Packages used:  (see pub.dev)
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.help),
+      title: ColoredText(AppLocalizations.of(context)!.help),
       content: SingleChildScrollView(
-        child: Text(AppLocalizations.of(context)!.help_content,
+        child: ColoredText(AppLocalizations.of(context)!.help_content,
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
               fontSize: 16,
             )),
       ),

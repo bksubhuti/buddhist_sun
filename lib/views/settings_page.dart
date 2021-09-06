@@ -5,6 +5,8 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
 import 'package:buddhist_sun/src/models/select_theme_widget.dart';
+import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:buddhist_sun/src/models/change_theme_widget.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.goToHome}) : super(key: key);
@@ -24,7 +26,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    // debug mode to reset //Prefs.instance.clear();
+    // debug mode to reset
+    //Prefs.instance.clear();
     super.initState();
   }
 
@@ -76,20 +79,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(AppLocalizations.of(context)!.theme + ":",
+                    ColoredText(AppLocalizations.of(context)!.theme + ":",
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
                           fontSize: 14,
                         )),
-                    SizedBox(width: 12.0),
+                    SizedBox(width: 4.0),
                     SelectThemeWidget(),
-                    SizedBox(width: 20.0),
-                    Text(AppLocalizations.of(context)!.language + ":",
+                    ChangeThemeWidget(),
+                    //SizedBox(width: 8.0),
+                    ColoredText(AppLocalizations.of(context)!.language + ":",
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
                           fontSize: 14,
                         )),
-                    SizedBox(width: 12.0),
+                    SizedBox(width: 4.0),
                     SelectLanguageWidget(),
                   ],
                 ),
@@ -108,9 +110,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
                               style: TextStyle(
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .backgroundColor,
+                                  color: (Prefs.lightThemeOn)
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.white,
                                   fontSize: 15),
                               decoration: InputDecoration(
                                   labelText: AppLocalizations.of(context)!
@@ -134,7 +136,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                       SizedBox(height: 6.0),
-                      Text(
+                      ColoredText(
                           "${AppLocalizations.of(context)!.current_offset_is} ${Prefs.offset}"),
                     ],
                   ),
@@ -151,16 +153,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       SizedBox(height: 6.0),
                       Text(AppLocalizations.of(context)!.safety,
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
                             fontSize: 18,
                           )),
                       SizedBox(width: 10.0),
                       DropdownButton<String>(
                           value: _safetyItems[Prefs.safety],
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: (Prefs.lightThemeOn)
+                                ? Theme.of(context).primaryColor
+                                : Colors.white,
                           ),
-                          isDense: true,
+                          isDense: false,
                           onChanged: (newValue) {
                             setState(() {
                               Prefs.safety = _safetyItems.indexOf(newValue!);
@@ -173,9 +176,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 child: Text(
                                   value,
                                   style: TextStyle(
-                                      color: Theme.of(context)
-                                          .appBarTheme
-                                          .backgroundColor,
+                                      color: (Prefs.lightThemeOn)
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -197,9 +200,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Row(
                     children: [
                       SizedBox(height: 6.0),
-                      Text("${AppLocalizations.of(context)!.dawn}:",
+                      ColoredText("${AppLocalizations.of(context)!.dawn}:",
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
                             fontSize: 16,
                           )),
                       SizedBox(
@@ -209,7 +211,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       DropdownButton<String>(
                           value: _dawnMethodItems[Prefs.dawnVal],
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: (Prefs.lightThemeOn)
+                                ? Theme.of(context).primaryColor
+                                : Colors.white,
                           ),
                           isDense: true,
                           onChanged: (newValue) {
@@ -222,12 +226,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             (String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
-                                child: Text(
+                                child: ColoredText(
                                   value,
                                   style: TextStyle(
-                                      color: Theme.of(context)
-                                          .appBarTheme
-                                          .backgroundColor,
+                                      color: (Prefs.lightThemeOn)
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -241,7 +245,10 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: 15),
               TextField(
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 20),
+                    color: (Prefs.lightThemeOn)
+                        ? Theme.of(context).primaryColor
+                        : null,
+                    fontSize: 20),
                 decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.search_for_city,
                     border: OutlineInputBorder(
@@ -275,12 +282,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Prefs.lng = snapshot.data![index].lng;
                                 widget.goToHome();
                               },
-                              title: Text(
+                              title: ColoredText(
                                   "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",
                                   style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 19)),
-                              subtitle: Text(
+                                    fontSize: 17,
+                                    color: (Prefs.lightThemeOn)
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.white,
+                                  )),
+                              subtitle: ColoredText(
                                   snapshot.data![index].lat.toString() +
                                       "," +
                                       snapshot.data![index].lng.toString()),

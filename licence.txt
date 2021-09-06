@@ -6,3 +6,6 @@ Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/license
 
 sqlite database is creative commons attrib
 https://simplemaps.com/data/world-cities
+
+<a href="https://iconscout.com/icons/moon" target="_blank">Moon Icon</a> by <a href="https://iconscout.com/contributors/daniel-bruce">Daniel Bruce</a> on <a href="https://iconscout.com">Iconscout</a>
+sun by Alexandra Hawkhead from the Noun Project

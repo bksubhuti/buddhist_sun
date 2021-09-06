@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
             title: "Buddhist Sun",
             themeMode: themeChangeNotifier.themeMode,
             theme: themeChangeNotifier.themeData,
+            darkTheme: themeChangeNotifier.darkTheme,
             locale: Locale(localChangeNotifier.localeString, ''),
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [

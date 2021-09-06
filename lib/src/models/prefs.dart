@@ -18,6 +18,7 @@ const String DAWNVAL = "dawnVal";
 const String RETRIEVE_CITYNAME = "retrieveCityName";
 const String LOCALEVAL = "localeVal";
 const String THEME_INDEX = "themeIndex";
+const String LIGHT_THEME_ON = "lightThemeOn";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -33,6 +34,7 @@ const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
 const int DEFAULT_LOCALEVAL = 0;
 const int DEFAULT_THEME_INDEX = 24;
+const bool DEFAULT_LIGHT_THEME_ON = true;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -86,4 +88,9 @@ class Prefs {
   static int get themeIndex =>
       instance.getInt(THEME_INDEX) ?? DEFAULT_THEME_INDEX;
   static set themeIndex(int value) => instance.setInt(THEME_INDEX, value);
+
+  static bool get lightThemeOn =>
+      instance.getBool(LIGHT_THEME_ON) ?? DEFAULT_LIGHT_THEME_ON;
+  static set lightThemeOn(bool value) =>
+      instance.setBool(LIGHT_THEME_ON, value);
 }

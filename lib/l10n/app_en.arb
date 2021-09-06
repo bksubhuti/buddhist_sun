@@ -91,7 +91,7 @@
     "@screen_always_on": {
       "description": "switch for keeping the screen on (no sleeping)"
     },
-    "speech_in_background": "Speech in backgroun",
+    "speech_in_background": "Speech in background",
     "@speech_in_background": {
       "description": "switch for letting the speech work in background"
     },
@@ -239,9 +239,9 @@
     "@gps_internet_message": {
       "description": "gps to request internet."
     },
-    "language": "Language",
+    "language": "Locale",
     "@language": {
-      "description": "gps to request internet."
+      "description": "language type."
     },
     "theme": "Theme",
     "@theme": {

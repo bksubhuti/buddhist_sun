@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/models/colored_text.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -167,11 +168,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
       title: AppLocalizations.of(context)!.notification,
-      titleStyle: TextStyle(
-          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
       description: message,
-      descriptionStyle:
-          TextStyle(color: Theme.of(context).primaryColor, fontSize: 14),
+      descriptionStyle: TextStyle(fontSize: 14),
       layoutOrientation: ORIENTATION.RTL,
       animationType: ANIMATION.FROM_RIGHT,
       width: 300,
@@ -184,8 +183,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   _displayErrorMotionToast(BuildContext context, String message) {
     MotionToast.error(
       title: AppLocalizations.of(context)!.error,
-      titleStyle: TextStyle(
-          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
       description: message,
       animationType: ANIMATION.FROM_LEFT,
       position: MOTION_TOAST_POSITION.TOP,
@@ -201,44 +199,27 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           SizedBox(
             width: 30,
           ),
-          Text(getSolarNoonTimeString(),
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 42,
-                  fontWeight: FontWeight.normal)),
-          Text("${AppLocalizations.of(context)!.solar_noon}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
+          ColoredText(getSolarNoonTimeString(),
+              style: TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+          ColoredText("${AppLocalizations.of(context)!.solar_noon}",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Divider(
             height: 15.0,
           ),
-          Text(_nowString,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 42,
-                  fontWeight: FontWeight.normal)),
-          Text("${AppLocalizations.of(context)!.current_time}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
+          ColoredText(_nowString,
+              style: TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+          ColoredText(AppLocalizations.of(context)!.current_time,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Divider(
             height: 15.0,
           ),
-          Text(_countdownString,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold)),
-          Text("${AppLocalizations.of(context)!.time_left}",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
+          ColoredText(_countdownString,
+              style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+          ColoredText(AppLocalizations.of(context)!.time_left,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Card(
             margin: const EdgeInsets.fromLTRB(15, 0, 25, 10),
+            color: Theme.of(context).backgroundColor,
             elevation: 1,
             child: Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
@@ -248,101 +229,70 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                     width: 0,
                     height: 15,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text("${AppLocalizations.of(context)!.speech_notify}",
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .backgroundColor,
-                                  fontSize: 15)),
-                          SizedBox(
-                            width: 0,
-                            height: 25,
-                          ),
-                          Text(
-                              "${AppLocalizations.of(context)!.screen_always_on}",
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .backgroundColor,
-                                  fontSize: 15)),
-                          SizedBox(
-                            width: 0,
-                            height: 25,
-                          ),
-                          Text(
-                              "${AppLocalizations.of(context)!.speech_in_background} ",
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .backgroundColor,
-                                  fontSize: 15)),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 0,
-                              height: 5,
-                            ),
-                            Transform.scale(
-                              scale: 1.7,
-                              child: Switch(
-                                  value: _speakIsOn,
-                                  onChanged: (bValue) {
-                                    setState(() {
-                                      Prefs.instance.setBool(SPEAKISON, bValue);
-                                      _speakIsOn = bValue;
-                                      if (_speakIsOn)
-                                        Prefs.speakIsOn = _speakIsOn;
-                                      else {
-                                        service.initialVoicing = false;
-                                      }
-                                    });
-                                  }),
-                            ),
-                            SizedBox(
-                              width: 35,
-                              height: 0,
-                            ),
-                            Transform.scale(
-                              scale: 1.7,
-                              child: Switch(
-                                  value: _wakeOn,
-                                  onChanged: (bValue) {
-                                    setState(() {
-                                      Prefs.screenAlwaysOn = bValue;
-                                      _wakeOn = bValue;
-                                      Wakelock.toggle(enable: bValue);
-                                    });
-                                  }),
-                            ),
-                            SizedBox(
-                              width: 30,
-                              height: 0,
-                            ),
-                            Transform.scale(
-                              scale: 1.7,
-                              child: Switch(
-                                  value: _backgroundOn,
-                                  onChanged: (isAndroid)
-                                      ? _backgroundSwitchChange
-                                      : null),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  ListTile(
+                    leading: ColoredText(
+                        AppLocalizations.of(context)!.speech_notify,
+                        style: TextStyle(
+                            //backgroundcolor:
+                            //  Theme.of(context).appBarTheme.backgroundColor,
+                            fontSize: 15)),
+                    trailing: Transform.scale(
+                      scale: 1.7,
+                      child: Switch(
+                          value: _speakIsOn,
+                          onChanged: (bValue) {
+                            setState(() {
+                              Prefs.instance.setBool(SPEAKISON, bValue);
+                              _speakIsOn = bValue;
+                              if (_speakIsOn)
+                                Prefs.speakIsOn = _speakIsOn;
+                              else {
+                                service.initialVoicing = false;
+                              }
+                            });
+                          }),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 0,
+                    height: 10,
+                  ),
+                  ListTile(
+                    leading: ColoredText(
+                        AppLocalizations.of(context)!.screen_always_on,
+                        style: TextStyle(fontSize: 15)),
+                    trailing: Transform.scale(
+                      scale: 1.7,
+                      child: Switch(
+                          value: _wakeOn,
+                          onChanged: (bValue) {
+                            setState(() {
+                              Prefs.screenAlwaysOn = bValue;
+                              _wakeOn = bValue;
+                              Wakelock.toggle(enable: bValue);
+                            });
+                          }),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 0,
+                    height: 10,
+                  ),
+                  ListTile(
+                    leading: ColoredText(
+                        AppLocalizations.of(context)!.speech_in_background,
+                        style: TextStyle(fontSize: 15)),
+                    trailing: Transform.scale(
+                      scale: 1.7,
+                      child: Switch(
+                          value: _backgroundOn,
+                          onChanged:
+                              (isAndroid) ? _backgroundSwitchChange : null),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                    height: 20,
                   ),
                   Slider(
                       value: _volume,
@@ -355,9 +305,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                       divisions: 100,
                       label:
                           "${AppLocalizations.of(context)!.volume}: $_volume"),
-                  Text("${AppLocalizations.of(context)!.volume}",
+                  ColoredText(AppLocalizations.of(context)!.volume,
                       style: TextStyle(
-                        color: Theme.of(context).primaryColor,
                         fontSize: 15,
                       )),
                 ],
@@ -372,7 +321,12 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   Future showBackgroundInfoDialog(BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok),
+      child: Text(AppLocalizations.of(context)!.ok,
+          style: TextStyle(
+            color: (Prefs.lightThemeOn)
+                ? Theme.of(context).primaryColor
+                : Colors.white,
+          )),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -380,11 +334,11 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
     // set up the AlertDialog
     AlertDialog help = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.background_permission),
+      title: ColoredText(AppLocalizations.of(context)!.background_permission),
       content: SingleChildScrollView(
-        child: Text(AppLocalizations.of(context)!.background_permission_content,
+        child: ColoredText(
+            AppLocalizations.of(context)!.background_permission_content,
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
               fontSize: 16,
             )),
       ),
