@@ -119,7 +119,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
               decoration: BoxDecoration(),
               child: Column(
                 children: [
-                  ColoredText('Buddhist Sun',
+                  ColoredText(AppLocalizations.of(context)!.buddhistSun,
                       style: TextStyle(
                         fontSize: 17,
                       )),
@@ -134,19 +134,22 @@ class Home_PageContainerState extends State<HomePageContainer> {
               ),
             ),
             ListTile(
-              title: ColoredText('Help', style: TextStyle()),
+              title: ColoredText(AppLocalizations.of(context)!.help,
+                  style: TextStyle()),
               onTap: () {
                 showHelpDialog(context);
               },
             ),
             ListTile(
-              title: ColoredText('About', style: TextStyle()),
+              title: ColoredText(AppLocalizations.of(context)!.about,
+                  style: TextStyle()),
               onTap: () {
                 showAboutDialog(context);
               },
             ),
             ListTile(
-              title: ColoredText('Licences', style: TextStyle()),
+              title: ColoredText(AppLocalizations.of(context)!.licenses,
+                  style: TextStyle()),
               onTap: () {
                 showLicenseDialog(context);
               },

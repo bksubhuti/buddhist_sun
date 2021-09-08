@@ -151,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Row(
                     children: [
                       SizedBox(height: 6.0),
-                      Text(AppLocalizations.of(context)!.safety,
+                      ColoredText(AppLocalizations.of(context)!.safety,
                           style: TextStyle(
                             fontSize: 18,
                           )),

@@ -132,6 +132,7 @@ class _GPSLocationState extends State<GPSLocation> {
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    _message = AppLocalizations.of(context)!.press_wait;
     getGpsPrefs();
     if (Prefs.lat == 1.1 && _bLoading == false) {
       Future.delayed(
