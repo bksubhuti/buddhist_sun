@@ -10,6 +10,8 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:async';
 
 class GPSLocation extends StatefulWidget {
   GPSLocation({required this.goToHome});
@@ -27,10 +29,14 @@ class _GPSLocationState extends State<GPSLocation> {
   String _currentGPSText = "";
   bool isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
   String _cityName = "";
+  List<Marker> _markers = <Marker>[];
+  Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
     super.initState();
+    Prefs.lat;
+    Prefs.lng;
   }
 
   @override
@@ -39,8 +45,6 @@ class _GPSLocationState extends State<GPSLocation> {
   }
 
   void getGpsPrefs() async {
-    super.initState();
-
     setState(() {
       _currentGPSText =
           "${AppLocalizations.of(this.context)!.previous_gps_is}:\nlat: ${Prefs.lat}\nlng: ${Prefs.lng}";
@@ -90,7 +94,7 @@ class _GPSLocationState extends State<GPSLocation> {
         _initPerformed = true;
       } // no finished with init of gps.
       _position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+          desiredAccuracy: LocationAccuracy.high);
       _message =
           '${AppLocalizations.of(context)!.gps}: ${_position.latitude}, ${_position.longitude}';
       _cityName = "${AppLocalizations.of(context)!.gps}: ";
@@ -121,12 +125,23 @@ class _GPSLocationState extends State<GPSLocation> {
   void saveGps() async {
     DateTime now = DateTime.now();
     var timezoneOffset = now.timeZoneOffset;
-
     Prefs.cityName = _cityName;
-    Prefs.lat = _position.latitude;
-    Prefs.lng = _position.longitude;
     Prefs.offset = timezoneOffset.inMinutes / 60;
-    //widget.goToHome();
+
+    setState(() {
+      Prefs.lat = _position.latitude;
+      Prefs.lng = _position.longitude;
+      _markers.clear();
+      _markers.add(Marker(
+          markerId: MarkerId(Prefs.cityName),
+          position: LatLng(Prefs.lat, Prefs.lng),
+          infoWindow: InfoWindow(
+            title: Prefs.cityName,
+          )));
+    });
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(zoom: 17, target: LatLng(Prefs.lat, Prefs.lng))));
   }
 
   var controller = TextEditingController();
@@ -139,7 +154,7 @@ class _GPSLocationState extends State<GPSLocation> {
           Duration.zero, () => showAskGPSDialog(context)); // import 'dart:asy;
     }
 
-    return Container(
+    return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -151,9 +166,9 @@ class _GPSLocationState extends State<GPSLocation> {
               )
             : ColoredText(
                 "$_message",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-        SizedBox(height: 25.0),
+        SizedBox(height: 15.0),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton.icon(
             icon: Icon(Icons.gps_fixed),
@@ -179,7 +194,7 @@ class _GPSLocationState extends State<GPSLocation> {
           controlAffinity:
               ListTileControlAffinity.leading, //  <-- leading Checkbox
         ),
-        SizedBox(height: 80.0),
+        SizedBox(height: 10.0),
         ColoredText(
           "$_currentGPSText",
           style: TextStyle(
@@ -187,13 +202,25 @@ class _GPSLocationState extends State<GPSLocation> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 80.0),
+        SizedBox(height: 10.0),
         ColoredText(
           "$_cityName",
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        Container(
+          width: 350,
+          height: 350,
+          child: GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: Set<Marker>.of(_markers),
+              mapType: MapType.satellite,
+              initialCameraPosition: CameraPosition(
+                  zoom: 16, target: LatLng(Prefs.lat, Prefs.lng))),
         ),
       ]),
     ));

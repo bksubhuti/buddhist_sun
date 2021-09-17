@@ -1,0 +1,268 @@
+{
+    "buddhistSun": "Giờ Mặt Trời Dành Cho Đạo Phật",
+    "@buddhistSun": {
+      "description": "Title for app"
+    },
+    "noon": "Trưa",
+    "@noon": {
+      "description": "Noon"
+    },
+    "dawn": "Bình Minh",
+    "@dawn": {
+      "description": "Dawn"
+    },
+    "timer": "Bộ hẹn giờ",
+    "@timer": {
+      "description": "Timer"
+    },
+    "gps": "GPS",
+    "@gps": {
+      "description": "GPS"
+    },
+    "settings": "Cài đặt",
+    "@settings": {
+      "description": "Settings"
+    },
+    "help": "Trợ giúp",
+    "@help": {
+      "description": "Help"
+    },
+    "about": "Giới thiệu",
+    "@about": {
+      "description": "About"
+    },
+    "licenses": "Giấy phép",
+    "@licenses": {
+      "description": "Licenses"
+    },
+    "not_set": "Chưa cài đặt",
+    "@not_set": {
+      "description": "Home screen when city is not set"
+    },
+    "solar_noon": "Đứng bóng",
+    "@solar_noon": {
+      "description": "Time of High Noon .. sun at zenith"
+    },
+    "gmt_offset": "Độ lệch so với GMT",
+    "@gmt_offset": {
+      "description": "local offset from GMT "
+    },
+    "hours": "giờ",
+    "@hours": {
+      "description": "hours on home screen"
+    },
+    "astronomical_twilight": "Hoàng hôn thiên văn",
+    "@astronomical_twilight": {
+      "description": "Astronomical Twilight"
+    },
+    "nautical_twilight": "Hoàng hôn hàng hải",
+    "@nautical_twilight": {
+      "description": "Nautical Twilight"
+    },
+    "civil_twilight": "Hoàng hôn dân sự",
+    "@civil_twilight": {
+      "description": "Civil Twilight"
+    },
+    "sunrise": "Bình minh",
+    "@sunrise": {
+      "description": "Sunrise"
+    },
+    "date": "Ngày",
+    "@date": {
+      "description": "Date"
+    },
+    "current_time": "Giờ hiện tại",
+    "@current_time": {
+      "description": "Current Time"
+    },
+    "late": "Trễ",
+    "@late": {
+      "description": "Late"
+    },
+    "time_left": "Thời gian còn lại",
+    "@time_left": {
+      "description": "Time Left in timer"
+    },
+    "speech_notify": "Thông báo bằng lời",
+    "@speech_notify": {
+      "description": "computer speech to announce the time"
+    },
+    "screen_always_on": "Luôn bật màn hình",
+    "@screen_always_on": {
+      "description": "switch for keeping the screen on (no sleeping)"
+    },
+    "speech_in_background": "Âm thanh chạy dưới nền",
+    "@speech_in_background": {
+      "description": "switch for letting the speech work in background"
+    },
+    "volume": "Âm lượng",
+    "@volume": {
+      "description": "Adjust Volume Control of speech"
+    },
+    "press_wait": "Bấm và chờ GPS mới.",
+    "@press_wait": {
+      "description": "Message for button to get GPS"
+    },
+    "get_gps": "Lấy GPS",
+    "@get_gps": {
+      "description": "Button Title to get GPS"
+    },
+    "save_gps": "Lưu GPS",
+    "@save_gps": {
+      "description": "Button Title to save GPS"
+    },
+    "set_gps_city": "Cài GPS tên Thành Phố bằng Internet",
+    "@set_gps_city": {
+      "description": "Message to tell the user to have the internet turned on for GPS City name lookup"
+    },
+    "previous_gps_is": "GPS trước là",
+    "@previous_gps_is": {
+      "description": "Message to tell the previous GPS reading"
+    },
+    "decimal_number": "Số thập phân",
+    "@decimal_number": {
+      "description": "Message to tell the user to type decimal number."
+    },
+    "current_offset_is": "Độ lệch so với GMT hiện tại",
+    "@current_offset_is": {
+      "description": "Message to tell the current local offset from GMT."
+    },
+    "safety": "Mức an toàn",
+    "@safety": {
+      "description": "This is a number that will make the time earlier for safety of not going over.  Like a safety buffer"
+    },
+    "none": "không",
+    "@none": {
+      "description": "no safety"
+    },
+    "minute1": "1 phút",
+    "@minute1": {
+      "description": "time"
+    },
+    "minutes2": "2 phút",
+    "@minutes2": {
+      "description": "time"
+    },
+    "minutes3": "3 phút",
+    "@minutes3": {
+      "description": "3 minutes"
+    },
+    "minutes4": "4 phút",
+    "@minutes4": {
+      "description": "4 minutes"
+    },
+    "minutes5": "5 phút",
+    "@minutes5": {
+      "description": "5 minutes"
+    },
+    "minutes10": "10 phút",
+    "@minutes10": {
+      "description": "10 minutes"
+    },
+    "pa_auk": "Pa-Auk",
+    "@pa_auk": {
+      "description": "Pa-Auk monastery standard of Dawnrise time"
+    },
+    "na_uyana": "Na-Uyana",
+    "@na_uyana": {
+      "description": "Na-Uyana monastery standard of Dawnrise time."
+    },
+    "search_for_city": "Tìm T.Phố",
+    "@search_for_city": {
+      "description": "instructions to type the city name inside edit field."
+    },
+    "gps_permission": "Quyền GPS",
+    "@gps_permission": {
+      "description": "Title for GPS Permission Dialog."
+    },
+    "background_permission": "Quyền chạy nền",
+    "@background_permission": {
+      "description": "Title for Background Permission Dialog."
+    },
+    "error": "Lỗi",
+    "@error": {
+      "description": "Title for error dialog."
+    },
+    "notification": "Thông báo",
+    "@notification": {
+      "description": "Title for notification dialog."
+    },
+    "running_in_background": "Buddhist Sun đang chạy nền",
+    "@running_in_background": {
+      "description": "message running in background."
+    },
+    "background_initialized": "Khởi tạo dưới nền",
+    "@background_initialized": {
+      "description": "message initialized."
+    },
+    "background_enabled": "Nền đã được bật",
+    "@background_enabled": {
+      "description": "notification for enabled."
+    },
+    "background_not_set": "Chưa bật nền",
+    "@background_not_set": {
+      "description": "background not set notification."
+    },
+    "background_init_error": "Khởi tạo nền bị lỗi",
+    "@background_init_error": {
+      "description": "error message on init."
+    },
+    "background_disabled": "Nền đã tắt",
+    "@background_disabled": {
+      "description": "message to inform background disabled."
+    },
+    "ok": "Đồng ý",
+    "@ok": {
+      "description": "close dialog button."
+    },
+    "yes": "Có",
+    "@yes": {
+      "description": "yes button."
+    },
+    "no": "Không",
+    "@no": {
+      "description": "No button."
+    },
+    "cancel": "Hủy",
+    "@cancel": {
+      "description": "cancel dialog button."
+    },
+    "gps_not_available": "GPS không có sẵn",
+    "@gps_not_available": {
+      "description": "gps not available."
+    },
+    "gps_recommend": "Khuyến cáo nên dùng GPS để cho kết quả tốt nhất. Bạn có muốn bật GPS hay không?",
+    "@gps_recommend": {
+      "description": "gps not available."
+    },
+    "gps_internet_message": "Nếu Internet được bật, tên Thành Phố có thể được tham khảo bằng GPS",
+    "@gps_internet_message": {
+      "description": "gps to request internet."
+    },
+    "language": "Ngôn ngữ",
+    "@language": {
+      "description": "language type."
+    },
+    "theme": "Chủ đề",
+    "@theme": {
+      "description": "For selecting the colors."
+    },
+    "help_content": "Cách tính:\n Việc tính toán được dựa trên các phương trình từ các Thuật toán Thiên văn, bởi tác giả Jean Meeus. Kết quả mặt trời mọc và lặn chính xác theo lý thuyết trong phạm vi một phút cho những nơi nằm giữa +/-72° vĩ tuyến. Xin xem xét dừng trước thời gian được nêu. \n\nTRƯA:\nMàn hình buổi TRƯA hiển thị Mặt Trời Đứng Bóng cho ngày hiện tại như được chọn bởi GPS hoặc Thành Phố theo cách dễ nhìn. Tất cả thời gian theo mức an toàn từ phần cài đặt. (xem bên dưới)\n\nBÌNH MINH:\n Màn hình Bình Minh hiển thị công thức Bình minh đã được chọn từ phần cài đặt và cũng từ các tính toán mặt trời khác. Tất cả thời gian phản ánh theo mức an toàn từ phần cài đặt. \nPa-Auk = (Mặt trời mọc - 40 phút).  \nNa-uyana = ( Mặt trời mọc - 30 phút)  (xem bên dưới) \n\nGPS:\nGPS sẽ tự động thiết lập thành phố nếu Internet được bật và hộp đánh dấu được bật. Xin khuyến cáo sử dụng cài đặt GPS để xác định vị trí của bạn vì Mặt Trời Đứng Bóng sẽ chính xác nhất theo cách này. Điều này chưa được kiểm tra theo vị trí \"Tiết kiệm Ánh sáng Ban ngày\".\n\n Cài đặt:\nĐộ lệch:\n Được thiết lập tự động khi dùng GPS. Nếu bạn dùng Tìm kiếm Thành phố trong cài đặt, bạn phải chọn một độ lệch (GMT +- giờ địa phương của bạn). \nMức an toàn:\n Điều này sẽ trừ số phút từ thời gian Giữa Trưa để cho sớm hơn và cộng số phút vào giờ Bình minh để làm cho trễ hơn.  Vì công thức chính xác trong vòng một phút nên mặc định mức an toàn là một phút.  \n Bình minh:\nChọn bình minh ưa thích của bạn. Na-Uyana dùng Mặt trời mọc-30 minutes, và Pa-Auk dùng Mặt trời mọc - 40 phút. Mức an toàn sẽ cộng x-phút vào thời gian này. \n Bộ báo giờ:\nMàn hình báo giờ cho phép thông báo bằng âm thanh để rảnh tay.  Lời nói có nghĩa là \"Văn bản thành Lời nói\". Âm lượng được kiểm soát bằng thanh trượt. Dưới điều kiện bình thường thông báo bằng lời nói chỉ hoạt động khi màn hình sáng. Để sửa đổi điều này, bạn có thể làm màn hình luôn sáng với nút chuyển \"Màn hình luôn bật\", hoặc bạn bật chức năng \"TTS với màn hình tắt\".  Điều này sẽ bật hoạt động \"nền\" trong khi màn hình tắt và ngăn thiết bị đi vào chế độ ngủ. Bạn nên kiểm tra chức năng nền vài lần trước khi tín nhiệm nó. Một vài điện thoại có thể không cho phép điều này. Chúng tôi sẽ không chịu bất cứ trách nhiệm nào. Khi bạn đóng ứng dụng, có một lệnh được gọi để dừng các công việc dưới nền.  Bạn sẽ biết ứng dụng đang chạy dưới nền bởi biểu tượng mặt trời được hiển thị trên đầu khu vực thông báo của điện thoại (chỗ thanh thời gian và tín hiệu).  Nếu Buddhist Sun không ở trong \"chế độ nền\", bạn sẽ không thấy biểu tượng mặt trời. Chức năng này không có sẵn đối với người dùng iOS.\n Thông báo bằng lời nói thì ở trong các khoảng lặp theo số phút sau: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nRiêng tư:\n Thông tin đầy đủ về sự riêng tư được đặt ở:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n Chúng tôi không thu thập thông tin.",
+    "@help_content": {
+      "description": "instructions to use app."
+    },
+    "about_content": "Buddhist Sun là một ứng dụng nhỏ chuyên hiển thị giờ mặt trời đứng bóng dành cho các vị sư và tu nữ Phật giáo theo các nhu cầu Giới Luật Phật giáo. Bởi vì tôi thường ăn bốc bằng tay, tôi cần có một cách \"rảnh tay\" để biết khi nào sắp tới giờ mặt trời đứng bóng. Bộ báo giờ với thông báo bằng lời nói được bật sẽ giúp tôi biết thời gian còn lại để ăn. Tôi ưa thích sử dụng ứng dụng này và tôi hy vọng các bạn cũng thế. \n\nTại sao điều này lại quan trọng? \nNhững ai tuân thủ Giới Luật thì không được phép ăn sau giữa trưa. Quy tắc này dựa vào mặt trời lúc đứng bóng hơn là đồng hồ. Họ không có đồng hồ vào thời đức Phật. Những ai tuân theo 8 hay 10 giới cũng có thể thấy sự hữu dụng của ứng dụng này. \n\nTôi xin giới thiệu trang https://TimeandDate.com để kiểm tra sự chính xác của ứng dụng này. Ứng dụng này có ý nghĩa dùng cho \"khoảnh khắc/vị trí hiện tại\".  \n\n Cầu mong điều này trợ giúp các bạn chứng ngộ Nibbāna một cách nhanh chóng và an toàn!",
+    "@about_content": {
+    "description": "about content for menu item."
+    },
+    "gps_permission_content": "GPS yêu cầu được dùng quyền này. Quyền này giúp Buddhist Sun biết dữ liệu vị trí GPS để tính vị trí mặt trời. GPS chỉ thu thập 1 lần mỗi khi nút GPS được bấm. Dữ liệu không được gởi ra ngoài app.",
+    "@gps_permission_content": {
+      "description": "Notification to request gps permission."
+    },
+    "background_permission_content": "Việc chạy nền yêu cầu được dùng quyền này. Thông báo bằng lời cần quyền này để chạy mở màn hình. Buddhist Sun sẽ tắt tiến trình nền này khi tắt nút chuyển này hoặc khi đóng app này. Nếu được chấp nhận, quyền này chỉ yêu cầu 1 lần.",
+    "@background_permission_content": {
+      "description": "Ask for permission for background."
+    }
+ }
+
+

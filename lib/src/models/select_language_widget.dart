@@ -6,7 +6,13 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 
 class SelectLanguageWidget extends StatelessWidget {
   SelectLanguageWidget({Key? key}) : super(key: key);
-  final _languageItmes = <String>['English', 'မြန်မာ', 'සිංහල', '中文'];
+  final _languageItmes = <String>[
+    'English',
+    'မြန်မာ',
+    'සිංහල',
+    '中文',
+    'Tiếng Việt'
+  ];
 
   @override
   Widget build(BuildContext context) {
