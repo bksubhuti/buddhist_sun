@@ -35,8 +35,15 @@ class _GPSLocationState extends State<GPSLocation> {
   @override
   void initState() {
     super.initState();
-    Prefs.lat;
-    Prefs.lng;
+    if (Prefs.lng != 1.1) {
+      _markers.clear();
+      _markers.add(Marker(
+          markerId: MarkerId(Prefs.cityName),
+          position: LatLng(Prefs.lat, Prefs.lng),
+          infoWindow: InfoWindow(
+            title: Prefs.cityName,
+          )));
+    } // if not first time loading.
   }
 
   @override
@@ -141,7 +148,7 @@ class _GPSLocationState extends State<GPSLocation> {
     });
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(zoom: 17, target: LatLng(Prefs.lat, Prefs.lng))));
+        CameraPosition(zoom: 16, target: LatLng(Prefs.lat, Prefs.lng))));
   }
 
   var controller = TextEditingController();
