@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     ColoredText(AppLocalizations.of(context)!.theme + ":",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                         )),
                     SizedBox(width: 4.0),
                     SelectThemeWidget(),
@@ -89,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     //SizedBox(width: 8.0),
                     ColoredText(AppLocalizations.of(context)!.language + ":",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                         )),
                     SizedBox(width: 4.0),
                     SelectLanguageWidget(),

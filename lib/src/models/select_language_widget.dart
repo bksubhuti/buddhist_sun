@@ -38,7 +38,7 @@ class SelectLanguageWidget extends StatelessWidget {
                     color: (Prefs.lightThemeOn)
                         ? Theme.of(context).primaryColor
                         : Colors.white,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold),
               ),
             );

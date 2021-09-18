@@ -53,8 +53,7 @@ class _GPSLocationState extends State<GPSLocation> {
 
   void getGpsPrefs() async {
     setState(() {
-      _currentGPSText =
-          "${AppLocalizations.of(this.context)!.previous_gps_is}:\nlat: ${Prefs.lat}\nlng: ${Prefs.lng}";
+      _currentGPSText = "lat: ${Prefs.lat}\nlng: ${Prefs.lng}";
     });
   }
 
