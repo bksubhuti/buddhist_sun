@@ -50,6 +50,14 @@ class DawnPageState extends State<DawnPage> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 0),
         child: Column(children: <Widget>[
+          Center(
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+              backgroundImage: AssetImage("assets/buddhist_sun.png"),
+              radius: 50.0,
+            ),
+          ),
+          SizedBox(height: 30.0),
           ColoredText(
               '${AppLocalizations.of(context)!.astronomical_twilight}: ${getAstronomicalTwilightString()}',
               style: TextStyle(fontSize: 15, letterSpacing: 2)),
@@ -80,25 +88,25 @@ class DawnPageState extends State<DawnPage> {
           Divider(
             height: 20.0,
           ),
-          ColoredText(getDawnString(),
-              style: TextStyle(fontSize: 55, fontWeight: FontWeight.bold)),
-          SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ColoredText(getDawnString(),
+                  style: TextStyle(fontSize: 65, fontWeight: FontWeight.bold)),
+              (Prefs.safety > 0)
+                  ? //Text('\ud83d\udee1')
+                  Icon(Icons.health_and_safety_outlined,
+                      color: Theme.of(context).colorScheme.primary)
+                  : Text(""),
+            ],
+          ),
           ColoredText(getDawnMethodString(context), //_dawnMethod,
-              style: TextStyle(fontSize: 20, letterSpacing: 2)),
+              style: TextStyle(fontSize: 25, letterSpacing: 2)),
           Padding(
               padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Center(
-                    child: CircleAvatar(
-                      backgroundColor:
-                          Theme.of(context).appBarTheme.backgroundColor,
-                      backgroundImage: AssetImage("assets/buddhist_sun.png"),
-                      radius: 40.0,
-                    ),
-                  ),
-                  SizedBox(height: 30.0),
                   ColoredText(
                       '${AppLocalizations.of(context)!.gps}: ${Prefs.lat}, ${Prefs.lng}',
                       style: TextStyle(fontSize: 12.8, letterSpacing: 2.0)),

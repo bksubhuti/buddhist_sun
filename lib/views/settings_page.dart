@@ -153,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       SizedBox(height: 6.0),
                       ColoredText(AppLocalizations.of(context)!.safety,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
                           )),
                       SizedBox(width: 10.0),
                       DropdownButton<String>(
@@ -185,6 +185,14 @@ class _SettingsPageState extends State<SettingsPage> {
                               );
                             },
                           ).toList()),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      (Prefs.safety > 0)
+                          ? //Text('\ud83d\udee1')
+                          Icon(Icons.health_and_safety_outlined,
+                              color: Theme.of(context).colorScheme.primary)
+                          : Text(""),
                     ],
                   ),
                 ),

@@ -199,8 +199,19 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           SizedBox(
             width: 30,
           ),
-          ColoredText(getSolarNoonTimeString(),
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ColoredText(getSolarNoonTimeString(),
+                  style:
+                      TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+              (Prefs.safety > 0)
+                  ? //Text('\ud83d\udee1')
+                  Icon(Icons.health_and_safety_outlined,
+                      color: Theme.of(context).colorScheme.primary)
+                  : Text(""),
+            ],
+          ),
           ColoredText("${AppLocalizations.of(context)!.solar_noon}",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Divider(
