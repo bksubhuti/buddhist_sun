@@ -262,7 +262,10 @@
     "background_permission_content": "Việc chạy nền yêu cầu được dùng quyền này. Thông báo bằng lời cần quyền này để chạy mở màn hình. Buddhist Sun sẽ tắt tiến trình nền này khi tắt nút chuyển này hoặc khi đóng app này. Nếu được chấp nhận, quyền này chỉ yêu cầu 1 lần.",
     "@background_permission_content": {
       "description": "Ask for permission for background."
-    }
+    },
+    "dstSavingsNotice":"Cảnh báo, ứng dụng này không tính cho Giờ tiết kiệm ánh sáng ban ngày (DST). Hãy lưu ý những thay đổi. Khi DST xảy ra, bạn cần đặt lại GPS hoặc độ lệch được tìm thấy trong Tab Cài đặt.",
+    "dstNoticeTitle":  "Thông báo tiết kiệm ánh sáng ban ngày"
+
  }
 
 

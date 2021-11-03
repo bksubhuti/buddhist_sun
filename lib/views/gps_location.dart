@@ -1,3 +1,4 @@
+import 'package:buddhist_sun/views/show_daylight_savings_notice.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -288,6 +289,7 @@ class _GPSLocationState extends State<GPSLocation> {
     // set up the buttons
     _bLoading = true; // prevent double dialog see build function if statement
     await showSetLocaleDialog(context); // import 'dart:asy;
+    await showDaylightSavingsDialog(context);
     _bLoading = false;
 
     Widget cancelButton = TextButton(

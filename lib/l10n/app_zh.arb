@@ -262,5 +262,12 @@
     "background_permission_content": "请允准后台启用，以确保屏面显示期间语音提示功能可以正常使用。当您关闭启用或关闭本APP时，后台运程将随之终止。同意启用后，则本请求不再发出。",
     "@background_permission_content": {
       "description": "Ask for permission for background."
-    }
+    },
+    "dstSavingsNotice":"警告，此应用程序不计算夏令时 (DST)。 请注意这些变化。 当 DST 发生时，您需要重置 GPS 或在“设置”选项卡中找到的偏移量",
+    "dstNoticeTitle":  "夏令时通知"
+
+
+
+
+    
  }
