@@ -35,10 +35,10 @@ class SelectLanguageWidget extends StatelessWidget {
               child: ColoredText(
                 value,
                 style: TextStyle(
-                    color: (Prefs.lightThemeOn)
+                    color: (!Prefs.darkThemeOn)
                         ? Theme.of(context).primaryColor
                         : Colors.white,
-                    fontSize: 12,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
             );

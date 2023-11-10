@@ -24,6 +24,7 @@ void main() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
     sqfliteFfiInit();
+    // Initialize the timezone package
 
     // Change the default factory
     databaseFactory = databaseFactoryFfi;

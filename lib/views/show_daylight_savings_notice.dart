@@ -3,14 +3,12 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 
-
-
 Future showDaylightSavingsDialog(BuildContext context) async {
   // set up the button
   Widget okButton = TextButton(
     child: Text("OK",
         style: TextStyle(
-          color: (Prefs.lightThemeOn)
+          color: (!Prefs.darkThemeOn)
               ? Theme.of(context).primaryColor
               : Colors.white,
         )),
@@ -23,7 +21,8 @@ Future showDaylightSavingsDialog(BuildContext context) async {
   AlertDialog help = AlertDialog(
     title: Text(AppLocalizations.of(context)!.dstNoticeTitle),
     content: SingleChildScrollView(
-      child: ColoredText(AppLocalizations.of(context)!.dstSavingsNotice,    style: TextStyle(fontSize: 16)),
+      child: ColoredText(AppLocalizations.of(context)!.dstSavingsNotice,
+          style: TextStyle(fontSize: 16)),
     ),
     actions: [
       okButton,

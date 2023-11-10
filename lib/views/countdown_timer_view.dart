@@ -167,26 +167,23 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
-      title: AppLocalizations.of(context)!.notification,
-      titleStyle: TextStyle(fontWeight: FontWeight.bold),
-      description: message,
-      descriptionStyle: TextStyle(fontSize: 14),
-      layoutOrientation: ORIENTATION.RTL,
-      animationType: ANIMATION.FROM_RIGHT,
+      primaryColor: Theme.of(context).primaryColor,
+      title: Text(AppLocalizations.of(context)!.notification),
+      description: Text(message),
+      layoutOrientation: ToastOrientation.rtl,
+      animationType: AnimationType.fromRight,
       width: 300,
 //      height: 90,
       icon: Icons.battery_charging_full,
-      color: Colors.blue,
     ).show(context);
   }
 
   _displayErrorMotionToast(BuildContext context, String message) {
     MotionToast.error(
-      title: AppLocalizations.of(context)!.error,
-      titleStyle: TextStyle(fontWeight: FontWeight.bold),
-      description: message,
-      animationType: ANIMATION.FROM_LEFT,
-      position: MOTION_TOAST_POSITION.TOP,
+      title: Text(AppLocalizations.of(context)!.error),
+      description: Text(message),
+      animationType: AnimationType.fromLeft,
+      position: MotionToastPosition.top,
       width: 300,
     ).show(context);
   }
@@ -194,137 +191,138 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SizedBox(
-            width: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ColoredText(getSolarNoonTimeString(),
-                  style:
-                      TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
-              (Prefs.safety > 0)
-                  ? //Text('\ud83d\udee1')
-                  Icon(Icons.health_and_safety_outlined,
-                      color: Theme.of(context).colorScheme.primary)
-                  : Text(""),
-            ],
-          ),
-          ColoredText("${AppLocalizations.of(context)!.solar_noon}",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Divider(
-            height: 15.0,
-          ),
-          ColoredText(_nowString,
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
-          ColoredText(AppLocalizations.of(context)!.current_time,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Divider(
-            height: 15.0,
-          ),
-          ColoredText(_countdownString,
-              style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
-          ColoredText(AppLocalizations.of(context)!.time_left,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Card(
-            margin: const EdgeInsets.fromLTRB(15, 0, 25, 10),
-            color: Theme.of(context).backgroundColor,
-            elevation: 1,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: 0,
-                    height: 15,
-                  ),
-                  ListTile(
-                    leading: ColoredText(
-                        AppLocalizations.of(context)!.speech_notify,
+      color: Prefs.getChosenColor(context),
+      child: SingleChildScrollView(
+        child: Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            SizedBox(
+              width: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ColoredText(getSolarNoonTimeString(),
+                    style:
+                        TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+                (Prefs.safety > 0)
+                    ? //Text('\ud83d\udee1')
+                    Icon(Icons.health_and_safety_outlined,
+                        color: Theme.of(context).colorScheme.primary)
+                    : Text(""),
+              ],
+            ),
+            ColoredText("${AppLocalizations.of(context)!.solar_noon}",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Divider(
+              height: 15.0,
+            ),
+            ColoredText(_nowString,
+                style: TextStyle(fontSize: 42, fontWeight: FontWeight.normal)),
+            ColoredText(AppLocalizations.of(context)!.current_time,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Divider(
+              height: 15.0,
+            ),
+            ColoredText(_countdownString,
+                style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+            ColoredText(AppLocalizations.of(context)!.time_left,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 0, 25, 10),
+              color: Prefs.getChosenColor(context),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 0,
+                      height: 15,
+                    ),
+                    ListTile(
+                      leading: ColoredText(
+                          AppLocalizations.of(context)!.speech_notify,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 15)),
+                      trailing: Transform.scale(
+                        scale: 1.7,
+                        child: Switch(
+                            value: _speakIsOn,
+                            onChanged: (bValue) {
+                              setState(() {
+                                Prefs.instance.setBool(SPEAKISON, bValue);
+                                _speakIsOn = bValue;
+                                if (_speakIsOn)
+                                  Prefs.speakIsOn = _speakIsOn;
+                                else {
+                                  service.initialVoicing = false;
+                                }
+                              });
+                            }),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 0,
+                      height: 10,
+                    ),
+                    ListTile(
+                      leading: ColoredText(
+                          AppLocalizations.of(context)!.screen_always_on,
+                          style: TextStyle(fontSize: 15)),
+                      trailing: Transform.scale(
+                        scale: 1.7,
+                        child: Switch(
+                            value: _wakeOn,
+                            onChanged: (bValue) {
+                              setState(() {
+                                Prefs.screenAlwaysOn = bValue;
+                                _wakeOn = bValue;
+                                Wakelock.toggle(enable: bValue);
+                              });
+                            }),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 0,
+                      height: 10,
+                    ),
+                    ListTile(
+                      leading: ColoredText(
+                          AppLocalizations.of(context)!.speech_in_background,
+                          style: TextStyle(fontSize: 15)),
+                      trailing: Transform.scale(
+                        scale: 1.7,
+                        child: Switch(
+                            value: _backgroundOn,
+                            onChanged:
+                                (isAndroid) ? _backgroundSwitchChange : null),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 30,
+                      height: 20,
+                    ),
+                    Slider(
+                        value: _volume,
+                        onChanged: (newVolume) {
+                          setState(() => _volume = newVolume);
+                          Prefs.volume = _volume;
+                        },
+                        min: 0.0,
+                        max: 1.0,
+                        divisions: 100,
+                        label:
+                            "${AppLocalizations.of(context)!.volume}: $_volume"),
+                    ColoredText(AppLocalizations.of(context)!.volume,
                         style: TextStyle(
-                            //backgroundcolor:
-                            //  Theme.of(context).appBarTheme.backgroundColor,
-                            fontSize: 15)),
-                    trailing: Transform.scale(
-                      scale: 1.7,
-                      child: Switch(
-                          value: _speakIsOn,
-                          onChanged: (bValue) {
-                            setState(() {
-                              Prefs.instance.setBool(SPEAKISON, bValue);
-                              _speakIsOn = bValue;
-                              if (_speakIsOn)
-                                Prefs.speakIsOn = _speakIsOn;
-                              else {
-                                service.initialVoicing = false;
-                              }
-                            });
-                          }),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 0,
-                    height: 10,
-                  ),
-                  ListTile(
-                    leading: ColoredText(
-                        AppLocalizations.of(context)!.screen_always_on,
-                        style: TextStyle(fontSize: 15)),
-                    trailing: Transform.scale(
-                      scale: 1.7,
-                      child: Switch(
-                          value: _wakeOn,
-                          onChanged: (bValue) {
-                            setState(() {
-                              Prefs.screenAlwaysOn = bValue;
-                              _wakeOn = bValue;
-                              Wakelock.toggle(enable: bValue);
-                            });
-                          }),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 0,
-                    height: 10,
-                  ),
-                  ListTile(
-                    leading: ColoredText(
-                        AppLocalizations.of(context)!.speech_in_background,
-                        style: TextStyle(fontSize: 15)),
-                    trailing: Transform.scale(
-                      scale: 1.7,
-                      child: Switch(
-                          value: _backgroundOn,
-                          onChanged:
-                              (isAndroid) ? _backgroundSwitchChange : null),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 30,
-                    height: 20,
-                  ),
-                  Slider(
-                      value: _volume,
-                      onChanged: (newVolume) {
-                        setState(() => _volume = newVolume);
-                        Prefs.volume = _volume;
-                      },
-                      min: 0.0,
-                      max: 1.0,
-                      divisions: 100,
-                      label:
-                          "${AppLocalizations.of(context)!.volume}: $_volume"),
-                  ColoredText(AppLocalizations.of(context)!.volume,
-                      style: TextStyle(
-                        fontSize: 15,
-                      )),
-                ],
+                          fontSize: 15,
+                        )),
+                  ],
+                ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
@@ -334,7 +332,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     Widget okButton = TextButton(
       child: Text(AppLocalizations.of(context)!.ok,
           style: TextStyle(
-            color: (Prefs.lightThemeOn)
+            color: (!Prefs.darkThemeOn)
                 ? Theme.of(context).primaryColor
                 : Colors.white,
           )),

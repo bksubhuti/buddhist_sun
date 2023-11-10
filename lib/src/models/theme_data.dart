@@ -1,47 +1,22 @@
-import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-
-FlexSchemeColor myFlexColorLight = FlexSchemeColor.from(
-  primary: Colors.brown,
-);
-/*
-const FlexSchemeColor myScheme1Light = FlexSchemeColor(
-  primary: Color(0xFF4E0028),
-  primaryVariant: Color(0xFF320019),
-  secondary: Color(0xFF003419),
-  secondaryVariant: Color(0xFF002411),
-  // The built in schemes use their secondary variant color as their
-  // custom app bar color, it could of course be any color, but for consistency
-  // we will do the same in this custom FlexSchemeColor.
-  appBarColor: Color(0xFF002411),
-);
-
-const FlexSchemeColor myScheme1Dark = FlexSchemeColor(
-  primary: Color(0xFF9E7389),
-  primaryVariant: Color(0xFF775C69),
-  secondary: Color(0xFF738F81),
-  secondaryVariant: Color(0xFF5C7267),
-  // Again we use same secondaryVariant color as optional custom app bar color.
-  appBarColor: Color(0xFF5C7267),
-);
-
-*/
+import 'package:flutter/material.dart';
 
 class MyThemes {
+  static const orange2Name = 'Orange 2';
   static const FlexSchemeColor myScheme1Dark = FlexSchemeColor(
     primary: Color(0xFF9E7389),
-    primaryVariant: Color(0xFF775C69),
+    primaryContainer: Color(0xFF775C69),
     secondary: Color(0xFF738F81),
-    secondaryVariant: Color(0xFF5C7267),
+    secondaryContainer: Color(0xFF5C7267),
     // Again we use same secondaryVariant color as optional custom app bar color.
     appBarColor: Color(0xFF5C7267),
   );
 
   static const FlexSchemeColor myScheme1Light = FlexSchemeColor(
     primary: Color(0xFF4E0028),
-    primaryVariant: Color(0xFF320019),
+    primaryContainer: Color(0xFF320019),
     secondary: Color(0xFF003419),
-    secondaryVariant: Color(0xFF002411),
+    secondaryContainer: Color(0xFF002411),
     // The built in schemes use their secondary variant color as their
     // custom app bar color, it could of course be any color, but for consistency
     // we will do the same in this custom FlexSchemeColor.
@@ -52,9 +27,9 @@ class MyThemes {
 // Create a custom flex scheme color for a light theme.
 const FlexSchemeColor myScheme1Light = FlexSchemeColor(
   primary: Color(0xFF4E0028),
-  primaryVariant: Color(0xFF320019),
+  primaryContainer: Color(0xFF320019),
   secondary: Color(0xFF003419),
-  secondaryVariant: Color(0xFF002411),
+  secondaryContainer: Color(0xFF002411),
   // The built in schemes use their secondary variant color as their
   // custom app bar color, it could of course be any color, but for consistency
   // we will do the same in this custom FlexSchemeColor.
@@ -63,9 +38,9 @@ const FlexSchemeColor myScheme1Light = FlexSchemeColor(
 // Create a corresponding custom flex scheme color for a dark theme.
 const FlexSchemeColor myScheme1Dark = FlexSchemeColor(
   primary: Color(0xFF9E7389),
-  primaryVariant: Color(0xFF775C69),
+  primaryContainer: Color(0xFF775C69),
   secondary: Color(0xFF738F81),
-  secondaryVariant: Color(0xFF5C7267),
+  secondaryContainer: Color(0xFF5C7267),
   // Again we use same secondaryVariant color as optional custom app bar color.
   appBarColor: Color(0xFF5C7267),
 );
@@ -131,7 +106,84 @@ final List<FlexSchemeData> myFlexSchemes = <FlexSchemeData>[
     // We create the dark desaturated colors from the light scheme.
     dark: myScheme3Light.toDark(),
   ),
+  const FlexSchemeData(
+    name: MyThemes.orange2Name,
+    description: FlexColor.mangoDescription,
+    light: FlexSchemeColor(
+      primary: FlexColor.mangoLightPrimary,
+      primaryContainer: FlexColor.mangoLightPrimaryContainer,
+      secondary: FlexColor.mangoLightSecondary,
+      secondaryContainer: FlexColor.mangoLightSecondaryContainer,
+      tertiary: FlexColor.mangoLightTertiary,
+      tertiaryContainer: FlexColor.mangoLightTertiaryContainer,
+      appBarColor: FlexColor.mangoLightTertiary,
+      error: FlexColor.materialLightError,
+      swapOnMaterial3: true,
+    ),
+    dark: FlexSchemeColor(
+      primary: FlexColor.mangoDarkPrimary,
+      primaryContainer: FlexColor.mangoDarkPrimaryContainer,
+      secondary: FlexColor.mangoDarkSecondary,
+      secondaryContainer: FlexColor.mangoDarkSecondaryContainer,
+      tertiary: FlexColor.mangoDarkTertiary,
+      tertiaryContainer: FlexColor.mangoDarkTertiaryContainer,
+      appBarColor: FlexColor.mangoDarkTertiary,
+      error: FlexColor.materialDarkError,
+      swapOnMaterial3: true,
+    ),
+  ),
+  const FlexSchemeData(
+    name: 'Mahayana blue',
+    description: 'Mahayana Blue Color grey blue',
+    light: FlexSchemeColor(
+      primary: Color(0xFF00296B),
+      primaryContainer: Color(0xFFA0C2ED),
+      secondary: Color(0xFFD26900),
+      secondaryContainer: Color(0xFFFFD270),
+      tertiary: Color(0xFF5C5C95),
+      tertiaryContainer: Color(0xFFC8DBF8),
+      appBarColor: Colors.red,
+    ),
+    dark: FlexSchemeColor(
+      primary: Color(0xFFB1CFF5),
+      primaryContainer: Color(0xFF3873BA),
+      secondary: Color(0xFFFFD270),
+      secondaryContainer: Color(0xFFD26900),
+      tertiary: Color(0xFFC9CBFC),
+      tertiaryContainer: Color(0xFF535393),
+    ),
+  ),
+
+  // @rydmike: DESIGN TIP: You cannot use same primary secondary colors in
+  // light and dark mode, it creates themes with poor contrast in light or dark
+  // mode depending on selected colors. The colors needs to be tunes for
+  // each mode to look good.
+  const FlexSchemeData(
+    name: 'Pa-Auk Burgundy',
+    description: 'Paauka Color Burgundy',
+    light: FlexSchemeColor(
+      primary: Color.fromARGB(255, 61, 10, 41),
+      secondary: Color(0xFFD26900),
+      swapOnMaterial3: true,
+      appBarColor: FlexColor.mangoDarkTertiary,
+    ),
+    dark: FlexSchemeColor(
+      primary: Color.fromARGB(255, 61, 10, 41),
+      secondary: Color(0xFFD26900),
+      swapOnMaterial3: true,
+      appBarColor: FlexColor.amberDarkTertiary,
+    ),
+  ),
+  const FlexSchemeData(
+    name: 'Sayalay Pink',
+    description: 'Pink Color of Nun',
+    light: FlexSchemeColor(
+      primary: Color.fromARGB(255, 209, 158, 190),
+      secondary: Color.fromARGB(255, 72, 49, 69),
+    ),
+    dark: FlexSchemeColor(
+      primary: Color.fromARGB(255, 209, 158, 190),
+      secondary: Color.fromARGB(255, 72, 49, 69),
+    ),
+  ),
 ];
-
-
-

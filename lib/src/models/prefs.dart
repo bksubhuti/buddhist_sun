@@ -1,5 +1,6 @@
 // import to copy////////////////////
 //import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:flutter/material.dart';
 
 // Shared prefs package import
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,8 @@ const String RETRIEVE_CITYNAME = "retrieveCityName";
 const String LOCALEVAL = "localeVal";
 const String THEME_INDEX = "themeIndex";
 const String LIGHT_THEME_ON = "lightThemeOn";
+const String useM3Pref = 'useM3';
+const String darkThemeOnPref = "darkThemeOn";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -35,6 +38,12 @@ const bool DEFAULT_RETRIEVE_CITYNAME = true;
 const int DEFAULT_LOCALEVAL = 0;
 const int DEFAULT_THEME_INDEX = 24;
 const bool DEFAULT_LIGHT_THEME_ON = true;
+const bool defaultUseM3 = true;
+const bool defaultDarkThemeOn = false;
+int defaultSelectedPageColor = 0;
+const String selectedPageColorPref = "selectedPageColor";
+const String themeNamePref = "themeNamePref";
+const String defaultThemeName = '';
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -93,4 +102,35 @@ class Prefs {
       instance.getBool(LIGHT_THEME_ON) ?? DEFAULT_LIGHT_THEME_ON;
   static set lightThemeOn(bool value) =>
       instance.setBool(LIGHT_THEME_ON, value);
+  static String get themeName =>
+      instance.getString(themeNamePref) ?? defaultThemeName;
+  static set themeName(String value) =>
+      instance.setString(themeNamePref, value);
+
+  static bool get useM3 => instance.getBool(useM3Pref) ?? defaultUseM3;
+  static set useM3(bool value) => instance.setBool(useM3Pref, value);
+  static bool get darkThemeOn =>
+      instance.getBool(darkThemeOnPref) ?? defaultDarkThemeOn;
+  static set darkThemeOn(bool value) =>
+      instance.setBool(darkThemeOnPref, value);
+
+  static int get selectedPageColor =>
+      instance.getInt(selectedPageColorPref) ?? defaultSelectedPageColor;
+  static set selectedPageColor(int value) =>
+      instance.setInt(selectedPageColorPref, value);
+
+  static Color getChosenColor(BuildContext context) {
+    switch (Prefs.selectedPageColor) {
+      case 0:
+        return (Color(Colors.white.value));
+      case 1:
+        return Theme.of(context)
+            .colorScheme
+            .surfaceVariant; // ?? (const Color(seypia));
+      case 2:
+        return (Color(Colors.black.value));
+      default:
+        return Color(Colors.white.value);
+    }
+  }
 }

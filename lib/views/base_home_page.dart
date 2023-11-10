@@ -1,11 +1,12 @@
+import 'package:buddhist_sun/views/gps_location.dart';
+import 'package:buddhist_sun/views/moon_view.dart';
 import 'package:buddhist_sun/views/settings_page.dart';
 import 'package:buddhist_sun/views/dawn_page.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
-import 'package:buddhist_sun/views/dummy_page.dart';
+//import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
-import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -44,13 +45,13 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   late Home _page1;
-  late DawnPage _page3;
   late CountdownTimerView _page2;
-  late StatefulWidget _page4;
-  late SettingsPage _page5;
+  late DawnPage _page3;
+  late MoonPage _page4;
+  late GPSLocation _page5;
   //late DummyPage _dummyPage;
 
-  int _currentIndex = (Prefs.lat == 1.1) ? 3 : 0;
+  int _currentIndex = (Prefs.lat == 1.1) ? 4 : 0;
   //Widget _currentPage = Home();
 
   @override
@@ -66,8 +67,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
     _page3 = DawnPage();
-    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
-    _page5 = SettingsPage(goToHome: goToHome);
+    _page4 = MoonPage();
+    _page5 = GPSLocation();
+//    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
   }
 
   @override
@@ -104,9 +106,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
             },
             icon: Icon(Icons.help),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+              (context);
+            },
+            icon: Icon(Icons.settings),
+          ),
         ],
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).canvasColor,
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
@@ -124,14 +134,25 @@ class Home_PageContainerState extends State<HomePageContainer> {
                         fontSize: 17,
                       )),
                   SizedBox(height: 15.0),
-                  CircleAvatar(
-                    backgroundColor:
-                        Theme.of(context).appBarTheme.backgroundColor,
-                    backgroundImage: AssetImage("assets/buddhist_sun.png"),
-                    radius: 40.0,
+                  ClipOval(
+                    child: Image.asset(
+                      "assets/buddhist_sun_app_logo.png",
+                      fit: BoxFit.cover,
+                      width: 80.0,
+                      height: 80.0,
+                    ),
                   ),
                 ],
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
             ),
             ListTile(
               title: ColoredText(AppLocalizations.of(context)!.help,
@@ -158,7 +179,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
         ),
       ),
       bottomNavigationBar: BottomNavyBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           showElevation: true,
           itemCornerRadius: 24,
           curve: Curves.easeIn,
@@ -176,54 +197,60 @@ class Home_PageContainerState extends State<HomePageContainer> {
           },
           items: <BottomNavyBarItem>[
             BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
+                activeColor: Theme.of(context).primaryColor,
                 title: Text(
                   AppLocalizations.of(context)!.noon,
                   style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
+                      color: Theme.of(context).colorScheme.inverseSurface),
                 ),
-                icon: Icon(Icons.brightness_5_sharp,
-                    color: Theme.of(context).appBarTheme.foregroundColor)),
+                icon: Icon(
+                  Icons.brightness_5_sharp,
+                  color: Theme.of(context).primaryColor,
+                )),
             BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
+                activeColor: Theme.of(context).primaryColor,
                 title: Text(
                   AppLocalizations.of(context)!.timer,
                   style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
+                      color: Theme.of(context).colorScheme.inverseSurface),
                 ),
-                icon: Icon(Icons.timer,
-                    color: Theme.of(context).appBarTheme.foregroundColor)),
-
+                icon: Icon(
+                  Icons.timer,
+                  color: Theme.of(context).primaryColor,
+                )),
             BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
+                activeColor: Theme.of(context).primaryColor,
                 title: Text(
                   AppLocalizations.of(context)!.dawn,
                   style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
+                      color: Theme.of(context).colorScheme.inverseSurface),
                 ),
-                icon: Icon(Icons.brightness_4,
-                    color: Theme.of(context).appBarTheme.foregroundColor)),
+                icon: Icon(
+                  Icons.brightness_4,
+                  color: Theme.of(context).primaryColor,
+                )),
             BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
+                activeColor: Theme.of(context).primaryColor,
+                title: Text(
+                  "moon",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.inverseSurface),
+                ),
+                icon: Icon(
+                  Icons.dark_mode,
+                  color: Theme.of(context).primaryColor,
+                )),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).primaryColor,
                 title: Text(
                   AppLocalizations.of(context)!.gps,
                   style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
+                      color: Theme.of(context).colorScheme.inverseSurface),
                 ),
                 icon: Icon(
                   Icons.gps_fixed_rounded,
-                  color: Theme.of(context).appBarTheme.foregroundColor,
+                  color: Theme.of(context).primaryColor,
                 )),
-            BottomNavyBarItem(
-                activeColor: Theme.of(context).bottomAppBarColor,
-                title: Text(
-                  AppLocalizations.of(context)!.settings,
-                  style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor),
-                ),
-                icon: Icon(Icons.settings,
-                    color: Theme.of(context).appBarTheme.foregroundColor)),
-//            BottomNavyBarItem(title: Text(page5), icon: Icon(Icons.more_time)),
           ]),
       body: SizedBox.expand(
         child: PageView(
@@ -253,7 +280,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
       child: Text(
         AppLocalizations.of(context)!.ok,
         style: TextStyle(
-          color: (Prefs.lightThemeOn)
+          color: (!Prefs.darkThemeOn)
               ? Theme.of(context).primaryColor
               : Colors.white,
         ),
@@ -361,6 +388,31 @@ External Packages used:  (see pub.dev)
   motion_toast: ^1.3.0
   https://pub.flutter-io.cn/packages/motion_toast
 
+  cupertino_icons: ^1.0.2
+  https://pub.dev/packages/cupertino_icons
+
+  geocoding: ^2.0.1  
+  https://pub.dev/packages/geocoding
+  
+  flex_color_scheme: ^7.3.1  
+  https://pub.dev/packages/flex_color_scheme
+  
+  internet_connection_checker: ^1.0.0+1
+  https://pub.dev/packages/internet_connection_checker
+
+  google_maps_flutter: ^2.0.9
+  https://pub.dev/packages/google_maps_flutter
+
+  timezone: ^0.9.2  
+  https://pub.dev/packages/timezone
+
+  flutter_mmcalendar: any
+  https://pub.dev/packages/flutter_mmcalendar
+
+  flutter_launcher_icons: ^0.13.1
+  https://pub.dev/packages/flutter_launcher_icons
+
+
 
 <a href="https://iconscout.com/icons/moon" target="_blank">Moon Icon</a> by <a href="https://iconscout.com/contributors/daniel-bruce">Daniel Bruce</a> on <a href="https://iconscout.com">Iconscout</a>
 sun by Alexandra Hawkhead from the Noun Project
@@ -390,7 +442,7 @@ sun by Alexandra Hawkhead from the Noun Project
     Widget okButton = TextButton(
       child: Text(AppLocalizations.of(context)!.ok,
           style: TextStyle(
-            color: (Prefs.lightThemeOn)
+            color: (!Prefs.darkThemeOn)
                 ? Theme.of(context).primaryColor
                 : Colors.white,
           )),

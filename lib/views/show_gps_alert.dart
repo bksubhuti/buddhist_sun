@@ -8,7 +8,7 @@ Future showGpsPermissionInfoDialog(BuildContext context) async {
   Widget okButton = TextButton(
     child: Text("OK",
         style: TextStyle(
-          color: (Prefs.lightThemeOn)
+          color: (!Prefs.darkThemeOn)
               ? Theme.of(context).primaryColor
               : Colors.white,
         )),

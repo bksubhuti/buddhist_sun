@@ -1,5 +1,7 @@
 import 'package:buddhist_sun/src/models/world_cities.dart';
 import 'package:buddhist_sun/src/services/get_world_cities.dart';
+import 'package:buddhist_sun/views/gps_location.dart';
+import 'package:buddhist_sun/views/theme_settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,8 +11,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/models/change_theme_widget.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key, required this.goToHome}) : super(key: key);
-  final VoidCallback goToHome;
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -67,8 +68,9 @@ class _SettingsPageState extends State<SettingsPage> {
     _addSafetyItemsToMemberList();
     _addDawnMethodItemsToMemberList();
 
-    return Container(
-      child: Padding(
+    return Scaffold(
+      appBar: AppBar(title: Text('settings')),
+      body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
@@ -79,23 +81,17 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ColoredText(AppLocalizations.of(context)!.theme + ":",
-                        style: TextStyle(
-                          fontSize: 12,
-                        )),
-                    SizedBox(width: 4.0),
-                    SelectThemeWidget(),
-                    ChangeThemeWidget(),
-                    //SizedBox(width: 8.0),
+                    SizedBox(height: 50, width: 50.0),
                     ColoredText(AppLocalizations.of(context)!.language + ":",
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 18,
                         )),
-                    SizedBox(width: 4.0),
+                    SizedBox(width: 40.0),
                     SelectLanguageWidget(),
                   ],
                 ),
               ),
+              ThemeSettingView(),
               Card(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                 elevation: 2,
@@ -110,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
                               style: TextStyle(
-                                  color: (Prefs.lightThemeOn)
+                                  color: (!Prefs.darkThemeOn)
                                       ? Theme.of(context).primaryColor
                                       : Colors.white,
                                   fontSize: 15),
@@ -130,7 +126,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               setState(() {
                                 Prefs.offset = _offset;
                               });
-                              widget.goToHome();
                             },
                           ),
                         ],
@@ -159,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       DropdownButton<String>(
                           value: _safetyItems[Prefs.safety],
                           style: TextStyle(
-                            color: (Prefs.lightThemeOn)
+                            color: (!Prefs.darkThemeOn)
                                 ? Theme.of(context).primaryColor
                                 : Colors.white,
                           ),
@@ -176,7 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 child: Text(
                                   value,
                                   style: TextStyle(
-                                      color: (Prefs.lightThemeOn)
+                                      color: (!Prefs.darkThemeOn)
                                           ? Theme.of(context).primaryColor
                                           : Colors.white,
                                       fontSize: 18,
@@ -219,7 +214,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       DropdownButton<String>(
                           value: _dawnMethodItems[Prefs.dawnVal],
                           style: TextStyle(
-                            color: (Prefs.lightThemeOn)
+                            color: (!Prefs.darkThemeOn)
                                 ? Theme.of(context).primaryColor
                                 : Colors.white,
                           ),
@@ -253,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: 15),
               TextField(
                 style: TextStyle(
-                    color: (Prefs.lightThemeOn)
+                    color: (!Prefs.darkThemeOn)
                         ? Theme.of(context).primaryColor
                         : null,
                     fontSize: 20),
@@ -288,7 +283,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                     snapshot.data![index].cityAscii;
                                 Prefs.lat = snapshot.data![index].lat;
                                 Prefs.lng = snapshot.data![index].lng;
-                                widget.goToHome();
                               },
                               title: ColoredText(
                                   "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",

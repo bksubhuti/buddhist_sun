@@ -15,8 +15,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 
 class GPSLocation extends StatefulWidget {
-  GPSLocation({required this.goToHome});
-  final VoidCallback goToHome;
+  //GPSLocation({required this.goToHome});
+  //final VoidCallback goToHome;
   @override
   _GPSLocationState createState() => _GPSLocationState();
 }
@@ -238,7 +238,7 @@ class _GPSLocationState extends State<GPSLocation> {
     Widget okButton = TextButton(
       child: Text(AppLocalizations.of(context)!.ok,
           style: TextStyle(
-            color: (Prefs.lightThemeOn)
+            color: (!Prefs.darkThemeOn)
                 ? Theme.of(context).primaryColor
                 : Colors.white,
           )),
@@ -272,16 +272,14 @@ class _GPSLocationState extends State<GPSLocation> {
 
   _displayMotionToast(BuildContext context, String message) {
     MotionToast(
-      title: AppLocalizations.of(context)!.notification,
-      titleStyle: TextStyle(fontWeight: FontWeight.bold),
-      description: message,
-      descriptionStyle: TextStyle(fontSize: 14),
-      position: MOTION_TOAST_POSITION.TOP,
-      animationType: ANIMATION.FROM_TOP,
+      primaryColor: Theme.of(context).primaryColor,
+      title: Text(AppLocalizations.of(context)!.notification),
+      description: Text(message),
+      position: MotionToastPosition.top,
+      animationType: AnimationType.fromTop,
       width: 300,
 //      height: 90,
       icon: Icons.battery_charging_full,
-      color: Colors.orange,
     ).show(context);
   }
 

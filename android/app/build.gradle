@@ -22,33 +22,53 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+///////////////////////////////////////////////////////////////////
+/////////////  THIS IS FOR KEY STUFF
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
+    namespace "com.bksubhuti.buddhistsun"
+    compileSdkVersion flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.bksubhuti.buddhistsun"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [mapsApiKey: "$System.env.MAPS_API_KEY"]
+manifestPlaceholders = [mapsApiKey: "$System.env.MAPS_API_KEY"]
 
     }
-
+/////////////////////////////////////////////////////////////
+///////////THIS IS FOR KEY STUFF
    signingConfigs {
        release {
            keyAlias keystoreProperties['keyAlias']
@@ -64,6 +84,24 @@ android {
    }
 }
 
+//////////////////////////////////////////////////////
+//  THIS IS FOR **NOT*** KEY SIGNING
+/* buildTypes {
+        release {
+             // TODO: Add your own signing config for the release build.
+           // Signing with the debug keys for now,
+           // so `flutter run --release` works.
+          signingConfig signingConfigs.debug
+        }
+    }
+}
+*///////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
 flutter {
     source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "buddhist_sun")
-set(APPLICATION_ID "com.bksubhuti.buddhistsun.buddhist_sun")
+set(APPLICATION_ID "com.bksubhuti.buddhistsun")
 
 cmake_policy(SET CMP0063 NEW)
 

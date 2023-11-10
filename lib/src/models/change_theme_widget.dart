@@ -19,7 +19,7 @@ class ChangeThemeWidget extends StatelessWidget {
         final provider =
             Provider.of<ThemeChangeNotifier>(context, listen: false);
         Prefs.lightThemeOn = value;
-        provider.toggleTheme(value);
+//        provider.toggleTheme(value as int); //TODO Fixed this from value
       },
     );
   }
