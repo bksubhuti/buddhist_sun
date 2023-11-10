@@ -89,7 +89,7 @@ class _MoonPageState extends State<MoonPage> {
     String fortnightDay = mmDate.getFortnightDay();
     String buddhistEra = "Buddhit Era: ${mmDate.getBuddhistEra()}";
 
-    String parts = ("$fullOrNewmoon $fortnightDay");
+    String parts = ("\n\n$fullOrNewmoon $fortnightDay");
     return SingleChildScrollView(
       child: Container(
         color: Prefs.getChosenColor(context),
@@ -116,22 +116,20 @@ class _MoonPageState extends State<MoonPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     SizedBox(
-                      width: 150, // Fixed width
+                      width: 110, // Fixed width
                       height: 35, // Fixed height
                       child: ElevatedButton(
-                        style: _m3ButtonStyle(context),
                         onPressed: _goToPreviousDay,
-                        child: Text('Previous Day'),
+                        child: Text('Prev'),
                       ),
                     ),
                     _getColoredOrRegularText(parts, fullOrNewmoon),
                     SizedBox(
-                      width: 150, // Fixed width
+                      width: 110, // Fixed width
                       height: 35, // Fixed height
                       child: ElevatedButton(
-                        style: _m3ButtonStyle(context),
                         onPressed: _goToNextDay,
-                        child: Text('Next Day'),
+                        child: Text('Next'),
                       ),
                     ),
                   ],
@@ -157,7 +155,6 @@ class _MoonPageState extends State<MoonPage> {
                     fullOrNewmoon),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  style: _m3ButtonStyle(context),
                   onPressed: () => _selectDate(context),
                   child: Text('Select Date'),
                 ),
@@ -165,7 +162,7 @@ class _MoonPageState extends State<MoonPage> {
                 _getSelectedDateWidget(fullOrNewmoon),
                 SizedBox(height: 10),
                 ColoredText(
-                  "Next Uposatha ($_nextFullOrNewmoon): ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
+                  "Next $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
