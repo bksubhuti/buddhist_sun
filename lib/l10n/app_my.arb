@@ -80,5 +80,8 @@
     "moonPhase": "လ ပြောင်းလဲမှုအဆင့်",
     "selectDate": "ရက်ရွေးပါ",
     "selectedDate": "ရက်ရွေးပြီး",
-    "moon": "လ"
+    "moon": "လ",
+    "darkMode": "အနက်ရောင်နည်း",
+    "color": "အရောင်",
+    "material3": "မက်တီရီယယ် ၃"
 }
