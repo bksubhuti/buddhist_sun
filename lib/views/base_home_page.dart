@@ -257,7 +257,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).primaryColor,
                 title: Text(
-                  "moon",
+                  AppLocalizations.of(context)!.moon,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.inverseSurface),
                 ),

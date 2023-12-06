@@ -1,260 +1,78 @@
 {
-    "buddhistSun": "Buddhist Sun",
-    "@buddhistSun": {
-      "description": "Title for app"
-    },
-    "noon": "Noon",
-    "@noon": {
-      "description": "Noon"
-    },
-    "dawn": "Dawn",
-    "@dawn": {
-      "description": "Dawn"
-    },
-    "timer": "Timer",
-    "@timer": {
-      "description": "Timer"
-    },
-    "gps": "GPS",
-    "@gps": {
-      "description": "GPS"
-    },
-    "settings": "Settings",
-    "@settings": {
-      "description": "Settings"
-    },
-    "help": "Help",
-    "@help": {
-      "description": "Help"
-    },
-    "about": "About",
-    "@about": {
-      "description": "About"
-    },
-    "licenses": "Licenses",
-    "@licenses": {
-      "description": "Licenses"
-    },
-    "not_set": "Not Set",
-    "@not_set": {
-      "description": "Home screen when city is not set"
-    },
-    "solar_noon": "Solar Noon",
-    "@solar_noon": {
-      "description": "Time of High Noon .. sun at zenith"
-    },
-    "gmt_offset": "GMT Offset",
-    "@gmt_offset": {
-      "description": "local offset from GMT "
-    },
-    "hours": "hours",
-    "@hours": {
-      "description": "hours on home screen"
-    },
-    "astronomical_twilight": "Astronomical Twilight",
-    "@astronomical_twilight": {
-      "description": "Astronomical Twilight"
-    },
-    "nautical_twilight": "Nautical Twilight",
-    "@nautical_twilight": {
-      "description": "Nautical Twilight"
-    },
-    "civil_twilight": "Civil Twilight",
-    "@civil_twilight": {
-      "description": "Civil Twilight"
-    },
-    "sunrise": "Sunrise",
-    "@sunrise": {
-      "description": "Sunrise"
-    },
-    "date": "Date",
-    "@date": {
-      "description": "Date"
-    },
-    "current_time": "Current Time",
-    "@current_time": {
-      "description": "Current Time"
-    },
-    "late": "Late",
-    "@late": {
-      "description": "Late"
-    },
-    "time_left": "Time Left",
-    "@time_left": {
-      "description": "Time Left in timer"
-    },
-    "speech_notify": "Speech Notify",
-    "@speech_notify": {
-      "description": "computer speech to announce the time"
-    },
-    "screen_always_on": "Screen Always On",
-    "@screen_always_on": {
-      "description": "switch for keeping the screen on (no sleeping)"
-    },
-    "speech_in_background": "Speech in backgroun",
-    "@speech_in_background": {
-      "description": "switch for letting the speech work in background"
-    },
-    "volume": "Volume",
-    "@volume": {
-      "description": "Adjust Volume Control of speech"
-    },
-    "press_wait": "Press and wait for new GPS.",
-    "@press_wait": {
-      "description": "Message for button to get GPS"
-    },
-    "get_gps": "Get GPS",
-    "@get_gps": {
-      "description": "Button Title to get GPS"
-    },
-    "save_gps": "Save GPS",
-    "@save_gps": {
-      "description": "Button Title to save GPS"
-    },
-    "set_gps_city": "Set GPS city name by Internet",
-    "@set_gps_city": {
-      "description": "Message to tell the user to have the internet turned on for GPS City name lookup"
-    },
-    "previous_gps_is": "Previous GPS is",
-    "@previous_gps_is": {
-      "description": "Message to tell the previous GPS reading"
-    },
-    "decimal_number": "Decimal Number",
-    "@decimal_number": {
-      "description": "Message to tell the user to type decimal number."
-    },
-    "current_offset_is": "Current offset is",
-    "@current_offset_is": {
-      "description": "Message to tell the current local offset from GMT."
-    },
-    "safety": "Safety",
-    "@safety": {
-      "description": "This is a number that will make the time earlier for safety of not going over.  Like a safety buffer"
-    },
-    "none": "none",
-    "@none": {
-      "description": "no safety"
-    },
-    "minute1": "1 minute",
-    "@minute1": {
-      "description": "time"
-    },
-    "minutes2": "2 minutes",
-    "@minutes2": {
-      "description": "time"
-    },
-    "minutes3": "3 minutes",
-    "@minutes3": {
-      "description": "3 minutes"
-    },
-    "minutes4": "4 minutes",
-    "@minutes4": {
-      "description": "4 minutes"
-    },
-    "minutes5": "5 minutes",
-    "@minutes5": {
-      "description": "5 minutes"
-    },
-    "minutes10": "10 minutes",
-    "@minutes10": {
-      "description": "10 minutes"
-    },
-    "pa_auk": "Pa-Auk",
-    "@pa_auk": {
-      "description": "Pa-Auk monastery standar of Dawnrise time"
-    },
-    "na_uyana": "Na-Uyana",
-    "@na_uyana": {
-      "description": "Na-Uyana monastery standar of Dawnrise time."
-    },
-    "search_for_city": "Search for city",
-    "@search_for_city": {
-      "description": "instructions to type the city name inside edit field."
-    },
-    "gps_permission": "GPS Permission",
-    "@gps_permission": {
-      "description": "Title for GPS Permission Dialog."
-    },
-    "background_permission": "Background Permission",
-    "@background_permission": {
-      "description": "Title for Background Permission Dialog."
-    },
-    "error": "Error",
-    "@error": {
-      "description": "Title for error dialog."
-    },
-    "notification": "Notification",
-    "@notification": {
-      "description": "Title for notification dialog."
-    },
-    "running_in_background": "Buddhist Sun Running In Background",
-    "@running_in_background": {
-      "description": "message running in background."
-    },
-    "background_initialized": "Background Initialized",
-    "@background_initialized": {
-      "description": "message initialized."
-    },
-    "background_enabled": "Background Enabled",
-    "@background_enabled": {
-      "description": "notification for enabled."
-    },
-    "background_not_set": "Background not set",
-    "@background_not_set": {
-      "description": "background not set notification."
-    },
-    "background_init_error": "Background initialize error",
-    "@background_init_error": {
-      "description": "error message on init."
-    },
-    "background_disabled": "Background disabled",
-    "@background_disabled": {
-      "description": "message to inform background disabled."
-    },
-    "ok": "OK",
-    "@ok": {
-      "description": "close dialog button."
-    },
-    "yes": "Yes",
-    "@yes": {
-      "description": "yes button."
-    },
-    "no": "No",
-    "@no": {
-      "description": "No button."
-    },
-    "cancel": "Cancel",
-    "@cancel": {
-      "description": "cancel dialog button."
-    },
-    "gps_not_available": "GPS is not available",
-    "@gps_not_available": {
-      "description": "gps not available."
-    },
-    "gps_recommend": "GPS is recommended for best results.  Would you like to set GPS?",
-    "@gps_recommend": {
-      "description": "gps not available."
-    },
-    "gps_internet_message": "If the Internet is turned on, the City Name can be referenced by GPS",
-    "@gps_internet_message": {
-      "description": "gps to request internet."
-    },
-    "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNa-uyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way.  This was not tested with \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Na-Uyana uses Sunrise -30 minutes, and Pa-Auk uses Sunrise -40 minutes.  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  Speech means \"Text to Speech\".  The volume is controlled by the slider.  Under normal conditions the speech notifications only work while the screen is on.  To fix this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones may not allow it. We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The speech announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information.",
-    "@help_content": {
-      "description": "instructions to use app."
-    },
-    "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time specific to Buddhist monastic needs. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. The timer with voice notifications turned on helps me know the time left for eating.  I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://TimeandDate.com to verify this app's accuracy.This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
-    "@about_content": {
-    "description": "about content for menu item."
-    },
-    "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
-    "@gps_permission_content": {
-      "description": "Notification to request gps permission."
-    },
-    "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
-    "@background_permission_content": {
-      "description": "Ask for permission for background."
-    }
- }
-
-
+  "buddhistSun": "Buddhist Sun",
+  "noon": "Noon",
+  "dawn": "Dawn",
+  "timer": "Timer",
+  "gps": "GPS",
+  "settings": "Settings",
+  "help": "Help",
+  "about": "About",
+  "licenses": "Licenses",
+  "not_set": "Not Set",
+  "solar_noon": "Solar Noon",
+  "gmt_offset": "GMT Offset",
+  "hours": "hours",
+  "astronomical_twilight": "Astronomical Twilight",
+  "nautical_twilight": "Nautical Twilight",
+  "civil_twilight": "Civil Twilight",
+  "sunrise": "Sunrise",
+  "date": "Date",
+  "current_time": "Current Time",
+  "late": "Late",
+  "time_left": "Time Left",
+  "speech_notify": "Speech Notify",
+  "screen_always_on": "Screen Always On",
+  "speech_in_background": "Speech in background",
+  "volume": "Volume",
+  "press_wait": "Press and wait for new GPS.",
+  "get_gps": "Get GPS",
+  "save_gps": "Save GPS",
+  "set_gps_city": "Set GPS city name by Internet",
+  "previous_gps_is": "Previous GPS is",
+  "decimal_number": "Decimal Number",
+  "current_offset_is": "Current offset is",
+  "safety": "Safety",
+  "none": "none",
+  "minute1": "1 minute",
+  "minutes2": "2 minutes",
+  "minutes3": "3 minutes",
+  "minutes4": "4 minutes",
+  "minutes5": "5 minutes",
+  "minutes10": "10 minutes",
+  "pa_auk": "Pa-Auk",
+  "na_uyana": "Na-Uyana",
+  "search_for_city": "Search for city",
+  "gps_permission": "GPS Permission",
+  "background_permission": "Background Permission",
+  "error": "Error",
+  "notification": "Notification",
+  "running_in_background": "Buddhist Sun Running In Background",
+  "background_initialized": "Background Initialized",
+  "background_enabled": "Background Enabled",
+  "background_not_set": "Background not set",
+  "background_init_error": "Background initialize error",
+  "background_disabled": "Background disabled",
+  "ok": "OK",
+  "yes": "Yes",
+  "no": "No",
+  "cancel": "Cancel",
+  "gps_not_available": "GPS is not available",
+  "gps_recommend": "GPS is recommended for best results.  Would you like to set GPS?",
+  "gps_internet_message": "If the Internet is turned on, the City Name can be referenced by GPS",
+  "language": "Locale",
+  "theme": "Theme",
+  "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNa-uyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way.  This was not tested with \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Na-Uyana uses Sunrise -30 minutes, and Pa-Auk uses Sunrise -40 minutes.  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  Speech means \"Text to Speech\".  The volume is controlled by the slider.  Under normal conditions the speech notifications only work while the screen is on.  To fix this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones may not allow it. We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The speech announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information.",
+  "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time specific to Buddhist monastic needs. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. The timer with voice notifications turned on helps me know the time left for eating.  I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://TimeandDate.com to verify this app's accuracy.This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
+  "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
+  "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
+  "dstSavingsNotice": "Warning, this app does not calculate for Daylight Savings Time (DST).  Please be aware of the changes.  When DST happens you need to reset the GPS or the offset found in the Settings Tab.",
+  "dstNoticeTitle": "Daylight Savings Notice",
+  "verify": "Verify Noon",
+  "rateThisApp": "Rate This App",
+  "prev": "Prev",
+  "next": "Next",
+  "moonPhase": "Moon Phase:",
+  "selectDate": "Select Date",
+  "selectedDate": "Selected Date:",
+  "moon": "moon"
+}

@@ -73,5 +73,6 @@
   "next": "Next",
   "moonPhase": "Moon Phase:",
   "selectDate": "Select Date",
-  "selectedDate": "Selected Date:"
+  "selectedDate": "Selected Date:",
+  "moon": "moon"
 }
