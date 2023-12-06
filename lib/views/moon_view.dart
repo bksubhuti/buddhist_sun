@@ -9,6 +9,7 @@ import 'package:buddhist_sun/src/models/moon_phase/moon_phase.dart';
 import 'package:buddhist_sun/src/services/astronomy.dart';
 import 'package:timezone/timezone.dart';
 import 'package:flutter_mmcalendar/flutter_mmcalendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MoonPage extends StatefulWidget {
   const MoonPage({Key? key}) : super(key: key);
@@ -87,7 +88,7 @@ class _MoonPageState extends State<MoonPage> {
     final mmDate = MyanmarDateConverter.fromDateTime(selectedDate);
     String fullOrNewmoon = mmDate.getMoonPhase();
     String fortnightDay = mmDate.getFortnightDay();
-    String buddhistEra = "Buddhit Era: ${mmDate.getBuddhistEra()}";
+    //String buddhistEra = "Buddhit Era: ${mmDate.getBuddhistEra()}";
 
     String parts = ("\n\n$fullOrNewmoon $fortnightDay");
     return SingleChildScrollView(
@@ -120,7 +121,7 @@ class _MoonPageState extends State<MoonPage> {
                       height: 35, // Fixed height
                       child: ElevatedButton(
                         onPressed: _goToPreviousDay,
-                        child: Text('Prev'),
+                        child: Text(AppLocalizations.of(context)!.prev),
                       ),
                     ),
                     _getColoredOrRegularText(parts, fullOrNewmoon),
@@ -129,7 +130,7 @@ class _MoonPageState extends State<MoonPage> {
                       height: 35, // Fixed height
                       child: ElevatedButton(
                         onPressed: _goToNextDay,
-                        child: Text('Next'),
+                        child: Text(AppLocalizations.of(context)!.next),
                       ),
                     ),
                   ],
@@ -151,18 +152,18 @@ class _MoonPageState extends State<MoonPage> {
                   ),
                 ),
                 _getColoredOrRegularText(
-                    'Moon Phase: ${moonPhasePercentage.toStringAsFixed(2)}%',
+                    '${AppLocalizations.of(context)!.moonPhase} ${moonPhasePercentage.toStringAsFixed(2)}%',
                     fullOrNewmoon),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _selectDate(context),
-                  child: Text('Select Date'),
+                  child: Text(AppLocalizations.of(context)!.selectDate),
                 ),
                 SizedBox(height: 20),
                 _getSelectedDateWidget(fullOrNewmoon),
                 SizedBox(height: 10),
                 ColoredText(
-                  "Next $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
+                  "${AppLocalizations.of(context)!.next} $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -245,12 +246,12 @@ class _MoonPageState extends State<MoonPage> {
   Widget _getSelectedDateWidget(String moon) {
     if (moon.contains("new") || moon.contains("full")) {
       return ColoredText(
-        'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+        '${AppLocalizations.of(context)!.selectedDate} ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       );
     } else {
       return Text(
-        'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+        '${AppLocalizations.of(context)!.selectedDate} ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       );
     }

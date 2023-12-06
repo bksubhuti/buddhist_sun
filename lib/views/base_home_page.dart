@@ -18,6 +18,8 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 // #enddocregion LocalizationDelegatesImport
 // #docregion AppLocalizationsImport
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:url_launcher/url_launcher.dart';
 // #enddocregion AppLocalizationsImport
 
 class HomePageContainer extends StatefulWidget {
@@ -166,6 +168,29 @@ class Home_PageContainerState extends State<HomePageContainer> {
                   style: TextStyle()),
               onTap: () {
                 showAboutDialog(context);
+              },
+            ),
+            ListTile(
+              title: ColoredText(AppLocalizations.of(context)!.verify,
+                  style: TextStyle()),
+              onTap: () async {
+                final Uri url = Uri.parse(
+                    'https://www.timeanddate.com/sun/@${Prefs.lat},${Prefs.lng}');
+                // another website 'https://gml.noaa.gov/grad/solcalc/table.php?lat=${Prefs.lat}.833&lon=${Prefs.lng}&year=$year');
+
+                if (!await launchUrl(url)) {
+                  throw Exception('Could not launch $url');
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.star), // Added Icon
+              title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
+              focusColor: Theme.of(context).focusColor,
+              hoverColor: Theme.of(context).hoverColor,
+              onTap: () {
+                final InAppReview inAppReview = InAppReview.instance;
+                inAppReview.openStoreListing(appStoreId: '1585091207');
               },
             ),
             ListTile(

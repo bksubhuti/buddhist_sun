@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             SizedBox(height: 10.0),
-            ColoredText('${AppLocalizations.of(context)!.solar_noon}',
+            ColoredText(AppLocalizations.of(context)!.solar_noon,
                 style: TextStyle(fontSize: 30, letterSpacing: 2)),
             Padding(
                 padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
