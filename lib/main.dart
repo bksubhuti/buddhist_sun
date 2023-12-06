@@ -72,6 +72,8 @@ class MyApp extends StatelessWidget {
               Locale('en', ''), // English, no country code
               Locale('my', ''), // Myanmar, no country code
               Locale('si', ''), // Myanmar, no country code
+              Locale('th', ''), // thai, no country code
+              Locale('km', ''), // khmer
               Locale('zh', ''), // Myanmar, no country code
               Locale('vi', ''), // vietnam, no country code
             ],

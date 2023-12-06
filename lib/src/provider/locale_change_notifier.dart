@@ -17,9 +17,15 @@ class LocaleChangeNotifier extends ChangeNotifier {
         localeString = "si";
         break;
       case 3:
-        localeString = "zh";
+        localeString = "th";
         break;
       case 4:
+        localeString = "km";
+        break;
+      case 5:
+        localeString = "zh";
+        break;
+      case 6:
         localeString = "vi";
         break;
     }

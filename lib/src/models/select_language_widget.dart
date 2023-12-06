@@ -10,6 +10,8 @@ class SelectLanguageWidget extends StatelessWidget {
     'English',
     'မြန်မာ',
     'සිංහල',
+    'ภาษาไทย',
+    'ខ្មែរ',
     '中文',
     'Tiếng Việt'
   ];
