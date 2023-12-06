@@ -74,5 +74,8 @@
   "moonPhase": "Moon Phase:",
   "selectDate": "Select Date",
   "selectedDate": "Selected Date:",
-  "moon": "moon"
+  "moon": "moon",
+  "darkMode": "Dark Mode",
+  "color": "Color",
+  "material3": "Materaial 3"
 }
