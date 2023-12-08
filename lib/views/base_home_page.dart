@@ -1,3 +1,4 @@
+import 'package:buddhist_sun/views/about_buddhist_sun_dialog.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:buddhist_sun/views/moon_view.dart';
 import 'package:buddhist_sun/views/settings_page.dart';
@@ -157,6 +158,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.help),
               title: ColoredText(AppLocalizations.of(context)!.help,
                   style: TextStyle()),
               onTap: () {
@@ -164,13 +166,15 @@ class Home_PageContainerState extends State<HomePageContainer> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.info),
               title: ColoredText(AppLocalizations.of(context)!.about,
                   style: TextStyle()),
               onTap: () {
-                showAboutDialog(context);
+                showAboutBuddhistSunDialog(context);
               },
             ),
             ListTile(
+              leading: Icon(Icons.verified),
               title: ColoredText(AppLocalizations.of(context)!.verify,
                   style: TextStyle()),
               onTap: () async {
@@ -191,13 +195,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
               onTap: () {
                 final InAppReview inAppReview = InAppReview.instance;
                 inAppReview.openStoreListing(appStoreId: '1585091207');
-              },
-            ),
-            ListTile(
-              title: ColoredText(AppLocalizations.of(context)!.licenses,
-                  style: TextStyle()),
-              onTap: () {
-                showLicenseDialog(context);
               },
             ),
           ],
@@ -296,169 +293,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
           ],
         ),
       ),
-    );
-  }
-
-  showAboutDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text(
-        AppLocalizations.of(context)!.ok,
-        style: TextStyle(
-          color: (!Prefs.darkThemeOn)
-              ? Theme.of(context).primaryColor
-              : Colors.white,
-        ),
-      ),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: ColoredText("About",
-          style: TextStyle(
-            fontSize: 15,
-          )),
-      content: SingleChildScrollView(
-        child: ColoredText(AppLocalizations.of(context)!.about_content,
-            style: TextStyle(
-              fontSize: 16,
-            )),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  showLicenseDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok,
-          style: TextStyle(
-            color: (Prefs.lightThemeOn)
-                ? Theme.of(context).primaryColor
-                : Colors.white,
-          )),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog license = AlertDialog(
-      title: ColoredText("License"),
-      content: SingleChildScrollView(
-        child: ColoredText(
-            "This is an Open Source Project.  Licenses for the Flutter and Flutter development Packages used here are found on the repository website\n\n"
-            ''' https://github.com/bksubhuti/buddhist_sun/  
-
-            and
-            
-             https://github.com/flutter/flutter/blob/master/LICENSE '''
-            "\n\n"
-            '''
-sun picture derived by creativecommons cc-sa-attrib
-Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
-
-
-citydb.db created from source information that is creative commons attrib
-https://simplemaps.com/data/world-cities'''
-            '''
-External Packages used:  (see pub.dev)
-
-  flutter_spinkit: "^5.0.0"
-  https://pub.flutter-io.cn/packages?q=flutter_spinkit
-
-  solar_calculator: ^1.0.2
-  https://pub.flutter-io.cn/packages/solar_calculator
-
-  path_provider: ^2.0.2
-  https://pub.flutter-io.cn/packages/path_provider
-
-  sqflite_common_ffi: ^2.0.0+1
-  https://pub.flutter-io.cn/packages/sqflite_common_ffi
-
-  sqflite: ^2.0.0+3
-  https://pub.flutter-io.cn/packages/sqflite
-
-  shared_preferences: ^2.0.6
-  https://pub.flutter-io.cn/packages/shared_preferences
-
-  geolocator: ^7.4.0
-  https://pub.flutter-io.cn/packages/geolocator
-
-  bottom_navy_bar: ^6.0.0
-  https://pub.flutter-io.cn/packages/bottom_navy_bar
-
-  flutter_tts: ^3.2.2
-  https://pub.flutter-io.cn/packages/flutter_tts
-
-  wakelock: ^0.5.3+3
-  https://pub.flutter-io.cn/packages/wakelock
-
-  flutter_background: ^1.0.2+1
-  https://pub.flutter-io.cn/packages/flutter_background
-
-  motion_toast: ^1.3.0
-  https://pub.flutter-io.cn/packages/motion_toast
-
-  cupertino_icons: ^1.0.2
-  https://pub.dev/packages/cupertino_icons
-
-  geocoding: ^2.0.1  
-  https://pub.dev/packages/geocoding
-  
-  flex_color_scheme: ^7.3.1  
-  https://pub.dev/packages/flex_color_scheme
-  
-  internet_connection_checker: ^1.0.0+1
-  https://pub.dev/packages/internet_connection_checker
-
-  google_maps_flutter: ^2.0.9
-  https://pub.dev/packages/google_maps_flutter
-
-  timezone: ^0.9.2  
-  https://pub.dev/packages/timezone
-
-  flutter_mmcalendar: any
-  https://pub.dev/packages/flutter_mmcalendar
-
-  flutter_launcher_icons: ^0.13.1
-  https://pub.dev/packages/flutter_launcher_icons
-
-
-
-<a href="https://iconscout.com/icons/moon" target="_blank">Moon Icon</a> by <a href="https://iconscout.com/contributors/daniel-bruce">Daniel Bruce</a> on <a href="https://iconscout.com">Iconscout</a>
-sun by Alexandra Hawkhead from the Noun Project
-
-
-''',
-            style: TextStyle(
-              fontSize: 16,
-            )),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return license;
-      },
     );
   }
 
