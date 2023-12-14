@@ -7,7 +7,7 @@ showAboutBuddhistSunDialog(BuildContext context) async {
   final info = await PackageInfo.fromPlatform();
   showAboutDialog(
     applicationIcon:
-        Image.asset('assets/buddhist_sun.png', width: 50, height: 50),
+        Image.asset('assets/buddhist_sun_app_logo.png', width: 50, height: 50),
     context: context,
     applicationName: AppLocalizations.of(context)!.buddhistSun,
     applicationVersion: 'Version - ${info.version}+${info.buildNumber}',

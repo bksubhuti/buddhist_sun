@@ -264,13 +264,16 @@
     "description": "Ask for permission for background."
   },
   "dstSavingsNotice": "Cảnh báo, ứng dụng này không tính cho Giờ tiết kiệm ánh sáng ban ngày (DST). Hãy lưu ý những thay đổi. Khi DST xảy ra, bạn cần đặt lại GPS hoặc độ lệch được tìm thấy trong Tab Cài đặt.",
-  "dstNoticeTitle": "Thông báo tiết kiệm ánh sáng ban ngày",
-  "verify": "Verify Noon",
-  "rateThisApp": "Rate This App",
-  "prev": "Prev",
-  "next": "Next",
-  "moonPhase": "Moon Phase:",
-  "selectDate": "Select Date",
-  "selectedDate": "Selected Date:",
-  "moon": "moon"
+  "dstNoticeTitle": "Thông báo giờ mùa hè (DST)",
+  "verify": "Kiểm tra lại giờ Trưa",
+  "rateThisApp": "Đánh giá cho ứng dụng",
+  "prev": "Trước",
+  "next": "Sau",
+  "moonPhase": "Tuần trăng:",
+  "selectDate": "Chọn ngày",
+  "selectedDate": "Ngày đã chọn:",
+  "moon": "trưa",
+  "darkMode": "Chế độ tối",
+  "color": "Màu",
+  "material3": "Material 3"
 }
