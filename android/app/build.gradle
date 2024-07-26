@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.paauk.tipitakapalireader"
+    namespace "com.bksubhuti.buddhistsun"
     compileSdk = 34
     ndkVersion "26.1.10909125"
 
