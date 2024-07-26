@@ -8,11 +8,11 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:wakelock/wakelock.dart';
+
 import 'package:flutter_background/flutter_background.dart';
 import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -277,7 +277,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                               setState(() {
                                 Prefs.screenAlwaysOn = bValue;
                                 _wakeOn = bValue;
-                                Wakelock.toggle(enable: bValue);
+                                WakelockPlus.toggle(enable: bValue);
                               });
                             }),
                       ),

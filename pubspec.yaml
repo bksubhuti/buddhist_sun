@@ -32,7 +32,7 @@ dependencies:
   flutter_localizations: # Add this line
     sdk: flutter         # Add this line
 # #enddocregion FlutterLocalizations
-  intl: ^0.18.1 # Add this line
+  intl: ^0.19.0 # Add this line
 # #enddocregion Intl
   flutter_spinkit: "^5.0.0"
   solar_calculator: ^1.0.2
@@ -44,13 +44,12 @@ dependencies:
   sqflite_common_ffi: ^2.0.0+1
   sqflite: ^2.0.0+3
   shared_preferences: ^2.0.6
-  geolocator: ^10.1.0
+  geolocator: ^12.0.0
   bottom_navy_bar: ^6.0.0
-  flutter_tts: ^3.2.2
-  wakelock: ^0.6.2
+  flutter_tts: ^4.0.2
   flutter_background: ^1.0.2+1
   motion_toast: ^2.7.9
-  geocoding: ^2.0.1
+  geocoding: ^3.0.0
   flex_color_scheme: ^7.3.1
   internet_connection_checker: ^1.0.0+1
   provider: ^6.0.0
@@ -60,7 +59,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   url_launcher: ^6.2.1
   in_app_review: ^2.0.8
-  package_info_plus: ^3.1.2
+  package_info_plus: ^8.0.0
+  wakelock_plus: ^1.2.5
   
   
 
@@ -73,7 +73,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
