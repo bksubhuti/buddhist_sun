@@ -31,7 +31,7 @@
 .pub/
 /build
 /bug
-key.properties
+keystore.properties
 
 # Web related
 lib/generated_plugin_registrant.dart
