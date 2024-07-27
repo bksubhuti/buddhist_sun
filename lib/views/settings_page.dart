@@ -1,14 +1,13 @@
 import 'package:buddhist_sun/src/models/world_cities.dart';
 import 'package:buddhist_sun/src/services/get_world_cities.dart';
-import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:buddhist_sun/views/theme_settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
-import 'package:buddhist_sun/src/models/select_theme_widget.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
-import 'package:buddhist_sun/src/models/change_theme_widget.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -70,9 +69,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text('settings')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
               Card(
@@ -272,6 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: CircularProgressIndicator(),
                       );
                     return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemCount: snapshot.data!.length,
