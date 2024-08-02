@@ -1,4 +1,4 @@
-package com.bksubhuti.buddhistsun.buddhist_sun
+package com.bksubhuti.buddhistsun
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -23,15 +23,23 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
-// Load keystore properties
+// Load keystore properties for app signing
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('keystore.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+// Load API key properties
+def apiKeyProperties = new Properties()
+def apiKeyPropertiesFile = rootProject.file('api_keys.properties')
+if (apiKeyPropertiesFile.exists()) {
+    apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+   } else {
+    println("api_keys.properties file not found!")
+}
 android {
-    namespace "com.bksubhuti.buddhistsun.buddhist_sun"
+    namespace "com.bksubhuti.buddhistsun"
     compileSdk = 34
     ndkVersion "26.1.10909125"
 
@@ -45,17 +53,22 @@ android {
     }
     
 defaultConfig {
-    applicationId "com.bksubhuti.buddhistsun.buddhist_sun"
+    applicationId "com.bksubhuti.buddhistsun"
     minSdkVersion flutter.minSdkVersion
     targetSdkVersion flutter.targetSdkVersion
     versionCode flutterVersionCode.toInteger()
     versionName flutterVersionName
+    resValue "string", "google_maps_key", (apiKeyProperties['GOOGLE_MAPS_API_KEY'] ?: "")
+ 
 //    manifestPlaceholders = [
 //        mapsApiKey: "$System.env.MAPS_API_KEY",
     //    applicationName: "io.flutter.app.FlutterApplication"  // or your custom application class
 
   //  ]
 }
+    println("API Key: " + apiKeyProperties['GOOGLE_MAPS_API_KEY'])
+
+
      signingConfigs {
          release {
              keyAlias keystoreProperties['keyAlias']
