@@ -277,8 +277,6 @@ class _GPSLocationState extends State<GPSLocation> {
       description: Text(message),
       position: MotionToastPosition.top,
       animationType: AnimationType.fromTop,
-      width: 300,
-//      height: 90,
       icon: Icons.battery_charging_full,
     ).show(context);
   }

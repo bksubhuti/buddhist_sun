@@ -1,22 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:solar_calculator/src/instant.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
-
 String getNowString() {
+  // added fix for Daylight Savings (DLS).. let the offset work out by the TimeDate object itself.
   DateTime now = DateTime.now();
   Instant instant = Instant(
       year: now.year,
       month: now.month,
       day: now.day,
       hour: now.hour,
-      timeZoneOffset: Prefs.offset);
+      timeZoneOffset: now.timeZoneOffset.inMinutes / 60.0); // fix for DLS here
 
   String nowString = '${instant.day}.${instant.month}.${instant.year}';
+  debugPrint((now.timeZoneOffset.inMinutes / 60.0).toString()); // DLS fix
   return nowString;
 }
-
-
 
 int getSafetyOffset() {
   int safetyOffset = 1;

@@ -184,7 +184,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       description: Text(message),
       animationType: AnimationType.fromLeft,
       position: MotionToastPosition.top,
-      width: 300,
     ).show(context);
   }
 
