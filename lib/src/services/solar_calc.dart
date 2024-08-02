@@ -139,6 +139,39 @@ Instant getSolarNoon() {
   return subtractSafety(calc.sunTransitTime);
 }
 
+Instant getNuaticleDusk() {
+  SolarCalculator calc = getSolarCalcInstant();
+  return subtractSafety(calc.eveningNauticalTwilight.ending);
+}
+
+String getDuskNauticleString() {
+  Instant inst = getNuaticleDusk();
+  String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+  return s;
+}
+
+Instant getCivilDusk() {
+  SolarCalculator calc = getSolarCalcInstant();
+  return subtractSafety(calc.eveningCivilTwilight.ending);
+}
+
+String getDuskCivilString() {
+  Instant inst = getCivilDusk();
+  String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+  return s;
+}
+
+Instant getSunset() {
+  SolarCalculator calc = getSolarCalcInstant();
+  return subtractSafety(calc.sunsetTime);
+}
+
+String getSunsetString() {
+  Instant inst = getSunset();
+  String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+  return s;
+}
+
 Instant subtractSafety(Instant inst) {
   int safetyOffset = getSafetyOffset();
   Duration dur = Duration(minutes: safetyOffset);

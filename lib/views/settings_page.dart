@@ -168,6 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           onChanged: (newValue) {
                             setState(() {
                               Prefs.safety = _safetyItems.indexOf(newValue!);
+                              settingsProvider.setSafety(Prefs.safety);
                             });
                           },
                           items: _safetyItems.map<DropdownMenuItem<String>>(
