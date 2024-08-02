@@ -6,8 +6,10 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:buddhist_sun/src/provider/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -62,6 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
   var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final settingsProvider = Provider.of<SettingsProvider>(context);
 // here we must add the localized values to the menu buttons.
 // when we have an active context.
     _addSafetyItemsToMemberList();
@@ -115,6 +118,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                   border: OutlineInputBorder()),
                               onChanged: (String data) async {
                                 _offset = double.parse(data);
+                                settingsProvider
+                                    .setOffset(double.tryParse(data) ?? 0);
                               },
                             ),
                           ),
@@ -283,6 +288,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     snapshot.data![index].cityAscii;
                                 Prefs.lat = snapshot.data![index].lat;
                                 Prefs.lng = snapshot.data![index].lng;
+                                settingsProvider.setLatLng(
+                                    Prefs.lat, Prefs.lng);
                               },
                               title: ColoredText(
                                   "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",

@@ -16,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // theme stuff
 import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/theme_change_notifier.dart';
+import 'package:buddhist_sun/src/provider/settings_provider.dart';
 
 // for one context
 //import 'package:one_context/one_context.dart';
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider<LocaleChangeNotifier>(
             create: (context) => LocaleChangeNotifier(),
+          ),
+          ChangeNotifierProvider<SettingsProvider>(
+            create: (context) => SettingsProvider(),
           ),
         ],
         builder: (context, _) {
