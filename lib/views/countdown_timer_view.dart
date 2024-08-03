@@ -127,6 +127,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       }
       successInit =
           await FlutterBackground.initialize(androidConfig: androidConfig);
+
+      if (!successInit && await FlutterBackground.hasPermissions) {
+        successInit = await FlutterBackground.initialize(androidConfig: androidConfig);
+      }
       if (successInit) {
         _displayMotionToast(
             context, AppLocalizations.of(context)!.background_initialized);

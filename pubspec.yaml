@@ -47,7 +47,10 @@ dependencies:
   geolocator: ^12.0.0
   bottom_navy_bar: ^6.1.0
   flutter_tts: ^4.0.2
-  flutter_background: ^1.0.2+1
+  flutter_background:
+    git:
+      url: https://github.com/sumbodhi/flutter_background.git
+      ref: master
   motion_toast: ^2.7.9
   geocoding: ^3.0.0
   internet_connection_checker: ^1.0.0+1
