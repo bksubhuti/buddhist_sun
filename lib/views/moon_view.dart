@@ -250,7 +250,7 @@ class _MoonPageState extends State<MoonPage> {
         break;
       default:
         String selectedCountry =
-            EnumToString.convertToString(Prefs.selectedUposatha).toLowerCase();
+            EnumToString.convertToString(Prefs.selectedUposatha);
         if ((!listUposatha.containsKey(selectedCountry))) break;
         _nextUposatha = _calculateNextUposathaByCountry(
             selectedDate, listUposatha[selectedCountry]!);
