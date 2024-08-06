@@ -249,18 +249,16 @@ class _MoonPageState extends State<MoonPage> {
         }
         break;
       default:
-        _nextFullOrNewmoon = "Uposatha";
-        String selectedCountry = EnumToString.convertToString(
-                Prefs.selectedUposatha,
-                camelCase: true)
-            .toLowerCase();
+        String selectedCountry =
+            EnumToString.convertToString(Prefs.selectedUposatha).toLowerCase();
         if ((!listUposatha.containsKey(selectedCountry))) break;
-        _nextUposatha = _CalculateNextUposatha(
+        _nextUposatha = _calculateNextUposathaByCountry(
             selectedDate, listUposatha[selectedCountry]!);
+        _nextFullOrNewmoon = "Uposatha ";
     }
   }
 
-  DateTime _CalculateNextUposatha(
+  DateTime _calculateNextUposathaByCountry(
       DateTime? currentDate, List<DateTime> listUposatha) {
     if (currentDate == null) {
       currentDate = DateTime.now();
