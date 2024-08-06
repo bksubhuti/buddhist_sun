@@ -1,6 +1,7 @@
 import 'package:buddhist_sun/src/models/world_cities.dart';
 import 'package:buddhist_sun/src/services/get_world_cities.dart';
 import 'package:buddhist_sun/views/theme_settings_view.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -233,6 +234,64 @@ class _SettingsPageState extends State<SettingsPage> {
                             });
                           },
                           items: _dawnMethodItems.map<DropdownMenuItem<String>>(
+                            (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: ColoredText(
+                                  value,
+                                  style: TextStyle(
+                                      color: (Prefs.lightThemeOn)
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                            },
+                          ).toList()),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              Card(
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: Row(
+                    children: [
+                      SizedBox(height: 6.0),
+                      ColoredText(
+                          "${AppLocalizations.of(context)!.uposathaCountry}:",
+                          style: TextStyle(
+                            fontSize: 16,
+                          )),
+                      SizedBox(
+                        width: 10.0,
+                        height: 20,
+                      ),
+                      DropdownButton<String>(
+                          value: EnumToString.convertToString(
+                              Prefs.selectedUposatha,
+                              camelCase: true),
+                          style: TextStyle(
+                            color: (!Prefs.darkThemeOn)
+                                ? Theme.of(context).primaryColor
+                                : Colors.white,
+                          ),
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              Prefs.selectedUposatha = EnumToString.fromString(
+                                      UposathaCountry.values, newValue!,
+                                      camelCase: true) ??
+                                  UposathaCountry.Myanmar;
+                            });
+                          },
+                          items: EnumToString.toList(UposathaCountry.values,
+                                  camelCase: true)
+                              .map<DropdownMenuItem<String>>(
                             (String value) {
                               return DropdownMenuItem<String>(
                                 value: value,

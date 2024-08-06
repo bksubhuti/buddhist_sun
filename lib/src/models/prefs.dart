@@ -1,5 +1,6 @@
 // import to copy////////////////////
 //import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
 // Shared prefs package import
@@ -22,6 +23,8 @@ const String THEME_INDEX = "themeIndex";
 const String LIGHT_THEME_ON = "lightThemeOn";
 const String useM3Pref = 'useM3';
 const String darkThemeOnPref = "darkThemeOn";
+const String UPOSATHACOUNTRY = "uposathaCountry";
+const String LASTDOWNLOAD = "lastDownload";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -44,6 +47,11 @@ int defaultSelectedPageColor = 0;
 const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
+DateTime defaultLastDownload = DateTime(2000);
+
+enum UposathaCountry { Myanmar, Srilanka, Thailand }
+
+const defaultSelectedUposatha = UposathaCountry.Myanmar;
 
 class Prefs {
   static late final SharedPreferences instance;
@@ -119,6 +127,20 @@ class Prefs {
   static set selectedPageColor(int value) =>
       instance.setInt(selectedPageColorPref, value);
 
+  static UposathaCountry get selectedUposatha =>
+      EnumToString.fromString(
+          UposathaCountry.values, instance.getString(UPOSATHACOUNTRY) ?? "",
+          camelCase: true) ??
+      UposathaCountry.Myanmar;
+  static set selectedUposatha(UposathaCountry value) => instance.setString(
+      UPOSATHACOUNTRY, EnumToString.convertToString(value, camelCase: true));
+
+  static DateTime get lastDownload =>
+      DateTime.tryParse(instance.getString(LASTDOWNLOAD) ?? "") ??
+      defaultLastDownload;
+  static set lastDownload(DateTime value) =>
+      instance.setString(LASTDOWNLOAD, value.toString());
+
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
       case 0:
@@ -126,7 +148,7 @@ class Prefs {
       case 1:
         return Theme.of(context)
             .colorScheme
-            .surfaceVariant; // ?? (const Color(seypia));
+            .surfaceContainerHighest; // ?? (const Color(seypia));
       case 2:
         return (Color(Colors.black.value));
       default:

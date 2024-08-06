@@ -113,7 +113,6 @@ double calculateJulianCenturies(double julianDate) {
 double findNewMoon(double julianDate) {
   // Implementation of Meeus algorithm to find the Julian Date of new moon
   // This is a simplified example and might require more terms and corrections for high precision
-  double T = calculateJulianCenturies(julianDate);
   double k = (julianDate - 2451550.09766) / 29.53058867;
   k = k.roundToDouble(); // Round to the nearest new moon
   double JDE = 2451550.09766 + 29.53058867 * k;

@@ -201,7 +201,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
         ),
       ),
       bottomNavigationBar: BottomNavyBar(
-          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+          backgroundColor:
+              Theme.of(context).colorScheme.surfaceContainerHighest,
           showElevation: true,
           itemCornerRadius: 24,
           curve: Curves.easeIn,

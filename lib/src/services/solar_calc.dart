@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:solar_calculator/solar_calculator.dart';
-import 'package:solar_calculator/src/instant.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
 String getNowString() {
