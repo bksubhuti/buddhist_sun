@@ -280,8 +280,8 @@ class _MoonPageState extends State<MoonPage> {
     late String content;
     if (DateTime.now().difference(Prefs.lastDownload).inDays > 30) {
       try {
-        final response = await http
-            .get(Uri.parse('http://192.168.43.1:8080/files/uposatha.json'));
+        final response = await http.get(Uri.parse(
+            'https://raw.githubusercontent.com/dhammanana/buddhist_sun/master/assets/uposatha.json'));
         content = response.body;
         listUposatha = _parseUposathaList_Json(content);
         if (listUposatha.length == 0) {
@@ -299,7 +299,7 @@ class _MoonPageState extends State<MoonPage> {
       if (listUposatha.length == 0) {
         //Failed to parse the json. Should reset the lastDownload time?
         debugPrint("Failed to parse upsatha json from local file");
-
+        Prefs.lastDownload = DateTime(2000);
         return;
       }
     }
