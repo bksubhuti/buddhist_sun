@@ -1,0 +1,136 @@
+{
+  "es": [
+    "noon",
+    "dawn",
+    "timer",
+    "gps",
+    "settings",
+    "help",
+    "about",
+    "licenses",
+    "not_set",
+    "solar_noon",
+    "gmt_offset",
+    "hours",
+    "astronomical_twilight",
+    "nautical_twilight",
+    "civil_twilight",
+    "sunrise",
+    "date",
+    "current_time",
+    "late",
+    "time_left",
+    "speech_notify",
+    "screen_always_on",
+    "speech_in_background",
+    "volume",
+    "press_wait",
+    "get_gps",
+    "save_gps",
+    "set_gps_city",
+    "previous_gps_is",
+    "decimal_number",
+    "current_offset_is",
+    "safety",
+    "none",
+    "minute1",
+    "minutes2",
+    "minutes3",
+    "minutes4",
+    "minutes5",
+    "minutes10",
+    "pa_auk",
+    "na_uyana",
+    "search_for_city",
+    "gps_permission",
+    "background_permission",
+    "error",
+    "notification",
+    "running_in_background",
+    "background_initialized",
+    "background_enabled",
+    "background_not_set",
+    "background_init_error",
+    "background_disabled",
+    "ok",
+    "yes",
+    "no",
+    "cancel",
+    "gps_not_available",
+    "gps_recommend",
+    "gps_internet_message",
+    "language",
+    "theme",
+    "help_content",
+    "about_content",
+    "gps_permission_content",
+    "background_permission_content",
+    "dstSavingsNotice",
+    "dstNoticeTitle",
+    "verify",
+    "rateThisApp",
+    "prev",
+    "next",
+    "moonPhase",
+    "selectDate",
+    "selectedDate",
+    "moon",
+    "darkMode",
+    "color",
+    "material3",
+    "uposathaCountry"
+  ],
+
+  "fr": [
+    "yes",
+    "no",
+    "cancel",
+    "gps_recommend",
+    "gps_internet_message",
+    "language",
+    "theme",
+    "dstSavingsNotice",
+    "dstNoticeTitle",
+    "verify",
+    "rateThisApp",
+    "prev",
+    "next",
+    "moonPhase",
+    "selectDate",
+    "selectedDate",
+    "moon",
+    "darkMode",
+    "color",
+    "material3",
+    "uposathaCountry"
+  ],
+
+  "km": [
+    "uposathaCountry"
+  ],
+
+  "my": [
+    "uposathaCountry"
+  ],
+
+  "si": [
+    "darkMode",
+    "color",
+    "material3",
+    "uposathaCountry"
+  ],
+
+  "th": [
+    "about_content",
+    "uposathaCountry"
+  ],
+
+  "vi": [
+    "uposathaCountry"
+  ],
+
+  "zh": [
+    "dstSavingsNotice",
+    "uposathaCountry"
+  ]
+}
