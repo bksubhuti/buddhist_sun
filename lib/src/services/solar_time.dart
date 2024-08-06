@@ -40,7 +40,6 @@ class SolarTimerService {
   static const String LATE = "Late";
 
   DateTime _dtSolar = DateTime.now();
-  Duration _duration = Duration(seconds: 1);
 
   /////////////////////////////////////////////////////////////////
   late FlutterTts flutterTts;
@@ -57,8 +56,6 @@ class SolarTimerService {
   get isContinued => ttsState == TtsState.continued;
   TtsState ttsState = TtsState.stopped;
 
-/////////////////////////////////////////////////////////////////
-  late Timer _timer;
   bool _speakIsOn = false;
   bool _bLate = false;
 
@@ -86,9 +83,6 @@ class SolarTimerService {
       // only set the time once.. this gets called
       _isDoingTimerStuff =
           true; // "initinstance" which gets called each page flip
-      _timer = Timer.periodic(_duration, (timer) {
-        timerCallback();
-      });
     } // is doing timer stuff
   }
 
@@ -196,7 +190,6 @@ class SolarTimerService {
           }
           break;
       } // switch
-
     }
   }
 

@@ -7,11 +7,9 @@ class ThemeChangeNotifier extends ChangeNotifier {
   ThemeMode themeMode = (Prefs.darkThemeOn) ? ThemeMode.dark : ThemeMode.light;
   // ignore: unused_field
   int _themeIndex = 1;
-  bool _useM3 = true;
   final List<bool> _isSelected = [true, false, false];
 
   set useM3(bool val) {
-    _useM3 = val;
     notifyListeners();
   }
 

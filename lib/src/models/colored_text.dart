@@ -262,7 +262,7 @@ class ColoredText extends StatelessWidget {
   /// the specified font size.
   ///
   /// The value given to the constructor as textScaleFactor. If null, will
-  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
+  /// use the [MediaQueryData.textScaler] obtained from the ambient
   /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
   final double? textScaleFactor;
 
@@ -339,8 +339,10 @@ class ColoredText extends StatelessWidget {
       softWrap: softWrap ?? defaultTextStyle.softWrap,
       overflow:
           overflow ?? effectiveTextStyle.overflow ?? defaultTextStyle.overflow,
-      textScaleFactor: textScaleFactor ?? MediaQuery.textScaleFactorOf(context),
       maxLines: maxLines ?? defaultTextStyle.maxLines,
+      textScaler: textScaleFactor != null
+          ? TextScaler.linear(textScaleFactor!)
+          : MediaQuery.textScalerOf(context),
       strutStyle: strutStyle,
       textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis,
       textHeightBehavior: textHeightBehavior ??

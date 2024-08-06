@@ -8,7 +8,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
 import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
