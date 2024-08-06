@@ -121,9 +121,16 @@ class _MoonPageState extends State<MoonPage> {
                 SizedBox(
                   height: 40,
                 ),
+                ColoredText(
+                  "${EnumToString.convertToString(Prefs.selectedUposatha, camelCase: true)} Calendar",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 10),
                 ColoredText(
-                  "${AppLocalizations.of(context)!.next} $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
+                  "${AppLocalizations.of(context)!.next}  $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -242,6 +249,7 @@ class _MoonPageState extends State<MoonPage> {
         }
         break;
       default:
+        _nextFullOrNewmoon = "Uposatha";
         String selectedCountry = EnumToString.convertToString(
                 Prefs.selectedUposatha,
                 camelCase: true)
@@ -281,7 +289,7 @@ class _MoonPageState extends State<MoonPage> {
     if (DateTime.now().difference(Prefs.lastDownload).inDays > 30) {
       try {
         final response = await http.get(Uri.parse(
-            'https://raw.githubusercontent.com/dhammanana/buddhist_sun/master/assets/uposatha.json'));
+            'https://raw.githubusercontent.com/bksubhuti/buddhist_sun/master/assets/uposatha.json'));
         content = response.body;
         listUposatha = _parseUposathaList_Json(content);
         if (listUposatha.length == 0) {

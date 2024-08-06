@@ -49,7 +49,7 @@ const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
 DateTime defaultLastDownload = DateTime(2000);
 
-enum UposathaCountry { Myanmar, Srilanka, Thailand }
+enum UposathaCountry { Myanmar, Sinhala, Thailand }
 
 const defaultSelectedUposatha = UposathaCountry.Myanmar;
 
