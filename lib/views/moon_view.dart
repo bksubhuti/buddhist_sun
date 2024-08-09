@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/provider/settings_provider.dart';
 import 'package:buddhist_sun/src/services/moon_calc.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:buddhist_sun/src/models/moon_phase/moon_phase.dart';
 import 'package:buddhist_sun/src/services/astronomy.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 import 'package:flutter_mmcalendar/flutter_mmcalendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,6 +32,7 @@ class _MoonPageState extends State<MoonPage> {
   double moonPhasePercentage =
       0.0; // Dummy value, you need to calculate this based on the selected date
   Map<String, List<DateTime>> listUposatha = {};
+  bool _noNextUposathaData = false;
 
   void _calculateMoonPhase() {
     useMeeus();
@@ -99,97 +102,100 @@ class _MoonPageState extends State<MoonPage> {
     //String buddhistEra = "Buddhit Era: ${mmDate.getBuddhistEra()}";
 
     String parts = ("\n\n$fullOrNewmoon $fortnightDay");
-    return SingleChildScrollView(
-      child: Container(
-        color: Prefs.getChosenColor(context),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Center(
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/buddhist_sun_app_logo.png",
-                      fit: BoxFit.cover,
-                      width: 100.0,
-                      height: 100.0,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                ColoredText(
-                  "${EnumToString.convertToString(Prefs.selectedUposatha, camelCase: true)} Calendar",
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                ColoredText(
-                  "${AppLocalizations.of(context)!.next}  $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 110, // Fixed width
-                      height: 35, // Fixed height
-                      child: ElevatedButton(
-                        onPressed: _goToPreviousDay,
-                        child: Text(AppLocalizations.of(context)!.prev),
-                      ),
-                    ),
-                    _getColoredOrRegularText(parts, fullOrNewmoon),
-                    SizedBox(
-                      width: 110, // Fixed width
-                      height: 35, // Fixed height
-                      child: ElevatedButton(
-                        onPressed: _goToNextDay,
-                        child: Text(AppLocalizations.of(context)!.next),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.all(8.0), // Add padding to avoid overlap
-                  child: MoonWidget(
-                    size: 100, // Adjust the size as needed
-                    resolution: 200,
-                    backgroundImageAsset:
-                        'assets/moon_free2.png', // Example image.
 
-                    moonColor: const Color.fromARGB(97, 63, 57, 57),
-                    date: selectedDate,
+    return Consumer<SettingsProvider>(
+        builder: (context, settingsProvider, child) {
+      return SingleChildScrollView(
+        child: Container(
+          color: Prefs.getChosenColor(context),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Center(
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/buddhist_sun_app_logo.png",
+                        fit: BoxFit.cover,
+                        width: 100.0,
+                        height: 100.0,
+                      ),
+                    ),
                   ),
-                ),
-                _getColoredOrRegularText(
-                    '${AppLocalizations.of(context)!.moonPhase} ${moonPhasePercentage.toStringAsFixed(2)}%',
-                    fullOrNewmoon),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _selectDate(context),
-                  child: Text(AppLocalizations.of(context)!.selectDate),
-                ),
-                SizedBox(height: 20),
-                _getSelectedDateWidget(fullOrNewmoon),
-              ],
+                  SizedBox(
+                    height: 30,
+                  ),
+                  ColoredText(
+                    "${EnumToString.convertToString(Prefs.selectedUposatha, camelCase: true)} Calendar",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ColoredText(
+                    _noNextUposathaData
+                        ? "No Data"
+                        : "${AppLocalizations.of(context)!.next}  $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 110, // Fixed width
+                        height: 35, // Fixed height
+                        child: ElevatedButton(
+                          onPressed: _goToPreviousDay,
+                          child: Text(AppLocalizations.of(context)!.prev),
+                        ),
+                      ),
+                      _getColoredOrRegularText(parts, fullOrNewmoon),
+                      SizedBox(
+                        width: 110, // Fixed width
+                        height: 35, // Fixed height
+                        child: ElevatedButton(
+                          onPressed: _goToNextDay,
+                          child: Text(AppLocalizations.of(context)!.next),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(
+                        8.0), // Add padding to avoid overlap
+                    child: MoonWidget(
+                      size: 100, // Adjust the size as needed
+                      resolution: 200,
+                      backgroundImageAsset:
+                          'assets/moon_free2.png', // Example image.
+
+                      moonColor: const Color.fromARGB(97, 63, 57, 57),
+                      date: selectedDate,
+                    ),
+                  ),
+                  _getColoredOrRegularText(
+                      '${AppLocalizations.of(context)!.moonPhase} ${moonPhasePercentage.toStringAsFixed(2)}%',
+                      fullOrNewmoon),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _selectDate(context),
+                    child: Text(AppLocalizations.of(context)!.selectDate),
+                  ),
+                  SizedBox(height: 20),
+                  _getSelectedDateWidget(fullOrNewmoon),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   String getMoonText() {
@@ -268,11 +274,14 @@ class _MoonPageState extends State<MoonPage> {
     DateTime nextUposatha = currentDate;
     //it should be null, but to match with orginal code,
     //set it as current date if couldn't find.
+    _noNextUposathaData = true;
 
     //find the first day that greater than current day.
     for (DateTime item in listUposatha) {
       if (item.compareTo(currentDate) > 0) {
         nextUposatha = item;
+        _noNextUposathaData = false;
+
         break;
       }
     }
@@ -280,34 +289,38 @@ class _MoonPageState extends State<MoonPage> {
   }
 
   Future initUposatha() async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationSupportDirectory();
     File jsonFile = File('${directory.path}/uposatha.json');
 
-    late String content;
-    if (DateTime.now().difference(Prefs.lastDownload).inDays > 30) {
+    // Read the existing content
+    String content = jsonFile.readAsStringSync();
+    listUposatha = _parseUposathaList_Json(content);
+
+    DateTime updateThreshold = DateTime(2025, 12, 1);
+    bool shouldUpdate = DateTime.now().isAfter(updateThreshold) &&
+        (DateTime.now().difference(Prefs.lastDownload).inDays > 30);
+
+    // Update condition based on date and last download
+    if (shouldUpdate) {
       try {
         final response = await http.get(Uri.parse(
             'https://raw.githubusercontent.com/bksubhuti/buddhist_sun/master/assets/uposatha.json'));
         content = response.body;
         listUposatha = _parseUposathaList_Json(content);
-        if (listUposatha.length == 0) {
-          return;
+        if (listUposatha.isNotEmpty) {
+          jsonFile.writeAsStringSync(content);
+          Prefs.lastDownload = DateTime.now(); //mark as downloaded.
         }
-        jsonFile.writeAsStringSync(content);
-        Prefs.lastDownload = DateTime.now(); //mark as downloaded.
       } catch (e) {
         debugPrint("Error occurred: $e");
-        return;
       }
-    } else {
-      content = jsonFile.readAsStringSync();
-      listUposatha = _parseUposathaList_Json(content);
-      if (listUposatha.length == 0) {
-        //Failed to parse the json. Should reset the lastDownload time?
-        debugPrint("Failed to parse upsatha json from local file");
-        Prefs.lastDownload = DateTime(2000);
-        return;
-      }
+    }
+
+    // Handle parsing failure from initial read
+    if (listUposatha.isEmpty) {
+      debugPrint("Failed to parse uposatha json from local file");
+      // Reset the last download time if the local file is corrupt
+      Prefs.lastDownload = DateTime(2025, 12, 01);
     }
   }
 

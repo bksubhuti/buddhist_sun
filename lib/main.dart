@@ -17,6 +17,10 @@ import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/theme_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+
 // for one context
 //import 'package:one_context/one_context.dart';
 
@@ -34,8 +38,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize SharedPrefs instance.
   await Prefs.init();
+  await initJsonFile(); // Ensure JSON file is ready before app runs
 
   runApp(MyApp());
+}
+
+Future<void> initJsonFile() async {
+  final directory = await getApplicationSupportDirectory();
+  File jsonFile = File('${directory.path}/uposatha.json');
+
+  // Check if the file exists, if not, create it from assets
+  if (!jsonFile.existsSync()) {
+    String content = await rootBundle.loadString('assets/uposatha.json');
+    jsonFile.writeAsString(content);
+    Prefs.lastDownload =
+        DateTime(2025, 12, 1); // Set default last download time
+  }
 }
 
 class MyApp extends StatelessWidget {

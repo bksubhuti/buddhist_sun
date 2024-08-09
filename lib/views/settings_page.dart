@@ -96,54 +96,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               ThemeSettingView(),
-              if (showCityAndOffset)
-                Card(
-                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: TextField(
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                style: TextStyle(
-                                    color: (!Prefs.darkThemeOn)
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.white,
-                                    fontSize: 15),
-                                decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!
-                                        .decimal_number,
-                                    border: OutlineInputBorder()),
-                                onChanged: (String data) async {
-                                  _offset = double.parse(data);
-                                  settingsProvider
-                                      .setOffset(double.tryParse(data) ?? 0);
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 6.0),
-                            IconButton(
-                              icon: Icon(Icons.save),
-                              onPressed: () async {
-                                setState(() {
-                                  Prefs.offset = _offset;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 6.0),
-                        ColoredText(
-                            "${AppLocalizations.of(context)!.current_offset_is} ${Prefs.offset}"),
-                      ],
-                    ),
-                  ),
-                ),
               SizedBox(height: 25),
               Card(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -231,6 +183,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             setState(() {
                               Prefs.dawnVal =
                                   _dawnMethodItems.indexOf(newValue!);
+                              settingsProvider.setDawnVal(newValue);
                             });
                           },
                           items: _dawnMethodItems.map<DropdownMenuItem<String>>(
@@ -287,6 +240,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       UposathaCountry.values, newValue!,
                                       camelCase: true) ??
                                   UposathaCountry.Myanmar;
+                              settingsProvider.setSelectedUposatha(newValue);
                             });
                           },
                           items: EnumToString.toList(UposathaCountry.values,
@@ -312,70 +266,123 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: 15),
-              if (showCityAndOffset)
-                TextField(
-                  style: TextStyle(
-                      color: (!Prefs.darkThemeOn)
-                          ? Theme.of(context).primaryColor
-                          : null,
-                      fontSize: 20),
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.search_for_city,
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0)))),
-                  controller: controller,
-                  onChanged: (String data) {
-                    setState(() {
-                      searchKey = data;
-                    });
-                    print(data);
-                  },
-                ),
-              if (showCityAndOffset)
-                FutureBuilder<List<WorldCities>>(
-                    future: dbService.getWorldCities(searchKey),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData)
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              child: ListTile(
-                                onTap: () async {
-                                  Prefs.cityName =
-                                      snapshot.data![index].cityAscii;
-                                  Prefs.lat = snapshot.data![index].lat;
-                                  Prefs.lng = snapshot.data![index].lng;
-                                  settingsProvider.setLatLng(
-                                      Prefs.lat, Prefs.lng);
-                                },
-                                title: ColoredText(
-                                    "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: (Prefs.lightThemeOn)
-                                          ? Theme.of(context).primaryColor
-                                          : Colors.white,
-                                    )),
-                                subtitle: ColoredText(
-                                    snapshot.data![index].lat.toString() +
-                                        "," +
-                                        snapshot.data![index].lng.toString()),
-                              ),
-                            );
-                          });
-                    })
             ],
           ),
         ),
       ),
+    );
+  }
+
+// removed this from the regular build.. not called
+  Widget getOffsetCard(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: TextField(
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    style: TextStyle(
+                        color: (!Prefs.darkThemeOn)
+                            ? Theme.of(context).primaryColor
+                            : Colors.white,
+                        fontSize: 15),
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.decimal_number,
+                        border: OutlineInputBorder()),
+                    onChanged: (String data) async {
+                      _offset = double.parse(data);
+                      //settingsProvider
+                      //  .setOffset(double.tryParse(data) ?? 0);
+                    },
+                  ),
+                ),
+                SizedBox(height: 6.0),
+                IconButton(
+                  icon: Icon(Icons.save),
+                  onPressed: () async {
+                    setState(() {
+                      Prefs.offset = _offset;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 6.0),
+            ColoredText(
+                "${AppLocalizations.of(context)!.current_offset_is} ${Prefs.offset}"),
+          ],
+        ),
+      ),
+    );
+  }
+
+// removed this from the regular build.. not called
+  Widget getCitiesWidget(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          style: TextStyle(
+              color:
+                  (!Prefs.darkThemeOn) ? Theme.of(context).primaryColor : null,
+              fontSize: 20),
+          decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.search_for_city,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+          controller: controller,
+          onChanged: (String data) {
+            setState(() {
+              searchKey = data;
+            });
+            print(data);
+          },
+        ),
+        FutureBuilder<List<WorldCities>>(
+            future: dbService.getWorldCities(searchKey),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        onTap: () async {
+                          Prefs.cityName = snapshot.data![index].cityAscii;
+                          Prefs.lat = snapshot.data![index].lat;
+                          Prefs.lng = snapshot.data![index].lng;
+                          //settingsProvider.setLatLng(
+                          //  Prefs.lat, Prefs.lng);
+                        },
+                        title: ColoredText(
+                            "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: (Prefs.lightThemeOn)
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                            )),
+                        subtitle: ColoredText(
+                            snapshot.data![index].lat.toString() +
+                                "," +
+                                snapshot.data![index].lng.toString()),
+                      ),
+                    );
+                  });
+            })
+      ],
     );
   }
 }

@@ -150,7 +150,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             ),
             ListTile(
               leading: Icon(Icons.settings),
-              title: Text(AppLocalizations.of(context)!.settings),
+              title: ColoredText(AppLocalizations.of(context)!.settings),
               onTap: () {
                 Navigator.pop(context); // close the drawer
                 Navigator.push(context,

@@ -47,7 +47,10 @@ int defaultSelectedPageColor = 0;
 const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
-DateTime defaultLastDownload = DateTime(2000);
+
+// set default to one month before the last known data point we ship with.
+// it will download every 30 days thereafter.
+DateTime defaultLastDownload = DateTime(2025, 12, 1);
 
 enum UposathaCountry { Myanmar, Sinhala, Thailand }
 
