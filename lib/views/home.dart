@@ -15,19 +15,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  static bool _initPerformed = false;
+
   Map data = {};
   @override
   void initState() {
     super.initState();
-    if (Prefs.autoGpsEnabled) {
+    if (Prefs.autoGpsEnabled && !_initPerformed) {
       Future.delayed(Duration.zero, () async {
         var (error, position, city) =
             await GpsService.initAndSaveGps(updateCity: true);
+        _initPerformed = true;
         if (error != null) {
           print("GPS error: $error");
           // optionally show a snackbar or toast here
         }
-        setState(() {}); // update location-based UI
+        if (mounted) {
+          setState(
+              () {}); // Only call setState if the widget is still in the tree
+        }
       });
     }
   }

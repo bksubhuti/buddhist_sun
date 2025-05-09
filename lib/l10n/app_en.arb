@@ -78,5 +78,6 @@
   "darkMode": "Dark Mode",
   "color": "Color",
   "material3": "Material 3",
-  "uposathaCountry": "Uposatha Country"
+  "uposathaCountry": "Uposatha Country",
+  "autoUpdateGps": "Auto update GPS"
 }

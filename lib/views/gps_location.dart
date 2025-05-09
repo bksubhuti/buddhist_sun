@@ -102,10 +102,6 @@ class _GPSLocationState extends State<GPSLocation> {
   Widget build(BuildContext context) {
     _message = AppLocalizations.of(context)!.press_wait;
     getGpsPrefs();
-/*    if (Prefs.lat == 1.1 && _bLoading == false) {
-      Future.delayed(
-          Duration.zero, () => showAskGPSDialog(context)); // import 'dart:asy;
-    }*/
 
     return SingleChildScrollView(
         child: Padding(
@@ -123,7 +119,7 @@ class _GPSLocationState extends State<GPSLocation> {
               ),
         SizedBox(height: 15.0),
         SwitchListTile(
-          title: ColoredText("Auto GPS on launch"),
+          title: ColoredText(AppLocalizations.of(context)!.get_gps),
           value: Prefs.autoGpsEnabled,
           onChanged: (value) {
             setState(() {
@@ -140,7 +136,7 @@ class _GPSLocationState extends State<GPSLocation> {
                 : () {
                     initGps();
                   },
-            label: Text("${AppLocalizations.of(context)!.get_gps}"),
+            label: Text(AppLocalizations.of(context)!.get_gps),
           ),
         ]),
         CheckboxListTile(

@@ -3,15 +3,12 @@ import 'package:geocoding/geocoding.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 
 class GpsService {
-  static bool _initPerformed = false;
-
-  static Future<(String? errorMessage, Position? position, String cityName)> initAndSaveGps({
+  static Future<(String? errorMessage, Position? position, String cityName)>
+      initAndSaveGps({
     bool updateCity = true,
   }) async {
     if (!Prefs.autoGpsEnabled) return (null, null, "");
-    if (_initPerformed) return (null, null, "");
-
-    _initPerformed = true;
+    //if (_initPerformed) return (null, null, "");
 
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -37,8 +34,8 @@ class GpsService {
     String city = "";
     if (updateCity && Prefs.retrieveCityName) {
       try {
-        List<Placemark> placemarks =
-            await placemarkFromCoordinates(position.latitude, position.longitude);
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         city = placemarks.first.subAdministrativeArea ?? "Unknown";
       } catch (_) {
         city = "Unknown";

@@ -189,7 +189,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       title: Text(AppLocalizations.of(context)!.error),
       description: Text(message),
       animationType: AnimationType.slideInFromLeft,
-      toastAlignment: Alignment.topCenter,
     ).show(context);
   }
 
