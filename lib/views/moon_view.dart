@@ -96,7 +96,14 @@ class _MoonPageState extends State<MoonPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mmDate = MyanmarDateConverter.fromDateTime(selectedDate);
+    final mmCalendar = MmCalendar(
+      config: const MmCalendarConfig(
+        calendarType: CalendarType.english,
+        language: Language.english,
+      ),
+    );
+
+    final mmDate = mmCalendar.fromDateTime(selectedDate);
     String fullOrNewmoon = mmDate.getMoonPhase();
     String fortnightDay = mmDate.getFortnightDay();
     //String buddhistEra = "Buddhit Era: ${mmDate.getBuddhistEra()}";
@@ -241,10 +248,16 @@ class _MoonPageState extends State<MoonPage> {
       case UposathaCountry.Myanmar:
         DateTime upoDate = selectedDate;
 
+        final mmCalendar = MmCalendar(
+          config: const MmCalendarConfig(
+            calendarType: CalendarType.english,
+            language: Language.english,
+          ),
+        );
+
         for (int x = 0; x < 16; x++) {
           upoDate = upoDate.add(Duration(days: 1));
-          MyanmarDate mmDate1 = MyanmarDateConverter.fromDateTime(upoDate,
-              calendarType: CalendarType.english);
+          final mmDate1 = mmCalendar.fromDateTime(upoDate);
           _nextFullOrNewmoon = mmDate1.getMoonPhase();
           if (_nextFullOrNewmoon.contains("new") ||
               _nextFullOrNewmoon.contains("full")) {

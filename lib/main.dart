@@ -47,13 +47,13 @@ Future<void> initJsonFile() async {
   final directory = await getApplicationSupportDirectory();
   File jsonFile = File('${directory.path}/uposatha.json');
 
-  // Check if the file exists, if not, create it from assets
-  if (!jsonFile.existsSync()) {
-    String content = await rootBundle.loadString('assets/uposatha.json');
-    jsonFile.writeAsString(content);
-    Prefs.lastDownload =
-        DateTime(2025, 12, 1); // Set default last download time
-  }
+  String content = await rootBundle.loadString('assets/uposatha.json');
+
+  // Ensure the file is fully written before proceeding
+  await jsonFile.writeAsString(content);
+
+  // Set default last download time
+  Prefs.lastDownload = DateTime(2025, 12, 1);
 }
 
 class MyApp extends StatelessWidget {

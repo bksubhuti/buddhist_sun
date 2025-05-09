@@ -5,6 +5,7 @@ import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:provider/provider.dart';
+import 'package:buddhist_sun/src/services/gps_service.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,6 +19,17 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    if (Prefs.autoGpsEnabled) {
+      Future.delayed(Duration.zero, () async {
+        var (error, position, city) =
+            await GpsService.initAndSaveGps(updateCity: true);
+        if (error != null) {
+          print("GPS error: $error");
+          // optionally show a snackbar or toast here
+        }
+        setState(() {}); // update location-based UI
+      });
+    }
   }
 
   @override

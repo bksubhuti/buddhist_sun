@@ -25,6 +25,7 @@ const String useM3Pref = 'useM3';
 const String darkThemeOnPref = "darkThemeOn";
 const String UPOSATHACOUNTRY = "uposathaCountry";
 const String LASTDOWNLOAD = "lastDownload";
+const String AUTO_GPS_ENABLED = "autoGpsEnabled";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -43,6 +44,7 @@ const int DEFAULT_THEME_INDEX = 24;
 const bool DEFAULT_LIGHT_THEME_ON = true;
 const bool defaultUseM3 = true;
 const bool defaultDarkThemeOn = false;
+const bool DEFAULT_AUTO_GPS_ENABLED = false;
 int defaultSelectedPageColor = 0;
 const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
@@ -143,6 +145,11 @@ class Prefs {
       defaultLastDownload;
   static set lastDownload(DateTime value) =>
       instance.setString(LASTDOWNLOAD, value.toString());
+
+  static bool get autoGpsEnabled =>
+      instance.getBool(AUTO_GPS_ENABLED) ?? DEFAULT_AUTO_GPS_ENABLED;
+  static set autoGpsEnabled(bool value) =>
+      instance.setBool(AUTO_GPS_ENABLED, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

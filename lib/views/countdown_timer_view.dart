@@ -104,7 +104,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: "Buddhist Sun Running In Background",
     notificationText: "Buddhist Sun is running in the background",
-    notificationImportance: AndroidNotificationImportance.Default,
+    notificationImportance: AndroidNotificationImportance.normal,
     notificationIcon: AndroidResource(
         name: 'background_icon',
         defType: 'drawable'), // Default is ic_launcher from folder mipmap
@@ -129,7 +129,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           await FlutterBackground.initialize(androidConfig: androidConfig);
 
       if (!successInit && await FlutterBackground.hasPermissions) {
-        successInit = await FlutterBackground.initialize(androidConfig: androidConfig);
+        successInit =
+            await FlutterBackground.initialize(androidConfig: androidConfig);
       }
       if (successInit) {
         _displayMotionToast(
@@ -176,8 +177,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       primaryColor: Theme.of(context).primaryColor,
       title: Text(AppLocalizations.of(context)!.notification),
       description: Text(message),
-      layoutOrientation: ToastOrientation.rtl,
-      animationType: AnimationType.fromRight,
+      animationType: AnimationType.slideInFromRight,
       //width: 300,
 //      height: 90,
       icon: Icons.battery_charging_full,
@@ -188,8 +188,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     MotionToast.error(
       title: Text(AppLocalizations.of(context)!.error),
       description: Text(message),
-      animationType: AnimationType.fromLeft,
-      position: MotionToastPosition.top,
+      animationType: AnimationType.slideInFromLeft,
+      toastAlignment: Alignment.topCenter,
     ).show(context);
   }
 
