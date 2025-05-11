@@ -74,5 +74,12 @@
     "moonPhase": "සඳහි මුහුනත:",
     "selectDate": "දිනය තෝරන්න",
     "selectedDate": " තෝරපු දිනය:",
-    "moon": "සඳ"
+    "moon": "සඳ",
+    "darkMode": "අඳුරු ප්‍රකාශය",
+    "color": "වර්ණය",
+    "material3": "Material 3",
+    "uposathaCountry": "උපෝසථ රට",
+    "autoUpdateGps": "GPS ස්වයංක්‍රීයව යාවත්කාලීන කරන්න",
+    "refreshingGps": "GPS නැවත تازه කිරීම",
+    "command": "flutter gen-l10n"
 }

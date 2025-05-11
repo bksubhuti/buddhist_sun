@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:geocoding/geocoding.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,7 +21,6 @@ class GPSLocation extends StatefulWidget {
 
 class _GPSLocationState extends State<GPSLocation> {
 //  Geolocator geoLocator = Geolocator();
-  bool _initPerformed = false;
   late Position _position;
   bool _bLoading = false;
   String _message = "Press and wait for new GPS.";
@@ -64,7 +60,7 @@ class _GPSLocationState extends State<GPSLocation> {
       setState(() => _bLoading = true);
 
       var (error, position, cityName) =
-          await GpsService.initAndSaveGps(updateCity: true);
+          await GpsService.initAndSaveGps(updateCity: Prefs.retrieveCityName);
 
       if (error != null) {
         _message = error;
@@ -119,7 +115,7 @@ class _GPSLocationState extends State<GPSLocation> {
               ),
         SizedBox(height: 15.0),
         SwitchListTile(
-          title: ColoredText(AppLocalizations.of(context)!.get_gps),
+          title: ColoredText(AppLocalizations.of(context)!.autoUpdateGps),
           value: Prefs.autoGpsEnabled,
           onChanged: (value) {
             setState(() {
@@ -220,16 +216,6 @@ class _GPSLocationState extends State<GPSLocation> {
         return help;
       },
     );
-  }
-
-  _displayMotionToast(BuildContext context, String message) {
-    MotionToast(
-      primaryColor: Theme.of(context).primaryColor,
-      title: Text(AppLocalizations.of(context)!.notification),
-      description: Text(message),
-      animationType: AnimationType.slideInFromTop,
-      icon: Icons.battery_charging_full,
-    ).show(context);
   }
 
   Future showAskGPSDialog(BuildContext context) async {

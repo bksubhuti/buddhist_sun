@@ -274,5 +274,9 @@
   "moon": "月",
   "darkMode": "护眼模式",
   "color": "颜色",
-  "material3": "材料3"
+  "material3": "材料3",
+  "uposathaCountry": "布萨国家",
+  "autoUpdateGps": "自动更新 GPS",
+  "refreshingGps": "正在刷新 GPS",
+  "command": "flutter gen-l10n"
 }

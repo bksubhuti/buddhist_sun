@@ -7,7 +7,7 @@ class GpsService {
       initAndSaveGps({
     bool updateCity = true,
   }) async {
-    if (!Prefs.autoGpsEnabled) return (null, null, "");
+//    if (!Prefs.autoGpsEnabled) return (null, null, "");
     //if (_initPerformed) return (null, null, "");
 
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -27,8 +27,12 @@ class GpsService {
       return ("Location permissions are permanently denied.", null, "");
     }
 
+    final locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+    );
+
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: locationSettings,
     );
 
     String city = "";

@@ -79,5 +79,7 @@
   "color": "Color",
   "material3": "Material 3",
   "uposathaCountry": "Uposatha Country",
-  "autoUpdateGps": "Auto update GPS"
+  "autoUpdateGps": "Auto update GPS",
+  "refreshingGps": "Refreshing GPS",
+  "command": "flutter gen-l10n"
 }

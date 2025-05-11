@@ -77,5 +77,9 @@
   "moon": "พระจันทร์",
   "darkMode": "โหมดมืด",
   "color": "สี",
-  "material3": "วัสดุ 3"
+  "material3": "วัสดุ 3",
+  "uposathaCountry": "ประเทศอุโปสถะ",
+  "autoUpdateGps": "อัปเดต GPS อัตโนมัติ",
+  "refreshingGps": "กำลังรีเฟรช GPS",
+  "command": "flutter gen-l10n"
 }

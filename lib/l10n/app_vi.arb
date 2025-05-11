@@ -275,5 +275,9 @@
   "moon": "trưa",
   "darkMode": "Chế độ tối",
   "color": "Màu",
-  "material3": "Material 3"
+  "material3": "Material 3",
+  "uposathaCountry": "Quốc gia Uposatha",
+  "autoUpdateGps": "Tự động cập nhật GPS",
+  "refreshingGps": "Đang làm mới GPS",
+  "command": "flutter gen-l10n"
 }
