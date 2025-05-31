@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

@@ -4,7 +4,7 @@ import 'package:buddhist_sun/views/theme_settings_view.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:provider/provider.dart';

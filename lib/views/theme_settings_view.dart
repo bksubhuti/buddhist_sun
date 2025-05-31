@@ -1,7 +1,7 @@
 import 'package:buddhist_sun/views/dark_mode_settings_view.dart';
 import 'package:buddhist_sun/views/use_m3_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_theme_widget.dart';
 
 class ThemeSettingView extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 Future showSetLocaleDialog(BuildContext context) async {
   // set up the buttons

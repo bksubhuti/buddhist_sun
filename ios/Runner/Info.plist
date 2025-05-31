@@ -26,11 +26,11 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app needs location to calculate Buddhist Sun specific to you.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>The app needs location to calculate Buddhist Sun specific to you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The app needs location to calculate Buddhist Sun specific to you.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>The app needs location to calculate Buddhist Sun specific to you.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

@@ -78,7 +78,10 @@
     "darkMode",
     "color",
     "material3",
-    "uposathaCountry"
+    "uposathaCountry",
+    "autoUpdateGps",
+    "refreshingGps",
+    "command"
   ],
 
   "fr": [
@@ -102,35 +105,17 @@
     "darkMode",
     "color",
     "material3",
-    "uposathaCountry"
-  ],
-
-  "km": [
-    "uposathaCountry"
-  ],
-
-  "my": [
-    "uposathaCountry"
-  ],
-
-  "si": [
-    "darkMode",
-    "color",
-    "material3",
-    "uposathaCountry"
+    "uposathaCountry",
+    "autoUpdateGps",
+    "refreshingGps",
+    "command"
   ],
 
   "th": [
-    "about_content",
-    "uposathaCountry"
-  ],
-
-  "vi": [
-    "uposathaCountry"
+    "about_content"
   ],
 
   "zh": [
-    "dstSavingsNotice",
-    "uposathaCountry"
+    "dstSavingsNotice"
   ]
 }

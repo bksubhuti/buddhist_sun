@@ -18,7 +18,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 
 // #enddocregion LocalizationDelegatesImport
 // #docregion AppLocalizationsImport
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 // #enddocregion AppLocalizationsImport
