@@ -1,4 +1,6 @@
 {
+    "@@locale": "my",
+    "appName": "Buddhist Sun",
     "buddhistSun": "ဗုဒ္ဓနေ!",
     "noon": "မွန်းတည့်",
     "dawn": "အရုဏ်",

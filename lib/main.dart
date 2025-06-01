@@ -1,3 +1,4 @@
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -6,11 +7,6 @@ import 'dart:io' show Platform;
 // #docregion LocalizationDelegatesImport
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-
-// #enddocregion LocalizationDelegatesImport
-// #docregion AppLocalizationsImport
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// #enddocregion AppLocalizationsImport
 
 // theme stuff
 import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';

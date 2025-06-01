@@ -1,7 +1,7 @@
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:flutter/material.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 import 'package:provider/provider.dart';

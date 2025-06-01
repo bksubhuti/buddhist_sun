@@ -1,4 +1,6 @@
 {
+  "@@locale": "vi",
+  "appName": "Buddhist Sun",
   "buddhistSun": "Giờ Mặt Trời Dành Cho Đạo Phật",
   "@buddhistSun": {
     "description": "Title for app"

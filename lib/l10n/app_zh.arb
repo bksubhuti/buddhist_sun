@@ -1,4 +1,6 @@
 {
+  "@@locale": "zh",
+  "appName": "Buddhist Sun",
   "buddhistSun": "佛日",
   "@buddhistSun": {
     "description": "Title for app"

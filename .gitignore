@@ -37,6 +37,9 @@ api_keys.properties
 # Web related
 lib/generated_plugin_registrant.dart
 
+# Ignore all .dart files in lib/l10n but keep .arb files
+lib/l10n/*.dart
+
 # Symbolication related
 app.*.symbols
 

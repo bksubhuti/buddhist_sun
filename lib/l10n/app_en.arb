@@ -1,4 +1,6 @@
 {
+  "@@locale": "en",
+  "appName": "Buddhist Sun",
   "buddhistSun": "Buddhist Sun",
   "noon": "Noon",
   "dawn": "Dawn",
