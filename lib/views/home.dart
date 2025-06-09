@@ -15,13 +15,15 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   static bool _initPerformed = false;
 
   Map data = {};
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     if (Prefs.autoGpsEnabled && !_initPerformed) {
       Future.delayed(Duration.zero, () async {
         var (error, position, city) =
@@ -36,6 +38,19 @@ class _HomeState extends State<Home> {
               () {}); // Only call setState if the widget is still in the tree
         }
       });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      _refreshGps();
     }
   }
 
