@@ -72,10 +72,16 @@ class MyApp extends StatelessWidget {
           final themeChangeNotifier = Provider.of<ThemeChangeNotifier>(context);
           final localChangeNotifier =
               Provider.of<LocaleChangeNotifier>(context);
+          final font = _fontForLocale(localChangeNotifier.localeString);
+
           return MaterialApp(
             title: "Buddhist Sun",
             themeMode: themeChangeNotifier.themeMode,
-            theme: themeChangeNotifier.themeData,
+            theme: themeChangeNotifier.themeData.copyWith(
+              textTheme: themeChangeNotifier.themeData.textTheme.apply(
+                fontFamily: font,
+              ),
+            ),
             darkTheme: themeChangeNotifier.darkTheme,
             locale: Locale(localChangeNotifier.localeString, ''),
             debugShowCheckedModeBanner: false,
@@ -98,4 +104,15 @@ class MyApp extends StatelessWidget {
           );
         }, // builder
       );
+
+  String? _fontForLocale(String locale) {
+    switch (locale) {
+      case 'my':
+        return 'NotoSansMyanmar';
+      case 'si':
+        return 'NotoSansSinhala';
+      default:
+        return null; // system default
+    }
+  }
 }

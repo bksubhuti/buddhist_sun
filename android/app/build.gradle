@@ -40,7 +40,7 @@ if (apiKeyPropertiesFile.exists()) {
 }
 android {
     namespace "com.bksubhuti.buddhistsun"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion "27.2.12479018"
 
     compileOptions {
