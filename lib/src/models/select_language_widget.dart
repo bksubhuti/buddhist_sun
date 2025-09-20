@@ -23,7 +23,7 @@ class SelectLanguageWidget extends StatelessWidget {
         style: TextStyle(
           color: Theme.of(context).primaryColor,
         ),
-        isDense: true,
+        isDense: false,
         onChanged: (newValue) {
           Prefs.localeVal = _languageItmes.indexOf(newValue!);
           final localeProvider =
