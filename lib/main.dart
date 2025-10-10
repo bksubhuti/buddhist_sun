@@ -99,6 +99,7 @@ class MyApp extends StatelessWidget {
               Locale('km', ''), // khmer
               Locale('zh', ''), // Myanmar, no country code
               Locale('vi', ''), // vietnam, no country code
+              Locale('hi', ''), // hindi, no country code
             ],
             home: HomePageContainer(),
           );
