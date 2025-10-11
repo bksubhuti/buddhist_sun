@@ -6,6 +6,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 import 'package:buddhist_sun/src/services/moon_calc.dart';
+import 'package:buddhist_sun/src/services/notification_service.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -132,8 +133,9 @@ class _MoonPageState extends State<MoonPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
+                  buildUposathaSwitch(context),
                   ColoredText(
                     "${EnumToString.convertToString(Prefs.selectedUposatha, camelCase: true)} Calendar",
                     style: TextStyle(
@@ -385,5 +387,55 @@ class _MoonPageState extends State<MoonPage> {
       return Text(t,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
     }
+  }
+
+  Widget buildUposathaSwitch(BuildContext context) {
+    return Center(
+      child: IntrinsicWidth(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ColoredText(
+                  "Uposatha Notifications",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Switch(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                value: Prefs.uposathaNotificationsEnabled,
+                onChanged: (bool value) async {
+                  Prefs.uposathaNotificationsEnabled = value;
+                  if (value) {
+                    await scheduleUpcomingUposathaNotifications();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("✅ Uposatha reminders scheduled")),
+                    );
+                  } else {
+                    await cancelUposathaNotifications();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("🔕 Uposatha reminders turned off")),
+                    );
+                  }
+                  (context as Element).markNeedsBuild();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

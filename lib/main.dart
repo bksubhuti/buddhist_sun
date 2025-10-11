@@ -17,6 +17,11 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'src/services/plugin.dart';
+import 'package:buddhist_sun/src/services/notification_service.dart';
+import 'package:buddhist_sun/src/services/example_includes.dart';
+
 // for one context
 //import 'package:one_context/one_context.dart';
 
@@ -35,6 +40,26 @@ void main() async {
   // Initialize SharedPrefs instance.
   await Prefs.init();
   await initJsonFile(); // Ensure JSON file is ready before app runs
+  // Initialize notifications
+  await configureLocalTimeZone();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon'); // your drawable icon
+
+  final DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings();
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: selectNotificationStream.add,
+    onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+  );
 
   runApp(MyApp());
 }

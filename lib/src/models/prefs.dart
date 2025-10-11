@@ -26,6 +26,7 @@ const String darkThemeOnPref = "darkThemeOn";
 const String UPOSATHACOUNTRY = "uposathaCountry";
 const String LASTDOWNLOAD = "lastDownload";
 const String AUTO_GPS_ENABLED = "autoGpsEnabled";
+const String UPOSATHA_NOTIFICATIONS_ENABLED = "uposathaNotificationsEnabled";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -49,6 +50,7 @@ const int defaultSelectedPageColor = 0;
 const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
+const bool DEFAULT_UPOSATHA_NOTIFICATIONS_ENABLED = false;
 
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
@@ -150,6 +152,13 @@ class Prefs {
       instance.getBool(AUTO_GPS_ENABLED) ?? DEFAULT_AUTO_GPS_ENABLED;
   static set autoGpsEnabled(bool value) =>
       instance.setBool(AUTO_GPS_ENABLED, value);
+
+  static bool get uposathaNotificationsEnabled =>
+      instance.getBool(UPOSATHA_NOTIFICATIONS_ENABLED) ??
+      DEFAULT_UPOSATHA_NOTIFICATIONS_ENABLED;
+
+  static set uposathaNotificationsEnabled(bool value) =>
+      instance.setBool(UPOSATHA_NOTIFICATIONS_ENABLED, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
