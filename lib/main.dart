@@ -1,9 +1,10 @@
 import 'package:buddhist_sun/l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
 // #docregion LocalizationDelegatesImport
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -15,71 +16,148 @@ import 'package:buddhist_sun/src/provider/settings_provider.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'src/services/plugin.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
 import 'package:buddhist_sun/src/services/example_includes.dart';
 
-// for one context
-//import 'package:one_context/one_context.dart';
+// ----------------------------------------------------------
+//  MAIN
+// ----------------------------------------------------------
+Future<void> main() async {
+  // Needed for async work in main
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() async {
+  // Desktop DB init
   if (Platform.isWindows || Platform.isLinux) {
-    // Initialize FFI
     sqfliteFfiInit();
-    // Initialize the timezone package
-
-    // Change the default factory
     databaseFactory = databaseFactoryFfi;
   }
 
-  // Required for async calls in `main`
-  WidgetsFlutterBinding.ensureInitialized();
-  // Initialize SharedPrefs instance.
+  // SharedPrefs
   await Prefs.init();
-  await initJsonFile(); // Ensure JSON file is ready before app runs
-  // Initialize notifications
+
+  // Ensure Uposatha JSON is in app-support dir
+  await initJsonFile();
+
+  // Timezone for tz-based scheduling
   await configureLocalTimeZone();
+  await createUposathaChannel(); // NEW — needed BEFORE initialize()
+
+  // ---------------- ANDROID / iOS / macOS INIT ----------------
 
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon'); // your drawable icon
+      AndroidInitializationSettings('app_icon');
+
+  final List<DarwinNotificationCategory> darwinNotificationCategories =
+      <DarwinNotificationCategory>[
+    DarwinNotificationCategory(
+      darwinNotificationCategoryText,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.text(
+          'text_1',
+          'Action 1',
+          buttonTitle: 'Send',
+          placeholder: 'Placeholder',
+        ),
+      ],
+    ),
+    DarwinNotificationCategory(
+      darwinNotificationCategoryPlain,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.plain('id_1', 'Action 1'),
+        DarwinNotificationAction.plain(
+          'id_2',
+          'Action 2 (destructive)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          navigationActionId,
+          'Action 3 (foreground)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'id_4',
+          'Action 4 (auth required)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.authenticationRequired,
+          },
+        ),
+      ],
+      options: <DarwinNotificationCategoryOption>{
+        DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+      },
+    ),
+  ];
 
   final DarwinInitializationSettings initializationSettingsDarwin =
-      DarwinInitializationSettings();
+      DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+    notificationCategories: darwinNotificationCategories,
+  );
+
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsDarwin,
+    macOS: initializationSettingsDarwin,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
+  // Single initialize call
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: selectNotificationStream.add,
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
 
+  // ---------------- PLATFORM PERMISSIONS / CHANNELS ----------------
+  if (!kIsWeb && Platform.isAndroid) {
+    final androidImpl =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    // POST_NOTIFICATIONS (Android 13+)
+    await androidImpl?.requestNotificationsPermission();
+
+    // Exact alarms (for prev-day 6am exactAllowWhileIdle)
+    // This may return false on devices that restrict exact alarms.
+    await androidImpl?.requestExactAlarmsPermission();
+  }
+
+  // ---------------- SCHEDULE UPOSATHA NOTIFICATIONS ----------------
+  if (Prefs.uposathaNotificationsEnabled) {
+    await cancelAllNotifications(); // prevents duplicates
+    await scheduleUpcomingUposathaNotifications();
+  }
+
   runApp(MyApp());
 }
 
+// ----------------------------------------------------------
+//  Uposatha JSON SETUP
+// ----------------------------------------------------------
 Future<void> initJsonFile() async {
   final directory = await getApplicationSupportDirectory();
-  File jsonFile = File('${directory.path}/uposatha.json');
+  final jsonFile = File('${directory.path}/uposatha.json');
 
-  String content = await rootBundle.loadString('assets/uposatha.json');
-
-  // Ensure the file is fully written before proceeding
+  // Always copy from assets (overwrites old if needed)
+  final content = await rootBundle.loadString('assets/uposatha.json');
   await jsonFile.writeAsString(content);
 
   // Set default last download time
   Prefs.lastDownload = DateTime(2025, 12, 1);
 }
 
+// ----------------------------------------------------------
+//  APP WIDGET
+// ----------------------------------------------------------
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
@@ -110,25 +188,25 @@ class MyApp extends StatelessWidget {
             darkTheme: themeChangeNotifier.darkTheme,
             locale: Locale(localChangeNotifier.localeString, ''),
             debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              AppLocalizations.delegate, // Add this line
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: [
-              Locale('en', ''), // English, no country code
-              Locale('my', ''), // Myanmar, no country code
-              Locale('si', ''), // Myanmar, no country code
-              Locale('th', ''), // thai, no country code
-              Locale('km', ''), // khmer
-              Locale('zh', ''), // Myanmar, no country code
-              Locale('vi', ''), // vietnam, no country code
-              Locale('hi', ''), // hindi, no country code
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('my', ''),
+              Locale('si', ''),
+              Locale('th', ''),
+              Locale('km', ''),
+              Locale('zh', ''),
+              Locale('vi', ''),
+              Locale('hi', ''),
             ],
             home: HomePageContainer(),
           );
-        }, // builder
+        },
       );
 
   String? _fontForLocale(String locale) {
