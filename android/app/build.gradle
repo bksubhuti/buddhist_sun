@@ -1,7 +1,6 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -13,31 +12,22 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
-}
-
-def flutterVersionName = localProperties.getProperty("flutter.versionName")
-if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
-}
-
-// Load keystore properties for app signing
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('keystore.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} else {
+    println("❗ keystore.properties NOT FOUND")
 }
 
-// Load API key properties
 def apiKeyProperties = new Properties()
 def apiKeyPropertiesFile = rootProject.file('api_keys.properties')
 if (apiKeyPropertiesFile.exists()) {
     apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
-   } else {
-    println("api_keys.properties file not found!")
+} else {
+    println("❗ api_keys.properties NOT FOUND")
 }
+
 android {
     namespace "com.bksubhuti.buddhistsun"
     compileSdk = 36
@@ -45,48 +35,31 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
-    
-defaultConfig {
-    applicationId "com.bksubhuti.buddhistsun"
-    minSdkVersion flutter.minSdkVersion
-    targetSdkVersion flutter.targetSdkVersion
-    versionCode flutterVersionCode.toInteger()
-    versionName flutterVersionName
-    resValue "string", "google_maps_key", (apiKeyProperties['GOOGLE_MAPS_API_KEY'] ?: "")
- 
-//    manifestPlaceholders = [
-//        mapsApiKey: "$System.env.MAPS_API_KEY",
-    //    applicationName: "io.flutter.app.FlutterApplication"  // or your custom application class
 
-  //  ]
-}
-    println("API Key: " + apiKeyProperties['GOOGLE_MAPS_API_KEY'])
+    defaultConfig {
+        applicationId "com.bksubhuti.buddhistsun"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
 
+        // Version comes ONLY from pubspec.yaml
+        versionCode flutter.versionCode
+        versionName flutter.versionName
 
-     signingConfigs {
-         release {
-             keyAlias keystoreProperties['keyAlias']
-             keyPassword keystoreProperties['keyPassword']
-             storeFile file(keystoreProperties['storeFile'])
-             storePassword keystoreProperties['storePassword']
-         }
-     }
+        resValue "string", "google_maps_key", (apiKeyProperties['GOOGLE_MAPS_API_KEY'] ?: "")
+    }
 
-        signingConfigs {
+    signingConfigs {
         release {
-            println("🔍 Keystore debug: storeFile=" + keystoreProperties['storeFile'])
-            println("🔍 Exists: " + file(keystoreProperties['storeFile']).exists())
-            println("🔍 KeyAlias: " + keystoreProperties['keyAlias'])
-
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
     }
@@ -102,10 +75,9 @@ defaultConfig {
 }
 
 flutter {
-    source = "../.."
+    source "../.."
 }
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
-
