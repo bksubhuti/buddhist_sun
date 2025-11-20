@@ -417,6 +417,7 @@ class _MoonPageState extends State<MoonPage> {
                 onChanged: (bool value) async {
                   Prefs.uposathaNotificationsEnabled = value;
                   if (value) {
+                    //await thirtySecondsNotification();
                     await scheduleUpcomingUposathaNotifications();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

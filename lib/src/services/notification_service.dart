@@ -225,15 +225,15 @@ Future<DateTime?> calculateNextMyanmarUposatha(DateTime start) async {
 // ===============================================================
 //  TEST NOTIFICATIONS
 // ===============================================================
-Future<void> oneMinuteNotification() async {
+Future<void> thirtySecondsNotification() async {
   try {
     final now = tz.TZDateTime.now(tz.local);
-    final t = now.add(const Duration(minutes: 1));
+    final t = now.add(const Duration(seconds: 30));
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       999999,
-      "One-minute Test",
-      "This should fire in 1 minute",
+      "30-sec Test",
+      "This should fire in 30 seconds",
       t,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -242,11 +242,16 @@ Future<void> oneMinuteNotification() async {
           importance: Importance.max,
           priority: Priority.high,
         ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
 
-    debugPrint("🟢 1-min test @ $t");
+    debugPrint("🟢 30 sec test @ $t");
   } catch (e) {
     debugPrint("❌ Test error: $e");
   }
