@@ -123,6 +123,12 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
           presentBadge: true,
           presentSound: true,
         ),
+        macOS: DarwinNotificationDetails(
+          // ← THIS LINE IS MANDATORY
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
@@ -147,6 +153,12 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
         priority: Priority.high,
       ),
       iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      macOS: DarwinNotificationDetails(
+        // ← THIS LINE IS MANDATORY
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
@@ -243,6 +255,12 @@ Future<void> thirtySecondsNotification() async {
           priority: Priority.high,
         ),
         iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+        macOS: DarwinNotificationDetails(
+          // ← THIS LINE IS MANDATORY
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
