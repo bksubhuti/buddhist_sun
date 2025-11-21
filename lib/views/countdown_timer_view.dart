@@ -6,8 +6,9 @@ import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:buddhist_sun/src/services/notification_service.dart';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/material.dart';
 
 import 'package:flutter_background/flutter_background.dart';
@@ -192,6 +193,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     ).show(context);
   }
 
+  Future<void> _showInstantNotification() async {
+    await showInstantNotification();
+  }
+
+  Future<void> _show30SecondNotification() async {
+    await thirtySecondsNotification();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
@@ -325,6 +334,43 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                           style: TextStyle(
                             fontSize: 15,
                           )),
+                      SizedBox(
+                        width: 30,
+                        height: 15,
+                      ),
+                      // Only show test buttons in debug builds
+                      if (kDebugMode) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: _showInstantNotification,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
+                              child: Text(
+                                "Instant Test",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: _show30SecondNotification,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
+                              child: Text(
+                                "30s Test",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                      ],
                     ],
                   ),
                 ),

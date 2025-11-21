@@ -239,6 +239,7 @@ Future<DateTime?> calculateNextMyanmarUposatha(DateTime start) async {
 // ===============================================================
 Future<void> thirtySecondsNotification() async {
   try {
+    await createUposathaChannel(); // Create the channel first
     final now = tz.TZDateTime.now(tz.local);
     final t = now.add(const Duration(seconds: 30));
 
@@ -277,6 +278,7 @@ Future<void> thirtySecondsNotification() async {
 
 Future<void> showInstantNotification() async {
   try {
+    await createUposathaChannel(); // Create the channel first
     await flutterLocalNotificationsPlugin.show(
       777777,
       "Instant Test",
@@ -287,6 +289,16 @@ Future<void> showInstantNotification() async {
           'Uposatha Reminders',
           importance: Importance.max,
           priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+        macOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
     );

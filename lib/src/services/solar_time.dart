@@ -113,8 +113,8 @@ class SolarTimerService {
         DateTime(inst.year, inst.month, inst.day, inst.hour, inst.minute);
     _nowString =
         "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}";
-    print("speak on is $_speakIsOn");
-    print(_nowString);
+    // print("speak on is $_speakIsOn");
+    // print(_nowString);
 
     // tell the window to show the new now time
     delegate!.setNowString(_nowString);
@@ -152,9 +152,9 @@ class SolarTimerService {
       delegate!.update(); // full set state if possible
       */
     }
-    print(min);
-    print("countdown is:  $_countdownString");
-    print(_countdownString);
+    // print(min);
+    // print("countdown is:  $_countdownString");
+    // print(_countdownString);
 
     // if the speech toggle is on..
     if (_speakIsOn) {
