@@ -52,6 +52,13 @@ const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
 const bool DEFAULT_UPOSATHA_NOTIFICATIONS_ENABLED = false;
 
+const String BEFORE_UPOSATHA_NOTIFICATION_DAYS =
+    "beforeUposathaNotificationDays";
+const String UPOSATHA_NOTIFICATION_TIME = "uposathaNotificationTime";
+
+const int DEFAULT_BEFORE_UPOSATHA_NOTIFICATION_DAYS = 1;
+const String DEFAULT_UPOSATHA_NOTIFICATION_TIME = "06:00";
+
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
 DateTime defaultLastDownload = DateTime(2025, 12, 1);
@@ -159,6 +166,29 @@ class Prefs {
 
   static set uposathaNotificationsEnabled(bool value) =>
       instance.setBool(UPOSATHA_NOTIFICATIONS_ENABLED, value);
+
+  static int get beforeUposathaNotificationDays =>
+      instance.getInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS) ??
+      DEFAULT_BEFORE_UPOSATHA_NOTIFICATION_DAYS;
+  static set beforeUposathaNotificationDays(int value) =>
+      instance.setInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS, value);
+
+  static TimeOfDay get uposathaNotificationTime {
+    final stored = instance.getString(UPOSATHA_NOTIFICATION_TIME) ??
+        DEFAULT_UPOSATHA_NOTIFICATION_TIME;
+    final parts = stored.split(':');
+    if (parts.length != 2) {
+      return const TimeOfDay(hour: 6, minute: 0);
+    }
+    final hour = int.tryParse(parts[0]) ?? 6;
+    final minute = int.tryParse(parts[1]) ?? 0;
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  static set uposathaNotificationTime(TimeOfDay value) => instance.setString(
+        UPOSATHA_NOTIFICATION_TIME,
+        '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}',
+      );
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

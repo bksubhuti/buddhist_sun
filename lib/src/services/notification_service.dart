@@ -45,11 +45,12 @@ Future<void> createUposathaChannel() async {
   await android?.createNotificationChannel(channel);
 }
 
-// ===============================================================
-//  CANCEL ALL (Recommended on app start)
-// ===============================================================
+// =======================================================
+//  Cancel all existing notifications
+// =======================================================
 Future<void> cancelAllNotifications() async {
   await flutterLocalNotificationsPlugin.cancelAll();
+  debugPrint("🛑 All Uposatha notifications cancelled");
 }
 
 // -----------------------------------------------------------
@@ -80,70 +81,105 @@ Future<void> scheduleUpcomingUposathaNotifications() async {
   }
 }
 
+// =======================================================
+//  Full reschedule wrapper
+// =======================================================
+Future<void> rescheduleUposathaNotifications() async {
+  if (!Prefs.uposathaNotificationsEnabled) {
+    debugPrint("⚠️ Uposatha notifications are disabled; skipping reschedule");
+    return;
+  }
+  await cancelAllNotifications();
+  await scheduleUpcomingUposathaNotifications(); // ← you already have this
+  debugPrint("🔄 Uposatha notifications fully rescheduled");
+}
+
 // -----------------------------------------------------------
 //  Single Uposatha scheduler
 // -----------------------------------------------------------
 Future<void> _scheduleSingleUposatha(DateTime date) async {
   final now = tz.TZDateTime.now(tz.local);
 
-  final day6am = tz.TZDateTime(
+  // --- NEW: get time-of-day from Prefs ---
+  final notifTime = Prefs.uposathaNotificationTime;
+
+  // DAY-OF notification time
+  final dayOfTime = tz.TZDateTime(
     tz.local,
     date.year,
     date.month,
     date.day,
-    6,
-    0,
+    notifTime.hour,
+    notifTime.minute,
   );
 
-  final prev6am = day6am.subtract(const Duration(days: 1));
+  // BEFORE notification time (depends on user setting)
+  final int beforeDays = Prefs.beforeUposathaNotificationDays;
 
-  // Skip if the day-of itself is already in the past
-  if (day6am.isBefore(now)) {
+  final beforeTime = tz.TZDateTime(
+    tz.local,
+    date.year,
+    date.month,
+    date.day,
+    notifTime.hour,
+    notifTime.minute,
+  ).subtract(Duration(days: beforeDays));
+
+  // Skip if day-of is already in the past
+  if (dayOfTime.isBefore(now)) {
     debugPrint("⏩ Skipping past date ${date.toIso8601String()}");
     return;
   }
 
-  // 1️⃣ Day-before (only if future)
-  if (prev6am.isAfter(now)) {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      date.hashCode ^ 111,
-      "Uposatha Tomorrow",
-      "Tomorrow is Uposatha Day.",
-      prev6am,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'uposatha_channel',
-          'Uposatha Reminders',
-          channelDescription: 'Day-before reminder',
-          importance: Importance.max,
-          priority: Priority.high,
+  // ---------------------------------------------------
+  // 1️⃣ BEFORE-NOTIFICATION  (only if > 0 days)
+  // ---------------------------------------------------
+  if (beforeDays > 0) {
+    if (beforeTime.isAfter(now)) {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        date.hashCode ^ 111, // unchanged ID logic
+        "Uposatha Coming Soon",
+        "$beforeDays days until Uposatha.",
+        beforeTime,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'uposatha_channel',
+            'Uposatha Reminders',
+            channelDescription: 'Day-before reminder',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+          macOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-        macOS: DarwinNotificationDetails(
-          // ← THIS LINE IS MANDATORY
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
 
-    debugPrint("🟢 Day-before scheduled for $prev6am");
+      debugPrint("🟢 Before-notification scheduled for $beforeTime");
+    } else {
+      debugPrint("⏩ Skipping before-notification (already past)");
+    }
   } else {
-    debugPrint("⏩ Skipping day-before (already past)");
+    debugPrint(
+        "⏩ beforeUposathaNotificationDays = 0 → skipping before-notification");
   }
 
-  // 2️⃣ Day-of
+  // ---------------------------------------------------
+  // 2️⃣ DAY-OF NOTIFICATION (always delivered)
+  // ---------------------------------------------------
   await flutterLocalNotificationsPlugin.zonedSchedule(
-    date.hashCode,
+    date.hashCode, // unchanged ID logic
     "Uposatha Today",
     "Today is Uposatha Day.",
-    day6am,
+    dayOfTime,
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'uposatha_channel',
@@ -158,7 +194,6 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
         presentSound: true,
       ),
       macOS: DarwinNotificationDetails(
-        // ← THIS LINE IS MANDATORY
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
@@ -167,7 +202,7 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
   );
 
-  debugPrint("🟢 Day-of scheduled for $day6am");
+  debugPrint("🟢 Day-of scheduled for $dayOfTime");
 }
 
 // ===============================================================

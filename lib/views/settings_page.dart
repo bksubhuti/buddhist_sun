@@ -1,5 +1,5 @@
-import 'package:buddhist_sun/src/models/world_cities.dart';
 import 'package:buddhist_sun/src/services/get_world_cities.dart';
+import 'package:buddhist_sun/src/services/notification_service.dart';
 import 'package:buddhist_sun/views/theme_settings_view.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
@@ -266,6 +266,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: 15),
+              NotificationSettingsWidget(),
             ],
           ),
         ),
@@ -323,66 +324,99 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-// removed this from the regular build.. not called
-  Widget getCitiesWidget(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          style: TextStyle(
-              color:
-                  (!Prefs.darkThemeOn) ? Theme.of(context).primaryColor : null,
-              fontSize: 20),
-          decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.search_for_city,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-          controller: controller,
-          onChanged: (String data) {
-            setState(() {
-              searchKey = data;
-            });
-            print(data);
-          },
-        ),
-        FutureBuilder<List<WorldCities>>(
-            future: dbService.getWorldCities(searchKey),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              return ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        onTap: () async {
-                          Prefs.cityName = snapshot.data![index].cityAscii;
-                          Prefs.lat = snapshot.data![index].lat;
-                          Prefs.lng = snapshot.data![index].lng;
-                          //settingsProvider.setLatLng(
-                          //  Prefs.lat, Prefs.lng);
-                        },
-                        title: ColoredText(
-                            "${snapshot.data![index].cityAscii}, ${snapshot.data![index].country} ",
-                            style: TextStyle(
-                              fontSize: 17,
-                              color: (Prefs.lightThemeOn)
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                            )),
-                        subtitle: ColoredText(
-                            snapshot.data![index].lat.toString() +
-                                "," +
-                                snapshot.data![index].lng.toString()),
+  Widget NotificationSettingsWidget() {
+    return Card(
+      // 🟢 NEW
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const ColoredText(
+              'Uposatha Notifications:',
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const ColoredText(
+                  'Days before:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {
+                        setState(() {
+                          final current = Prefs.beforeUposathaNotificationDays;
+                          if (current > 0) {
+                            Prefs.beforeUposathaNotificationDays = current - 1;
+                          }
+                        });
+                        rescheduleUposathaNotifications();
+                      },
+                    ),
+                    Text(
+                      '${Prefs.beforeUposathaNotificationDays}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        setState(() {
+                          Prefs.beforeUposathaNotificationDays =
+                              Prefs.beforeUposathaNotificationDays + 1;
+                        });
+                        rescheduleUposathaNotifications();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const ColoredText(
+                  'Notifications time:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final initialTime = Prefs.uposathaNotificationTime;
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: initialTime,
                     );
-                  });
-            })
-      ],
+                    if (picked != null) {
+                      setState(() {
+                        Prefs.uposathaNotificationTime = picked;
+                      });
+                      rescheduleUposathaNotifications();
+                    }
+                  },
+                  child: Text(
+                    Prefs.uposathaNotificationTime.format(context),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

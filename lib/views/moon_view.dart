@@ -417,7 +417,11 @@ class _MoonPageState extends State<MoonPage> {
                 onChanged: (bool value) async {
                   Prefs.uposathaNotificationsEnabled = value;
                   if (value) {
+                    ///////////TESTING STUFF //////////////////
                     //await thirtySecondsNotification();
+                    //scheduleUpcomingUposathaNotificationsTest();
+                    ////////////////////////////////////
+                    //await showRealWorldTestWarning(context);
                     await scheduleUpcomingUposathaNotifications();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -436,6 +440,24 @@ class _MoonPageState extends State<MoonPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> showRealWorldTestWarning(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Notice"),
+        content: const Text(
+          "Real-world device testing has not been verified yet.",
+        ),
+        actions: [
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       ),
     );
   }
