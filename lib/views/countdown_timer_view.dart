@@ -212,23 +212,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               SizedBox(
+                height: 12,
                 width: 30,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ColoredText(getSolarNoonTimeString(),
-                      style: TextStyle(
-                          fontSize: 35, fontWeight: FontWeight.normal)),
-                  (Prefs.safety > 0)
-                      ? //Text('\ud83d\udee1')
-                      Icon(Icons.health_and_safety_outlined,
-                          color: Theme.of(context).colorScheme.primary)
-                      : Text(""),
-                ],
-              ),
-              ColoredText("${AppLocalizations.of(context)!.solar_noon}",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              getTargetSection(),
               Divider(
                 height: 15.0,
               ),
@@ -340,35 +327,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                       ),
                       // Only show test buttons in debug builds
                       if (kDebugMode) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: _showInstantNotification,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
-                              ),
-                              child: Text(
-                                "Instant Test",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: _show30SecondNotification,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
-                              ),
-                              child: Text(
-                                "30s Test",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        //GetNotificationDebugButtons(),
                         SizedBox(height: 10),
                       ],
                     ],
@@ -417,6 +376,181 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       builder: (BuildContext context) {
         return help;
       },
+    );
+  }
+
+  Widget GetNotificationDebugButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: _showInstantNotification,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+          child: Text(
+            "Instant Test",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: _show30SecondNotification,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+          child: Text(
+            "30s Test",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 🟢 NEW: selected dawn time string based on Prefs.dawnVal
+  String _getSelectedDawnTimeString() {
+    switch (Prefs.dawnVal) {
+      case 0:
+        return getNauticalTwilightString();
+      case 1:
+        return getSunrise40String();
+      case 2:
+        return getSunrise30String();
+      case 3:
+        return getCivilTwilightString();
+      case 4:
+        return getSunriseString();
+      default:
+        return getNauticalTwilightString();
+    }
+  }
+
+  // 🟢 NEW: label for the selected dawn method
+  String _getSelectedDawnLabel(BuildContext context) {
+    switch (Prefs.dawnVal) {
+      case 0:
+        return AppLocalizations.of(context)!.nautical_twilight;
+      case 1:
+        return AppLocalizations.of(context)!.pa_auk;
+      case 2:
+        return AppLocalizations.of(context)!.na_uyana;
+      case 3:
+        return AppLocalizations.of(context)!.civil_twilight;
+      case 4:
+        return AppLocalizations.of(context)!.sunrise;
+      default:
+        return AppLocalizations.of(context)!.nautical_twilight;
+    }
+  }
+
+  bool _isDawnMode() {
+    // Get selected dawn today as DateTime
+    final dawnInst = () {
+      switch (Prefs.dawnVal) {
+        case 0:
+          return getNauticalTwilight();
+        case 1:
+          return getSunrise40();
+        case 2:
+          return getSunrise30();
+        case 3:
+          return getCivilTwilight();
+        case 4:
+          return getSunrise();
+        default:
+          return getNauticalTwilight();
+      }
+    }();
+
+    final dawnDT = DateTime(
+      dawnInst.year,
+      dawnInst.month,
+      dawnInst.day,
+      dawnInst.hour,
+      dawnInst.minute,
+    );
+
+    return service.countdownTarget.hour == dawnDT.hour &&
+        service.countdownTarget.minute == dawnDT.minute;
+  }
+
+// ---------------------------------------------------------
+//  Combined Target Section (Option A - Best UX)
+//  Always show Dawn + Solar Noon; highlight active target
+// ---------------------------------------------------------
+  Widget getTargetSection() {
+    final isDawn = _isDawnMode();
+
+    return Column(
+      children: [
+        // ===== Solar Noon Row =====
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ColoredText(
+              getSolarNoonTimeString(),
+              style: TextStyle(
+                fontSize: isDawn ? 18 : 22, // inactive vs active
+                fontWeight: isDawn
+                    ? FontWeight.w500 // inactive
+                    : FontWeight.w900, // active
+              ),
+            ),
+            if (Prefs.safety > 0)
+              Icon(
+                Icons.health_and_safety_outlined,
+                color: Theme.of(context).colorScheme.primary,
+                size: isDawn ? 18 : 24,
+              ),
+          ],
+        ),
+
+        ColoredText(
+          AppLocalizations.of(context)!.solar_noon,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: isDawn ? FontWeight.w400 : FontWeight.bold,
+          ),
+        ),
+
+        const Divider(height: 15),
+
+        // ===== Dawn Row =====
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ColoredText(
+              _getSelectedDawnTimeString(),
+              style: TextStyle(
+                fontSize: isDawn ? 22 : 18, // active vs inactive
+                fontWeight: isDawn
+                    ? FontWeight.w900 // active
+                    : FontWeight.w500, // inactive
+              ),
+            ),
+            if (Prefs.safety > 0)
+              Icon(
+                Icons.health_and_safety_outlined,
+                color: Theme.of(context).colorScheme.primary,
+                size: isDawn ? 24 : 18,
+              ),
+          ],
+        ),
+
+        ColoredText(
+          _getSelectedDawnLabel(context),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: isDawn ? FontWeight.bold : FontWeight.w400,
+          ),
+        ),
+
+        const Divider(height: 15),
+      ],
     );
   }
 }

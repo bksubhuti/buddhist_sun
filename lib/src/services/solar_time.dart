@@ -22,6 +22,7 @@ mixin SolarTimerDelegate {
 
 class SolarTimerService {
   static final SolarTimerService _singleton = SolarTimerService._internal();
+  DateTime get countdownTarget => _dtSolar;
 
   factory SolarTimerService() {
     return _singleton;
@@ -108,9 +109,7 @@ class SolarTimerService {
     _speakIsOn = Prefs.speakIsOn;
 
     _now = DateTime.now();
-    Instant inst = getSolarNoon();
-    _dtSolar =
-        DateTime(inst.year, inst.month, inst.day, inst.hour, inst.minute);
+    _dtSolar = _getCountdownTarget();
     _nowString =
         "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}";
     // print("speak on is $_speakIsOn");
@@ -259,5 +258,91 @@ class SolarTimerService {
     if (engine != null) {
       print(engine);
     }
+  }
+
+  // ------------------------------------------------------------
+// Determine whether dawn mode should be used
+// ------------------------------------------------------------
+  bool _isDawnMode() {
+    final now = DateTime.now();
+
+    // 2 AM boundary
+    final twoAm = DateTime(now.year, now.month, now.day, 2, 0);
+
+    // Get selected dawn Instant
+    late final Instant dawnInst;
+    switch (Prefs.dawnVal) {
+      case 0:
+        dawnInst = getNauticalTwilight();
+        break;
+      case 1:
+        dawnInst = getSunrise40();
+        break;
+      case 2:
+        dawnInst = getSunrise30();
+        break;
+      case 3:
+        dawnInst = getCivilTwilight();
+        break;
+      case 4:
+        dawnInst = getSunrise();
+        break;
+    }
+
+    // Convert Instant → DateTime today
+    final dawn =
+        DateTime(now.year, now.month, now.day, dawnInst.hour, dawnInst.minute);
+
+    // Dawn + 1 hour
+    final dawnPlus1h = dawn.add(const Duration(hours: 1));
+
+    // Dawn must be before solar noon (normal case)
+    final noonInst = getSolarNoon();
+    final solarNoon =
+        DateTime(now.year, now.month, now.day, noonInst.hour, noonInst.minute);
+
+    return now.isAfter(twoAm) &&
+        now.isBefore(dawnPlus1h) &&
+        dawn.isBefore(solarNoon);
+  }
+
+// ------------------------------------------------------------
+// Get the correct countdown target (dawn or solar noon)
+// ------------------------------------------------------------
+  DateTime _getCountdownTarget() {
+    final now = DateTime.now();
+
+    // Compute solar noon (existing behavior)
+    final noonInst = getSolarNoon();
+    final solarNoon =
+        DateTime(now.year, now.month, now.day, noonInst.hour, noonInst.minute);
+
+    // If dawn mode → countdown to dawn
+    if (_isDawnMode()) {
+      late final Instant dawnInst;
+      switch (Prefs.dawnVal) {
+        case 0:
+          dawnInst = getNauticalTwilight();
+          break;
+        case 1:
+          dawnInst = getSunrise40();
+          break;
+        case 2:
+          dawnInst = getSunrise30();
+          break;
+        case 3:
+          dawnInst = getCivilTwilight();
+          break;
+        case 4:
+          dawnInst = getSunrise();
+          break;
+      }
+
+      return DateTime(
+          now.year, now.month, now.day, dawnInst.hour, dawnInst.minute);
+    }
+
+    // Else → solar noon
+    return solarNoon;
   }
 }
