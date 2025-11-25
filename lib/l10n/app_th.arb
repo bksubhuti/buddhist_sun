@@ -83,5 +83,7 @@
   "uposathaCountry": "ประเทศอุโปสถะ",
   "autoUpdateGps": "อัปเดต GPS อัตโนมัติ",
   "refreshingGps": "กำลังรีเฟรช GPS",
-  "command": "flutter gen-l10n"
+  "uposathaNotifications": "การแจ้งเตือนอุโบสถ:",
+  "daysBefore": "ล่วงหน้า (วัน):",
+  "notificationTime": "เวลาแจ้งเตือน:"
 }

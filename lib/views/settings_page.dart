@@ -334,8 +334,8 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ColoredText(
-              'Uposatha Notifications:',
+            ColoredText(
+              AppLocalizations.of(context)!.uposathaNotifications,
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(
@@ -344,8 +344,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const ColoredText(
-                  'Days before:',
+                ColoredText(
+                  AppLocalizations.of(context)!.daysBefore,
                   style: TextStyle(fontSize: 16),
                 ),
                 Row(
@@ -386,8 +386,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const ColoredText(
-                  'Notifications time:',
+                ColoredText(
+                  AppLocalizations.of(context)!.notificationTime,
                   style: TextStyle(fontSize: 16),
                 ),
                 TextButton(

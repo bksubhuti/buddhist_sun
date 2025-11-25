@@ -1,6 +1,10 @@
 {
   "@@locale": "en",
   "appName": "Buddhist Sun",
+  "@appName": {
+    "description": 
+      "use commanflutter gen-l10n"
+  },
   "buddhistSun": "Buddhist Sun",
   "noon": "Noon",
   "dawn": "Dawn",
@@ -83,5 +87,7 @@
   "uposathaCountry": "Uposatha Country",
   "autoUpdateGps": "Auto update GPS",
   "refreshingGps": "Refreshing GPS",
-  "command": "flutter gen-l10n"
+  "uposathaNotifications": "Uposatha Notifications:",
+  "daysBefore": "Days Before:",
+  "notificationTime": "Notification Time:"
 }

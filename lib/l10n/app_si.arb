@@ -83,5 +83,7 @@
     "uposathaCountry": "උපෝසථ රට",
     "autoUpdateGps": "GPS ස්වයංක්‍රීයව යාවත්කාලීන කරන්න",
     "refreshingGps": "GPS නැවත تازه කිරීම",
-    "command": "flutter gen-l10n"
+    "uposathaNotifications": "උපෝසථ දැනුම්දීම්:",
+    "daysBefore": "දින කිහිපයකට පෙර:",
+    "notificationTime": "දැනුම්දීමේ වේලාව:"   
 }

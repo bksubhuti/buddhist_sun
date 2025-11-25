@@ -280,5 +280,7 @@
   "uposathaCountry": "布萨国家",
   "autoUpdateGps": "自动更新 GPS",
   "refreshingGps": "正在刷新 GPS",
-  "command": "flutter gen-l10n"
+  "uposathaNotifications": "布萨提醒：",
+  "daysBefore": "提前天数：",
+  "notificationTime": "提醒时间："
 }

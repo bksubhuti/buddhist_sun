@@ -281,5 +281,7 @@
   "uposathaCountry": "Quốc gia Uposatha",
   "autoUpdateGps": "Tự động cập nhật GPS",
   "refreshingGps": "Đang làm mới GPS",
-  "command": "flutter gen-l10n"
+  "uposathaNotifications": "Thông báo Uposatha:",
+  "daysBefore": "Số ngày trước:",
+  "notificationTime": "Thời gian thông báo:" 
 }

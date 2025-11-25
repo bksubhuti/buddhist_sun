@@ -83,5 +83,7 @@
   "uposathaCountry": "उपोस्थ देश",
   "autoUpdateGps": "जीपीएस स्वतः अपडेट करें",
   "refreshingGps": "जीपीएस ताज़ा किया जा रहा है",
-  "command": "flutter gen-l10n"
+  "uposathaNotifications": "उपोशथ सूचनाएँ:",
+  "daysBefore": "दिन पहले:",
+  "notificationTime": "सूचना समय:"
 }

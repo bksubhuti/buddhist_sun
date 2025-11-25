@@ -45,6 +45,37 @@ Future<void> createUposathaChannel() async {
   await android?.createNotificationChannel(channel);
 }
 
+// ==================================================
+//    Request Permissions
+// ==================================================
+Future requestPermissions() async {
+// Optional but recommended explicit permission request
+  if (Platform.isIOS || Platform.isMacOS) {
+    final ios =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    await ios?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  // ---------------- PLATFORM PERMISSIONS / CHANNELS ----------------
+  if (!kIsWeb && Platform.isAndroid) {
+    final androidImpl =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    // POST_NOTIFICATIONS (Android 13+)
+    await androidImpl?.requestNotificationsPermission();
+
+    // Exact alarms (for prev-day 6am exactAllowWhileIdle)
+    // This may return false on devices that restrict exact alarms.
+    await androidImpl?.requestExactAlarmsPermission();
+  }
+}
+
 // =======================================================
 //  Cancel all existing notifications
 // =======================================================

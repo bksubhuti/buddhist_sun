@@ -89,5 +89,8 @@
     "uposathaCountry": "ဥပုသ်နိုင်ငံ",
     "autoUpdateGps": "GPS ကိုအော်တိုအပ်ဒိတ်လုပ်ရန်",
     "refreshingGps": "GPS ကိုပြန်လည်တင်နေသည်",
-    "command": "flutter gen-l10n"
+    "command": "flutter gen-l10n",
+    "uposathaNotifications": "ဥပုသ် အသိပေးချက်များ:",
+    "daysBefore": "ရက် မီများ:",
+    "notificationTime": "အသိပေးချိန်:"
 }

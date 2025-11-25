@@ -83,5 +83,7 @@
     "uposathaCountry": "ប្រទេសអុុបោសថ",
     "autoUpdateGps": "បច្ចុប្បន្នភាព GPS ដោយស្វ័យប្រវត្តិ",
     "refreshingGps": "កំពុងធ្វើបច្ចុប្បន្នភាព GPS",
-    "command": "flutter gen-l10n"
+    "uposathaNotifications": "ការជូនដំណឹងអំពីអុបោសថ៖",
+    "daysBefore": "ថ្ងៃមុន៖",
+    "notificationTime": "ពេលវេលាជូនដំណឹង៖"
 }

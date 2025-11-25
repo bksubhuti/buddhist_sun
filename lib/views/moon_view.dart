@@ -422,6 +422,7 @@ class _MoonPageState extends State<MoonPage> {
                     //scheduleUpcomingUposathaNotificationsTest();
                     ////////////////////////////////////
                     //await showRealWorldTestWarning(context);
+                    await requestPermissions();
                     await scheduleUpcomingUposathaNotifications();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

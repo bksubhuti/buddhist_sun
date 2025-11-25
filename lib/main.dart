@@ -1,8 +1,6 @@
 import 'package:buddhist_sun/l10n/app_localizations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
 import 'dart:io' show File, Platform;
 // #docregion LocalizationDelegatesImport
@@ -102,32 +100,6 @@ Future<void> main() async {
   await Prefs.init();
   await initJsonFile(); // ← moved AFTER initialize
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
-
-  // Optional but recommended explicit permission request
-  if (Platform.isIOS || Platform.isMacOS) {
-    final ios =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>();
-    await ios?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
-
-  // ---------------- PLATFORM PERMISSIONS / CHANNELS ----------------
-  if (!kIsWeb && Platform.isAndroid) {
-    final androidImpl =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-
-    // POST_NOTIFICATIONS (Android 13+)
-    await androidImpl?.requestNotificationsPermission();
-
-    // Exact alarms (for prev-day 6am exactAllowWhileIdle)
-    // This may return false on devices that restrict exact alarms.
-    await androidImpl?.requestExactAlarmsPermission();
-  }
 
   // Finally schedule
   if (Prefs.uposathaNotificationsEnabled) {
