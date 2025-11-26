@@ -252,14 +252,19 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                           scale: 1.7,
                           child: Switch(
                               value: _speakIsOn,
-                              onChanged: (bValue) {
-                                setState(() {
+                              onChanged: (bValue) async {
+                                setState(() async {
                                   Prefs.instance.setBool(SPEAKISON, bValue);
+
+                                  await scheduleAllTimerNotifications(
+                                      targetTime: service.countdownTarget,
+                                      soundMap: solarTimerAnnouncementSounds);
                                   _speakIsOn = bValue;
                                   if (_speakIsOn)
                                     Prefs.speakIsOn = _speakIsOn;
                                   else {
                                     service.initialVoicing = false;
+                                    cancelAllTimerNotifications();
                                   }
                                 });
                               }),
@@ -326,8 +331,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         height: 15,
                       ),
                       // Only show test buttons in debug builds
-                      if (kDebugMode) ...[
-                        //GetNotificationDebugButtons(),
+                      if (kDebugMode || true) ...[
+                        GetNotificationDebugButtons(),
                         SizedBox(height: 10),
                       ],
                     ],
@@ -402,6 +407,18 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
           ),
           child: Text(
             "30s Test",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: _doTTSNotificationTest,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+          child: Text(
+            "timer 4 tts",
             style: TextStyle(
               color: Colors.white,
             ),
@@ -552,5 +569,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         const Divider(height: 15),
       ],
     );
+  }
+
+  _doTTSNotificationTest() async {
+    await doElevenLabsCountdownTest();
   }
 }

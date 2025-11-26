@@ -94,6 +94,7 @@ class SolarTimerService {
   }
 
   Future _speak() async {
+    return;
     if (!_bLate) {
       await flutterTts.setSpeechRate(rate);
       await flutterTts.setVolume(Prefs.volume);

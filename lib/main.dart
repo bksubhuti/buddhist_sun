@@ -100,6 +100,7 @@ Future<void> main() async {
   await Prefs.init();
   await initJsonFile(); // ← moved AFTER initialize
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
+  await createTimerChannel(); // ← moved AFTER initialize (harmless on iOS)
 
   // Finally schedule
   if (Prefs.uposathaNotificationsEnabled) {
