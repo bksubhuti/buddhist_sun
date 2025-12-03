@@ -51,15 +51,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UNUserNotificationCenter</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>remote-notification</string>
+		<!-- Keep "audio" if you still need it for chanting/background play -->
 		<string>audio</string>
 	</array>
+
+	<!-- Optional but recommended for clarity (iOS 12+) -->
 	<key>NSUserNotificationUsageDescription</key>
-	<string>The app sends notifications for Buddhist Sun reminders.</string>
+	<string>This app sends reminders for Uposatha days and prayer times.</string>
 </dict>
 </plist>

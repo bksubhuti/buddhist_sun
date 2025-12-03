@@ -26,30 +26,14 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 //  MAIN
 // ----------------------------------------------------------
 Future<void> main() async {
-  // Needed for async work in main
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Desktop DB init
-  if (Platform.isWindows || Platform.isLinux) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-  }
-
-  // SharedPrefs
-  await Prefs.init();
-
-  // Ensure Uposatha JSON is in app-support dir
-  await initJsonFile();
-
-  // Timezone for tz-based scheduling
+  // 1. Timezone FIRST
   await configureLocalTimeZone();
-  await createUposathaChannel(); // NEW — needed BEFORE initialize()
 
-  // ---------------- ANDROID / iOS / macOS INIT ----------------
-
+  // 2. Notification initialization SECOND (exactly like the working example)
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('app_icon');
-
   final List<DarwinNotificationCategory> darwinNotificationCategories =
       <DarwinNotificationCategory>[
     DarwinNotificationCategory(
@@ -109,12 +93,27 @@ Future<void> main() async {
     macOS: initializationSettingsDarwin,
   );
 
-  // Single initialize call
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: selectNotificationStream.add,
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
+
+  await Prefs.init();
+  await initJsonFile(); // ← moved AFTER initialize
+  await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
+
+  // Optional but recommended explicit permission request
+  if (Platform.isIOS || Platform.isMacOS) {
+    final ios =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    await ios?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
 
   // ---------------- PLATFORM PERMISSIONS / CHANNELS ----------------
   if (!kIsWeb && Platform.isAndroid) {
@@ -130,9 +129,9 @@ Future<void> main() async {
     await androidImpl?.requestExactAlarmsPermission();
   }
 
-  // ---------------- SCHEDULE UPOSATHA NOTIFICATIONS ----------------
+  // Finally schedule
   if (Prefs.uposathaNotificationsEnabled) {
-    await cancelAllNotifications(); // prevents duplicates
+    await cancelAllNotifications();
     await scheduleUpcomingUposathaNotifications();
   }
 
