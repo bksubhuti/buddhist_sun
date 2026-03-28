@@ -1,3 +1,4 @@
+import 'package:buddhist_sun/utils/majjhantika_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:solar_calculator/solar_calculator.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -129,7 +130,17 @@ String getSunriseString() {
 
 String getSolarNoonTimeString() {
   Instant inst = getSolarNoon();
-  String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+  // testing the new majjhankika function
+  // Convert Instant to DateTime to feed the precision calculator
+  DateTime roughNoonEstimate = DateTime(DateTime.now().year,
+      DateTime.now().month, DateTime.now().day, inst.hour, inst.minute);
+  double currentLongitude = Prefs.lng; // Pulled from your Geolocator instance
+
+  DateTime exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(
+      roughNoonEstimate, currentLongitude);
+  //String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+  String s =
+      '${exactMajjhantika.hour}:${exactMajjhantika.minute.toString().padLeft(2, '0')}:${exactMajjhantika.second.toString().padLeft(2, '0')}';
   return s;
 }
 

@@ -27,9 +27,15 @@ class MajjhantikaCalculator {
     int A = year ~/ 100;
     int B = 2 - A + (A ~/ 4);
 
+// Calculate the fractional day to capture the exact hour and minute
+    double fractionalDay = utcDate.hour / 24.0 +
+        utcDate.minute / 1440.0 +
+        utcDate.second / 86400.0;
+
     double JD = (365.25 * (year + 4716)).floor() +
         (30.6001 * (month + 1)).floor() +
         day +
+        fractionalDay +
         B -
         1524.5;
 
