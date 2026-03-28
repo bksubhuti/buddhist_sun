@@ -429,7 +429,7 @@ class _MoonPageState extends State<MoonPage> {
                           content: Text("✅ Uposatha reminders scheduled")),
                     );
                   } else {
-                    await cancelAllNotifications();
+                    await cancelAllUposathaNotifications();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text("🔕 Uposatha reminders turned off")),

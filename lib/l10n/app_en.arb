@@ -2,8 +2,7 @@
   "@@locale": "en",
   "appName": "Buddhist Sun",
   "@appName": {
-    "description": 
-      "use commanflutter gen-l10n"
+    "description": "use command flutter gen-l10n"
   },
   "buddhistSun": "Buddhist Sun",
   "noon": "Noon",
@@ -89,5 +88,6 @@
   "refreshingGps": "Refreshing GPS",
   "uposathaNotifications": "Uposatha Notifications:",
   "daysBefore": "Days Before:",
-  "notificationTime": "Notification Time:"
+  "notificationTime": "Notification Time:",
+  "buddhistSunCountdown": "Buddhist Sun Countdown"
 }

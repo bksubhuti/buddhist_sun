@@ -65,6 +65,9 @@ dependencies:
   flutter_local_notifications: ^19.4.2
   timezone: ^0.10.1
   flutter_timezone: ^4.1.1
+  just_audio: ^0.10.5
+  audio_service: ^0.18.18
+  just_audio_background: ^0.0.1-beta.17
   
 dev_dependencies:
   flutter_test:
@@ -105,6 +108,7 @@ flutter:
     - assets/moon_free2.png
     - assets/buddhist_sun_app_logo.png
     - assets/uposatha.json
+    - assets/audio/timer_countdownv2.m4a
 
 flutter_launcher_icons:
   android: true

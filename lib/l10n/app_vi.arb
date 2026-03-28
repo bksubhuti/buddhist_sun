@@ -283,5 +283,6 @@
   "refreshingGps": "Đang làm mới GPS",
   "uposathaNotifications": "Thông báo Uposatha:",
   "daysBefore": "Số ngày trước:",
-  "notificationTime": "Thời gian thông báo:" 
+  "notificationTime": "Thời gian thông báo:",
+  "buddhistSunCountdown": "Buddhist Sun Countdown"
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
+import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -16,6 +17,7 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -193,14 +195,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     ).show(context);
   }
 
-  Future<void> _showInstantNotification() async {
-    await showInstantNotification();
-  }
-
-  Future<void> _show30SecondNotification() async {
-    await thirtySecondsNotification();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
@@ -229,7 +223,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
               ),
               ColoredText(_countdownString,
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
-              ColoredText(AppLocalizations.of(context)!.time_left,
+              ColoredText("${AppLocalizations.of(context)!.time_left} (${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon})",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               Container(
                 margin: const EdgeInsets.fromLTRB(15, 0, 25, 5),
@@ -251,23 +245,35 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         trailing: Transform.scale(
                           scale: 1.7,
                           child: Switch(
-                              value: _speakIsOn,
-                              onChanged: (bValue) async {
-                                setState(() async {
-                                  Prefs.instance.setBool(SPEAKISON, bValue);
+                            value: _speakIsOn,
+                            onChanged: (bValue) async {
+                              // 1. Update UI first
+                              setState(() {
+                                _speakIsOn = bValue;
+                                Prefs.instance.setBool(SPEAKISON, bValue);
+                                Prefs.speakIsOn = bValue;
+                              });
 
-                                  await scheduleAllTimerNotifications(
-                                      targetTime: service.countdownTarget,
-                                      soundMap: solarTimerAnnouncementSounds);
-                                  _speakIsOn = bValue;
-                                  if (_speakIsOn)
-                                    Prefs.speakIsOn = _speakIsOn;
-                                  else {
-                                    service.initialVoicing = false;
-                                    cancelAllTimerNotifications();
-                                  }
-                                });
-                              }),
+                              // 2. Now do async work AFTER setState
+                              if (bValue) {
+                                await BackgroundTimePlayer.startForTarget(
+                                  target: service.countdownTarget,
+                                  title: "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
+                                  artist: AppLocalizations.of(context)!.buddhistSun,
+                                  album: AppLocalizations.of(context)!.timer,
+                                );
+                                // Background voice ON
+                                //await scheduleAllTimerNotifications(
+                                //targetTime: service.countdownTarget,
+                                //);
+                              } else {
+                                // Background voice OFF
+                                await BackgroundTimePlayer.stop();
+                                service.initialVoicing = false;
+                                await cancelAllTimerNotifications();
+                              }
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -389,36 +395,36 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         ElevatedButton(
-          onPressed: _showInstantNotification,
+          onPressed: () async {
+            // Test background audio by setting a fake target 2m 10s in the future
+            final testTarget =
+                DateTime.now().add(const Duration(minutes: 2, seconds: 10));
+            await BackgroundTimePlayer.startForTarget(
+              target: testTarget,
+              title: "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
+              artist: AppLocalizations.of(context)!.buddhistSun,
+              album: AppLocalizations.of(context)!.timer,
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
           ),
-          child: Text(
-            "Instant Test",
+          child: const Text(
+            "Test Audio (2:10)",
             style: TextStyle(
               color: Colors.white,
             ),
           ),
         ),
         ElevatedButton(
-          onPressed: _show30SecondNotification,
+          onPressed: () async {
+            await BackgroundTimePlayer.stop();
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
           ),
-          child: Text(
-            "30s Test",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: _doTTSNotificationTest,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-          ),
-          child: Text(
-            "timer 4 tts",
+          child: const Text(
+            "Stop Audio",
             style: TextStyle(
               color: Colors.white,
             ),
@@ -569,9 +575,5 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         const Divider(height: 15),
       ],
     );
-  }
-
-  _doTTSNotificationTest() async {
-    await doElevenLabsCountdownTest();
   }
 }

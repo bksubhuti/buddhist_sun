@@ -1,5 +1,6 @@
 {
-    "@@locale": "es",
-    "appName": "Buddhist Sun",
-    "buddhistSun": "Sol Budista"
+  "@@locale": "es",
+  "appName": "Buddhist Sun",
+  "buddhistSun": "Sol Budista",
+  "buddhistSunCountdown": "Buddhist Sun Countdown"
 }

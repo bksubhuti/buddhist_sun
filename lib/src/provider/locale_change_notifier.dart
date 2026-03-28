@@ -31,6 +31,9 @@ class LocaleChangeNotifier extends ChangeNotifier {
       case 7:
         localeString = "hi";
         break;
+      case 8:
+        localeString = "bn";
+        break;
     }
 
     return localeString;

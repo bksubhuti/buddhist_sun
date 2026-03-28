@@ -1,8 +1,10 @@
 import 'package:buddhist_sun/l10n/app_localizations.dart';
+import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
-import 'dart:io' show File, Platform;
+import 'dart:io' show File;
 // #docregion LocalizationDelegatesImport
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -25,6 +27,13 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 // ----------------------------------------------------------
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'dawn_audio_channel',
+    androidNotificationChannelName: 'Dawn Audio',
+    androidNotificationOngoing: false,
+    androidStopForegroundOnPause: true,
+  );
 
   // 1. Timezone FIRST
   await configureLocalTimeZone();
@@ -100,11 +109,12 @@ Future<void> main() async {
   await Prefs.init();
   await initJsonFile(); // ← moved AFTER initialize
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
-  await createTimerChannel(); // ← moved AFTER initialize (harmless on iOS)
+  await createTimerChannelsOnce(); // ← moved AFTER initialize (harmless on iOS)
+  await BackgroundTimePlayer.init();
 
   // Finally schedule
   if (Prefs.uposathaNotificationsEnabled) {
-    await cancelAllNotifications();
+    await cancelAllUposathaNotifications();
     await scheduleUpcomingUposathaNotifications();
   }
 
@@ -175,6 +185,7 @@ class MyApp extends StatelessWidget {
               Locale('zh', ''),
               Locale('vi', ''),
               Locale('hi', ''),
+              Locale('bn', ''),
             ],
             home: HomePageContainer(),
           );

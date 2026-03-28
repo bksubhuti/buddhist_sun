@@ -282,5 +282,6 @@
   "refreshingGps": "正在刷新 GPS",
   "uposathaNotifications": "布萨提醒：",
   "daysBefore": "提前天数：",
-  "notificationTime": "提醒时间："
+  "notificationTime": "提醒时间：",
+  "buddhistSunCountdown": "Buddhist Sun Countdown"
 }

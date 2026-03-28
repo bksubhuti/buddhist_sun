@@ -85,5 +85,6 @@
   "refreshingGps": "กำลังรีเฟรช GPS",
   "uposathaNotifications": "การแจ้งเตือนอุโบสถ:",
   "daysBefore": "ล่วงหน้า (วัน):",
-  "notificationTime": "เวลาแจ้งเตือน:"
+  "notificationTime": "เวลาแจ้งเตือน:",
+  "buddhistSunCountdown": "Buddhist Sun Countdown"
 }
