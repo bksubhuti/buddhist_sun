@@ -2,7 +2,6 @@ import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
 import 'dart:io' show File;
 // #docregion LocalizationDelegatesImport
@@ -27,13 +26,6 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 // ----------------------------------------------------------
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'dawn_audio_channel',
-    androidNotificationChannelName: 'Dawn Audio',
-    androidNotificationOngoing: false,
-    androidStopForegroundOnPause: true,
-  );
 
   // 1. Timezone FIRST
   await configureLocalTimeZone();

@@ -1,6 +1,7 @@
 //import 'package:buddhist_sun/src/services/solar_timer_service.dart';
 
 import 'package:buddhist_sun/src/services/solar_calc.dart';
+import 'package:buddhist_sun/utils/majjhantika_calculator.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -112,7 +113,7 @@ class SolarTimerService {
     _now = DateTime.now();
     _dtSolar = _getCountdownTarget();
     _nowString =
-        "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}";
+        "${_now.hour.toString().padLeft(2, '0')}:${_now.minute.toString().padLeft(2, '0')}:${_now.second.toString().padLeft(2, '0')}";
     // print("speak on is $_speakIsOn");
     // print(_nowString);
 
@@ -298,9 +299,9 @@ class SolarTimerService {
     final dawnPlus1h = dawn.add(const Duration(hours: 1));
 
     // Dawn must be before solar noon (normal case)
-    final noonInst = getSolarNoon();
-    final solarNoon =
-        DateTime(now.year, now.month, now.day, noonInst.hour, noonInst.minute);
+    final exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
+    final int safetyOffset = getSafetyOffset();
+    final solarNoon = exactMajjhantika.subtract(Duration(minutes: safetyOffset));
 
     return now.isAfter(twoAm) &&
         now.isBefore(dawnPlus1h) &&
@@ -313,10 +314,10 @@ class SolarTimerService {
   DateTime _getCountdownTarget() {
     final now = DateTime.now();
 
-    // Compute solar noon (existing behavior)
-    final noonInst = getSolarNoon();
-    final solarNoon =
-        DateTime(now.year, now.month, now.day, noonInst.hour, noonInst.minute);
+    // Compute solar noon using new exact Majjhantika calculation
+    final exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
+    final int safetyOffset = getSafetyOffset();
+    final solarNoon = exactMajjhantika.subtract(Duration(minutes: safetyOffset));
 
     // If dawn mode → countdown to dawn
     if (_isDawnMode()) {

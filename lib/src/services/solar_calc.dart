@@ -138,9 +138,12 @@ String getSolarNoonTimeString() {
 
   DateTime exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(
       roughNoonEstimate, currentLongitude);
-  //String s = '${inst.hour}:${inst.minute.toString().padLeft(2, '0')}';
+
+  int safetyOffset = getSafetyOffset();
+  DateTime safeMajjhantika = exactMajjhantika.subtract(Duration(minutes: safetyOffset));
+
   String s =
-      '${exactMajjhantika.hour}:${exactMajjhantika.minute.toString().padLeft(2, '0')}:${exactMajjhantika.second.toString().padLeft(2, '0')}';
+      '${safeMajjhantika.hour}:${safeMajjhantika.minute.toString().padLeft(2, '0')}:${safeMajjhantika.second.toString().padLeft(2, '0')}';
   return s;
 }
 

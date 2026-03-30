@@ -91,11 +91,6 @@
                 android:value="Notification scheduling support"/>
         </service>
 
-        <!-- Flutter background isolate (REQUIRED for TTS + timer) -->
-        <service
-            android:name="de.julianassmann.flutter_background.IsolateHolderService"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
 
         <!-- Audio service registration (for background audio) -->
         <service

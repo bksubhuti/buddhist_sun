@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
@@ -11,9 +10,6 @@ import 'package:buddhist_sun/src/services/notification_service.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/material.dart';
-
-import 'package:flutter_background/flutter_background.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -34,7 +30,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   String _countdownString = "";
   bool _speakIsOn = false;
   bool _wakeOn = false;
-  bool _backgroundOn = false;
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
   bool _disposed = false;
 
@@ -88,7 +83,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   void initState() {
     _disposed = false;
     service.delegate = this;
-    _backgroundOn = Prefs.backgroundOn;
     _wakeOn = Prefs.screenAlwaysOn;
 
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
@@ -97,102 +91,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     super.initState();
   }
 
-  Future<bool> setupBackground() async {
-    bool success =
-        await FlutterBackground.initialize(androidConfig: androidConfig);
-    print("result from setup backgroud is $success");
-    return success;
-  }
-
-  final androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: "Buddhist Sun Running In Background",
-    notificationText: "Buddhist Sun is running in the background",
-    notificationImportance: AndroidNotificationImportance.normal,
-    notificationIcon: AndroidResource(
-        name: 'background_icon',
-        defType: 'drawable'), // Default is ic_launcher from folder mipmap
-  );
-
-  @override
   void dispose() {
     _disposed = true;
     super.dispose();
-  }
-
-  void _backgroundSwitchChange(bSwitch) async {
-    bool successEnabled = false;
-    bool bkrunning = false;
-    bool successInit = false;
-    bool hasPermissions = await FlutterBackground.hasPermissions;
-    if (bSwitch) {
-      if (!hasPermissions) {
-        await showBackgroundInfoDialog(context);
-      }
-      successInit =
-          await FlutterBackground.initialize(androidConfig: androidConfig);
-
-      if (!successInit && await FlutterBackground.hasPermissions) {
-        successInit =
-            await FlutterBackground.initialize(androidConfig: androidConfig);
-      }
-      if (successInit) {
-        _displayMotionToast(
-            context, AppLocalizations.of(context)!.background_initialized);
-        if (successInit) {
-          bkrunning = FlutterBackground.isBackgroundExecutionEnabled;
-          if (!bkrunning) {
-            successEnabled =
-                await FlutterBackground.enableBackgroundExecution();
-          } // bkrunning
-        } // has permission
-        if (successEnabled || bkrunning) {
-          _displayMotionToast(
-              context, AppLocalizations.of(context)!.background_enabled);
-        } // successEnabled || bkrunning
-        else {
-          _displayErrorMotionToast(
-              context, AppLocalizations.of(context)!.background_not_set);
-
-          bSwitch = false;
-        }
-      } else {
-        _displayErrorMotionToast(
-            context, AppLocalizations.of(context)!.background_init_error);
-
-        bSwitch = false;
-      }
-    } // switch enabled
-    else {
-      if (FlutterBackground.isBackgroundExecutionEnabled) {
-        await FlutterBackground.disableBackgroundExecution();
-        _displayMotionToast(
-            context, AppLocalizations.of(context)!.background_disabled);
-      }
-    } // else no switch on
-    Prefs.backgroundOn = bSwitch;
-    setState(() {
-      _backgroundOn = bSwitch;
-    });
-  }
-
-  _displayMotionToast(BuildContext context, String message) {
-    MotionToast(
-      primaryColor: Theme.of(context).primaryColor,
-      title: Text(AppLocalizations.of(context)!.notification),
-      description: Text(message),
-      animationType: AnimationType.slideInFromRight,
-      //width: 300,
-//      height: 90,
-      icon: Icons.battery_charging_full,
-    ).show(context);
-  }
-
-  _displayErrorMotionToast(BuildContext context, String message) {
-    MotionToast.error(
-      title: Text(AppLocalizations.of(context)!.error),
-      description: Text(message),
-      animationType: AnimationType.slideInFromLeft,
-    ).show(context);
   }
 
   @override
@@ -301,22 +202,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         width: 0,
                         height: 10,
                       ),
-                      ListTile(
-                        leading: ColoredText(
-                            AppLocalizations.of(context)!.speech_in_background,
-                            style: TextStyle(fontSize: 15)),
-                        trailing: Transform.scale(
-                          scale: 1.7,
-                          child: Switch(
-                              value: _backgroundOn,
-                              onChanged:
-                                  (isAndroid) ? _backgroundSwitchChange : null),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 30,
-                        height: 15,
-                      ),
                       Slider(
                           value: _volume,
                           onChanged: (newVolume) {
@@ -352,43 +237,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     });
   }
 
-  Future showBackgroundInfoDialog(BuildContext context) async {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok,
-          style: TextStyle(
-            color: (!Prefs.darkThemeOn)
-                ? Theme.of(context).primaryColor
-                : Colors.white,
-          )),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog help = AlertDialog(
-      title: ColoredText(AppLocalizations.of(context)!.background_permission),
-      content: SingleChildScrollView(
-        child: ColoredText(
-            AppLocalizations.of(context)!.background_permission_content,
-            style: TextStyle(
-              fontSize: 16,
-            )),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return help;
-      },
-    );
-  }
 
   Widget GetNotificationDebugButtons() {
     return Row(

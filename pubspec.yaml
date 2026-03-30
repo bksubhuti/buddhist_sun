@@ -47,7 +47,6 @@ dependencies:
   geolocator: ^14.0.0
   bottom_navy_bar: ^6.1.0
   flutter_tts: ^4.0.2
-  flutter_background: ^1.3.0+1
   motion_toast: ^2.12.1
   geocoding: ^4.0.0
   internet_connection_checker: ^3.0.1
@@ -67,7 +66,6 @@ dependencies:
   flutter_timezone: ^4.1.1
   just_audio: ^0.10.5
   audio_service: ^0.18.18
-  just_audio_background: ^0.0.1-beta.17
   
 dev_dependencies:
   flutter_test:
