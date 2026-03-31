@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
@@ -56,9 +57,11 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
   DateTime? _currentTarget;
   String? _originalTitle;
+  Timer? _aodTimer;
 
   @override
   Future<void> stop() async {
+    _aodTimer?.cancel();
     await _player.stop();
     _currentTarget = null;
     _originalTitle = null;
@@ -151,12 +154,30 @@ class CountdownAudioHandler extends BaseAudioHandler {
     final item = MediaItem(
       id: 'timer_countdown_m4av2',
       title: title,
-      artist: artist,
+      artist: _getRemainingTimeString(),
       album: album,
       artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
     );
 
     mediaItem.add(item);
+
+    _aodTimer?.cancel();
+    _aodTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      final currentItem = mediaItem.value;
+      if (currentItem == null || _currentTarget == null) return;
+
+      final remaining = _currentTarget!.difference(DateTime.now());
+
+      if (remaining.isNegative) {
+        timer.cancel();
+        mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
+        return;
+      }
+
+      mediaItem.add(currentItem.copyWith(
+        artist: _getRemainingTimeString(),
+      ));
+    });
 
     await _player.setAudioSource(
       AudioSource.asset('assets/audio/timer_countdownv2.m4a'),
@@ -164,6 +185,14 @@ class CountdownAudioHandler extends BaseAudioHandler {
     await _player.seek(seekPos);
     await _player.setVolume(1.0);
     await _player.play();
+  }
+
+  String _getRemainingTimeString() {
+    if (_currentTarget == null) return '';
+    final remaining = _currentTarget!.difference(DateTime.now());
+    if (remaining.isNegative) return 'Time Reached';
+    final minutes = remaining.inMinutes;
+    return 'Remaining: $minutes min${minutes == 1 ? '' : 's'}';
   }
 }
 

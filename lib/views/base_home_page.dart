@@ -178,9 +178,26 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.verify,
                   style: TextStyle()),
               onTap: () async {
-                final Uri url = Uri.parse(
-                    'https://www.timeanddate.com/sun/@${Prefs.lat},${Prefs.lng}');
-                // another website 'https://gml.noaa.gov/grad/solcalc/table.php?lat=${Prefs.lat}.833&lon=${Prefs.lng}&year=$year');
+                // KSO Observatory requires UTC time for its URL parameters
+                final DateTime utcNow = DateTime.now().toUtc();
+
+                // Format strings to ensure double digits (e.g., '03' instead of '3')
+                final String dateStr =
+                    '${utcNow.year}-${utcNow.month.toString().padLeft(2, '0')}-${utcNow.day.toString().padLeft(2, '0')}';
+                final String timeStr =
+                    '${utcNow.hour.toString().padLeft(2, '0')}:${utcNow.minute.toString().padLeft(2, '0')}:${utcNow.second.toString().padLeft(2, '0')}';
+
+                // Uri.https safely builds the URL and auto-encodes the time string
+                final Uri url = Uri.https(
+                  'www.kso.ac.at',
+                  '/beobachtungen/ephemeris_en.php',
+                  {
+                    'date': dateStr,
+                    'time': timeStr,
+                    'lat': Prefs.lat.toString(),
+                    'lon': Prefs.lng.toString(),
+                  },
+                );
 
                 if (!await launchUrl(url)) {
                   throw Exception('Could not launch $url');
