@@ -27,6 +27,7 @@ const String UPOSATHACOUNTRY = "uposathaCountry";
 const String LASTDOWNLOAD = "lastDownload";
 const String AUTO_GPS_ENABLED = "autoGpsEnabled";
 const String UPOSATHA_NOTIFICATIONS_ENABLED = "uposathaNotificationsEnabled";
+const String AUTO_START_TIMER = "autoStartTimer";
 
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
@@ -51,6 +52,7 @@ const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
 const bool DEFAULT_UPOSATHA_NOTIFICATIONS_ENABLED = false;
+const bool DEFAULT_AUTO_START_TIMER = false;
 
 const String BEFORE_UPOSATHA_NOTIFICATION_DAYS =
     "beforeUposathaNotificationDays";
@@ -166,6 +168,11 @@ class Prefs {
 
   static set uposathaNotificationsEnabled(bool value) =>
       instance.setBool(UPOSATHA_NOTIFICATIONS_ENABLED, value);
+
+  static bool get autoStartTimer =>
+      instance.getBool(AUTO_START_TIMER) ?? DEFAULT_AUTO_START_TIMER;
+  static set autoStartTimer(bool value) =>
+      instance.setBool(AUTO_START_TIMER, value);
 
   static int get beforeUposathaNotificationDays =>
       instance.getInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS) ??

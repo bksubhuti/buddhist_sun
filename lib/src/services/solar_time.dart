@@ -85,9 +85,8 @@ class SolarTimerService {
 
     if (!_isDoingTimerStuff) {
       _bLate = false;
-      // only set the time once.. this gets called
-      _isDoingTimerStuff =
-          true; // "initinstance" which gets called each page flip
+      _isDoingTimerStuff = true;
+      timerCallback(); // Run immediately for synchronous initial state
       _timer = Timer.periodic(_duration, (timer) {
         timerCallback();
       });
@@ -95,7 +94,6 @@ class SolarTimerService {
   }
 
   Future _speak() async {
-    return;
     if (!_bLate) {
       await flutterTts.setSpeechRate(rate);
       await flutterTts.setVolume(Prefs.volume);
@@ -118,7 +116,7 @@ class SolarTimerService {
     // print(_nowString);
 
     // tell the window to show the new now time
-    delegate!.setNowString(_nowString);
+    delegate?.setNowString(_nowString);
 
     // setup the countdown time remaining..
     int min = _dtSolar.difference(_now).inMinutes;
@@ -135,12 +133,12 @@ class SolarTimerService {
           "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
       // send countdown string for display
       if (!_bLate) {
-        delegate!.setCountdownString(_countdownString);
-        delegate!.update(); // full set state if possible
+        delegate?.setCountdownString(_countdownString);
+        delegate?.update(); // full set state if possible
       } else {
         _countdownString = LATE;
-        delegate!.setCountdownString(_countdownString);
-        delegate!.update(); // full set state if possible
+        delegate?.setCountdownString(_countdownString);
+        delegate?.update(); // full set state if possible
       }
     }
     if (min < 0) {
@@ -167,36 +165,9 @@ class SolarTimerService {
         _speak();
       }
 
-      switch (min) {
-        case 50:
-        case 40:
-        case 30:
-        case 20:
-        case 15:
-        case 10:
-        case 8:
-        case 6:
-        case 5:
-        case 4:
-        case 3:
-        case 2:
-        case 1:
-          if (seconds == 0) {
-            // prepare voice message  at "new" minute change
-            _voiceMessage = "${min.toString()} minutes remaining";
-            _speak();
-          }
-          break;
-        case 0:
-          if (!_bLate) {
-            if (seconds == 0) {
-              // countdown finished
-              // flick the switch on parent
-              doLateTime();
-            }
-          }
-          break;
-      } // switch
+      if (min == 0 && seconds == 0 && !_bLate) {
+        doLateTime();
+      }
     }
   }
 
@@ -204,15 +175,15 @@ class SolarTimerService {
     if (Prefs.speakIsOn) {
       _speakIsOn = false;
       Prefs.speakIsOn = false;
-      delegate!.setSpeakIsOn(_speakIsOn);
+      delegate?.setSpeakIsOn(_speakIsOn);
 
       // set final tts message and speak
       _voiceMessage = "Your time has passed";
       _speak(); // speaking has finished.
     }
     _countdownString = LATE;
-    delegate!.setCountdownString(_countdownString);
-    delegate!.update(); // full set state if possible
+    delegate?.setCountdownString(_countdownString);
+    delegate?.update(); // full set state if possible
     _bLate = true;
   }
 

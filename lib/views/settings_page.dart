@@ -266,6 +266,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: 15),
+              Card(
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: SwitchListTile(
+                    title: ColoredText(
+                      "Auto-Start Timer on App Open",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    value: Prefs.autoStartTimer,
+                    onChanged: (bool value) {
+                      setState(() {
+                        Prefs.autoStartTimer = value;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
               NotificationSettingsWidget(),
             ],
           ),

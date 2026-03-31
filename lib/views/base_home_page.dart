@@ -12,6 +12,8 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'dart:io' show Platform;
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:buddhist_sun/src/services/background_time_player.dart';
+import 'package:buddhist_sun/src/services/solar_time.dart';
 
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
@@ -56,16 +58,58 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   int _currentIndex = (Prefs.lat == 1.1) ? 4 : 0;
   //Widget _currentPage = Home();
+  bool _initializedAutoStart = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initializedAutoStart && Prefs.autoStartTimer) {
+      _initializedAutoStart = true;
+      _autoStartBackgroundTimer();
+    }
+  }
+
+  Future<void> _autoStartBackgroundTimer() async {
+    final service = SolarTimerService();
+    // Explicitly initialize the SolarTimerService in the background immediately
+    service.doTimerStuff();
+    
+    final target = service.countdownTarget;
+    final now = DateTime.now();
+    final difference = target.difference(now);
+    final minutes = difference.inMinutes;
+
+    if (minutes <= 60 && !difference.isNegative) {
+      Prefs.speakIsOn = true;
+      Prefs.instance.setBool(SPEAKISON, true);
+
+      // Start background playing + TTS announcement
+      await BackgroundTimePlayer.startForTarget(
+        target: target,
+        title: AppLocalizations.of(context)!.buddhistSunCountdown,
+        artist: AppLocalizations.of(context)!.buddhistSun,
+        album: AppLocalizations.of(context)!.timer,
+      );
+    } else {
+      // Force it completely off if it's > 60 mins or already late
+      Prefs.speakIsOn = false;
+      Prefs.instance.setBool(SPEAKISON, false);
+      await BackgroundTimePlayer.stop();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
 
-    // these toggles always get set to false
+    // these toggles always get set to false unless auto-start is true
     Prefs.backgroundOn = false;
     Prefs.screenAlwaysOn = false;
-    Prefs.speakIsOn = false;
+    if (!Prefs.autoStartTimer) {
+      Prefs.speakIsOn = false;
+      Prefs.instance.setBool(SPEAKISON, false);
+    }
     //    _dummyPage = DummyPage();
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
