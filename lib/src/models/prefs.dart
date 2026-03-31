@@ -14,7 +14,6 @@ const String OFFSET = "offset";
 const String SPEAKISON = "speakIsOn";
 const String SCREEN_ALWAYS_ON = "screenAlwaysOn";
 const String BACKGROUND_ON = "backgroundOn";
-const String VOLUME = "volume";
 const String SAFETY = "safety";
 const String DAWNVAL = "dawnVal";
 const String RETRIEVE_CITYNAME = "retrieveCityName";
@@ -37,7 +36,6 @@ const double DEFAULT_OFFSET = 6.5;
 const bool DEFAULT_SPEAKISON = false;
 const bool DEFAULT_SCREEN_ALWAYS_ON = false;
 const bool DEFAULT_BACKGROUND_ON = false;
-const double DEFAULT_VOLUME = 0.5;
 const int DEFAULT_SAFETY = 1;
 const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
@@ -105,9 +103,6 @@ class Prefs {
       instance.getBool(RETRIEVE_CITYNAME) ?? DEFAULT_RETRIEVE_CITYNAME;
   static set retrieveCityName(bool value) =>
       instance.setBool(RETRIEVE_CITYNAME, value);
-
-  static double get volume => instance.getDouble(VOLUME) ?? DEFAULT_VOLUME;
-  static set volume(double value) => instance.setDouble(VOLUME, value);
 
   static int get safety => instance.getInt(SAFETY) ?? DEFAULT_SAFETY;
   static set safety(int value) => instance.setInt(SAFETY, value);

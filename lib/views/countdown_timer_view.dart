@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-
+import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -34,7 +34,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   bool _disposed = false;
 
   /////////////////////////////////////////////////////////////////
-  double _volume = Prefs.volume;
+  double _volume = 0.5;
   SolarTimerService service =
       SolarTimerService(); // always return singleton instance anywhere, also you can set delegate to null
   @override
@@ -87,12 +87,40 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
     service.doTimerStuff();
+    
+    _initSystemVolume();
 
     super.initState();
   }
 
+  Future<void> _initSystemVolume() async {
+    if (kIsWeb) return;
+    try {
+      await FlutterVolumeController.updateShowSystemUI(false);
+      final systemVolume = await FlutterVolumeController.getVolume();
+      if (systemVolume != null && mounted) {
+        setState(() {
+          _volume = systemVolume;
+        });
+      }
+      FlutterVolumeController.addListener((newVolume) {
+        if (mounted && newVolume != _volume) {
+          setState(() {
+            _volume = newVolume;
+          });
+        }
+      });
+    } catch (e) {
+      print("Error binding to system volume: $e");
+    }
+  }
+
+  @override
   void dispose() {
     _disposed = true;
+    if (!kIsWeb) {
+      FlutterVolumeController.removeListener();
+    }
     super.dispose();
   }
 
@@ -124,7 +152,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
               ),
               ColoredText(_countdownString,
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
-              ColoredText("${AppLocalizations.of(context)!.time_left} (${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon})",
+              ColoredText(
+                  "${AppLocalizations.of(context)!.time_left} (${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon})",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               Container(
                 margin: const EdgeInsets.fromLTRB(15, 0, 25, 5),
@@ -159,8 +188,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                               if (bValue) {
                                 await BackgroundTimePlayer.startForTarget(
                                   target: service.countdownTarget,
-                                  title: "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
-                                  artist: AppLocalizations.of(context)!.buddhistSun,
+                                  title:
+                                      "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
+                                  artist:
+                                      AppLocalizations.of(context)!.buddhistSun,
                                   album: AppLocalizations.of(context)!.timer,
                                 );
                                 // Background voice ON
@@ -206,13 +237,15 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                           value: _volume,
                           onChanged: (newVolume) {
                             setState(() => _volume = newVolume);
-                            Prefs.volume = _volume;
+                            if (!kIsWeb) {
+                              FlutterVolumeController.setVolume(newVolume);
+                            }
                           },
                           min: 0.0,
                           max: 1.0,
                           divisions: 100,
                           label:
-                              "${AppLocalizations.of(context)!.volume}: $_volume"),
+                              "${AppLocalizations.of(context)!.volume}: ${_volume.toStringAsFixed(2)}"),
                       ColoredText(AppLocalizations.of(context)!.volume,
                           style: TextStyle(
                             fontSize: 15,
@@ -222,7 +255,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                         height: 15,
                       ),
                       // Only show test buttons in debug builds
-                      if (kDebugMode || true) ...[
+                      if (kDebugMode) ...[
                         GetNotificationDebugButtons(),
                         SizedBox(height: 10),
                       ],
@@ -237,7 +270,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     });
   }
 
-
   Widget GetNotificationDebugButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -249,7 +281,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                 DateTime.now().add(const Duration(minutes: 2, seconds: 10));
             await BackgroundTimePlayer.startForTarget(
               target: testTarget,
-              title: "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
+              title:
+                  "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${_isDawnMode() ? _getSelectedDawnLabel(context) : AppLocalizations.of(context)!.solar_noon}",
               artist: AppLocalizations.of(context)!.buddhistSun,
               album: AppLocalizations.of(context)!.timer,
             );
