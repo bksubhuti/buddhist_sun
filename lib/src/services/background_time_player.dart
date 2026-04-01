@@ -74,11 +74,11 @@ class CountdownAudioHandler extends BaseAudioHandler {
     // Turn off Speech Notify globally and sync with active UI
     Prefs.instance.setBool(SPEAKISON, false);
     Prefs.speakIsOn = false;
-    
+
     final solarService = SolarTimerService();
     solarService.initialVoicing = false;
     solarService.delegate?.setSpeakIsOn(false);
-    
+
     await cancelAllTimerNotifications();
   }
 
@@ -112,7 +112,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     if (_currentTarget != null) {
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
-      
+
       Duration seekPos = Duration.zero;
       if (secondsUntilTarget <= 0) {
         seekPos = const Duration(minutes: 60);
@@ -122,7 +122,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
         final secondsElapsed = 3600 - secondsUntilTarget;
         seekPos = Duration(seconds: secondsElapsed);
       }
-      
+
       await _player.seek(seekPos);
     }
     await _player.play();
@@ -156,7 +156,8 @@ class CountdownAudioHandler extends BaseAudioHandler {
       title: title,
       artist: _getRemainingTimeString(),
       album: album,
-      artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+      artUri:
+          albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
     );
 
     mediaItem.add(item);
@@ -207,9 +208,12 @@ class BackgroundTimePlayer {
 
     try {
       // Copy asset to local file so Android's MediaSession can read it
-      final byteData = await rootBundle.load('assets/buddhist_sun_app_logo.png');
-      final file = File('${(await getApplicationDocumentsDirectory()).path}/buddhist_sun_app_logo.png');
-      await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      final byteData =
+          await rootBundle.load('assets/buddhist_sun_app_logo.png');
+      final file = File(
+          '${(await getApplicationDocumentsDirectory()).path}/buddhist_sun_app_logo.png');
+      await file.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
       _albumArtUri = file.uri;
     } catch (e) {
       debugPrint("Failed to load album art: $e");
@@ -222,7 +226,8 @@ class BackgroundTimePlayer {
         androidNotificationChannelName: 'Dawn Audio',
         androidNotificationOngoing: true,
         androidStopForegroundOnPause: true, // Fixes sticky notification on stop
-        androidNotificationIcon: 'drawable/buddhist_sun_silo_app_icon', // Usually a transparent silhouette
+        androidNotificationIcon:
+            'drawable/buddhist_sun_silo_app_icon', // Usually a transparent silhouette
       ),
     );
     _initialized = true;
