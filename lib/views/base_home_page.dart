@@ -80,8 +80,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
     final target = service.countdownTarget;
     final now = DateTime.now();
     final difference = target.difference(now);
+    final minutes = difference.inMinutes;
 
-    if (autoStartEnabled && !difference.isNegative) {
+    if (autoStartEnabled && !difference.isNegative && minutes <= 120) {
       Prefs.speakIsOn = true;
       Prefs.instance.setBool(SPEAKISON, true);
       service.delegate?.setSpeakIsOn(true);

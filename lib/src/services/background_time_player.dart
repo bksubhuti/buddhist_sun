@@ -58,15 +58,15 @@ class CountdownAudioHandler extends BaseAudioHandler {
   DateTime? _currentTarget;
   String? _originalTitle;
   Timer? _aodTimer;
-  bool _hasStartedPlaying = false;
+  StreamSubscription? _playlistIndexSub;
 
   @override
   Future<void> stop() async {
     _aodTimer?.cancel();
+    _playlistIndexSub?.cancel();
     await _player.stop();
     _currentTarget = null;
     _originalTitle = null;
-    _hasStartedPlaying = false;
     playbackState.add(playbackState.value.copyWith(
       processingState: AudioProcessingState.idle,
       playing: false,
@@ -109,23 +109,30 @@ class CountdownAudioHandler extends BaseAudioHandler {
         title: _originalTitle!,
       ));
     }
-    // When resumed, NEVER just blindly play (which screws up timing).
-    // Instead, recalculate EXACTLY where the playhead should be!
+    
+    // When resumed, we MUST recalculate exact position!
     if (_currentTarget != null) {
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
 
-      Duration seekPos = Duration.zero;
-      if (secondsUntilTarget <= 0) {
-        seekPos = const Duration(minutes: 60);
-      } else if (secondsUntilTarget > 3600) {
-        seekPos = Duration.zero;
+      if (secondsUntilTarget > 7200) {
+        await _player.setAudioSource(
+          AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+        );
+        await _player.seek(Duration.zero);
       } else {
-        final secondsElapsed = 3600 - secondsUntilTarget;
-        seekPos = Duration(seconds: secondsElapsed);
+        await _player.setAudioSource(
+          AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+        );
+        Duration seekPos = Duration.zero;
+        if (secondsUntilTarget <= 0) {
+          seekPos = const Duration(minutes: 120);
+        } else {
+          final secondsElapsed = 7200 - secondsUntilTarget;
+          seekPos = Duration(seconds: secondsElapsed);
+        }
+        await _player.seek(seekPos);
       }
-
-      await _player.seek(seekPos);
     }
     await _player.play();
   }
@@ -140,90 +147,59 @@ class CountdownAudioHandler extends BaseAudioHandler {
     await _player.stop();
     _currentTarget = target;
     _originalTitle = title;
-    _hasStartedPlaying = false;
 
-    Future<void> checkAndPlay() async {
-      if (_currentTarget == null) return;
-      final now = DateTime.now();
-      final remaining = _currentTarget!.difference(now);
-      final remainingMinutes = remaining.inMinutes;
+    final item = MediaItem(
+      id: 'timer_countdown_m4av2',
+      title: title,
+      artist: _getRemainingTimeString(),
+      album: album,
+      artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+    );
 
-      final currentItem = mediaItem.value ?? MediaItem(
-        id: 'timer_countdown_m4av2',
-        title: title,
-        artist: '',
-        album: album,
-        artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
-      );
+    mediaItem.add(item);
 
-      if (remainingMinutes > 60) {
-        // WE ARE EARLY: Update lock screen text, do not load audio.
-        mediaItem.add(currentItem.copyWith(
-          title: 'Waiting to Start...',
-          artist: 'Countdown begins in ${remainingMinutes - 60} mins',
-        ));
-
-        // Use a faux playing state so Android keeps the foreground notification alive
-        playbackState.add(playbackState.value.copyWith(
-          playing: true,
-          processingState: AudioProcessingState.ready,
-        ));
-      } else if (!_hasStartedPlaying) {
-        // IT IS TIME
-        _hasStartedPlaying = true;
-
-        mediaItem.add(currentItem.copyWith(
-          title: _originalTitle!, // Restore real title
-          artist: _getRemainingTimeString(),
-          duration: const Duration(minutes: 60),
-        ));
-
-        final secondsUntilTarget = _currentTarget!.difference(DateTime.now()).inSeconds;
-
-        Duration seekPos = Duration.zero;
-        if (secondsUntilTarget <= 0) {
-          seekPos = const Duration(minutes: 60);
-        } else {
-          final secondsElapsed = 3600 - secondsUntilTarget;
-          seekPos = Duration(seconds: secondsElapsed);
-        }
-
-        await _player.setAudioSource(
-          AudioSource.asset('assets/audio/timer_countdownv2.m4a'),
-        );
-        await _player.seek(seekPos);
-        await _player.setVolume(1.0);
-        await _player.play();
-      } else {
-        // WE ARE IN THE FINAL HOUR
-        if (remaining.isNegative) {
-          mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
-        } else {
-          mediaItem.add(currentItem.copyWith(
-            artist: _getRemainingTimeString(),
-          ));
-        }
-      }
-    }
-
-    // Call immediately
-    await checkAndPlay();
-
-    // Start 1-minute AOD timer
     _aodTimer?.cancel();
-    _aodTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
-      if (_currentTarget == null) {
+    _aodTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      final currentItem = mediaItem.value;
+      if (currentItem == null || _currentTarget == null) return;
+
+      final remaining = _currentTarget!.difference(DateTime.now());
+
+      if (remaining.isNegative) {
         timer.cancel();
+        mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
         return;
       }
 
-      await checkAndPlay();
-
-      final remaining = _currentTarget!.difference(DateTime.now());
-      if (remaining.isNegative) {
-        timer.cancel();
-      }
+      mediaItem.add(currentItem.copyWith(
+        artist: _getRemainingTimeString(),
+      ));
     });
+
+    final now2 = DateTime.now();
+    final secondsUntilTarget = target.difference(now2).inSeconds;
+
+    if (secondsUntilTarget > 7200) {
+      await _player.setAudioSource(
+        AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+      );
+      await _player.seek(Duration.zero);
+    } else {
+      await _player.setAudioSource(
+        AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+      );
+      Duration seekPos = Duration.zero;
+      if (secondsUntilTarget <= 0) {
+        seekPos = const Duration(minutes: 120);
+      } else {
+        final secondsElapsed = 7200 - secondsUntilTarget;
+        seekPos = Duration(seconds: secondsElapsed);
+      }
+      await _player.seek(seekPos);
+    }
+    
+    await _player.setVolume(1.0);
+    await _player.play();
   }
 
   String _getRemainingTimeString() {
