@@ -24,6 +24,7 @@ mixin SolarTimerDelegate {
 class SolarTimerService {
   static final SolarTimerService _singleton = SolarTimerService._internal();
   DateTime get countdownTarget => _dtSolar;
+  bool get isDawnMode => _isDawnMode();
 
   factory SolarTimerService() {
     return _singleton;

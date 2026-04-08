@@ -284,5 +284,7 @@
   "uposathaNotifications": "Thông báo Uposatha:",
   "daysBefore": "Số ngày trước:",
   "notificationTime": "Thời gian thông báo:",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }

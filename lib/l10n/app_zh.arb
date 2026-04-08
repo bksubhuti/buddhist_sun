@@ -283,5 +283,7 @@
   "uposathaNotifications": "布萨提醒：",
   "daysBefore": "提前天数：",
   "notificationTime": "提醒时间：",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }

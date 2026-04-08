@@ -26,8 +26,8 @@ const String UPOSATHACOUNTRY = "uposathaCountry";
 const String LASTDOWNLOAD = "lastDownload";
 const String AUTO_GPS_ENABLED = "autoGpsEnabled";
 const String UPOSATHA_NOTIFICATIONS_ENABLED = "uposathaNotificationsEnabled";
-const String AUTO_START_TIMER = "autoStartTimer";
-
+const String AUTO_START_DAWN_TIMER = "autoStartDawnTimer";
+const String AUTO_START_NOON_TIMER = "autoStartNoonTimer";
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
 const double DEFAULT_LAT = 1.1;
@@ -50,8 +50,8 @@ const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
 const bool DEFAULT_UPOSATHA_NOTIFICATIONS_ENABLED = false;
-const bool DEFAULT_AUTO_START_TIMER = false;
-
+const bool DEFAULT_AUTO_START_DAWN_TIMER = false;
+const bool DEFAULT_AUTO_START_NOON_TIMER = false;
 const String BEFORE_UPOSATHA_NOTIFICATION_DAYS =
     "beforeUposathaNotificationDays";
 const String UPOSATHA_NOTIFICATION_TIME = "uposathaNotificationTime";
@@ -164,10 +164,15 @@ class Prefs {
   static set uposathaNotificationsEnabled(bool value) =>
       instance.setBool(UPOSATHA_NOTIFICATIONS_ENABLED, value);
 
-  static bool get autoStartTimer =>
-      instance.getBool(AUTO_START_TIMER) ?? DEFAULT_AUTO_START_TIMER;
-  static set autoStartTimer(bool value) =>
-      instance.setBool(AUTO_START_TIMER, value);
+  static bool get autoStartDawnTimer =>
+      instance.getBool(AUTO_START_DAWN_TIMER) ?? DEFAULT_AUTO_START_DAWN_TIMER;
+  static set autoStartDawnTimer(bool value) =>
+      instance.setBool(AUTO_START_DAWN_TIMER, value);
+
+  static bool get autoStartNoonTimer =>
+      instance.getBool(AUTO_START_NOON_TIMER) ?? DEFAULT_AUTO_START_NOON_TIMER;
+  static set autoStartNoonTimer(bool value) =>
+      instance.setBool(AUTO_START_NOON_TIMER, value);
 
   static int get beforeUposathaNotificationDays =>
       instance.getInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS) ??

@@ -93,5 +93,7 @@
   "uposathaNotifications": "ဥပုသ် အသိပေးချက်များ:",
   "daysBefore": "ရက် မီများ:",
   "notificationTime": "အသိပေးချိန်:",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }

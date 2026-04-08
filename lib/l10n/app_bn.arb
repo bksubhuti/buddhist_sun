@@ -86,5 +86,7 @@
   "uposathaNotifications": "উপোসথ নোটিফিকেশন:",
   "daysBefore": "কদিন আগে:",
   "notificationTime": "নোটিফিকেশন সময়:",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }

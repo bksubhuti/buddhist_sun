@@ -271,17 +271,33 @@ class _SettingsPageState extends State<SettingsPage> {
                 elevation: 2,
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: SwitchListTile(
-                    title: ColoredText(
-                      "Auto-Start Timer on App Open",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    value: Prefs.autoStartTimer,
-                    onChanged: (bool value) {
-                      setState(() {
-                        Prefs.autoStartTimer = value;
-                      });
-                    },
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        title: ColoredText(
+                          AppLocalizations.of(context)!.autoStartDawnTimer,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        value: Prefs.autoStartDawnTimer,
+                        onChanged: (bool value) {
+                          setState(() {
+                            Prefs.autoStartDawnTimer = value;
+                          });
+                        },
+                      ),
+                      SwitchListTile(
+                        title: ColoredText(
+                          AppLocalizations.of(context)!.autoStartNoonTimer,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        value: Prefs.autoStartNoonTimer,
+                        onChanged: (bool value) {
+                          setState(() {
+                            Prefs.autoStartNoonTimer = value;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),

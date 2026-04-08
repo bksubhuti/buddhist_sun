@@ -86,5 +86,7 @@
   "uposathaNotifications": "ការជូនដំណឹងអំពីអុបោសថ៖",
   "daysBefore": "ថ្ងៃមុន៖",
   "notificationTime": "ពេលវេលាជូនដំណឹង៖",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }

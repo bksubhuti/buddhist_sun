@@ -63,7 +63,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_initializedAutoStart && Prefs.autoStartTimer) {
+    if (!_initializedAutoStart) {
       _initializedAutoStart = true;
       _autoStartBackgroundTimer();
     }
@@ -74,14 +74,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
     // Explicitly initialize the SolarTimerService in the background immediately
     service.doTimerStuff();
     
+    final isDawn = service.isDawnMode;
+    final autoStartEnabled = isDawn ? Prefs.autoStartDawnTimer : Prefs.autoStartNoonTimer;
+
     final target = service.countdownTarget;
     final now = DateTime.now();
     final difference = target.difference(now);
-    final minutes = difference.inMinutes;
 
-    if (minutes <= 60 && !difference.isNegative) {
+    if (autoStartEnabled && !difference.isNegative) {
       Prefs.speakIsOn = true;
       Prefs.instance.setBool(SPEAKISON, true);
+      service.delegate?.setSpeakIsOn(true);
 
       // Start background playing + TTS announcement
       await BackgroundTimePlayer.startForTarget(
@@ -91,9 +94,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
         album: AppLocalizations.of(context)!.timer,
       );
     } else {
-      // Force it completely off if it's > 60 mins or already late
+      // Force it completely off if not enabled or already late
       Prefs.speakIsOn = false;
       Prefs.instance.setBool(SPEAKISON, false);
+      service.delegate?.setSpeakIsOn(false);
       await BackgroundTimePlayer.stop();
     }
   }
@@ -106,10 +110,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     // these toggles always get set to false unless auto-start is true
     Prefs.backgroundOn = false;
     Prefs.screenAlwaysOn = false;
-    if (!Prefs.autoStartTimer) {
-      Prefs.speakIsOn = false;
-      Prefs.instance.setBool(SPEAKISON, false);
-    }
     //    _dummyPage = DummyPage();
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);

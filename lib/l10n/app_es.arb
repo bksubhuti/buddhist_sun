@@ -2,5 +2,7 @@
   "@@locale": "es",
   "appName": "Buddhist Sun",
   "buddhistSun": "Sol Budista",
-  "buddhistSunCountdown": "Buddhist Sun Countdown"
+  "buddhistSunCountdown": "Buddhist Sun Countdown",
+  "autoStartDawnTimer": "Auto-Start Dawn Timer",
+  "autoStartNoonTimer": "Auto-Start Noon Timer"
 }
