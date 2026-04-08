@@ -58,6 +58,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
   DateTime? _currentTarget;
   String? _originalTitle;
   Timer? _aodTimer;
+  bool _hasStartedPlaying = false;
 
   @override
   Future<void> stop() async {
@@ -65,6 +66,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     await _player.stop();
     _currentTarget = null;
     _originalTitle = null;
+    _hasStartedPlaying = false;
     playbackState.add(playbackState.value.copyWith(
       processingState: AudioProcessingState.idle,
       playing: false,
@@ -138,54 +140,90 @@ class CountdownAudioHandler extends BaseAudioHandler {
     await _player.stop();
     _currentTarget = target;
     _originalTitle = title;
-    final now = DateTime.now();
-    final secondsUntilTarget = target.difference(now).inSeconds;
+    _hasStartedPlaying = false;
 
-    Duration seekPos = Duration.zero;
-    if (secondsUntilTarget <= 0) {
-      seekPos = const Duration(minutes: 60);
-    } else if (secondsUntilTarget > 3600) {
-      seekPos = Duration.zero;
-    } else {
-      final secondsElapsed = 3600 - secondsUntilTarget;
-      seekPos = Duration(seconds: secondsElapsed);
+    Future<void> checkAndPlay() async {
+      if (_currentTarget == null) return;
+      final now = DateTime.now();
+      final remaining = _currentTarget!.difference(now);
+      final remainingMinutes = remaining.inMinutes;
+
+      final currentItem = mediaItem.value ?? MediaItem(
+        id: 'timer_countdown_m4av2',
+        title: title,
+        artist: '',
+        album: album,
+        artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+      );
+
+      if (remainingMinutes > 60) {
+        // WE ARE EARLY: Update lock screen text, do not load audio.
+        mediaItem.add(currentItem.copyWith(
+          title: 'Waiting to Start...',
+          artist: 'Countdown begins in ${remainingMinutes - 60} mins',
+        ));
+
+        // Use a faux playing state so Android keeps the foreground notification alive
+        playbackState.add(playbackState.value.copyWith(
+          playing: true,
+          processingState: AudioProcessingState.ready,
+        ));
+      } else if (!_hasStartedPlaying) {
+        // IT IS TIME
+        _hasStartedPlaying = true;
+
+        mediaItem.add(currentItem.copyWith(
+          title: _originalTitle!, // Restore real title
+          artist: _getRemainingTimeString(),
+          duration: const Duration(minutes: 60),
+        ));
+
+        final secondsUntilTarget = _currentTarget!.difference(DateTime.now()).inSeconds;
+
+        Duration seekPos = Duration.zero;
+        if (secondsUntilTarget <= 0) {
+          seekPos = const Duration(minutes: 60);
+        } else {
+          final secondsElapsed = 3600 - secondsUntilTarget;
+          seekPos = Duration(seconds: secondsElapsed);
+        }
+
+        await _player.setAudioSource(
+          AudioSource.asset('assets/audio/timer_countdownv2.m4a'),
+        );
+        await _player.seek(seekPos);
+        await _player.setVolume(1.0);
+        await _player.play();
+      } else {
+        // WE ARE IN THE FINAL HOUR
+        if (remaining.isNegative) {
+          mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
+        } else {
+          mediaItem.add(currentItem.copyWith(
+            artist: _getRemainingTimeString(),
+          ));
+        }
+      }
     }
 
-    final item = MediaItem(
-      id: 'timer_countdown_m4av2',
-      title: title,
-      artist: _getRemainingTimeString(),
-      album: album,
-      artUri:
-          albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
-    );
+    // Call immediately
+    await checkAndPlay();
 
-    mediaItem.add(item);
-
+    // Start 1-minute AOD timer
     _aodTimer?.cancel();
-    _aodTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      final currentItem = mediaItem.value;
-      if (currentItem == null || _currentTarget == null) return;
-
-      final remaining = _currentTarget!.difference(DateTime.now());
-
-      if (remaining.isNegative) {
+    _aodTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+      if (_currentTarget == null) {
         timer.cancel();
-        mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
         return;
       }
 
-      mediaItem.add(currentItem.copyWith(
-        artist: _getRemainingTimeString(),
-      ));
-    });
+      await checkAndPlay();
 
-    await _player.setAudioSource(
-      AudioSource.asset('assets/audio/timer_countdownv2.m4a'),
-    );
-    await _player.seek(seekPos);
-    await _player.setVolume(1.0);
-    await _player.play();
+      final remaining = _currentTarget!.difference(DateTime.now());
+      if (remaining.isNegative) {
+        timer.cancel();
+      }
+    });
   }
 
   String _getRemainingTimeString() {
