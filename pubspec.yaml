@@ -107,7 +107,15 @@ flutter:
     - assets/moon_free2.png
     - assets/buddhist_sun_app_logo.png
     - assets/uposatha.json
-    - assets/audio/timer_countdown_120.mp3
+    - assets/audio/timer_countdown_120_en.m4v
+    - assets/audio/timer_countdown_120_my.m4v
+    - assets/audio/timer_countdown_120_si.m4v
+    - assets/audio/timer_countdown_120_th.m4v
+    - assets/audio/timer_countdown_120_km.m4v
+    - assets/audio/timer_countdown_120_zh.m4v
+    - assets/audio/timer_countdown_120_vi.m4v
+    - assets/audio/timer_countdown_120_hi.m4v
+    - assets/audio/timer_countdown_120_bn.m4v
 
 flutter_launcher_icons:
   android: true

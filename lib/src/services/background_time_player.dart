@@ -60,6 +60,31 @@ class CountdownAudioHandler extends BaseAudioHandler {
   Timer? _aodTimer;
   StreamSubscription? _playlistIndexSub;
 
+  String _getAudioAssetPath() {
+    switch (Prefs.localeVal) {
+      case 0: // English
+        return 'assets/audio/timer_countdown_120_en.m4v';
+      case 1: // Myanmar
+        return 'assets/audio/timer_countdown_120_my.m4v';
+      case 2: // Sinhala
+        return 'assets/audio/timer_countdown_120_si.m4v';
+      case 3: // Thai
+        return 'assets/audio/timer_countdown_120_th.m4v';
+      case 4: // Khmer
+        return 'assets/audio/timer_countdown_120_km.m4v';
+      case 5: // Chinese
+        return 'assets/audio/timer_countdown_120_zh.m4v';
+      case 6: // Vietnamese
+        return 'assets/audio/timer_countdown_120_vi.m4v';
+      case 7: // Hindi
+        return 'assets/audio/timer_countdown_120_hi.m4v';
+      case 8: // Bengali
+        return 'assets/audio/timer_countdown_120_bn.m4v';
+      default:
+        return 'assets/audio/timer_countdown_120_en.m4v';
+    }
+  }
+
   @override
   Future<void> stop() async {
     _aodTimer?.cancel();
@@ -114,15 +139,16 @@ class CountdownAudioHandler extends BaseAudioHandler {
     if (_currentTarget != null) {
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
+      final audioAsset = _getAudioAssetPath();
 
       if (secondsUntilTarget > 7200) {
         await _player.setAudioSource(
-          AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+          AudioSource.asset(audioAsset),
         );
         await _player.seek(Duration.zero);
       } else {
         await _player.setAudioSource(
-          AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+          AudioSource.asset(audioAsset),
         );
         Duration seekPos = Duration.zero;
         if (secondsUntilTarget <= 0) {
@@ -178,15 +204,16 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
     final now2 = DateTime.now();
     final secondsUntilTarget = target.difference(now2).inSeconds;
+    final audioAsset = _getAudioAssetPath();
 
     if (secondsUntilTarget > 7200) {
       await _player.setAudioSource(
-        AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+        AudioSource.asset(audioAsset),
       );
       await _player.seek(Duration.zero);
     } else {
       await _player.setAudioSource(
-        AudioSource.asset('assets/audio/timer_countdown_120.mp3'),
+        AudioSource.asset(audioAsset),
       );
       Duration seekPos = Duration.zero;
       if (secondsUntilTarget <= 0) {

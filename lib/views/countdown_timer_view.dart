@@ -177,6 +177,21 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                           child: Switch(
                             value: _speakIsOn,
                             onChanged: (bValue) async {
+                              if (bValue) {
+                                final now = DateTime.now();
+                                final target = service.countdownTarget;
+                                final difference = target.difference(now);
+                                if (difference.inMinutes > 120) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(AppLocalizations.of(context)!.speech_only_within_2_hours),
+                                      backgroundColor: Colors.redAccent,
+                                    ),
+                                  );
+                                  return;
+                                }
+                              }
+
                               // 1. Update UI first
                               setState(() {
                                 _speakIsOn = bValue;
