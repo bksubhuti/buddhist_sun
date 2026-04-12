@@ -224,7 +224,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
                   style: TextStyle()),
               onTap: () async {
                 // KSO Observatory requires UTC time for its URL parameters
-                final DateTime utcNow = DateTime.now().toUtc();
+                final DateTime now = DateTime.now();
+                final DateTime utcNow = now.toUtc();
+                final double tzOffset = now.timeZoneOffset.inMinutes / 60.0;
 
                 // Format strings to ensure double digits (e.g., '03' instead of '3')
                 final String dateStr =
@@ -237,6 +239,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
                   'www.kso.ac.at',
                   '/beobachtungen/ephemeris_en.php',
                   {
+                    'tz': tzOffset.toString(),
                     'date': dateStr,
                     'time': timeStr,
                     'lat': Prefs.lat.toString(),

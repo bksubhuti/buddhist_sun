@@ -15,19 +15,25 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
   CountdownAudioHandler() {
     // Continually broadcast our forced single "Stop" control whenever player state changes
+// Continually broadcast our forced single "Stop" control whenever player state changes
     _player.playbackEventStream.listen((PlaybackEvent event) {
       final playing = _player.playing;
       playbackState.add(playbackState.value.copyWith(
         controls: [
-          playing ? MediaControl.pause : MediaControl.play,
-          MediaControl.stop
+          playing ? MediaControl.pause : MediaControl.play, // Index 0
+          MediaControl.stop // Index 1
         ],
         systemActions: const {
           MediaAction.play,
           MediaAction.pause,
           MediaAction.stop,
+          MediaAction.seek
         },
-        androidCompactActionIndices: const [0, 1],
+
+        // THE FIX: Only put Play/Pause in the compact view
+        // Stop will safely live in the expanded view.
+        androidCompactActionIndices: const [0],
+
         processingState: const {
           ProcessingState.idle: AudioProcessingState.idle,
           ProcessingState.loading: AudioProcessingState.loading,
@@ -89,10 +95,15 @@ class CountdownAudioHandler extends BaseAudioHandler {
   Future<void> stop() async {
     _aodTimer?.cancel();
     _playlistIndexSub?.cancel();
-    await _player.stop();
     _currentTarget = null;
     _originalTitle = null;
+
+    await _player.stop();
+
+    // Explicitly broadcast idle and clear controls to force notification dismissal
     playbackState.add(playbackState.value.copyWith(
+      controls: [],
+      systemActions: const {},
       processingState: AudioProcessingState.idle,
       playing: false,
     ));
@@ -120,7 +131,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     // Allows the user to temporarily silence it if they want.
     if (mediaItem.value != null && _originalTitle != null) {
       mediaItem.add(mediaItem.value!.copyWith(
-        title: "⏸ PAUSED - $_originalTitle",
+        title: "🔴 PAUSED - $_originalTitle",
       ));
     }
     await _player.pause();
@@ -130,11 +141,12 @@ class CountdownAudioHandler extends BaseAudioHandler {
   Future<void> play() async {
     // Restore the title immediately if we're resuming
     if (mediaItem.value != null && _originalTitle != null) {
+      // Revert the title back from 🔴 PAUSED
       mediaItem.add(mediaItem.value!.copyWith(
         title: _originalTitle!,
       ));
     }
-    
+
     // When resumed, we MUST recalculate exact position!
     if (_currentTarget != null) {
       final now = DateTime.now();
@@ -179,7 +191,9 @@ class CountdownAudioHandler extends BaseAudioHandler {
       title: title,
       artist: _getRemainingTimeString(),
       album: album,
-      artUri: albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+      duration: const Duration(minutes: 120),
+      artUri:
+          albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
     );
 
     mediaItem.add(item);
@@ -224,7 +238,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
       }
       await _player.seek(seekPos);
     }
-    
+
     await _player.setVolume(1.0);
     await _player.play();
   }

@@ -1,4 +1,8 @@
 {
+  "bn": [
+    "speech_only_within_2_hours"
+  ],
+
   "es": [
     "noon",
     "dawn",
@@ -83,7 +87,8 @@
     "refreshingGps",
     "uposathaNotifications",
     "daysBefore",
-    "notificationTime"
+    "notificationTime",
+    "speech_only_within_2_hours"
   ],
 
   "fr": [
@@ -112,14 +117,37 @@
     "refreshingGps",
     "uposathaNotifications",
     "daysBefore",
-    "notificationTime"
+    "notificationTime",
+    "speech_only_within_2_hours"
+  ],
+
+  "hi": [
+    "speech_only_within_2_hours"
+  ],
+
+  "km": [
+    "speech_only_within_2_hours"
+  ],
+
+  "my": [
+    "speech_only_within_2_hours"
+  ],
+
+  "si": [
+    "speech_only_within_2_hours"
   ],
 
   "th": [
-    "about_content"
+    "about_content",
+    "speech_only_within_2_hours"
+  ],
+
+  "vi": [
+    "speech_only_within_2_hours"
   ],
 
   "zh": [
-    "dstSavingsNotice"
+    "dstSavingsNotice",
+    "speech_only_within_2_hours"
   ]
 }
