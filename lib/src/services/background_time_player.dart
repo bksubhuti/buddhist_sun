@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
@@ -273,6 +274,9 @@ class BackgroundTimePlayer {
     } catch (e) {
       debugPrint("Failed to load album art: $e");
     }
+
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.music());
 
     _handler = await AudioService.init(
       builder: () => CountdownAudioHandler(),

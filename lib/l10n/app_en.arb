@@ -92,5 +92,8 @@
   "buddhistSunCountdown": "Buddhist Sun Countdown",
   "autoStartDawnTimer": "Auto-Start Dawn Timer",
   "autoStartNoonTimer": "Auto-Start Noon Timer",
-  "speech_only_within_2_hours": "Speech Notify can only be enabled within 2 hours of the target time."
+  "speech_only_within_2_hours": "Speech Notify can only be enabled within 2 hours of the target time.",
+  "safetyWarning": "Safety Warning",
+  "safetyWarningMessage": "Safety is ON. App times vary from observatory times by {minutes} minutes.",
+  "proceed": "Proceed"
 }

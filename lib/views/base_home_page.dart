@@ -14,6 +14,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
+import 'package:buddhist_sun/src/services/solar_calc.dart';
 
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
@@ -73,9 +74,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
     final service = SolarTimerService();
     // Explicitly initialize the SolarTimerService in the background immediately
     service.doTimerStuff();
-    
+
     final isDawn = service.isDawnMode;
-    final autoStartEnabled = isDawn ? Prefs.autoStartDawnTimer : Prefs.autoStartNoonTimer;
+    final autoStartEnabled =
+        isDawn ? Prefs.autoStartDawnTimer : Prefs.autoStartNoonTimer;
 
     final target = service.countdownTarget;
     final now = DateTime.now();
@@ -223,32 +225,36 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.verify,
                   style: TextStyle()),
               onTap: () async {
-                // KSO Observatory requires UTC time for its URL parameters
-                final DateTime now = DateTime.now();
-                final DateTime utcNow = now.toUtc();
-                final double tzOffset = now.timeZoneOffset.inMinutes / 60.0;
-
-                // Format strings to ensure double digits (e.g., '03' instead of '3')
-                final String dateStr =
-                    '${utcNow.year}-${utcNow.month.toString().padLeft(2, '0')}-${utcNow.day.toString().padLeft(2, '0')}';
-                final String timeStr =
-                    '${utcNow.hour.toString().padLeft(2, '0')}:${utcNow.minute.toString().padLeft(2, '0')}:${utcNow.second.toString().padLeft(2, '0')}';
-
-                // Uri.https safely builds the URL and auto-encodes the time string
-                final Uri url = Uri.https(
-                  'www.kso.ac.at',
-                  '/beobachtungen/ephemeris_en.php',
-                  {
-                    'tz': tzOffset.toString(),
-                    'date': dateStr,
-                    'time': timeStr,
-                    'lat': Prefs.lat.toString(),
-                    'lon': Prefs.lng.toString(),
-                  },
-                );
-
-                if (!await launchUrl(url)) {
-                  throw Exception('Could not launch $url');
+                final int safetyOffset = getSafetyOffset();
+                if (safetyOffset > 0) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: ColoredText(
+                            AppLocalizations.of(context)!.safetyWarning),
+                        content: ColoredText(
+                          AppLocalizations.of(context)!
+                              .safetyWarningMessage(safetyOffset.toString()),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.cancel),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.proceed),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _launchVerifyUrl();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  _launchVerifyUrl();
                 }
               },
             ),
@@ -360,6 +366,36 @@ class Home_PageContainerState extends State<HomePageContainer> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchVerifyUrl() async {
+    // KSO Observatory requires UTC time for its URL parameters
+    final DateTime now = DateTime.now();
+    final DateTime utcNow = now.toUtc();
+    final double tzOffset = now.timeZoneOffset.inMinutes / 60.0;
+
+    // Format strings to ensure double digits (e.g., '03' instead of '3')
+    final String dateStr =
+        '${utcNow.year}-${utcNow.month.toString().padLeft(2, '0')}-${utcNow.day.toString().padLeft(2, '0')}';
+    final String timeStr =
+        '${utcNow.hour.toString().padLeft(2, '0')}:${utcNow.minute.toString().padLeft(2, '0')}:${utcNow.second.toString().padLeft(2, '0')}';
+
+    // Uri.https safely builds the URL and auto-encodes the time string
+    final Uri url = Uri.https(
+      'www.kso.ac.at',
+      '/beobachtungen/ephemeris_en.php',
+      {
+        'tz': tzOffset.toString(),
+        'date': dateStr,
+        'time': timeStr,
+        'lat': Prefs.lat.toString(),
+        'lon': Prefs.lng.toString(),
+      },
+    );
+
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   showHelpDialog(BuildContext context) {

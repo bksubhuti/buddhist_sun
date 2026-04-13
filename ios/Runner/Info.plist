@@ -58,7 +58,6 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
-		<!-- Keep "audio" if you still need it for chanting/background play -->
 		<string>audio</string>
 	</array>
 
