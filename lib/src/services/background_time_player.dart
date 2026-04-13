@@ -70,26 +70,41 @@ class CountdownAudioHandler extends BaseAudioHandler {
   String _getAudioAssetPath() {
     switch (Prefs.localeVal) {
       case 0: // English
-        return 'assets/audio/timer_countdown_120_en.m4v';
+        return 'assets/audio/timer_countdown_120_en.m4a';
       case 1: // Myanmar
-        return 'assets/audio/timer_countdown_120_my.m4v';
+        return 'assets/audio/timer_countdown_120_my.m4a';
       case 2: // Sinhala
-        return 'assets/audio/timer_countdown_120_si.m4v';
+        return 'assets/audio/timer_countdown_120_si.m4a';
       case 3: // Thai
-        return 'assets/audio/timer_countdown_120_th.m4v';
+        return 'assets/audio/timer_countdown_120_th.m4a';
       case 4: // Khmer
-        return 'assets/audio/timer_countdown_120_km.m4v';
+        return 'assets/audio/timer_countdown_120_km.m4a';
       case 5: // Chinese
-        return 'assets/audio/timer_countdown_120_zh.m4v';
+        return 'assets/audio/timer_countdown_120_zh.m4a';
       case 6: // Vietnamese
-        return 'assets/audio/timer_countdown_120_vi.m4v';
+        return 'assets/audio/timer_countdown_120_vi.m4a';
       case 7: // Hindi
-        return 'assets/audio/timer_countdown_120_hi.m4v';
+        return 'assets/audio/timer_countdown_120_hi.m4a';
       case 8: // Bengali
-        return 'assets/audio/timer_countdown_120_bn.m4v';
+        return 'assets/audio/timer_countdown_120_bn.m4a';
       default:
-        return 'assets/audio/timer_countdown_120_en.m4v';
+        return 'assets/audio/timer_countdown_120_en.m4a';
     }
+  }
+
+  Future<String> _getPhysicalAudioFile(String assetPath) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final fileName = assetPath.split('/').last;
+    final file = File('${dir.path}/$fileName');
+
+    if (!await file.exists()) {
+      debugPrint(
+          "Copying $assetPath to ${file.path} for iOS background playback compatibility");
+      final byteData = await rootBundle.load(assetPath);
+      await file.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    }
+    return file.path;
   }
 
   @override
@@ -150,18 +165,22 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
     // When resumed, we MUST recalculate exact position!
     if (_currentTarget != null) {
+      final session = await AudioSession.instance;
+      await session.setActive(true);
+
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
       final audioAsset = _getAudioAssetPath();
+      final physicalPath = await _getPhysicalAudioFile(audioAsset);
 
       if (secondsUntilTarget > 7200) {
         await _player.setAudioSource(
-          AudioSource.asset(audioAsset),
+          AudioSource.file(physicalPath),
         );
         await _player.seek(Duration.zero);
       } else {
         await _player.setAudioSource(
-          AudioSource.asset(audioAsset),
+          AudioSource.file(physicalPath),
         );
         Duration seekPos = Duration.zero;
         if (secondsUntilTarget <= 0) {
@@ -220,15 +239,19 @@ class CountdownAudioHandler extends BaseAudioHandler {
     final now2 = DateTime.now();
     final secondsUntilTarget = target.difference(now2).inSeconds;
     final audioAsset = _getAudioAssetPath();
+    final physicalPath = await _getPhysicalAudioFile(audioAsset);
+
+    final session = await AudioSession.instance;
+    await session.setActive(true);
 
     if (secondsUntilTarget > 7200) {
       await _player.setAudioSource(
-        AudioSource.asset(audioAsset),
+        AudioSource.file(physicalPath),
       );
       await _player.seek(Duration.zero);
     } else {
       await _player.setAudioSource(
-        AudioSource.asset(audioAsset),
+        AudioSource.file(physicalPath),
       );
       Duration seekPos = Duration.zero;
       if (secondsUntilTarget <= 0) {

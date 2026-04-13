@@ -1,6 +1,9 @@
 {
   "bn": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "es": [
@@ -88,7 +91,10 @@
     "uposathaNotifications",
     "daysBefore",
     "notificationTime",
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "fr": [
@@ -118,36 +124,60 @@
     "uposathaNotifications",
     "daysBefore",
     "notificationTime",
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "hi": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "km": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "my": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "si": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "th": [
     "about_content",
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "vi": [
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ],
 
   "zh": [
     "dstSavingsNotice",
-    "speech_only_within_2_hours"
+    "speech_only_within_2_hours",
+    "safetyWarning",
+    "safetyWarningMessage",
+    "proceed"
   ]
 }
