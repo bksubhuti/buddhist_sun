@@ -165,9 +165,6 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
     // When resumed, we MUST recalculate exact position!
     if (_currentTarget != null) {
-      final session = await AudioSession.instance;
-      await session.setActive(true);
-
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
       final audioAsset = _getAudioAssetPath();
@@ -195,12 +192,16 @@ class CountdownAudioHandler extends BaseAudioHandler {
     await _player.play();
   }
 
+  @override
+  Future<void> seek(Duration position) async {
+    await _player.seek(position);
+  }
+
   Future<void> startForTarget({
     required DateTime target,
     required String title,
     required String artist,
     required String album,
-    Uri? albumArtUri,
   }) async {
     await _player.stop();
     _currentTarget = target;
@@ -212,8 +213,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
       artist: _getRemainingTimeString(),
       album: album,
       duration: const Duration(minutes: 120),
-      artUri:
-          albumArtUri ?? Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+      artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
     );
 
     mediaItem.add(item);
@@ -240,9 +240,6 @@ class CountdownAudioHandler extends BaseAudioHandler {
     final secondsUntilTarget = target.difference(now2).inSeconds;
     final audioAsset = _getAudioAssetPath();
     final physicalPath = await _getPhysicalAudioFile(audioAsset);
-
-    final session = await AudioSession.instance;
-    await session.setActive(true);
 
     if (secondsUntilTarget > 7200) {
       await _player.setAudioSource(
@@ -280,23 +277,9 @@ class BackgroundTimePlayer {
   static CountdownAudioHandler? _handler;
   static DateTime? _target;
   static bool _initialized = false;
-  static Uri? _albumArtUri;
 
   static Future<void> init() async {
     if (_initialized) return;
-
-    try {
-      // Copy asset to local file so Android's MediaSession can read it
-      final byteData =
-          await rootBundle.load('assets/buddhist_sun_app_logo.png');
-      final file = File(
-          '${(await getApplicationDocumentsDirectory()).path}/buddhist_sun_app_logo.png');
-      await file.writeAsBytes(byteData.buffer
-          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-      _albumArtUri = file.uri;
-    } catch (e) {
-      debugPrint("Failed to load album art: $e");
-    }
 
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.music());
@@ -327,7 +310,6 @@ class BackgroundTimePlayer {
       title: title,
       artist: artist,
       album: album,
-      albumArtUri: _albumArtUri,
     );
   }
 
