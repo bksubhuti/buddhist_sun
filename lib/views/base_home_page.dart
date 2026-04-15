@@ -72,7 +72,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   Future<void> _autoStartBackgroundTimer() async {
     final service = SolarTimerService();
-    // Explicitly initialize the SolarTimerService in the background immediately
     service.doTimerStuff();
 
     final isDawn = service.isDawnMode;
@@ -85,19 +84,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
     final minutes = difference.inMinutes;
 
     if (autoStartEnabled && !difference.isNegative && minutes <= 120) {
-      Prefs.speakIsOn = true;
-      Prefs.instance.setBool(SPEAKISON, true);
-      service.delegate?.setSpeakIsOn(true);
-
-      // Start background playing + TTS announcement
-      await BackgroundTimePlayer.startForTarget(
-        target: target,
-        title: AppLocalizations.of(context)!.buddhistSunCountdown,
-        artist: AppLocalizations.of(context)!.buddhistSun,
-        album: AppLocalizations.of(context)!.timer,
-      );
+      // Instead of starting immediately, wait for the screen to finish drawing,
+      // then show the permission dialog.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showAutoStartDialog(target);
+      });
     } else {
-      // Force it completely off if not enabled or already late
       Prefs.speakIsOn = false;
       Prefs.instance.setBool(SPEAKISON, false);
       service.delegate?.setSpeakIsOn(false);
@@ -431,6 +423,50 @@ class Home_PageContainerState extends State<HomePageContainer> {
       context: context,
       builder: (BuildContext context) {
         return help;
+      },
+    );
+  }
+
+  void _showAutoStartDialog(DateTime target) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Forces them to make a choice
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: ColoredText(AppLocalizations.of(context)!.buddhistSun),
+          content: ColoredText(
+              "Would you like to start the background countdown timer now?"), // Translate this string later!
+          actions: [
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancel),
+              onPressed: () {
+                Navigator.pop(context);
+                // If they cancel, make sure everything stays off
+                Prefs.speakIsOn = false;
+                Prefs.instance.setBool(SPEAKISON, false);
+                SolarTimerService().delegate?.setSpeakIsOn(false);
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.proceed),
+              onPressed: () async {
+                Navigator.pop(context); // Close dialog
+
+                // THIS is the user action Google wants to see!
+                Prefs.speakIsOn = true;
+                Prefs.instance.setBool(SPEAKISON, true);
+                SolarTimerService().delegate?.setSpeakIsOn(true);
+
+                await BackgroundTimePlayer.startForTarget(
+                  target: target,
+                  title: AppLocalizations.of(context)!.buddhistSunCountdown,
+                  artist: AppLocalizations.of(context)!.buddhistSun,
+                  album: AppLocalizations.of(context)!.timer,
+                );
+              },
+            ),
+          ],
+        );
       },
     );
   }

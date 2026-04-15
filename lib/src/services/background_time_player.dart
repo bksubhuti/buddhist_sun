@@ -148,6 +148,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     if (mediaItem.value != null && _originalTitle != null) {
       mediaItem.add(mediaItem.value!.copyWith(
         title: "🔴 PAUSED - $_originalTitle",
+        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
       ));
     }
     await _player.pause();
@@ -160,6 +161,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
       // Revert the title back from 🔴 PAUSED
       mediaItem.add(mediaItem.value!.copyWith(
         title: _originalTitle!,
+        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
       ));
     }
 
@@ -227,12 +229,16 @@ class CountdownAudioHandler extends BaseAudioHandler {
 
       if (remaining.isNegative) {
         timer.cancel();
-        mediaItem.add(currentItem.copyWith(artist: 'Time Reached'));
+        mediaItem.add(currentItem.copyWith(
+          artist: 'Time Reached',
+          artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+        ));
         return;
       }
 
       mediaItem.add(currentItem.copyWith(
         artist: _getRemainingTimeString(),
+        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
       ));
     });
 
