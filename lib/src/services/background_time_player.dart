@@ -66,6 +66,19 @@ class CountdownAudioHandler extends BaseAudioHandler {
   String? _originalTitle;
   Timer? _aodTimer;
   StreamSubscription? _playlistIndexSub;
+  Uri? _logoUri;
+
+  Future<Uri> _getLogoUri() async {
+    if (_logoUri != null) return _logoUri!;
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/buddhist_sun_app_logo.png');
+    if (!await file.exists()) {
+      final byteData = await rootBundle.load('assets/buddhist_sun_app_logo.png');
+      await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    }
+    _logoUri = file.uri;
+    return _logoUri!;
+  }
 
   String _getAudioAssetPath() {
     switch (Prefs.localeVal) {
@@ -148,7 +161,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     if (mediaItem.value != null && _originalTitle != null) {
       mediaItem.add(mediaItem.value!.copyWith(
         title: "🔴 PAUSED - $_originalTitle",
-        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+        artUri: await _getLogoUri(),
       ));
     }
     await _player.pause();
@@ -161,7 +174,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
       // Revert the title back from 🔴 PAUSED
       mediaItem.add(mediaItem.value!.copyWith(
         title: _originalTitle!,
-        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+        artUri: await _getLogoUri(),
       ));
     }
 
@@ -209,13 +222,15 @@ class CountdownAudioHandler extends BaseAudioHandler {
     _currentTarget = target;
     _originalTitle = title;
 
+    final logoUri = await _getLogoUri();
+
     final item = MediaItem(
       id: 'timer_countdown_m4av2',
       title: title,
       artist: _getRemainingTimeString(),
       album: album,
       duration: const Duration(minutes: 120),
-      artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+      artUri: logoUri,
     );
 
     mediaItem.add(item);
@@ -231,14 +246,14 @@ class CountdownAudioHandler extends BaseAudioHandler {
         timer.cancel();
         mediaItem.add(currentItem.copyWith(
           artist: 'Time Reached',
-          artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+          artUri: _logoUri,
         ));
         return;
       }
 
       mediaItem.add(currentItem.copyWith(
         artist: _getRemainingTimeString(),
-        artUri: Uri.parse('asset:///assets/buddhist_sun_app_logo.png'),
+        artUri: _logoUri,
       ));
     });
 
