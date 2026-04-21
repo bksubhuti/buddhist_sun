@@ -303,7 +303,8 @@ class BackgroundTimePlayer {
     if (_initialized) return;
 
     final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.music());
+    await session.configure(const AudioSessionConfiguration.speech());
+    await session.setActive(true);
 
     _handler = await AudioService.init(
       builder: () => CountdownAudioHandler(),
