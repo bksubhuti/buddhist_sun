@@ -73,8 +73,10 @@ class CountdownAudioHandler extends BaseAudioHandler {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/buddhist_sun_app_logo.png');
     if (!await file.exists()) {
-      final byteData = await rootBundle.load('assets/buddhist_sun_app_logo.png');
-      await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      final byteData =
+          await rootBundle.load('assets/buddhist_sun_app_logo.png');
+      await file.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
     }
     _logoUri = file.uri;
     return _logoUri!;
@@ -143,7 +145,7 @@ class CountdownAudioHandler extends BaseAudioHandler {
     Prefs.speakIsOn = false;
 
     final solarService = SolarTimerService();
-    solarService.initialVoicing = false;
+    //solarService.initialVoicing = false;
     solarService.delegate?.setSpeakIsOn(false);
 
     await cancelAllTimerNotifications();

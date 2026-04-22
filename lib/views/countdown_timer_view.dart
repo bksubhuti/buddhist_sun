@@ -216,7 +216,6 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                               } else {
                                 // Background voice OFF
                                 await BackgroundTimePlayer.stop();
-                                service.initialVoicing = false;
                                 await cancelAllTimerNotifications();
                               }
                             },

@@ -46,7 +46,6 @@ dependencies:
   shared_preferences: ^2.0.6
   geolocator: ^14.0.0
   bottom_navy_bar: ^6.1.0
-  flutter_tts: ^4.0.2
   motion_toast: ^2.12.1
   geocoding: ^4.0.0
   internet_connection_checker: ^3.0.1

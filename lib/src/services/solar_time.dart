@@ -2,7 +2,6 @@
 
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/utils/majjhantika_calculator.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -11,8 +10,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 //import 'package:logging/logging.dart';
 //import 'package:intl/intl.dart' show DateFormat;
 import 'package:solar_calculator/solar_calculator.dart';
-
-enum TtsState { playing, stopped, paused, continued }
 
 mixin SolarTimerDelegate {
   void update();
@@ -32,12 +29,9 @@ class SolarTimerService {
   SolarTimerService._internal();
 
   SolarTimerDelegate? delegate;
-  bool textToSpeech = true;
 
   DateTime _now = DateTime.now();
-  String _voiceMessage = "Starting TTS";
   //bool _switchTTSValue = false;
-  bool initialVoicing = false;
   String _nowString = "";
   String _countdownString = "";
   static const String LATE = "Late";
@@ -46,19 +40,6 @@ class SolarTimerService {
   Duration _duration = Duration(seconds: 1);
 
   /////////////////////////////////////////////////////////////////
-  late FlutterTts flutterTts;
-
-  String? language;
-  String? engine;
-  double pitch = 1.0;
-  double rate = 0.5;
-  bool isCurrentLanguageInstalled = false;
-
-  get isPlaying => ttsState == TtsState.playing;
-  get isStopped => ttsState == TtsState.stopped;
-  get isPaused => ttsState == TtsState.paused;
-  get isContinued => ttsState == TtsState.continued;
-  TtsState ttsState = TtsState.stopped;
 
 /////////////////////////////////////////////////////////////////
   late Timer _timer;
@@ -82,8 +63,6 @@ class SolarTimerService {
     // always update the screen.. if the screen is alive, it will update
     // never cancel the timer.  Timer gets canceled when the app closes.
     //
-    initTts();
-
     if (!_isDoingTimerStuff) {
       _bLate = false;
       _isDoingTimerStuff = true;
@@ -92,14 +71,6 @@ class SolarTimerService {
         timerCallback();
       });
     } // is doing timer stuff
-  }
-
-  Future _speak() async {
-    if (!_bLate) {
-      await flutterTts.setSpeechRate(rate);
-      await flutterTts.awaitSpeakCompletion(true);
-      await flutterTts.speak(_voiceMessage);
-    }
   }
 
   timerCallback() {
@@ -157,14 +128,6 @@ class SolarTimerService {
 
     // if the speech toggle is on..
     if (_speakIsOn) {
-      // starting message
-      if (initialVoicing == false) {
-        initialVoicing = true;
-        _voiceMessage =
-            "${min.toString()} minutes and ${seconds.toString()} seconds remaining";
-        _speak();
-      }
-
       if (min == 0 && seconds == 0 && !_bLate) {
         doLateTime();
       }
@@ -176,61 +139,11 @@ class SolarTimerService {
       _speakIsOn = false;
       Prefs.speakIsOn = false;
       delegate?.setSpeakIsOn(_speakIsOn);
-
-      // set final tts message and speak
-      _voiceMessage = "Your time has passed";
-      _speak(); // speaking has finished.
     }
     _countdownString = LATE;
     delegate?.setCountdownString(_countdownString);
     delegate?.update(); // full set state if possible
     _bLate = true;
-  }
-
-  initTts() {
-    flutterTts = FlutterTts();
-
-    if (isAndroid) {
-      _getDefaultEngine();
-    }
-
-    flutterTts.setStartHandler(() {
-      print("Playing");
-      ttsState = TtsState.playing;
-    });
-
-    flutterTts.setCompletionHandler(() {
-      print("Complete");
-      ttsState = TtsState.stopped;
-    });
-
-    flutterTts.setCancelHandler(() {
-      print("Cancel");
-      ttsState = TtsState.stopped;
-    });
-
-    if (isWeb || isIOS) {
-      flutterTts.setPauseHandler(() {
-        print("Paused");
-        ttsState = TtsState.paused;
-      });
-
-      flutterTts.setContinueHandler(() {
-        print("Continued");
-        ttsState = TtsState.continued;
-      });
-    }
-
-    flutterTts.setErrorHandler((msg) {
-      ttsState = TtsState.stopped;
-    });
-  }
-
-  Future _getDefaultEngine() async {
-    var engine = await flutterTts.getDefaultEngine;
-    if (engine != null) {
-      print(engine);
-    }
   }
 
   // ------------------------------------------------------------
