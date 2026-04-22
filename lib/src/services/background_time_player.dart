@@ -12,7 +12,9 @@ import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
 
 class CountdownAudioHandler extends BaseAudioHandler {
-  final _player = AudioPlayer();
+  final _player = AudioPlayer(
+    handleAudioSessionActivation: false,
+  );
 
   CountdownAudioHandler() {
     // Continually broadcast our forced single "Stop" control whenever player state changes
@@ -107,21 +109,6 @@ class CountdownAudioHandler extends BaseAudioHandler {
     }
   }
 
-  Future<String> _getPhysicalAudioFile(String assetPath) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final fileName = assetPath.split('/').last;
-    final file = File('${dir.path}/$fileName');
-
-    if (!await file.exists()) {
-      debugPrint(
-          "Copying $assetPath to ${file.path} for iOS background playback compatibility");
-      final byteData = await rootBundle.load(assetPath);
-      await file.writeAsBytes(byteData.buffer
-          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    }
-    return file.path;
-  }
-
   @override
   Future<void> stop() async {
     _aodTimer?.cancel();
@@ -180,21 +167,24 @@ class CountdownAudioHandler extends BaseAudioHandler {
       ));
     }
 
+    // Explicitly activate the session right before playing
+    final session = await AudioSession.instance;
+    await session.setActive(true);
+
     // When resumed, we MUST recalculate exact position!
     if (_currentTarget != null) {
       final now = DateTime.now();
       final secondsUntilTarget = _currentTarget!.difference(now).inSeconds;
       final audioAsset = _getAudioAssetPath();
-      final physicalPath = await _getPhysicalAudioFile(audioAsset);
 
       if (secondsUntilTarget > 7200) {
         await _player.setAudioSource(
-          AudioSource.file(physicalPath),
+          AudioSource.asset(audioAsset),
         );
         await _player.seek(Duration.zero);
       } else {
         await _player.setAudioSource(
-          AudioSource.file(physicalPath),
+          AudioSource.asset(audioAsset),
         );
         Duration seekPos = Duration.zero;
         if (secondsUntilTarget <= 0) {
@@ -259,19 +249,22 @@ class CountdownAudioHandler extends BaseAudioHandler {
       ));
     });
 
+    // Explicitly activate the session right before playing
+    final session = await AudioSession.instance;
+    await session.setActive(true);
+
     final now2 = DateTime.now();
     final secondsUntilTarget = target.difference(now2).inSeconds;
     final audioAsset = _getAudioAssetPath();
-    final physicalPath = await _getPhysicalAudioFile(audioAsset);
 
     if (secondsUntilTarget > 7200) {
       await _player.setAudioSource(
-        AudioSource.file(physicalPath),
+        AudioSource.asset(audioAsset),
       );
       await _player.seek(Duration.zero);
     } else {
       await _player.setAudioSource(
-        AudioSource.file(physicalPath),
+        AudioSource.asset(audioAsset),
       );
       Duration seekPos = Duration.zero;
       if (secondsUntilTarget <= 0) {
@@ -305,7 +298,7 @@ class BackgroundTimePlayer {
     if (_initialized) return;
 
     final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
+    await session.configure(const AudioSessionConfiguration.music());
     await session.setActive(true);
 
     _handler = await AudioService.init(
