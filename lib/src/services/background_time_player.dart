@@ -54,6 +54,20 @@ class BackgroundTimePlayer {
     }
   }
 
+  static Future<String> _getPhysicalAudioFile(String assetPath) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final fileName = assetPath.split('/').last;
+    final file = File('${dir.path}/$fileName');
+
+    if (!await file.exists()) {
+      debugPrint("Copying $assetPath to ${file.path} for iOS background playback compatibility");
+      final byteData = await rootBundle.load(assetPath);
+      await file.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    }
+    return file.path;
+  }
+
   static Future<void> startForTarget({
     required DateTime target,
     required String title,
@@ -67,6 +81,7 @@ class BackgroundTimePlayer {
 
     final logoUri = await _getLogoUri();
     final audioAsset = _getAudioAssetPath();
+    final physicalPath = await _getPhysicalAudioFile(audioAsset);
 
     final now = DateTime.now();
     final secondsUntilTarget = target.difference(now).inSeconds;
@@ -83,7 +98,7 @@ class BackgroundTimePlayer {
 
     await _player.setAudioSource(
       AudioSource.uri(
-        Uri.parse('asset:///$audioAsset'),
+        Uri.file(physicalPath),
         tag: mediaItem,
       ),
     );
