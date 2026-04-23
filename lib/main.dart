@@ -31,6 +31,7 @@ Future<void> main() async {
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
+    preloadArtwork: true,
   );
 
   // 1. Timezone FIRST

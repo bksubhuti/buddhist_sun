@@ -20,10 +20,19 @@ class BackgroundTimePlayer {
   static Future<void> init() async {
     if (_initialized) return;
 
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.music());
-    
+    await _configureAudioSession();
+
     _initialized = true;
+  }
+
+  static Future<void> _configureAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(
+      Platform.isIOS || Platform.isMacOS
+          ? const AudioSessionConfiguration.speech()
+          : const AudioSessionConfiguration.music(),
+    );
+    await session.setActive(true);
   }
 
   static Future<Uri> _getLogoUri() async {
@@ -75,9 +84,8 @@ class BackgroundTimePlayer {
     required String album,
   }) async {
     _target = target;
-    
-    final session = await AudioSession.instance;
-    await session.setActive(true);
+    await init();
+    await _configureAudioSession();
 
     final logoUri = await _getLogoUri();
     final audioAsset = _getAudioAssetPath();
@@ -96,6 +104,7 @@ class BackgroundTimePlayer {
       duration: const Duration(minutes: 120),
     );
 
+    await _player.stop();
     await _player.setAudioSource(
       AudioSource.uri(
         Uri.file(physicalPath),
@@ -117,6 +126,8 @@ class BackgroundTimePlayer {
 
   static Future<void> stop() async {
     await _player.stop();
+    final session = await AudioSession.instance;
+    await session.setActive(false);
     _target = null;
     
     // Cleanup notifications

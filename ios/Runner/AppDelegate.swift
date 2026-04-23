@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import GoogleMaps
 import flutter_local_notifications
+import AVFoundation
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -15,6 +16,9 @@ import flutter_local_notifications
       UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
 
+    configureAudioSession()
+    application.beginReceivingRemoteControlEvents()
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -25,5 +29,15 @@ import flutter_local_notifications
     }
 
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+  }
+
+  private func configureAudioSession() {
+    do {
+      let session = AVAudioSession.sharedInstance()
+      try session.setCategory(.playback, mode: .spokenAudio, options: [])
+      try session.setActive(false)
+    } catch {
+      NSLog("Buddhist Sun audio session setup failed: \(error.localizedDescription)")
+    }
   }
 }
