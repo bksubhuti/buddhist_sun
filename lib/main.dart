@@ -28,8 +28,8 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
+    androidNotificationChannelId: 'dawn_audio_channel',
+    androidNotificationChannelName: 'Dawn Audio',
     androidNotificationOngoing: true,
     preloadArtwork: true,
   );

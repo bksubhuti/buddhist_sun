@@ -16,22 +16,37 @@ class BackgroundTimePlayer {
   static DateTime? _target;
   static bool _initialized = false;
   static Uri? _logoUri;
+  static StreamSubscription<bool>? _playingSub;
 
   static Future<void> init() async {
     if (_initialized) return;
 
     await _configureAudioSession();
+    
+    // Enforce time synchronization when the user resumes playback from the lock screen.
+    // just_audio_background handles the play/pause natively, so we just react to it.
+    _playingSub = _player.playingStream.listen((playing) {
+      if (playing && _target != null) {
+        final now = DateTime.now();
+        final secondsUntilTarget = _target!.difference(now).inSeconds;
+
+        if (secondsUntilTarget <= 7200 && secondsUntilTarget > 0) {
+          final secondsElapsed = 7200 - secondsUntilTarget;
+          _player.seek(Duration(seconds: secondsElapsed));
+        } else if (secondsUntilTarget <= 0) {
+          _player.seek(const Duration(minutes: 120));
+        } else {
+          _player.seek(Duration.zero);
+        }
+      }
+    });
 
     _initialized = true;
   }
 
   static Future<void> _configureAudioSession() async {
     final session = await AudioSession.instance;
-    await session.configure(
-      Platform.isIOS || Platform.isMacOS
-          ? const AudioSessionConfiguration.speech()
-          : const AudioSessionConfiguration.music(),
-    );
+    await session.configure(const AudioSessionConfiguration.music());
     await session.setActive(true);
   }
 
@@ -94,7 +109,6 @@ class BackgroundTimePlayer {
     final now = DateTime.now();
     final secondsUntilTarget = target.difference(now).inSeconds;
 
-    // Use just_audio_background tag
     final mediaItem = MediaItem(
       id: 'timer_countdown_m4av2',
       album: album,
