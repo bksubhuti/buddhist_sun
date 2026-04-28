@@ -200,15 +200,15 @@ class Prefs {
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
       case 0:
-        return (Color(Colors.white.value));
+        return Colors.white;
       case 1:
         return Theme.of(context)
             .colorScheme
             .surfaceContainerHighest; // ?? (const Color(seypia));
       case 2:
-        return (Color(Colors.black.value));
+        return Colors.black;
       default:
-        return Color(Colors.white.value);
+        return Colors.white;
     }
   }
 }

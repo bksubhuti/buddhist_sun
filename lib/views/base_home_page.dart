@@ -5,6 +5,7 @@ import 'package:buddhist_sun/views/settings_page.dart';
 import 'package:buddhist_sun/views/dawn_page.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
+import 'package:buddhist_sun/views/buddhavassa_page.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
@@ -71,7 +72,13 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   Future<void> _autoStartBackgroundTimer() async {
+    // 1. FORCE SILENCE FIRST! Ignore whatever was saved from the last session.
+    Prefs.speakIsOn = false;
+    Prefs.instance.setBool(SPEAKISON, false);
+
+    // 2. NOW it is safe to boot up the service
     final service = SolarTimerService();
+    service.delegate?.setSpeakIsOn(false); // Make sure the delegate knows too
     service.doTimerStuff();
 
     final isDawn = service.isDawnMode;
@@ -194,6 +201,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
                 Navigator.pop(context); // close the drawer
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              title: ColoredText('Buddhist Era'),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BuddhavassaPage()));
               },
             ),
             ListTile(
@@ -450,18 +468,27 @@ class Home_PageContainerState extends State<HomePageContainer> {
             TextButton(
               child: Text(AppLocalizations.of(context)!.proceed),
               onPressed: () async {
-                Navigator.pop(context); // Close dialog
+                // 1. Grab the translations BEFORE destroying the dialog context
+                final String titleText =
+                    AppLocalizations.of(context)!.buddhistSunCountdown;
+                final String artistText =
+                    AppLocalizations.of(context)!.buddhistSun;
+                final String albumText = AppLocalizations.of(context)!.timer;
 
-                // THIS is the user action Google wants to see!
+                // 2. NOW it is safe to close the dialog
+                Navigator.pop(context);
+
+                // 3. Update the state
                 Prefs.speakIsOn = true;
                 Prefs.instance.setBool(SPEAKISON, true);
                 SolarTimerService().delegate?.setSpeakIsOn(true);
 
+                // 4. Start the player using the saved text variables
                 await BackgroundTimePlayer.startForTarget(
                   target: target,
-                  title: AppLocalizations.of(context)!.buddhistSunCountdown,
-                  artist: AppLocalizations.of(context)!.buddhistSun,
-                  album: AppLocalizations.of(context)!.timer,
+                  title: titleText,
+                  artist: artistText,
+                  album: albumText,
                 );
               },
             ),

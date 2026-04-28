@@ -1,0 +1,22 @@
+{
+  "name": "බුද්ධ වර්ෂය",
+  "short_name": "බුද්ධ වර්ෂය",
+  "description": "බුද්ධ වර්ෂය, පෝය දින, තිති සහ සෘතු ගණනය",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fffff0",
+  "theme_color": "#d4af37",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}

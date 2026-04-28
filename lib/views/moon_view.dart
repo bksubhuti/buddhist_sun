@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:buddhist_sun/src/models/colored_text.dart';
@@ -9,15 +8,14 @@ import 'package:buddhist_sun/src/services/moon_calc.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:buddhist_sun/src/models/moon_phase/moon_phase.dart';
 import 'package:buddhist_sun/src/services/astronomy.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 import 'package:flutter_mmcalendar/flutter_mmcalendar.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 class MoonPage extends StatefulWidget {
   const MoonPage({Key? key}) : super(key: key);
@@ -304,38 +302,13 @@ class _MoonPageState extends State<MoonPage> {
   }
 
   Future initUposatha() async {
-    final directory = await getApplicationSupportDirectory();
-    File jsonFile = File('${directory.path}/uposatha.json');
-
-    // Read the existing content
-    String content = jsonFile.readAsStringSync();
-    listUposatha = _parseUposathaList_Json(content);
-
-    DateTime updateThreshold = DateTime(2025, 12, 1);
-    bool shouldUpdate = DateTime.now().isAfter(updateThreshold) &&
-        (DateTime.now().difference(Prefs.lastDownload).inDays > 30);
-
-    // Update condition based on date and last download
-    if (shouldUpdate) {
-      try {
-        final response = await http.get(Uri.parse(
-            'https://raw.githubusercontent.com/bksubhuti/buddhist_sun/master/assets/uposatha.json'));
-        content = response.body;
-        listUposatha = _parseUposathaList_Json(content);
-        if (listUposatha.isNotEmpty) {
-          jsonFile.writeAsStringSync(content);
-          Prefs.lastDownload = DateTime.now(); //mark as downloaded.
-        }
-      } catch (e) {
-        debugPrint("Error occurred: $e");
-      }
-    }
-
-    // Handle parsing failure from initial read
-    if (listUposatha.isEmpty) {
-      debugPrint("Failed to parse uposatha json from local file");
-      // Reset the last download time if the local file is corrupt
-      Prefs.lastDownload = DateTime(2025, 12, 01);
+    try {
+      // Read the 9-year calendar directly from the bundled app assets
+      final String content =
+          await rootBundle.loadString('assets/uposatha.json');
+      listUposatha = _parseUposathaList_Json(content);
+    } catch (e) {
+      debugPrint("Error loading uposatha.json from assets: $e");
     }
   }
 

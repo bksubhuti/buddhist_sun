@@ -1,9 +1,9 @@
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
-import 'dart:io' show File;
 // #docregion LocalizationDelegatesImport
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -12,9 +12,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/theme_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
-
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'src/services/plugin.dart';
@@ -26,6 +23,13 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 // ----------------------------------------------------------
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'dawn_audio_channel',
+    androidNotificationChannelName: 'Dawn Audio',
+    androidNotificationOngoing: true,
+    preloadArtwork: true,
+  );
 
   // 1. Timezone FIRST
   await configureLocalTimeZone();
@@ -99,7 +103,6 @@ Future<void> main() async {
   );
 
   await Prefs.init();
-  await initJsonFile(); // ← moved AFTER initialize
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
   await createTimerChannelsOnce(); // ← moved AFTER initialize (harmless on iOS)
   await BackgroundTimePlayer.init();
@@ -111,21 +114,6 @@ Future<void> main() async {
   }
 
   runApp(MyApp());
-}
-
-// ----------------------------------------------------------
-//  Uposatha JSON SETUP
-// ----------------------------------------------------------
-Future<void> initJsonFile() async {
-  final directory = await getApplicationSupportDirectory();
-  final jsonFile = File('${directory.path}/uposatha.json');
-
-  // Always copy from assets (overwrites old if needed)
-  final content = await rootBundle.loadString('assets/uposatha.json');
-  await jsonFile.writeAsString(content);
-
-  // Set default last download time
-  Prefs.lastDownload = DateTime(2025, 12, 1);
 }
 
 // ----------------------------------------------------------

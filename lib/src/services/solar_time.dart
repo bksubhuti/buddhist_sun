@@ -177,9 +177,12 @@ class SolarTimerService {
       Prefs.speakIsOn = false;
       delegate?.setSpeakIsOn(_speakIsOn);
 
+      /////////////////////////////
+      // DUPLICATED IN M4a file.
+      /////////////////////////////
       // set final tts message and speak
-      _voiceMessage = "Your time has passed";
-      _speak(); // speaking has finished.
+      //_voiceMessage = "Your time has passed";
+      //_speak(); // speaking has finished.
     }
     _countdownString = LATE;
     delegate?.setCountdownString(_countdownString);
@@ -270,9 +273,11 @@ class SolarTimerService {
     final dawnPlus1h = dawn.add(const Duration(hours: 1));
 
     // Dawn must be before solar noon (normal case)
-    final exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
+    final exactMajjhantika =
+        MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
     final int safetyOffset = getSafetyOffset();
-    final solarNoon = exactMajjhantika.subtract(Duration(minutes: safetyOffset));
+    final solarNoon =
+        exactMajjhantika.subtract(Duration(minutes: safetyOffset));
 
     return now.isAfter(twoAm) &&
         now.isBefore(dawnPlus1h) &&
@@ -286,9 +291,11 @@ class SolarTimerService {
     final now = DateTime.now();
 
     // Compute solar noon using new exact Majjhantika calculation
-    final exactMajjhantika = MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
+    final exactMajjhantika =
+        MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
     final int safetyOffset = getSafetyOffset();
-    final solarNoon = exactMajjhantika.subtract(Duration(minutes: safetyOffset));
+    final solarNoon =
+        exactMajjhantika.subtract(Duration(minutes: safetyOffset));
 
     // If dawn mode → countdown to dawn
     if (_isDawnMode()) {

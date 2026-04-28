@@ -25,7 +25,7 @@ class CountdownTimerView extends StatefulWidget {
 }
 
 class _CountdownTimerViewState extends State<CountdownTimerView>
-    with SolarTimerDelegate {
+    with SolarTimerDelegate, AutomaticKeepAliveClientMixin {
   String _nowString = "";
   String _countdownString = "";
   bool _speakIsOn = false;
@@ -87,7 +87,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
     service.doTimerStuff();
-    
+
     _initSystemVolume();
 
     super.initState();
@@ -126,6 +126,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<SettingsProvider>(
         builder: (context, settingsProvider, child) {
       return Container(
@@ -184,7 +185,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                 if (difference.inMinutes > 120) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(AppLocalizations.of(context)!.speech_only_within_2_hours),
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .speech_only_within_2_hours),
                                       backgroundColor: Colors.redAccent,
                                     ),
                                   );
@@ -472,4 +475,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buddhist Era | බුද්ධ වර්ෂය</title>
+    <meta name="title" content="Buddhist Era - Buddha Vassa">
+    <meta name="description" content="Calculate the Buddhist Year, Lunar months, and Poya days.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buddhavassa.netlify.app"> 
+    <meta property="og:title" content="BuddhaVassa Calendar">
+    <meta property="og:description" content="Check the current Buddhist Year, Seasons, and Lunar Tithis in English, Sinhala, and Pāli.">
+    <meta property="og:image" content="https://buddhavassa.netlify.app/icon-192.png"> 
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://buddhavassa.netlify.app">
+    <meta property="twitter:title" content="Buddhist Era Calendar">
+    <meta property="twitter:description" content="Check the current Buddhist Year and Poya days.">
+    <meta property="twitter:image" content="https://buddhavassa.netlify.app/icon-192.png">
+
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png" type="image/png">
+    <meta name="theme-color" content="#d4af37">
+    
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registered!', reg))
+            .catch(err => console.log('Service Worker registration failed:', err));
+        });
+      }
+    </script>
+    <style>
+
+    :root { 
+        --gold: #d4af37; 
+        --bg: #fffff0; 
+        --text: #3e2723; 
+        --blue: #003399; 
+        --dark-red: #8B0000;
+        --orange: #FF6600;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        
+        overscroll-behavior-y: none !important;
+        touch-action: pan-x pan-y !important;
+    }
+
+    body { 
+        font-family: 'Segoe UI', 'Nirmala UI', -apple-system, sans-serif; 
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-start;
+        min-height: 100vh;
+        background-color: #e0e0e0;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    
+    .app-container { 
+        background: white; 
+        width: 100%; 
+        max-width: 420px; 
+        min-height: auto;
+        margin: 10px;
+        border-radius: 24px; 
+        display: flex; 
+        flex-direction: column; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+        position: relative; 
+        overflow: hidden;
+        
+    background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), 
+                      url('https://upload.wikimedia.org/wikipedia/commons/d/df/Buddhist_flag.svg');
+}
+
+/* main content layout */
+.main-content {
+    padding: 15px;
+}
+
+
+.date-picker-section {
+    text-align: center;
+    margin-bottom: 15px;
+}
+ 
+.pali-box {
+    margin: 0 0 15px 0;
+}
+
+
+.poya-status {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.by-display-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+
+.by-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* by-card header */
+.by-card-header {
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+/* by-card body */
+.by-card-body {
+    padding: 15px;
+    text-align: center;
+}
+
+/* color schemes */
+.bg-atikkanta {
+    border: 1px solid var(--orange);
+}
+.bg-atikkanta .by-card-header {
+    background: linear-gradient(to right, var(--orange), #000000);
+}
+
+.bg-avasittha {
+    border: 1px solid var(--blue);
+}
+.bg-avasittha .by-card-header {
+    background: linear-gradient(to right, var(--blue), #000000);
+}
+
+
+.year-val {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 5px;
+}
+.yr-si {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #888;
+}
+.other-vals {
+    font-size: 1.1em;
+    color: #666;
+    font-weight: 500;
+}
+.by-card-header {
+    min-height: 1.5em; 
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+
+    /* 3. Header සහ Menu Dots */
+    .header { 
+        background: linear-gradient(45deg, var(--blue), var(--dark-red), var(--orange), var(--gold));
+        color: white; 
+        padding: 18px; 
+        text-align: center; 
+        font-size: 1.3em; 
+        font-weight: bold; 
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        position: relative; 
+        z-index: 100;
+    }
+
+    .menu-dots { 
+        position: absolute; 
+        right: 15px; 
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer; 
+        font-size: 28px; 
+        color: white;
+        transition: 0.3s;
+        z-index: 101;
+        padding: 5px;
+    }
+    
+    .menu-dots:hover { opacity: 0.8; transform: translateY(-50%) scale(1.1); }
+
+    /* 4. Menu Dropdown */
+    .menu-dropdown { 
+        display: none; 
+        position: absolute; 
+        right: 10px; 
+        top: 55px; 
+        background: rgba(255, 255, 255, 0.98); 
+        border-radius: 12px; 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
+        min-width: 200px; 
+        z-index: 1000; 
+        overflow: hidden; 
+        border: 2px solid var(--gold);
+        animation: menuFade 0.2s ease-out;
+    }
+    
+    @keyframes menuFade {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-dropdown div { 
+        padding: 14px 20px; 
+        color: var(--text); 
+        cursor: pointer; 
+        border-bottom: 1px solid #eee; 
+        font-size: 1em; 
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+    }
+    .menu-dropdown div:hover { background: #fff9c4; color: var(--dark-red); padding-left: 25px; }
+
+    /* 5. Main Content සහ Sections */
+    .main-content { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+    .section { padding: 15px; border-bottom: 1px solid #eee; }
+    .label { font-size: 0.8em; color: #777; display: block; margin-bottom: 5px; }
+    .value { font-size: 1.5em; font-weight: bold; color: var(--text); }
+    
+    .pali-box { 
+        background: #fffde7; 
+        border: 1px solid #ffe082; 
+        padding: 20px; 
+        text-align: center; 
+        font-size: 1.1em; 
+        line-height: 1.8; 
+        white-space: pre-wrap; 
+        color: #5d4037; 
+        font-weight: 500; 
+        border-radius: 10px; 
+        margin: 0 10px; 
+    }
+    
+    .footer-table { width: 100%; font-size: 0.95em; text-align: center; border-collapse: separate; border-spacing: 0 5px; }
+    .footer-table td { padding: 10px; border-radius: 5px; }
+    .bg-orange { background: #fbe9e7; }
+    .bg-light { background: #f3e5f5; }
+
+.vas-card {
+    background: #ffffff;
+    border-left: 5px solid var(--dark-red);
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.vas-label {
+    font-size: 0.85em;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.vas-date-badge {
+    display: inline-block;
+    background: var(--dark-red);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    width: fit-content;
+}
+
+    /* 6. Date Row සහ Controls */
+    .date-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    input[type="date"] { 
+        flex: 1; 
+        padding: 12px; 
+        border: 2px solid var(--gold); 
+        border-radius: 8px; 
+        font-size: 1em; 
+        outline: none;
+    }
+
+    .reset-btn { 
+        padding: 10px 15px; 
+        background: white; 
+        border: 2px solid var(--gold); 
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-size: 1.2em; 
+    }
+    .reset-btn:hover { background: #fff9c4; }
+
+    /* 7. Modal (Poya List) */
+    .modal { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: rgba(0,0,0,0.5); 
+        z-index: 1100; 
+        justify-content: center; 
+        align-items: center; 
+    }
+    
+#poyaModal .modal-content {
+    width: 95%;
+    max-width: 550px;
+    height: 95vh;
+    max-height: 95vh;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+    border-radius: 15px;
+}
+.poya-item-compact {
+    border: 1px solid #eee;
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 2px; 
+    height: 32px; 
+}
+
+
+#poyaListContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 5px;
+    align-content: start;
+}
+
+#poyaListContent {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 6px;
+    padding: 5px;
+    background: #fcfcfc;
+    align-content: start;
+    overflow: hidden;
+}
+
+.season-banner {
+    grid-column: span 2;
+    background: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.8em;
+    padding: 4px 10px;
+    margin-top: 5px;
+    border-left: 4px solid var(--gold);
+    border-radius: 3px;
+}
+
+.poya-item-compact {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 5px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.poya-item-compact.is-today {
+    background: #fff9c4;
+    border-color: var(--gold);
+}
+
+.poya-info { line-height: 1.2; }
+.poya-date { font-weight: bold; font-size: 0.9em; display: block; }
+.poya-name { font-size: 0.7em; color: #666; }
+
+.poya-tag {
+    font-size: 0.65em;
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    min-width: 25px;
+    text-align: center;
+}
+.exit-button-fixed {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+.exit-btn:hover {
+    background: #c0392b;
+}
+
+/* Modal එකේ header එක සැකසීම */
+.modal-header {
+    border-bottom: 2px solid var(--gold);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+    .close-btn { cursor: pointer; font-size: 24px; color: #777; }
+
+    /* 8. Download Badges */
+    .badge-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .badge { 
+        display: flex; 
+        align-items: center; 
+        padding: 8px 10px; 
+        border-radius: 8px; 
+        text-decoration: none; 
+        color: white; 
+        font-size: 11px; 
+        font-weight: bold; 
+        transition: 0.2s; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+    }
+    .badge:hover { transform: translateY(-2px); }
+    .badge svg, .badge img { width: 18px; height: 18px; margin-right: 8px; }
+    
+    .bg-win { background: #0078d4; } 
+    .bg-mac { background: #000000; } 
+    .bg-lin { background: #333333; } 
+    .bg-and { background: #3DDC84; color: #073042; }
+</style>
+
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header" id="ui-title">
+        බුද්ධ වර්ෂය
+        <div class="menu-dots" onclick="toggleMenu()">&#8942;</div>
+    </div>
+
+    <div class="menu-dropdown" id="myDropdown">
+        <div onclick="toggleLanguage()" id="ui-lang-btn">English / සිංහල</div>
+        <div onclick="openPoyaModal()" id="ui-menu-poya">පොහොය දින🌛</div>
+        <div onclick="openVasModal()" id="ui-menu-vas">වස් කාලය ⛈️</div>
+        <div onclick="openContactModal()" id="ui-menu-contact"> ℹ️</div>
+    </div>
+
+    <div class="section" style="text-align: center;">
+    <span class="label" id="ui-label-date">දිනය තෝරන්න ( ක්‍රි.ව)</span>
+    <div class="date-row">
+        <input type="date" id="inputDate" oninput="calculateAll()">
+        <button type="button" class="reset-btn" onclick="resetToToday()">🔄</button>
+    </div>
+</div>
+
+
+
+        <div class="section">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <div style="background: #e3f2fd; padding: 10px; border-radius: 8px; text-align: center; min-width: 80px;">
+                    <span class="label">Year</span><span id="bYear" class="value"></span>
+                </div>
+                <div style="background: #f1f8e9; padding: 10px; border-radius: 8px; text-align: center; min-width: 80px;">
+                    <span class="label">Month</span><span id="bMonth" class="value"></span>
+                </div>
+                <div style="background: #fff3e0; padding: 10px; border-radius: 8px; text-align: center; min-width: 80px;">
+                    <span class="label">Day</span><span id="bDay" class="value"></span>
+                </div>
+            </div>
+            <div id="poyaStatus" style="text-align: center; color: #c62828; font-weight: bold; margin-top: 10px; font-size: 0.9em;"></div>
+        </div>
+
+        <div class="pali-box" id="paliDisplay"></div>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div class="poya-status" id="poyaStatus"></div>
+        </div>
+
+        <div class="by-display-grid">
+            
+            <div class="by-card bg-atikkanta">
+                <div class="by-card-header" id="ui-label-atikkanta"></div>
+                <div class="by-card-body">
+                    <div class="year-val"><span id="atikkantaY"></span> <span class="yr-si"></span></div>
+                    <div class="other-vals">
+                        M <span id="atikkantaM"></span>  |   
+                     D <span id="atikkantaD"></span> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="by-card bg-avasittha">
+                <div class="by-card-header" id="ui-label-avasittha"></div>
+                <div class="by-card-body">
+                    <div class="year-val"><span id="avasitthaY"></span> <span class="yr-si"></span></div>
+                    <div class="other-vals"> 
+                        M <span id="avasitthaM"> </span>  |  
+                         D <span id="avasitthaD"> </span> 
+                    </div>
+                </div>
+            </div>
+
+        <div id="poyaModal" class="modal">
+    <div class="modal-content">
+        <button class="exit-button-fixed" onclick="closeModal('poyaModal')">&times;</button>
+        
+        <div id="ui-poya-title" style="text-align:center; font-weight:bold; color:var(--gold); font-size:0.9em; margin-bottom:5px;">
+            පොහොය දින ලැයිස්තුව
+        </div>
+
+        <div id="poyaListContent">
+            </div>
+        
+        <div style="text-align:center; font-size:0.6em; color:#999; margin-top:2px;">
+            ප-පණ්ණරසී | චා-චාතුද්දසී
+        </div>
+    </div>
+</div>
+
+
+    
+
+
+
+<div id="vasModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="ui-vas-title">වස් පිළිබඳව</span>
+            <span class="close-btn" onclick="closeModal('vasModal')">&times;</span>
+        </div>
+        <div id="vasContent" style="line-height: 2.2; font-size: 1.05em;"></div>
+    </div>
+</div>
+
+<div id="contactModal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <div class="modal-header">
+            <span id="ui-contact-title">විමසීම් සහ බාගත කිරීම්</span>
+            <span class="close-btn" onclick="closeModal('contactModal')">&times;</span>
+        </div>
+        <p>📧<br><b style="color: var(--gold); font-size: 1.1em;"> bhamarawali@gmail.com</b></p>
+        <div class="badge-container">
+            <a href="https://drive.google.com/folderview?id=1-WMLgAFQVg7gVkULT2T_mfB6SlNTIJwH" class="badge bg-win" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/732/732221.png"> <div class="badge-text"><div>Download for</div>Windows</div></a>
+            <a href="https://drive.google.com/folderview?id=1-WMLgAFQVg7gVkULT2T_mfB6SlNTIJwH" class="badge bg-mac" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/882/882704.png"> <div class="badge-text"><div>Get it on</div>macOS</div></a>
+            <a href="https://drive.google.com/folderview?id=1-WMLgAFQVg7gVkULT2T_mfB6SlNTIJwH" class="badge bg-lin" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/518/518713.png"> <div class="badge-text"><div>Get it on</div>Linux</div></a>
+    <a href="https://apkpure.com/p/com.yogasrama.buddhistcalendar" style="text-decoration: none;">
+        <div style="background-color: #3DDC84; color: white; padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Segoe UI', Roboto, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #2dbd6e;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+                <path d="M17.523 15.3414c-.5511 0-.9988-.4477-.9988-.9988s.4477-.9988.9988-.9988.9988.4477.9988.9988-.4477.9988-.9988.9988m-11.046 0c-.5511 0-.9988-.4477-.9988-.9988s.4477-.9988.9988-.9988.9988.4477.9988.9988-.4477.9988-.9988.9988m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5674.416.416 0 00-.5674.1521l-2.0223 3.503C15.5902 7.3106 13.8405 6.691 12 6.691c-1.8405 0-3.5902.6196-5.137 1.6389l-2.0223-3.503a.416.416 0 10-.7195.4153l1.9973 3.4592C2.6826 10.5106.5 13.6828.5 17.3414h23c0-3.6586-2.1826-6.8308-5.6225-8.02z"/>
+            </svg>
+            <div style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1;">
+                <span style="font-size: 9px; opacity: 0.9; margin-bottom: 2px;">GET THE LATEST</span>
+                <span style="font-size: 15px; font-weight: 800; letter-spacing: 0.5px;">ANDROID UPDATE</span>
+            </div>
+        </div>
+    </a>
+</div>
+
+
+<script>
+    // --- Language Settings ---
+    let currentLang = localStorage.getItem('appLang') || 'si';
+
+    const i18n = {
+        si: {
+            title: "බුද්ධ වර්ෂය", dateLabel: "දිනය තෝරන්න ( ක්‍රි.ව)", atikkanta: "අතික්කන්ත(ඉකුත් වූ)", avasittha: "අවසිට්ඨ(ඉතිරි)",
+            poyaMenu: "පොහොය දින🌛", vasMenu: "වස් කාලය ⛈️", contactMenu: "ℹ️", poyaTitle: "පොහොය දින ලැයිස්තුව",
+            vasTitle: "වස් පිළිබඳව", contactTitle: " තොරතුරු සහ බාගත කිරීම්", poyaSuffix: " පෝය",
+            vas1: "පෙරවස් සමාදන්වීම", vas2: "පෙරවස් පවාරණය", vas3: "පසුවස් සමාදන්වීම", vas4: "පසුවස් පවාරණය",
+            animals: ["සප්ප","අස්ස","අජ","කපි","කුක්කුට","සෝන","සූකර","මුසික","උසභ","ව්‍යග්ග","සස","නාග"],
+            seasons: { Hemanta: "හේමන්ත", Gimhana: "ගිම්හාන", Vassana: "වස්සාන", ReHemanta: "නැවත හේමන්ත" },
+            paksha: { Kanha: "කණ්හ පක්ඛෙ", Sukka: "සුක්ක පක්ඛෙ" },
+            week: ["රවිවාරං","චන්දවාරං","භුම්මවාරං","බුධවාරං","ගුරුවාරං","සුක්කවාරං","සෝරවාරං"],
+            paliTemplate: (a, s, m, p, t, w) => `අයං\n${a} සංවච්ඡරෙ\n${s} උතු අස්මිං උතුම්හි\n${m} මාසස්ස\n${p}\n${t}\n${w}\nඉදන්ති දට්ඨබ්බං.`
+        },
+        en: {
+            title: "Buddhist Era", dateLabel: "Select Date (C.E.)", atikkanta: "Atikkanta(Elapsed)", avasittha: "Avasiṭṭha(remaining)",
+            poyaMenu: "Poya Days🌛", vasMenu: "Vas Season ⛈️", contactMenu: "ℹ️", poyaTitle: "Poya Day List",
+            vasTitle: "About Vas Season", contactTitle: "Contact & Downloads", poyaSuffix: " Poya",
+            vas1: "Entering Hera-vas", vas2: "Pavāraṇā (Hera-vas)", vas3: "Entering Pasu-vas", vas4: "Pavāraṇā (Pasu-vas)",
+            animals: ["Sappa","Assa","Aja","Kapi","Kukkuṭa","Sona","Sūkara","Musika","Usabha","Vyaggha","Sasa","Nāga"],
+            seasons: { Hemanta: "Hemanta", Gimhana: "Gimhāna", Vassana: "Vassāna", ReHemanta: "Late Hemanta" },
+            paksha: { Kanha: "Kaṇha pakkhe", Sukka: "Sukka pakkhe" },
+            week: ["Ravivāraṃ","Candavāraṃ","Bhummavāraṃ","Budhavāraṃ","Guruvāraṃ","Sukkavāraṃ","Soravāraṃ"],
+            paliTemplate: (a, s, m, p, t, w) => `Ayaṃ\n${a} saṃvacchare\n${s} utu asmiṃ utumhi\n${m} māsassa\n${p}\n${t}\n${w}\nidanti daṭṭhabbaṃ.`
+        }
+    };
+
+    const defaultPoyaList = [
+        {d: "2026-01-03", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māgha"}, {d: "2026-01-18", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+        {d: "2026-02-02", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"}, {d: "2026-02-16", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+        {d: "2026-03-03", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"}, {d: "2026-03-18", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+        {d: "2026-04-02", t: "පසළොස්වක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"}, {d: "2026-04-16", t: "අමාවක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Adhivesākha"},
+        {d: "2026-05-01", t: "පසළොස්වක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Adhivesākha"}, {d: "2026-05-16", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+        {d: "2026-05-31", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"}, {d: "2026-06-14", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+        {d: "2026-06-29", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"}, {d: "2026-07-14", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+        {d: "2026-07-29", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"}, {d: "2026-08-13", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+        {d: "2026-08-28", t: "පසළොස්වක", r: "වස්සාන", m: "සාවන", me: "Sāvana"}, {d: "2026-09-11", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+        {d: "2026-09-26", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"}, {d: "2026-10-11", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+        {d: "2026-10-26", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"}, {d: "2026-11-09", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+        {d: "2026-11-24", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Kattika"}, {d: "2026-12-09", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+        {d: "2026-12-24", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+        {d: "2027-01-07", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"}, {d: "2027-01-22", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+        {d: "2027-02-06", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Phussa"}, {d: "2027-02-21", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phussa"},
+        {d: "2027-03-07", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phussa"}, {d: "2027-03-22", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phussa"},
+        {d: "2027-04-06", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Phussa"}, {d: "2027-04-21", t: "පසළොස්වක", r: "ගිම්හාන", m: "චිත්ත", me: "Phussa"},
+        {d: "2027-05-05", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Phussa"}, {d: "2027-05-20", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Phussa"},
+        {d: "2027-06-04", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Phussa"}, {d: "2027-06-19", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Phussa"},
+        {d: "2027-07-03", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Phussa"}, {d: "2027-07-18", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Phussa"},
+        {d: "2027-08-02", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Phussa"}, {d: "2027-08-17", t: "පසළොස්වක", r: "වස්සාන", m: "සාවන", me: "Phussa"},
+        {d: "2027-08-31", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Phussa"}, {d: "2027-09-15", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Phussa"},
+        {d: "2027-09-30", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Phussa"}, {d: "2027-10-15", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Phussa"},
+        {d: "2027-10-29", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Phussa"}, {d: "2027-11-13", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Phussa"},
+        {d: "2027-11-28", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"}, {d: "2027-12-13", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"},
+    {d: "2027-12-27", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"}, {d: "2028-01-11", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+    {d: "2028-01-26", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2028-02-10", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2028-02-24", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2028-03-10", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2028-03-25", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+    {d: "2028-04-09", t: "පසළොස්වක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+    {d: "2028-04-23", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+    {d: "2028-05-08", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+    {d: "2028-05-23", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+    {d: "2028-06-07", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+    {d: "2028-06-21", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+    {d: "2028-07-06", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+    {d: "2028-07-21", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+    {d: "2028-08-05", t: "පසළොස්වක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+    {d: "2028-08-19", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+    {d: "2028-09-03", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+    {d: "2028-09-18", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+    {d: "2028-10-03", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+    {d: "2028-10-17", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+    {d: "2028-11-01", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+    {d: "2028-11-16", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+    {d: "2028-12-01", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+    {d: "2028-12-15", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+    {d: "2028-12-30", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"}, {d: "2029-01-14", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+        {d: "2029-01-29", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"}, {d: "2029-02-12", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+        {d: "2029-02-27", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"}, {d: "2029-03-14", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+        {d: "2029-03-29", t: "පසළොස්වක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"}, {d: "2029-04-12", t: "අමාවක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Adhivesākha"},
+        {d: "2029-04-27", t: "පසළොස්වක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Adhivesākha"}, {d: "2029-05-12", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+        {d: "2029-05-27", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"}, {d: "2029-06-10", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+        {d: "2029-06-25", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"}, {d: "2029-07-10", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+        {d: "2029-07-25", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"}, {d: "2029-08-09", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+        {d: "2029-08-24", t: "පසළොස්වක", r: "වස්සාන", m: "සාවන", me: "Sāvana"}, {d: "2029-09-07", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+        {d: "2029-09-22", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"}, {d: "2029-10-07", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+        {d: "2029-10-22", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"}, {d: "2029-11-05", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+        {d: "2029-11-20", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Kattika"}, {d: "2029-12-05", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+        {d: "2029-12-20", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+    {d: "2030-01-03", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māgha"},
+    {d: "2030-01-18", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māgha"},
+    {d: "2030-02-02", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"},
+    {d: "2030-02-17", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"},
+    {d: "2030-03-03", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"},
+    {d: "2030-03-18", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"},
+    {d: "2030-04-02", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Vesākha"},
+    {d: "2030-04-17", t: "පසළොස්වක", r: "ගිම්හාන", m: "චිත්ත", me: "Vesākha"},
+    {d: "2030-05-01", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2030-05-16", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2030-05-31", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2030-06-15", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2030-06-29", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2030-07-14", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2030-07-29", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2030-08-13", t: "පසළොස්වක", r: "වස්සාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2030-08-27", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2030-09-11", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2030-09-26", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2030-10-11", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2030-10-25", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2030-11-09", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2030-11-24", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"},
+    {d: "2030-12-09", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"},
+    {d: "2030-12-23", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+    {d: "2031-01-07", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2031-01-22", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2031-02-06", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2031-02-20", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2031-03-07", t: "පසළොස්වක", r: "හේමන්ත", m: "චිත්ත", me: "Citta"},
+    {d: "2031-03-22", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+    {d: "2031-04-06", t: "පසළොස්වක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Vesākha"},
+    {d: "2031-04-20", t: "අමාවක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Vesākha"},
+    {d: "2031-05-05", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2031-05-20", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2031-06-04", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2031-06-18", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2031-07-03", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2031-07-18", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2031-08-02", t: "පසළොස්වක", r: "ගිම්හාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2031-08-17", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2031-09-01", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2031-09-15", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2031-09-30", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2031-10-15", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2031-10-30", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2031-11-13", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2031-11-28", t: "පසළොස්වක", r: "වස්සාන", m: "මාඝසිර", me: "Phussa"},
+    {d: "2031-12-13", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"}, 
+    {d: "2031-12-28", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"}, 
+    {d: "2032-01-11", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māgha"},
+        {d: "2032-01-26", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"}, {d: "2032-02-10", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"},
+        {d: "2032-02-25", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"}, {d: "2032-03-10", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"},
+        {d: "2032-03-25", t: "පසළොස්වක", r: "හේමන්ත", m: "චිත්ත", me: "Citta"}, {d: "2032-04-09", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Adhivesākha"},
+        {d: "2032-04-24", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Adhivesākha"}, {d: "2032-05-08", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+        {d: "2032-05-23", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Vesākha"}, {d: "2032-06-07", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+        {d: "2032-06-22", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Jeṭṭha"}, {d: "2032-07-07", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+        {d: "2032-07-22", t: "පසළොස්වක", r: "ගිම්හාන", m: "සාවන", me: "Āsāḷha"}, {d: "2032-08-06", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+        {d: "2032-08-21", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Sāvana"}, {d: "2032-09-04", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+        {d: "2032-09-19", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Poṭṭhapāda"}, {d: "2032-10-04", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+        {d: "2032-10-19", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Assayuja"}, {d: "2032-11-02", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+        {d: "2032-11-17", t: "පසළොස්වක", r: "වස්සාන", m: "මාඝසිර", me: "Kattika"}, {d: "2032-12-02", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+        {d: "2032-12-17", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māghasira"}, {d: "2032-12-31", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māghasira"},
+    {d: "2033-01-15", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2033-01-30", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2033-02-14", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2033-02-28", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2033-03-15", t: "පසළොස්වක", r: "හේමන්ත", m: "චිත්ත", me: "Citta"},
+    {d: "2033-03-30", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+    {d: "2033-04-14", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+    {d: "2033-04-28", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+    {d: "2033-05-13", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+    {d: "2033-05-28", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+    {d: "2033-06-12", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+    {d: "2033-06-26", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+    {d: "2033-07-11", t: "පසළොස්වක", r: "ගිම්හාන", m: "සාවන", me: "Sāvana"},
+    {d: "2033-07-26", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+    {d: "2033-08-10", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+    {d: "2033-08-24", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+    {d: "2033-09-08", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+    {d: "2033-09-23", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+    {d: "2033-10-08", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+    {d: "2033-10-22", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+    {d: "2033-11-06", t: "පසළොස්වක", r: "වස්සාන", m: "මාඝසිර", me: "Māghasira"},
+    {d: "2033-11-21", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+    {d: "2033-12-06", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+    {d: "2033-12-20", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"},
+    {d: "2034-01-04", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phussa"},
+    {d: "2034-01-19", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Māgha"},
+    {d: "2034-02-03", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2034-02-17", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Phagguna"},
+    {d: "2034-03-04", t: "පසළොස්වක", r: "හේමන්ත", m: "චිත්ත", me: "Citta"},
+    {d: "2034-03-19", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Citta"},
+    {d: "2034-04-03", t: "පසළොස්වක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Vesākha"},
+    {d: "2034-04-17", t: "අමාවක", r: "ගිම්හාන", m: "අධිවේසාඛ", me: "Vesākha"},
+    {d: "2034-05-02", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2034-05-17", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Jeṭṭha"},
+    {d: "2034-06-01", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2034-06-15", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Āsāḷha"},
+    {d: "2034-06-30", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2034-07-15", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Sāvana"},
+    {d: "2034-07-30", t: "පසළොස්වක", r: "ගිම්හාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2034-08-14", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Poṭṭhapāda"},
+    {d: "2034-08-29", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2034-09-12", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Assayuja"},
+    {d: "2034-09-27", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2034-10-12", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Kattika"},
+    {d: "2034-10-27", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2034-11-10", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Māghasira"},
+    {d: "2034-11-25", t: "පසළොස්වක", r: "වස්සාන", m: "මාඝසිර", me: "Phussa"},
+    {d: "2034-12-10", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Phussa"}, 
+    {d: "2034-12-25", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Phussa"}, 
+    {d: "2035-01-08", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māgha"},
+        {d: "2035-01-23", t: "පසළොස්වක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"}, {d: "2035-02-07", t: "අමාවක", r: "හේමන්ත", m: "මාඝ", me: "Phagguna"},
+        {d: "2035-02-22", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"}, {d: "2035-03-08", t: "අමාවක", r: "හේමන්ත", m: "ඵග්ගුන", me: "Citta"},
+        {d: "2035-03-23", t: "පසළොස්වක", r: "හේමන්ත", m: "චිත්ත", me: "Citta"}, {d: "2035-04-07", t: "අමාවක", r: "ගිම්හාන", m: "චිත්ත", me: "Adhivesākha"},
+        {d: "2035-04-22", t: "පසළොස්වක", r: "ගිම්හාන", m: "වේසාඛ", me: "Adhivesākha"}, {d: "2035-05-06", t: "අමාවක", r: "ගිම්හාන", m: "වේසාඛ", me: "Vesākha"},
+        {d: "2035-05-21", t: "පසළොස්වක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Vesākha"}, {d: "2035-06-05", t: "අමාවක", r: "ගිම්හාන", m: "ජෙට්ඨ", me: "Jeṭṭha"},
+        {d: "2035-06-20", t: "පසළොස්වක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Jeṭṭha"}, {d: "2035-07-05", t: "අමාවක", r: "ගිම්හාන", m: "ආසාළ්හ", me: "Āsāḷha"},
+        {d: "2035-07-20", t: "පසළොස්වක", r: "ගිම්හාන", m: "සාවන", me: "Āsāḷha"}, {d: "2035-08-04", t: "අමාවක", r: "වස්සාන", m: "සාවන", me: "Sāvana"},
+        {d: "2035-08-19", t: "පසළොස්වක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Sāvana"}, {d: "2035-09-02", t: "අමාවක", r: "වස්සාන", m: "පොට්ඨපාද", me: "Poṭṭhapāda"},
+        {d: "2035-09-17", t: "පසළොස්වක", r: "වස්සාන", m: "අස්සයුජ", me: "Poṭṭhapāda"}, {d: "2035-10-02", t: "අමාවක", r: "වස්සාන", m: "අස්සයුජ", me: "Assayuja"},
+        {d: "2035-10-17", t: "පසළොස්වක", r: "වස්සාන", m: "කත්තික", me: "Assayuja"}, {d: "2035-10-31", t: "අමාවක", r: "වස්සාන", m: "කත්තික", me: "Kattika"},
+        {d: "2035-11-15", t: "පසළොස්වක", r: "වස්සාන", m: "මාඝසිර", me: "Kattika"}, {d: "2035-11-30", t: "අමාවක", r: "හේමන්ත", m: "මාඝසිර", me: "Māghasira"},
+        {d: "2035-12-15", t: "පසළොස්වක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māghasira"}, {d: "2035-12-29", t: "අමාවක", r: "හේමන්ත", m: "ඵුස්ස", me: "Māghasira"} 
+    ];
+
+    let poyaList = JSON.parse(localStorage.getItem('savedPoyaList')) || defaultPoyaList;
+    const vesakDates = { 2025: "2025-05-12", 2026: "2026-05-31", 2027: "2027-05-20", 2028: "2028-05-08",2029: "2029-05-27",
+ 2030: "2030-05-16", 2031: "2031-05-05", 2032: "2032-05-23", 2033: "2033-05-13", 2034: "2034-05-02", 2035: "2035-05-21", 2036: "2036-05-10", 2037: "2037-05-29",
+ 2038: "2038-05-18", 2039: "2039-05-07", 2040: "2040-05-25"  };
+    const tithiPaliS = ["","පඨමං","දුතියං","තතියං","චතුත්ථං","පඤ්චමං","ඡට්ඨමං","සත්තමං","අට්ඨමං","නවමං","දසමං","එකාදසමං","ද්වාදසමං","තෙරසමං","චුද්දසමං","පණ්ණරසමං"];
+    const tithiPaliE = ["","Paṭhamaṃ","Dutiyaṃ","Tatiyaṃ","Catutthaṃ","Pañcamaṃ","Chaṭṭhamaṃ","Sattamaṃ","Aṭṭhamaṃ","Navamaṃ","Dasamaṃ","Ekādasamaṃ","Dvādasamaṃ","Terasamaṃ","Cuddasamaṃ","Paṇṇarasamaṃ"];
+
+    function toggleMenu() {
+        const d = document.getElementById("myDropdown");
+        d.style.display = (d.style.display === "block") ? "none" : "block";
+    }
+
+   
+    window.onclick = function(event) {
+        if (!event.target.matches('.menu-dots')) {
+            document.getElementById("myDropdown").style.display = "none";
+        }
+    }
+
+    function toggleLanguage() {
+        currentLang = (currentLang === 'si') ? 'en' : 'si';
+        localStorage.setItem('appLang', currentLang);
+        updateUI();
+        calculateAll();
+    }
+
+    function updateUI() {
+        const t = i18n[currentLang];
+        document.getElementById('ui-title').innerHTML = t.title + `<div class="menu-dots" onclick="toggleMenu()">&#8942;</div>`;
+        document.getElementById('ui-label-date').innerText = t.dateLabel;
+        document.getElementById('ui-menu-poya').innerText = t.poyaMenu;
+        document.getElementById('ui-menu-vas').innerText = t.vasMenu;
+        document.getElementById('ui-menu-contact').innerText = t.contactMenu;
+        document.getElementById('ui-poya-title').innerText = t.poyaTitle;
+        document.getElementById('ui-vas-title').innerText = t.vasTitle;
+        document.getElementById('ui-contact-title').innerText = t.contactTitle;
+        document.getElementById('ui-label-atikkanta').innerText = t.atikkanta;
+        document.getElementById('ui-label-avasittha').innerText = t.avasittha;
+    }
+       // Modal පාලනය
+    function openPoyaModal() { document.getElementById("poyaModal").style.display = "flex"; }
+    function openVasModal() { document.getElementById("vasModal").style.display = "flex"; }
+    function openContactModal() { document.getElementById("contactModal").style.display = "flex"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    function openPoyaModal() { toggleMenu(); document.getElementById("poyaModal").style.display = "flex"; renderPoyaList(); }
+
+    function renderPoyaList() {
+    const container = document.getElementById("poyaListContent");
+    const t = i18n[currentLang];
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // වසර ලබා ගැනීම (Input එකේ නැත්නම් වත්මන් වසර ගන්න)
+    let inputVal = document.getElementById('inputDate').value;
+    const selYear = inputVal ? new Date(inputVal).getFullYear() : new Date().getFullYear();
+    
+    // මාතෘකාව යාවත්කාලීන කිරීම
+    document.getElementById("ui-poya-title").innerText = `${selYear} ${t.poyaTitle}`;
+    
+    const yearPoyas = poyaList.filter(p => p.d.startsWith(selYear));
+    if (yearPoyas.length === 0) {
+        container.innerHTML = "No Data";
+        return;
+    }
+
+    // ඍතු ගණනය කිරීම
+    const earlyHemantha = yearPoyas.filter(p => p.r === "හේමන්ත" && new Date(p.d).getMonth() < 6);
+    let startCount = 8 - earlyHemantha.length + 1;
+    let poyaCounters = { "හේමන්ත": startCount, "ගිම්හාන": 1, "වස්සාන": 1, "නැවත හේමන්ත": 1 };
+    
+    let html = "";
+    let lastS = "";
+
+    yearPoyas.forEach(p => {
+        let dt = new Date(p.d);
+        let s = p.r;
+        if (s === "හේමන්ත" && dt.getMonth() >= 10) s = "නැවත හේමන්ත";
+        
+        let displayS = t.seasons[Object.keys(i18n.si.seasons).find(k => i18n.si.seasons[k] === s) || "Hemanta"];
+
+        if (lastS !== displayS) {
+            lastS = displayS;
+            html += `<div class="season-banner">${displayS}</div>`;
+        }
+
+        let count = poyaCounters[s]++;
+        let isChatuddasi = (count === 3 || count === 7);
+        let tagColor = isChatuddasi ? '#c62828' : 'var(--gold)';
+        let tagText = isChatuddasi ? (currentLang === 'si' ? "චාතුද්දසී" : "CH") : (currentLang === 'si' ? "පණ්ණරසී" : "PA");
+        
+        let pName = currentLang === 'si' ? p.t : p.t.replace("පසළොස්වක","FM").replace("අමාවක","AM");
+        let isToday = (p.d === todayStr) ? "is-today" : "";
+
+        html += `
+    <div class="poya-item-compact ${isToday}" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="poya-date" style="font-weight: bold; font-size: 0.9em; min-width: 60px;">
+                ${count}. ${dt.getDate()} ${dt.toLocaleString(currentLang==='si'?'si-LK':'en-US',{month:'short'})}
+            </span>
+            <span style="font-size: 0.75em; color: #555; border-left: 1px solid #ddd; padding-left: 10px;">
+                ${pName}
+            </span>
+        </div>
+        <span class="poya-tag" style="background:${tagColor}; font-size: 0.65em; padding: 2px 6px; border-radius: 4px; color: white; font-weight: bold;">
+            ${tagText}
+        </span>
+    </div>`;
+
+    });
+
+    container.innerHTML = html;
+}
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+    
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+}
+
+
+    function openVasModal() {
+    toggleMenu(); 
+    document.getElementById("vasModal").style.display = "flex";
+    const t = i18n[currentLang];
+    const d = new Date(document.getElementById('inputDate').value);
+    const y = d.getFullYear();
+    
+    const yearPoyas = poyaList.filter(p => p.d.startsWith(y));
+    const gim = yearPoyas.filter(p => p.r === "ගිම්හාන");
+    const vas = yearPoyas.filter(p => p.r === "වස්සාන");
+    
+    let p1="-", p2="-", p3="-", p4="-";
+    const opt = { year:'numeric', month:'numeric', day:'numeric' };
+    
+    if(gim.length > 0) { 
+        let d1 = new Date(gim[gim.length-1].d); 
+        d1.setDate(d1.getDate()+1); 
+        p1 = d1.toLocaleDateString(currentLang==='si'?'si-LK':'en-US', opt); 
+    }
+    if(vas.length >= 6) p2 = new Date(vas[5].d).toLocaleDateString(currentLang==='si'?'si-LK':'en-US', opt);
+    if(vas.length >= 2) { 
+        let d3 = new Date(vas[1].d); 
+        d3.setDate(d3.getDate()+1); 
+        p3 = d3.toLocaleDateString(currentLang==='si'?'si-LK':'en-US', opt); 
+    }
+    if(vas.length >= 8) p4 = new Date(vas[7].d).toLocaleDateString(currentLang==='si'?'si-LK':'en-US', opt);
+
+    
+    document.getElementById("vasContent").innerHTML = `
+        <div class="vas-card">
+            <span class="vas-label">${t.vas1}</span>
+            <span class="vas-date-badge">${p1}</span>
+        </div>
+        <div class="vas-card">
+            <span class="vas-label">${t.vas2}</span>
+            <span class="vas-date-badge">${p2}</span>
+        </div>
+        <div class="vas-card">
+            <span class="vas-label">${t.vas3}</span>
+            <span class="vas-date-badge">${p3}</span>
+        </div>
+        <div class="vas-card">
+            <span class="vas-label">${t.vas4}</span>
+            <span class="vas-date-badge">${p4}</span>
+        </div>
+    `;
+}
+
+
+    function openContactModal() { toggleMenu(); document.getElementById("contactModal").style.display = "flex"; }
+function calculateAll() {
+    const t = i18n[currentLang];
+    const ds = document.getElementById('inputDate').value;
+    if (!ds) return;
+    
+    const d = new Date(ds); 
+    d.setHours(0,0,0,0);
+    const time = d.getTime(); 
+    const y = d.getFullYear();
+    
+    const vD = new Date(vesakDates[y] || `${y}-05-01`).getTime();
+    const bY = (time <= vD) ? (y + 543) : (y + 544);
+
+    const pastFullMoons = poyaList.filter(p => p.t === "පසළොස්වක" && new Date(p.d).getTime() < time);
+    const lastFullMoon = pastFullMoons.length > 0 ? pastFullMoons[pastFullMoons.length - 1] : null;
+    let tithi = lastFullMoon ? Math.round((time - new Date(lastFullMoon.d).getTime()) / 86400000) : 1;
+    if(tithi === 0) tithi = 1;
+
+    const nextA = poyaList.find(p => p.t === "අමාවක" && new Date(p.d).getTime() >= time);
+    const nextF = poyaList.find(p => p.t === "පසළොස්වක" && new Date(p.d).getTime() >= time);
+    let paksha = (nextA && (!nextF || new Date(nextA.d).getTime() <= new Date(nextF.d).getTime())) ? t.paksha.Kanha : t.paksha.Sukka;
+
+    const lastV = time <= vD ? y-1 : y;
+    const lastVD = new Date(vesakDates[lastV]).getTime();
+    const nextVD = new Date(vesakDates[lastV+1]).getTime();
+    const totM = Math.round((nextVD - lastVD) / 2551442400);
+
+    
+    const nextFT = poyaList.find(p => p.t === "පසළොස්වක" && new Date(p.d).getTime() >= time);
+    let bM = nextFT ? Math.round((new Date(nextFT.d).getTime() - lastVD) / 2551442400) : 1;
+    bM = (bM <= 0) ? totM : (bM > totM ? totM : bM);
+
+    const nextP = poyaList.find(p => new Date(p.d).getTime() >= time);
+
+    const todayP = poyaList.find(p => p.d === ds);
+    let poyaName = "";
+    if (todayP) {
+        if (currentLang === 'en') {
+            poyaName = (todayP.t === "පසළොස්වක") ? "Full Moon" : "Amāvaka";
+        } else {
+            poyaName = todayP.t;
+        }
+    }
+    document.getElementById('poyaStatus').innerText = poyaName ? poyaName + t.poyaSuffix : "";
+
+    const monthMap = {
+        "මාඝ": "Māgha", "ඵග්ගුන": "Phagguna", "චිත්ත": "Citta",
+        "අධිවේසාඛ": "Adhivesākha", "වේසාඛ": "Vesākha", "ජෙට්ඨ": "Jeṭṭha",
+        "ආසාළ්හ": "Āsāḷha", "සාවන": "Sāvana", "පොට්ඨපාද": "Poṭṭhapāda",
+        "අස්සයුජ": "Assayuja", "කත්තික": "Kattika", "මාඝසිර": "Māghasira", "ඵුස්ස": "Phussa"
+    };
+
+  
+    const seasonEntry = poyaList.filter(p => new Date(p.d).getTime() <= time).slice(-1)[0];
+    const rawS = seasonEntry ? seasonEntry.r : "හේමන්ත";
+    const seasonKey = Object.keys(i18n.si.seasons).find(k => i18n.si.seasons[k] === rawS);
+    const displayS = t.seasons[seasonKey];
+
+    const animal = t.animals[bY % 12];
+
+    const sMonth = nextP ? nextP.m : "වේසාඛ"; 
+    const displayMonth = (currentLang === 'en') ? (monthMap[sMonth] || sMonth) : sMonth;
+
+    let paliIndex = tithi; 
+    let finalPaksha = paksha; 
+
+    const currentAmavaka = poyaList.find(p => 
+        p.t === "අමාවක" && 
+        new Date(p.d).getMonth() === d.getMonth() && 
+        new Date(p.d).getFullYear() === d.getFullYear()
+    );
+
+    if (currentAmavaka) {
+        const amavakaDate = new Date(currentAmavaka.d);
+        amavakaDate.setHours(0,0,0,0);
+
+        if (d > amavakaDate) {
+            finalPaksha = t.paksha.Sukka; 
+            const diffTime = d.getTime() - amavakaDate.getTime();
+            paliIndex = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        } else {
+            finalPaksha = t.paksha.Kanha; 
+            paliIndex = tithi;
+        }
+    }
+
+
+        const tithiWord = currentLang === 'si' 
+        ? (tithiPaliS[paliIndex] || "පණ්ණරසමං") 
+        : (tithiPaliE[paliIndex] || "Paṇṇarasaṃ");
+
+    const weekDay = t.week[d.getDay()];
+
+    
+    document.getElementById('bYear').innerText = bY;
+    document.getElementById('bMonth').innerText = bM;
+    document.getElementById('bDay').innerText = tithi;
+    document.getElementById('paliDisplay').innerText = t.paliTemplate(animal, displayS, displayMonth, finalPaksha, tithiWord, weekDay);
+
+    let nextPoya = poyaList.find(p => {
+        let pDate = new Date(p.d);
+        pDate.setHours(0,0,0,0);
+        return pDate >= d;
+    });
+
+    
+    let nextFullMoon = poyaList.find(p => {
+        let pDate = new Date(p.d);
+        pDate.setHours(0,0,0,0);
+        
+        return pDate >= d && p.t.includes("පසළොස්වක");
+    });
+
+    let currentAvasitthaD = 0;
+    let poyaMessage = "";
+    let isPoyaDay = false;
+    let statusAvasitthaD = 0; 
+
+    if (nextPoya) {
+        let targetD = new Date(nextPoya.d);
+        targetD.setHours(0,0,0,0);
+        statusAvasitthaD = Math.round((targetD.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (statusAvasitthaD === 0) {
+            isPoyaDay = true;
+            poyaMessage = (currentLang === 'si') ? nextPoya.t : nextPoya.t.replace("පසළොස්වක", "Full Moon").replace("අමාවක", "New Moon");
+        } else {
+            if (currentLang === 'si') {
+                poyaMessage = `${nextPoya.t} පෝයට තව දින - ${statusAvasitthaD}`;
+            } else {
+                let poyaNameEN = nextPoya.t.replace("පසළොස්වක", "Full Moon").replace("අමාවක", "New Moon");
+                poyaMessage = `${statusAvasitthaD} days to ${poyaNameEN} Poya`;
+            }
+        }
+    }
+
+    
+    if (nextFullMoon) {
+        let fullMoonD = new Date(nextFullMoon.d);
+        fullMoonD.setHours(0,0,0,0);
+        currentAvasitthaD = Math.round((fullMoonD.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    const poyaDisplayElement = document.getElementById("poyaStatus"); 
+    if (poyaDisplayElement) {
+        if (isPoyaDay) {
+            poyaDisplayElement.innerText = poyaMessage + t.poyaSuffix; 
+            poyaDisplayElement.style.setProperty('color', '#c62828', 'important');
+        } else {
+            poyaDisplayElement.innerText = poyaMessage; 
+            if (statusAvasitthaD > 0) {
+                poyaDisplayElement.style.setProperty('color', '#2dbd6e', 'important');
+            } else {
+                poyaDisplayElement.style.setProperty('color', 'var(--text)', 'important');
+            }
+        }
+        poyaDisplayElement.style.fontWeight = "bold";
+    }
+
+    
+    document.getElementById('atikkantaY').innerText = bY - 1;
+    document.getElementById('atikkantaM').innerText = bM - 1;
+    document.getElementById('atikkantaD').innerText = tithi - 1;
+
+    document.getElementById('avasitthaY').innerText = 5000 - bY;
+    document.getElementById('avasitthaM').innerText = totM - bM;
+    document.getElementById('avasitthaD').innerText = currentAvasitthaD;
+
+    document.getElementById('ui-label-atikkanta').innerText = t.atikkanta;
+    document.getElementById('ui-label-avasittha').innerText = t.avasittha;
+}
+
+
+window.onclick = function(e) { 
+    if (!e.target.matches('.menu-dots')) {
+        document.getElementById("myDropdown").style.display = "none";
+    }
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = "none";
+    }
+}
+
+window.onload = function() { 
+    updateUI();
+    const now = new Date(); 
+    document.getElementById('inputDate').value = now.toISOString().split('T')[0]; 
+    calculateAll(); 
+};
+
+
+function resetToToday() {
+    let now = new Date();
+   
+    let y = now.getFullYear();
+    let m = String(now.getMonth() + 1).padStart(2, '0');
+    let d = String(now.getDate()).padStart(2, '0');
+    let today = y + "-" + m + "-" + d;
+
+    let dateInput = document.getElementById("inputDate");
+    if (dateInput) {
+        dateInput.value = today;
+       
+        if (typeof calculateAll === "function") {
+            calculateAll();
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    resetToToday();
+});
+
+
+    // ====================== ADD TO HOME SCREEN (Multi-language) ======================
+    let deferredPrompt = null;
+
+    const a2hsMessages = {
+        si: {
+            title: "📱 ඔබේ මුල් පිටුවට එක් කරන්න",
+            message: "මෙම බුද්ධ වර්ෂය යෙදුම ඔබේ ජංගම දුරකථනයේ Home Screen එකට එක් කරගන්න. අන්තර්ජාලය නැතිවත් භාවිතා කළ හැකිය.",
+            installBtn: "දැන් එක් කරන්න"
+        },
+        pali: {
+            title: "📱 Add to Home Screen",
+            message: "Add this Buddha Vassa app to your device's home screen for easy access, even offline.",
+            installBtn: "Install Now"
+        },
+        en: {
+            title: "📱 Add to Home Screen",
+            message: "Add this Buddhist Era app to your home screen for quick access. Works offline too.",
+            installBtn: "Install Now"
+        }
+    };
+
+    function updateA2HSBannerLanguage() {
+        const lang = currentLang || 'en';
+        const msg = a2hsMessages[lang] || a2hsMessages.en;
+
+        document.getElementById('a2hsTitle').innerHTML = msg.title;
+        document.getElementById('a2hsMessage').innerText = msg.message;
+        document.getElementById('installBtn').innerText = msg.installBtn;
+    }
+
+    function showInstallBanner() {
+        const banner = document.getElementById('a2hsBanner');
+        if (banner) {
+            // Force a refresh of currentLang from cookie just in case
+            const saved = getCookie('preferredLang');
+            if (saved) currentLang = saved;
+            
+            updateA2HSBannerLanguage();
+            banner.style.display = 'block';
+        }
+    }
+
+    function hideInstallBanner() {
+        const banner = document.getElementById('a2hsBanner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    // Main Install Prompt Listener
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show banner after a short delay (better UX)
+        setTimeout(showInstallBanner, 800);
+    });
+
+    // Handle button clicks
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'installBtn') {
+            hideInstallBanner();
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+
+                deferredPrompt.userChoice.then((choice) => {
+                    deferredPrompt = null;
+                    if (choice.outcome === 'accepted') {
+                        console.log('User installed the app');
+                    }
+                });
+            }
+        }
+
+        if (e.target && e.target.id === 'closeBanner') {
+            hideInstallBanner();
+        }
+    });
+    
+    // App installed event
+    window.addEventListener('appinstalled', () => {
+        hideInstallBanner();
+        console.log('PWA was successfully installed');
+    });
+
+</script>
+</body>
+</html>

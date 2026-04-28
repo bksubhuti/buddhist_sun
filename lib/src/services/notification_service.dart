@@ -192,15 +192,17 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
     return;
   }
 
-  final int notificationId =
-      1000 + date.day; // or any unique ID in 1000–1999 range
+  // Unique base ID for the year: month * 32 + day (max 12*32+31 = 415 -> +1000 = 1415)
+  final int baseId = 1000 + (date.month * 32) + date.day;
+  final int beforeId = baseId;
+  final int dayOfId = baseId + 500; // Max 1415 + 500 = 1915 (safe within 1000-1999 range)
   // ---------------------------------------------------
   // 1️⃣ BEFORE-NOTIFICATION  (only if > 0 days)
   // ---------------------------------------------------
   if (beforeDays > 0) {
     if (beforeTime.isAfter(now)) {
       await flutterLocalNotificationsPlugin.zonedSchedule(
-        notificationId, // unchanged ID logic
+        beforeId,
         "Uposatha Coming Soon",
         "$beforeDays days until Uposatha.",
         beforeTime,
@@ -239,7 +241,7 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
   // 2️⃣ DAY-OF NOTIFICATION (always delivered)
   // ---------------------------------------------------
   await flutterLocalNotificationsPlugin.zonedSchedule(
-    notificationId, // unchanged ID logic
+    dayOfId,
     "Uposatha Today",
     "Today is Uposatha Day.",
     dayOfTime,
