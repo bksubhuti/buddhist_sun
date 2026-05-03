@@ -205,7 +205,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),
-              title: ColoredText('Buddhist Era'),
+              title: ColoredText(AppLocalizations.of(context)!.beTitle),
               onTap: () {
                 Navigator.pop(context); // close the drawer
                 Navigator.push(
