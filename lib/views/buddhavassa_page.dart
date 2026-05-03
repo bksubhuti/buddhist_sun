@@ -55,8 +55,6 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleChangeNotifier>(context);
     final l = AppLocalizations.of(context)!;
-    final String currentLang =
-        localeProvider.localeString == 'si' ? 'si' : 'en';
 
     final loc = BuddhavassaLocalization(
       paliTemplate: (a, s, m, p, t, w) => l.bePaliTemplate(a, s, m, p, t, w),
@@ -129,8 +127,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
       daysToPoya: (days, poya) => l.beDaysToPoya(days.toString(), poya),
     );
 
-    final calc =
-        BuddhavassaCalculator.calculate(_selectedDate, currentLang, loc);
+    final calc = BuddhavassaCalculator.calculate(_selectedDate, loc);
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -138,7 +135,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
         title: Text(l.beTitle),
         actions: [
           PopupMenuButton<int>(
-            onSelected: (item) => _onMenuSelected(item, l, currentLang),
+            onSelected: (item) => _onMenuSelected(item, l),
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 1,
@@ -332,10 +329,10 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
     );
   }
 
-  void _onMenuSelected(int item, AppLocalizations l, String currentLang) {
+  void _onMenuSelected(int item, AppLocalizations l) {
     switch (item) {
       case 1:
-        _showPoyaModal(l, currentLang);
+        _showPoyaModal(l);
         break;
       case 2:
         _showVasModal(l);
@@ -343,7 +340,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
     }
   }
 
-  void _showPoyaModal(AppLocalizations l, String currentLang) {
+  void _showPoyaModal(AppLocalizations l) {
     final int selYear = _selectedDate.year;
     final yearPoyas = BuddhavassaData.poyaList
         .where((p) => p.d.startsWith(selYear.toString()))
