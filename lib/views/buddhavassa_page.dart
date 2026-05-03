@@ -61,6 +61,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
     final loc = BuddhavassaLocalization(
       paliTemplate: (a, s, m, p, t, w) => l.bePaliTemplate(a, s, m, p, t, w),
       poyaSuffix: l.bePoyaSuffix,
+      fullMoon: l.beFullMoon,
+      newMoon: l.beNewMoon,
       pakshaSukka: l.bePaksha_Sukka,
       pakshaKanha: l.bePaksha_Kanha,
       animals: [
@@ -91,6 +93,38 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
         l.beWeek_4,
         l.beWeek_5,
         l.beWeek_6
+      ],
+      months: {
+        "මාඝ": l.beMonth_Magha,
+        "ඵග්ගුන": l.beMonth_Phagguna,
+        "චිත්ත": l.beMonth_Citta,
+        "අධිවේසාඛ": l.beMonth_Adhivesakha,
+        "වේසාඛ": l.beMonth_Vesakha,
+        "ජෙට්ඨ": l.beMonth_Jettha,
+        "ආසාළ්හ": l.beMonth_Asalha,
+        "සාවන": l.beMonth_Savana,
+        "පොට්ඨපාද": l.beMonth_Potthapada,
+        "අස්සයුජ": l.beMonth_Assayuja,
+        "කත්තික": l.beMonth_Kattika,
+        "මාඝසිර": l.beMonth_Maghasira,
+        "ඵුස්ස": l.beMonth_Phussa,
+      },
+      tithis: [
+        l.beTithi_1,
+        l.beTithi_2,
+        l.beTithi_3,
+        l.beTithi_4,
+        l.beTithi_5,
+        l.beTithi_6,
+        l.beTithi_7,
+        l.beTithi_8,
+        l.beTithi_9,
+        l.beTithi_10,
+        l.beTithi_11,
+        l.beTithi_12,
+        l.beTithi_13,
+        l.beTithi_14,
+        l.beTithi_15,
       ],
       daysToPoya: (days, poya) => l.beDaysToPoya(days.toString(), poya),
     );
@@ -151,12 +185,6 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  onPressed: _resetToToday,
-                  icon: const Icon(Icons.refresh),
-                  tooltip: 'Today',
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -165,7 +193,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
             Row(
               children: [
                 Expanded(
-                    child: _buildInfoCard(l.beYearLabel, calc.bYear.toString())),
+                    child:
+                        _buildInfoCard(l.beYearLabel, calc.bYear.toString())),
                 const SizedBox(width: 8),
                 Expanded(
                     child:
@@ -388,11 +417,9 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
                               final index = entry.key;
                               final p = entry.value;
                               final dt = DateTime.parse(p.d);
-                              final pName = currentLang == 'si'
-                                  ? p.t
-                                  : p.t
-                                      .replaceAll("පසළොස්වක", "Full Moon")
-                                      .replaceAll("අමාවක", "New Moon");
+                              final pName = p.t
+                                  .replaceAll("පසළොස්වක", l.beFullMoon)
+                                  .replaceAll("අමාවක", l.beNewMoon);
 
                               Color? cardColor;
                               if (index == highlightIndex) {

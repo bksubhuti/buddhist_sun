@@ -43,21 +43,29 @@ class BuddhavassaCalculation {
 class BuddhavassaLocalization {
   final String Function(String a, String s, String m, String p, String t, String w) paliTemplate;
   final String poyaSuffix;
+  final String fullMoon;
+  final String newMoon;
   final String pakshaSukka;
   final String pakshaKanha;
   final List<String> animals;
   final Map<String, String> seasons;
   final List<String> weekDays;
+  final Map<String, String> months;
+  final List<String> tithis;
   final String Function(int days, String poyaName) daysToPoya;
 
   BuddhavassaLocalization({
     required this.paliTemplate,
     required this.poyaSuffix,
+    required this.fullMoon,
+    required this.newMoon,
     required this.pakshaSukka,
     required this.pakshaKanha,
     required this.animals,
     required this.seasons,
     required this.weekDays,
+    required this.months,
+    required this.tithis,
     required this.daysToPoya,
   });
 }
@@ -134,32 +142,28 @@ class BuddhavassaCalculator {
     
     final String poyaStatus = poyaName.isNotEmpty ? poyaName + loc.poyaSuffix : "";
 
-    final Map<String, String> monthMap = {
-      "මාඝ": "Māgha", "ඵග්ගුන": "Phagguna", "චිත්ත": "Citta",
-      "අධිවේසාඛ": "Adhivesākha", "වේසාඛ": "Vesākha", "ජෙට්ඨ": "Jeṭṭha",
-      "ආසාළ්හ": "Āsāḷha", "සාවන": "Sāvana", "පොට්ඨපාද": "Poṭṭhapāda",
-      "අස්සයුජ": "Assayuja", "කත්තික": "Kattika", "මාඝසිර": "Māghasira", "ඵුස්ස": "Phussa"
-    };
-
     final pastPoyas = BuddhavassaData.poyaList.where((p) => DateTime.parse(p.d).millisecondsSinceEpoch <= time).toList();
     final PoyaDay? seasonEntry = pastPoyas.isNotEmpty ? pastPoyas.last : null;
     final String rawS = seasonEntry != null ? seasonEntry.r : "හේමන්ත";
 
     String seasonKey = 'Hemanta';
-    if (rawS == "ගිම්හාන") {
+    if (rawS == "ගิมฺหาน") { // Wait, rawS is in Sinhala script in the data
       seasonKey = "Gimhana";
     } else if (rawS == "වස්සාන") {
       seasonKey = "Vassana";
     } else if (rawS == "නැවත හේමන්ත") {
       seasonKey = "ReHemanta";
     }
+    // Wait, the data uses Sinhala script for seasons: හේමන්ත, ගිම්හාන, වස්සාන, නැවත හේමන්ත
+    if (rawS == "ගිම්හාන") {
+      seasonKey = "Gimhana";
+    }
 
     final String displayS = loc.seasons[seasonKey] ?? seasonKey;
-    
     final String animal = loc.animals[bY % 12];
 
     final String sMonth = nextP != null ? nextP.m : "වේසාඛ";
-    final String displayMonth = (lang == 'en') ? (monthMap[sMonth] ?? sMonth) : sMonth;
+    final String displayMonth = loc.months[sMonth] ?? sMonth;
 
     int paliIndex = tithi;
     String finalPaksha = paksha;
@@ -187,9 +191,7 @@ class BuddhavassaCalculator {
       paliIndex = 15; // default to 15 if out of bounds somehow
     }
 
-    final String tithiWord = (lang == 'si') 
-      ? BuddhavassaData.tithiPaliS[paliIndex] 
-      : BuddhavassaData.tithiPaliE[paliIndex];
+    final String tithiWord = loc.tithis[paliIndex % 15];
 
     final List<String> weekDays = loc.weekDays;
     final String weekDay = weekDays[d.weekday % 7]; 
@@ -207,14 +209,10 @@ class BuddhavassaCalculator {
 
       if (statusAvasitthaD == 0) {
         isPoyaDay = true;
-        poyaMessage = (lang == 'si') 
-          ? nextP.t 
-          : nextP.t.replaceAll("පසළොස්වක", "Full Moon").replaceAll("අමාවක", "New Moon");
+        poyaMessage = nextP.t.replaceAll("පසළොස්වක", loc.fullMoon).replaceAll("අමාවක", loc.newMoon);
       } else {
-        final String poyaNameEN = (lang == 'si') 
-          ? nextP.t 
-          : nextP.t.replaceAll("පසළොස්වක", "Full Moon").replaceAll("අමාවක", "New Moon");
-        poyaMessage = loc.daysToPoya(statusAvasitthaD, poyaNameEN);
+        final String poyaNameLocalized = nextP.t.replaceAll("පසළොස්වක", loc.fullMoon).replaceAll("අමාවක", loc.newMoon);
+        poyaMessage = loc.daysToPoya(statusAvasitthaD, poyaNameLocalized);
       }
     }
 
