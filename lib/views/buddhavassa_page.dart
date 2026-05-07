@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import '../utils/buddhavassa_data.dart';
 import '../utils/buddhavassa_calculator.dart';
-import '../src/provider/locale_change_notifier.dart';
 import '../l10n/app_localizations.dart';
+import '../src/models/prefs.dart';
 
 class BuddhavassaPage extends StatefulWidget {
   const BuddhavassaPage({Key? key}) : super(key: key);
@@ -13,18 +12,35 @@ class BuddhavassaPage extends StatefulWidget {
   State<BuddhavassaPage> createState() => _BuddhavassaPageState();
 }
 
-class _BuddhavassaPageState extends State<BuddhavassaPage> {
+class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
   DateTime _selectedDate = DateTime.now();
+
+  CalendarTradition get _tradition {
+    switch (Prefs.selectedUposatha) {
+      case UposathaCountry.Thailand:
+        return CalendarTradition.thai;
+      case UposathaCountry.Myanmar:
+        return CalendarTradition.myanmar;
+      case UposathaCountry.Sinhala:
+        return CalendarTradition.sriLanka;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+  }
 
   String _translateSeason(String raw, AppLocalizations l) {
     switch (raw) {
-      case 'හේමන්ත':
+      case 'Hemanta':
         return l.beSeason_Hemanta;
-      case 'ගිම්හාන':
+      case 'Gimhana':
         return l.beSeason_Gimhana;
-      case 'වස්සාන':
+      case 'Vassana':
         return l.beSeason_Vassana;
-      case 'නැවත හේමන්ත':
+      case 'ReHemanta':
         return l.beSeason_ReHemanta;
       default:
         return raw;
@@ -45,15 +61,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
     }
   }
 
-  void _resetToToday() {
-    setState(() {
-      _selectedDate = DateTime.now();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final localeProvider = Provider.of<LocaleChangeNotifier>(context);
     final l = AppLocalizations.of(context)!;
 
     final loc = BuddhavassaLocalization(
@@ -93,19 +102,19 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
         l.beWeek_6
       ],
       months: {
-        "මාඝ": l.beMonth_Magha,
-        "ඵග්ගුන": l.beMonth_Phagguna,
-        "චිත්ත": l.beMonth_Citta,
-        "අධිවේසාඛ": l.beMonth_Adhivesakha,
-        "වේසාඛ": l.beMonth_Vesakha,
-        "ජෙට්ඨ": l.beMonth_Jettha,
-        "ආසාළ්හ": l.beMonth_Asalha,
-        "සාවන": l.beMonth_Savana,
-        "පොට්ඨපාද": l.beMonth_Potthapada,
-        "අස්සයුජ": l.beMonth_Assayuja,
-        "කත්තික": l.beMonth_Kattika,
-        "මාඝසිර": l.beMonth_Maghasira,
-        "ඵුස්ස": l.beMonth_Phussa,
+        "Magha": l.beMonth_Magha,
+        "Phagguna": l.beMonth_Phagguna,
+        "Citta": l.beMonth_Citta,
+        "Adhivesakha": l.beMonth_Adhivesakha,
+        "Vesakha": l.beMonth_Vesakha,
+        "Jettha": l.beMonth_Jettha,
+        "Asalha": l.beMonth_Asalha,
+        "Savana": l.beMonth_Savana,
+        "Potthapada": l.beMonth_Potthapada,
+        "Assayuja": l.beMonth_Assayuja,
+        "Kattika": l.beMonth_Kattika,
+        "Maghasira": l.beMonth_Maghasira,
+        "Phussa": l.beMonth_Phussa,
       },
       tithis: [
         l.beTithi_1,
@@ -127,7 +136,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
       daysToPoya: (days, poya) => l.beDaysToPoya(days.toString(), poya),
     );
 
-    final calc = BuddhavassaCalculator.calculate(_selectedDate, loc);
+    final poyaList = BuddhavassaData.getPoyaList(_tradition);
+    final calc = BuddhavassaCalculator.calculate(_selectedDate, loc, poyaList);
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -342,18 +352,19 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
 
   void _showPoyaModal(AppLocalizations l) {
     final int selYear = _selectedDate.year;
-    final yearPoyas = BuddhavassaData.poyaList
-        .where((p) => p.d.startsWith(selYear.toString()))
-        .toList();
+    final poyaList = BuddhavassaData.getPoyaList(_tradition);
+    final yearPoyas =
+        poyaList.where((p) => p.date.startsWith(selYear.toString())).toList();
 
-    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final selectedStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
     // Find the index to highlight:
-    // - exact match if today is a poya, otherwise the next upcoming poya.
-    int highlightIndex = yearPoyas.indexWhere((p) => p.d == todayStr);
-    final bool isTodayPoya = highlightIndex >= 0;
-    if (!isTodayPoya) {
-      highlightIndex = yearPoyas.indexWhere((p) => p.d.compareTo(todayStr) > 0);
+    // - exact match if selected date is a poya, otherwise the next upcoming poya.
+    int highlightIndex = yearPoyas.indexWhere((p) => p.date == selectedStr);
+    final bool isSelectedPoya = highlightIndex >= 0;
+    if (!isSelectedPoya) {
+      highlightIndex =
+          yearPoyas.indexWhere((p) => p.date.compareTo(selectedStr) > 0);
     }
 
     showModalBottomSheet(
@@ -413,14 +424,14 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
                             children: yearPoyas.asMap().entries.map((entry) {
                               final index = entry.key;
                               final p = entry.value;
-                              final dt = DateTime.parse(p.d);
-                              final pName = p.t
-                                  .replaceAll("පසළොස්වක", l.beFullMoon)
-                                  .replaceAll("අමාවක", l.beNewMoon);
+                              final dt = DateTime.parse(p.date);
+                              final pName = p.moonPhase
+                                  .replaceAll("FullMoon", l.beFullMoon)
+                                  .replaceAll("NewMoon", l.beNewMoon);
 
                               Color? cardColor;
                               if (index == highlightIndex) {
-                                cardColor = isTodayPoya
+                                cardColor = isSelectedPoya
                                     ? Theme.of(context)
                                         .colorScheme
                                         .primaryContainer
@@ -456,7 +467,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
                                     ),
                                   ),
                                   trailing: Text(
-                                    _translateSeason(p.r, l),
+                                    _translateSeason(p.season, l),
                                     style:
                                         Theme.of(context).textTheme.labelSmall,
                                   ),
@@ -476,26 +487,26 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> {
 
   void _showVasModal(AppLocalizations l) {
     final y = _selectedDate.year;
-    final yearPoyas = BuddhavassaData.poyaList
-        .where((p) => p.d.startsWith(y.toString()))
-        .toList();
-    final gim = yearPoyas.where((p) => p.r == "ගිම්හාන").toList();
-    final vas = yearPoyas.where((p) => p.r == "වස්සාන").toList();
+    final poyaList = BuddhavassaData.getPoyaList(_tradition);
+    final yearPoyas =
+        poyaList.where((p) => p.date.startsWith(y.toString())).toList();
+    final gim = yearPoyas.where((p) => p.season == "Gimhana").toList();
+    final vas = yearPoyas.where((p) => p.season == "Vassana").toList();
 
     String p1 = "-", p2 = "-", p3 = "-", p4 = "-";
     if (gim.isNotEmpty) {
-      final d1 = DateTime.parse(gim.last.d).add(const Duration(days: 1));
+      final d1 = DateTime.parse(gim.last.date).add(const Duration(days: 1));
       p1 = DateFormat('yyyy/MM/dd').format(d1);
     }
     if (vas.length >= 6) {
-      p2 = DateFormat('yyyy/MM/dd').format(DateTime.parse(vas[5].d));
+      p2 = DateFormat('yyyy/MM/dd').format(DateTime.parse(vas[5].date));
     }
     if (vas.length >= 2) {
-      final d3 = DateTime.parse(vas[1].d).add(const Duration(days: 1));
+      final d3 = DateTime.parse(vas[1].date).add(const Duration(days: 1));
       p3 = DateFormat('yyyy/MM/dd').format(d3);
     }
     if (vas.length >= 8) {
-      p4 = DateFormat('yyyy/MM/dd').format(DateTime.parse(vas[7].d));
+      p4 = DateFormat('yyyy/MM/dd').format(DateTime.parse(vas[7].date));
     }
 
     showModalBottomSheet(

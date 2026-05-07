@@ -73,7 +73,7 @@ class BuddhavassaLocalization {
 
 class BuddhavassaCalculator {
   static BuddhavassaCalculation calculate(
-      DateTime d, BuddhavassaLocalization loc) {
+      DateTime d, BuddhavassaLocalization loc, List<PoyaDay> poyaList) {
     // Normalize input date to midnight
     d = DateTime(d.year, d.month, d.day);
     final String ds = DateFormat('yyyy-MM-dd').format(d);
@@ -88,9 +88,9 @@ class BuddhavassaCalculator {
     final int bY = (time <= vD) ? (y + 543) : (y + 544);
 
     // Find past full moons
-    final pastFullMoons = BuddhavassaData.poyaList.where((p) {
-      return p.t == "පසළොස්වක" &&
-          DateTime.parse(p.d).millisecondsSinceEpoch < time;
+    final pastFullMoons = poyaList.where((p) {
+      return p.moonPhase == "FullMoon" &&
+          DateTime.parse(p.date).millisecondsSinceEpoch < time;
     }).toList();
 
     final PoyaDay? lastFullMoon =
@@ -99,21 +99,21 @@ class BuddhavassaCalculator {
     int tithi = 1;
     if (lastFullMoon != null) {
       final int lastFmTime =
-          DateTime.parse(lastFullMoon.d).millisecondsSinceEpoch;
+          DateTime.parse(lastFullMoon.date).millisecondsSinceEpoch;
       tithi = ((time - lastFmTime) / 86400000).round();
     }
     if (tithi == 0) tithi = 1;
 
     // Find next Amavaka & Full Moon for Paksha
-    final nextAmavakas = BuddhavassaData.poyaList
+    final nextAmavakas = poyaList
         .where((p) =>
-            p.t == "අමාවක" &&
-            DateTime.parse(p.d).millisecondsSinceEpoch >= time)
+            p.moonPhase == "NewMoon" &&
+            DateTime.parse(p.date).millisecondsSinceEpoch >= time)
         .toList();
-    final nextFullMoons = BuddhavassaData.poyaList
+    final nextFullMoons = poyaList
         .where((p) =>
-            p.t == "පසළොස්වක" &&
-            DateTime.parse(p.d).millisecondsSinceEpoch >= time)
+            p.moonPhase == "FullMoon" &&
+            DateTime.parse(p.date).millisecondsSinceEpoch >= time)
         .toList();
 
     final nextA = nextAmavakas.isNotEmpty ? nextAmavakas.first : null;
@@ -122,8 +122,8 @@ class BuddhavassaCalculator {
     String paksha = loc.pakshaSukka;
     if (nextA != null &&
         (nextF == null ||
-            DateTime.parse(nextA.d).millisecondsSinceEpoch <=
-                DateTime.parse(nextF.d).millisecondsSinceEpoch)) {
+            DateTime.parse(nextA.date).millisecondsSinceEpoch <=
+                DateTime.parse(nextF.date).millisecondsSinceEpoch)) {
       paksha = loc.pakshaKanha;
     }
 
@@ -141,72 +141,64 @@ class BuddhavassaCalculator {
 
     int bM = 1;
     if (nextF != null) {
-      bM = ((DateTime.parse(nextF.d).millisecondsSinceEpoch - lastVD) /
+      bM = ((DateTime.parse(nextF.date).millisecondsSinceEpoch - lastVD) /
               2551442400)
           .round();
     }
     bM = (bM <= 0) ? totM : (bM > totM ? totM : bM);
 
-    final nextPoyas = BuddhavassaData.poyaList
-        .where((p) => DateTime.parse(p.d).millisecondsSinceEpoch >= time)
+    final nextPoyas = poyaList
+        .where((p) => DateTime.parse(p.date).millisecondsSinceEpoch >= time)
         .toList();
     final PoyaDay? nextP = nextPoyas.isNotEmpty ? nextPoyas.first : null;
 
-    final todayPoyas =
-        BuddhavassaData.poyaList.where((p) => p.d == ds).toList();
+    final todayPoyas = poyaList.where((p) => p.date == ds).toList();
     final PoyaDay? todayP = todayPoyas.isNotEmpty ? todayPoyas.first : null;
 
     String poyaName = "";
     if (todayP != null) {
-      poyaName = (todayP.t == "පසළොස්වක") ? loc.fullMoon : loc.newMoon;
+      poyaName = (todayP.moonPhase == "FullMoon") ? loc.fullMoon : loc.newMoon;
     }
 
     final String poyaStatus =
         poyaName.isNotEmpty ? poyaName + loc.poyaSuffix : "";
 
+    // Season: use the next poya >= current date (matching author's corrected code)
     final PoyaDay? nextSeasonEntry =
         nextPoyas.isNotEmpty ? nextPoyas.first : null;
-    final String rawS = nextSeasonEntry != null ? nextSeasonEntry.r : "හේමන්ත";
+    final String rawS =
+        nextSeasonEntry != null ? nextSeasonEntry.season : "Hemanta";
 
-    String seasonKey = 'Hemanta';
-    if (rawS == "ගිම්හාන" || rawS == "ගิมฺหาน") {
-      seasonKey = "Gimhana";
-    } else if (rawS == "වස්සාන") {
-      seasonKey = "Vassana";
-    } else if (rawS == "නැවත හේමන්ත") {
-      seasonKey = "ReHemanta";
-    } else if (rawS == "හේමන්ත") {
-      seasonKey = "Hemanta";
-    }
+    String seasonKey = rawS;
 
     final String displayS = loc.seasons[seasonKey] ?? seasonKey;
     final String animal = loc.animals[bY % 12];
 
-    final String sMonth = nextP != null ? nextP.m : "වේසාඛ";
+    final String sMonth = nextP != null ? nextP.month : "Vesakha";
     final String displayMonth = loc.months[sMonth] ?? sMonth;
 
     int paliIndex = tithi;
     String finalPaksha = paksha;
 
-    final pastAmavakas = BuddhavassaData.poyaList
+    // Corrected paliIndex: find past amavakas and adjust paliIndex when Sukka
+    final pastAmavakas = poyaList
         .where((p) =>
-            p.t == "අමාවක" && DateTime.parse(p.d).millisecondsSinceEpoch < time)
+            p.moonPhase == "NewMoon" &&
+            DateTime.parse(p.date).millisecondsSinceEpoch < time)
         .toList();
     final PoyaDay? lastAmavaka =
         pastAmavakas.isNotEmpty ? pastAmavakas.last : null;
 
     if (finalPaksha == loc.pakshaSukka && lastAmavaka != null) {
-      final DateTime amavakaDate = DateTime.parse(lastAmavaka.d);
+      final DateTime amavakaDate = DateTime.parse(lastAmavaka.date);
+      final DateTime amavakaNorm =
+          DateTime(amavakaDate.year, amavakaDate.month, amavakaDate.day);
       final int diffTime =
-          d.millisecondsSinceEpoch - amavakaDate.millisecondsSinceEpoch;
+          d.millisecondsSinceEpoch - amavakaNorm.millisecondsSinceEpoch;
       paliIndex = (diffTime / (1000 * 60 * 60 * 24)).round();
     }
 
-    if (paliIndex <= 0) {
-      paliIndex = 1;
-    } else if (paliIndex > 15) {
-      paliIndex = 15;
-    }
+    if (paliIndex <= 0) paliIndex = 1;
 
     final String tithiWord = loc.tithis[paliIndex % 15];
 
@@ -222,7 +214,7 @@ class BuddhavassaCalculator {
     int statusAvasitthaD = 0;
 
     if (nextP != null) {
-      final DateTime targetD = DateTime.parse(nextP.d);
+      final DateTime targetD = DateTime.parse(nextP.date);
       statusAvasitthaD =
           ((targetD.millisecondsSinceEpoch - d.millisecondsSinceEpoch) /
                   (1000 * 60 * 60 * 24))
@@ -230,19 +222,19 @@ class BuddhavassaCalculator {
 
       if (statusAvasitthaD == 0) {
         isPoyaDay = true;
-        poyaMessage = nextP.t
-            .replaceAll("පසළොස්වක", loc.fullMoon)
-            .replaceAll("අමාවක", loc.newMoon);
+        poyaMessage = nextP.moonPhase
+            .replaceAll("FullMoon", loc.fullMoon)
+            .replaceAll("NewMoon", loc.newMoon);
       } else {
-        final String poyaNameLocalized = nextP.t
-            .replaceAll("පසළොස්වක", loc.fullMoon)
-            .replaceAll("අමාවක", loc.newMoon);
+        final String poyaNameLocalized = nextP.moonPhase
+            .replaceAll("FullMoon", loc.fullMoon)
+            .replaceAll("NewMoon", loc.newMoon);
         poyaMessage = loc.daysToPoya(statusAvasitthaD, poyaNameLocalized);
       }
     }
 
     if (nextF != null) {
-      final DateTime fullMoonD = DateTime.parse(nextF.d);
+      final DateTime fullMoonD = DateTime.parse(nextF.date);
       currentAvasitthaD =
           ((fullMoonD.millisecondsSinceEpoch - d.millisecondsSinceEpoch) /
                   (1000 * 60 * 60 * 24))

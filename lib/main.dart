@@ -1,5 +1,6 @@
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
+import 'package:buddhist_sun/utils/buddhavassa_data.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
@@ -112,6 +113,8 @@ Future<void> main() async {
     await cancelAllUposathaNotifications();
     await scheduleUpcomingUposathaNotifications();
   }
+
+  await BuddhavassaData.init();
 
   runApp(MyApp());
 }
