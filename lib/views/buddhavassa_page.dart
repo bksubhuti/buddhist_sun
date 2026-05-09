@@ -4,6 +4,7 @@ import '../utils/buddhavassa_data.dart';
 import '../utils/buddhavassa_calculator.dart';
 import '../l10n/app_localizations.dart';
 import '../src/models/prefs.dart';
+import '../widgets/poya_bottom_sheet.dart';
 
 class BuddhavassaPage extends StatefulWidget {
   const BuddhavassaPage({Key? key}) : super(key: key);
@@ -352,138 +353,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
   }
 
   void _showPoyaModal(AppLocalizations l) {
-    final int selYear = _selectedDate.year;
-    final poyaList = BuddhavassaData.getPoyaList(_tradition);
-    final yearPoyas =
-        poyaList.where((p) => p.date.startsWith(selYear.toString())).toList();
-
-    final selectedStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
-
-    // Find the index to highlight:
-    // - exact match if selected date is a poya, otherwise the next upcoming poya.
-    int highlightIndex = yearPoyas.indexWhere((p) => p.date == selectedStr);
-    final bool isSelectedPoya = highlightIndex >= 0;
-    if (!isSelectedPoya) {
-      highlightIndex =
-          yearPoyas.indexWhere((p) => p.date.compareTo(selectedStr) > 0);
-    }
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.85,
-          minChildSize: 0.4,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) {
-            final GlobalKey highlightKey = GlobalKey();
-
-            if (highlightIndex >= 0) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                final ctx = highlightKey.currentContext;
-                if (ctx != null) {
-                  Scrollable.ensureVisible(
-                    ctx,
-                    alignment: 0.5,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              });
-            }
-
-            return Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$selYear ${l.bePoyaTitle}',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                Expanded(
-                  child: yearPoyas.isEmpty
-                      ? const Center(child: Text("No Data"))
-                      : SingleChildScrollView(
-                          controller: scrollController,
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: yearPoyas.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final p = entry.value;
-                              final dt = DateTime.parse(p.date);
-                              final pName = p.moonPhase
-                                  .replaceAll("FullMoon", l.beFullMoon)
-                                  .replaceAll("NewMoon", l.beNewMoon);
-
-                              Color? cardColor;
-                              if (index == highlightIndex) {
-                                cardColor = isSelectedPoya
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                    : (Theme.of(context)
-                                        .colorScheme
-                                        .tertiaryContainer);
-                              }
-
-                              return Card(
-                                key: index == highlightIndex
-                                    ? highlightKey
-                                    : null,
-                                color: cardColor,
-                                child: ListTile(
-                                  dense: true,
-                                  leading: Text(
-                                    DateFormat('MMM dd').format(dt),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: index == highlightIndex
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .onPrimaryContainer
-                                          : null,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    pName,
-                                    style: TextStyle(
-                                      fontWeight: index == highlightIndex
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                    ),
-                                  ),
-                                  trailing: Text(
-                                    _translateSeason(p.season, l),
-                                    style:
-                                        Theme.of(context).textTheme.labelSmall,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+    PoyaBottomSheet.show(context, _selectedDate, _tradition, l);
   }
 
   void _showVasModal(AppLocalizations l) {

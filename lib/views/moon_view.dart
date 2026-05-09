@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart';
 import 'package:flutter_mmcalendar/flutter_mmcalendar.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
+import 'package:buddhist_sun/utils/buddhavassa_data.dart';
+import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
 
 class MoonPage extends StatefulWidget {
   const MoonPage({Key? key}) : super(key: key);
@@ -30,8 +32,18 @@ class _MoonPageState extends State<MoonPage> {
   String _nextFullOrNewmoon = "";
   double moonPhasePercentage =
       0.0; // Dummy value, you need to calculate this based on the selected date
-  Map<String, List<DateTime>> listUposatha = {};
   bool _noNextUposathaData = false;
+
+  CalendarTradition get _tradition {
+    switch (Prefs.selectedUposatha) {
+      case UposathaCountry.Thailand:
+        return CalendarTradition.thai;
+      case UposathaCountry.Myanmar:
+        return CalendarTradition.myanmar;
+      case UposathaCountry.Sinhala:
+        return CalendarTradition.sriLanka;
+    }
+  }
 
   void _calculateMoonPhase() {
     useMeeus();
@@ -87,10 +99,8 @@ class _MoonPageState extends State<MoonPage> {
   @override
   void initState() {
     super.initState();
-    initUposatha().then((_) {
-      _calculateMoonPhase();
-      _calculateNextUposatha();
-    });
+    _calculateMoonPhase();
+    _calculateNextUposatha();
   }
 
   @override
@@ -142,11 +152,23 @@ class _MoonPageState extends State<MoonPage> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  ColoredText(
-                    _noNextUposathaData
-                        ? "No Data"
-                        : "${AppLocalizations.of(context)!.next}  $_nextFullOrNewmoon: ${_nextUposatha.year.toString()}-${_nextUposatha.month.toString()}-${_nextUposatha.day.toString()}",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.event_note),
+                    onPressed: () {
+                      PoyaBottomSheet.show(context, selectedDate, _tradition, AppLocalizations.of(context)!);
+                    },
+                    label: ColoredText(
+                      _noNextUposathaData
+                          ? "No Data"
+                          : "${AppLocalizations.of(context)!.next}  ${_nextFullOrNewmoon.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}: ${_nextUposatha.year}-${_nextUposatha.month}-${_nextUposatha.day}",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -244,98 +266,29 @@ class _MoonPageState extends State<MoonPage> {
   }
 
   _calculateNextUposatha() {
-    switch (Prefs.selectedUposatha) {
-      case UposathaCountry.Myanmar:
-        DateTime upoDate = selectedDate;
-
-        final mmCalendar = MmCalendar(
-          config: const MmCalendarConfig(
-            calendarType: CalendarType.english,
-            language: Language.english,
-          ),
-        );
-
-        for (int x = 0; x < 16; x++) {
-          upoDate = upoDate.add(Duration(days: 1));
-          final mmDate1 = mmCalendar.fromDateTime(upoDate);
-          _nextFullOrNewmoon = mmDate1.getMoonPhase();
-          if (_nextFullOrNewmoon.contains("new") ||
-              _nextFullOrNewmoon.contains("full")) {
-            _nextUposatha = upoDate;
-
-            break;
-          }
-        }
-        break;
-      default:
-        String selectedCountry =
-            EnumToString.convertToString(Prefs.selectedUposatha);
-        if ((!listUposatha.containsKey(selectedCountry))) break;
-        _nextUposatha = _calculateNextUposathaByCountry(
-            selectedDate, listUposatha[selectedCountry]!);
-        _nextFullOrNewmoon = "Uposatha ";
-    }
-  }
-
-  DateTime _calculateNextUposathaByCountry(
-      DateTime? currentDate, List<DateTime> listUposatha) {
-    if (currentDate == null) {
-      currentDate = DateTime.now();
-    }
-    listUposatha.sort((a, b) => a.compareTo(b));
-
-    DateTime nextUposatha = currentDate;
-    //it should be null, but to match with orginal code,
-    //set it as current date if couldn't find.
-    _noNextUposathaData = true;
-
-    //find the first day that greater than current day.
-    for (DateTime item in listUposatha) {
-      if (item.compareTo(currentDate) > 0) {
-        nextUposatha = item;
-        _noNextUposathaData = false;
-
+    final poyaList = BuddhavassaData.getPoyaList(_tradition);
+    String currentDateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    
+    PoyaDay? nextPoya;
+    for (var poya in poyaList) {
+      if (poya.date.compareTo(currentDateStr) > 0) {
+        nextPoya = poya;
         break;
       }
     }
-    return nextUposatha;
-  }
 
-  Future initUposatha() async {
-    try {
-      // Read the 9-year calendar directly from the bundled app assets
-      final String content =
-          await rootBundle.loadString('assets/uposatha.json');
-      listUposatha = _parseUposathaList_Json(content);
-    } catch (e) {
-      debugPrint("Error loading uposatha.json from assets: $e");
+    if (nextPoya != null) {
+      _nextUposatha = DateTime.parse(nextPoya.date);
+      // We don't have context in initState, so we can't use AppLocalizations here easily if we want to replace FullMoon/NewMoon string here. 
+      // We will just store it directly for now, or use English as a fallback if context isn't ready. 
+      // Wait, _calculateNextUposatha is called in initState, so we can't use AppLocalizations.of(context) safely.
+      // So let's store the raw string, but it seems before it was just "fullmoon", "newmoon", etc.
+      // We can just set it to the raw moonPhase text from the CSV.
+      _nextFullOrNewmoon = nextPoya.moonPhase;
+      _noNextUposathaData = false;
+    } else {
+      _noNextUposathaData = true;
     }
-  }
-
-  Map<String, List<DateTime>> _parseUposathaList_Json(String content) {
-    // input is string of json in following format. Return a map of year and List date.
-    // {
-    // "myanmar": [
-    // 	"2024-01-01",
-    // 	"2024-02-07"
-    // ],
-    // "srilanka": [
-    // 	"2025-01-01"
-    // }
-
-    Map<String, dynamic> data = jsonDecode(content);
-    Map<String, List<DateTime>> uposathaDays = {};
-
-    for (String key in data.keys) {
-      try {
-        List<dynamic> listDaysOfYear = data[key] as List<dynamic>;
-        uposathaDays[key] =
-            listDaysOfYear.map((value) => DateTime.parse(value)).toList();
-      } catch (e) {
-        print("[Error]: Failed to parse data from json");
-      }
-    }
-    return uposathaDays;
   }
 
   Widget _getSelectedDateWidget(String moon) {
