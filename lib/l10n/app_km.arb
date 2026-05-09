@@ -138,7 +138,7 @@
   "beWeek_6": "សោរវារំ",
   "beFullMoon": "ថ្ងៃសីលពេញបូណ៌មី",
   "beNewMoon": "ថ្ងៃសីលដាច់",
-  "bePaliTemplate": "អយំ\n{a} សំវច្ឆរេ\n{s} ឧតុ អស្មឹ ឧតុមហិ\n{m} មាសស្ស\n{p}\n{t}\n{w}\nឥទន្តិ ទដ្ឋព្វំ。",
+  "bePaliTemplate": "អយំ\n{animal} សំវច្ឆរេ\n{season} ឧតុ អស្មឹ ឧតុមហិ\n{month} មាសស្ស\n{paksha}\n{tithi}\n{weekday}\nឥទន្តិ ទដ្ឋព្វំ。",
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
   "beMonth_Citta": "Citta",

@@ -66,7 +66,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
     final l = AppLocalizations.of(context)!;
 
     final loc = BuddhavassaLocalization(
-      paliTemplate: (a, s, m, p, t, w) => l.bePaliTemplate(a, s, m, p, t, w),
+      paliTemplate: (animal, season, month, paksha, tithi, weekday) =>
+          l.bePaliTemplate(animal, season, month, paksha, tithi, weekday),
       poyaSuffix: l.bePoyaSuffix,
       fullMoon: l.beFullMoon,
       newMoon: l.beNewMoon,

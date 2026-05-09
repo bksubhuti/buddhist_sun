@@ -145,7 +145,7 @@
   "beWeek_6": "သောရဝါရံ",
   "beFullMoon": "လပြည့်",
   "beNewMoon": "လကွယ်",
-  "bePaliTemplate": "အယံ\n{a} သံဝစ္ဆရေ\n{s} ဥတု အသ္မိံ ဥတုမှိ\n{m} မာသဿ\n{p}\n{t}\n{w}\nဣဒန္တိ ဒဋ္ဌဗ္ဗံ。",
+  "bePaliTemplate": "အယံ\n{animal} သံဝစ္ဆရေ\n{season} ဥတု အသ္မိံ ဥတုမှိ\n{month} မာသဿ\n{paksha}\n{tithi}\n{weekday}\nဣဒန္တိ ဒဋ္ဌဗ္ဗံ。",
   "beMonth_Magha": "မာဃ",
   "beMonth_Phagguna": "ဖဂ္ဂုဏ",
   "beMonth_Citta": "စိတြ",

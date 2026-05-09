@@ -98,8 +98,8 @@
   "proceed": "Proceed",
   "beTitle": "Buddhist Era",
   "beDateLabel": "Select Date (C.E.)",
-  "beAtikkanta": "Atikkanta(Elapsed)",
-  "beAvasittha": "Avasiṭඨa(remaining)",
+  "beAtikkanta": "Atikkanta (Elapsed)",
+  "beAvasittha": "Avasiṭṭha (remaining)",
   "bePoyaMenu": "Poya Days",
   "beVasMenu": "Vas Season",
   "bePoyaTitle": "Poya Day List",
@@ -141,7 +141,17 @@
   "beWeek_6": "Soravāraṃ",
   "beFullMoon": "Full Moon",
   "beNewMoon": "New Moon",
-  "bePaliTemplate": "Ayaṃ\n{a} saṃvacchare\n{s} utu asmiṃ utumhi\n{m} māsassa\n{p}\n{t}\n{w}\nidanti daṭṭhabbaṃ.",
+  "bePaliTemplate": "Ayaṃ\n{animal} saṃvacchare\n{season} utu asmiṃ utumhi\n{month} māsassa\n{paksha}\n{tithi}\n{weekday}\nidanti daṭṭhabbaṃ.",
+  "@bePaliTemplate": {
+    "placeholders": {
+      "animal": {"type": "String"},
+      "season": {"type": "String"},
+      "month": {"type": "String"},
+      "paksha": {"type": "String"},
+      "tithi": {"type": "String"},
+      "weekday": {"type": "String"}
+    }
+  },
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
   "beMonth_Citta": "Citta",

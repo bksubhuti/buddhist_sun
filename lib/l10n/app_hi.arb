@@ -138,7 +138,7 @@
   "beWeek_6": "सोरवारं",
   "beFullMoon": "पूर्णिमा",
   "beNewMoon": "अमावस्या",
-  "bePaliTemplate": "अयं\n{a} संवच्छरे\n{s} उतु अस्मिं उतुम्हि\n{m} मासस्स\n{p}\n{t}\n{w}\nइदन्ति दैट्ठब्बं।",
+  "bePaliTemplate": "अयं\n{animal} संवच्छरे\n{season} उतु अस्मिं उतुम्हि\n{month} मासस्स\n{paksha}\n{tithi}\n{weekday}\nइदन्ति दैट्ठब्बं।",
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
   "beMonth_Citta": "Citta",

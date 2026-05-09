@@ -138,7 +138,7 @@
   "beWeek_6": "โสรวารํ",
   "beFullMoon": "วันเพ็ญ",
   "beNewMoon": "วันเดือนดับ",
-  "bePaliTemplate": "อยํ\n{a} สํวจฺฉเร\n{s} อุตุ อสฺมึ อุตุมฺหิ\n{m} มาสสฺส\n{p}\n{t}\n{w}\nอิทนฺติ ทฏฺฐพฺพํ.",
+  "bePaliTemplate": "อยํ\n{animal} สํวจฺฉเร\n{season} อุตุ อสฺมึ อุตุมฺหิ\n{month} มาสสฺส\n{paksha}\n{tithi}\n{weekday}\nอิทนฺติ ทฏฺฐพฺพํ.",
   "beMonth_Magha": "มาฆ",
   "beMonth_Phagguna": "ผคฺคุณ",
   "beMonth_Citta": "จิตฺต",

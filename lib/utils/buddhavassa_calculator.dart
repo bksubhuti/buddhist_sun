@@ -41,8 +41,8 @@ class BuddhavassaCalculation {
 }
 
 class BuddhavassaLocalization {
-  final String Function(
-      String a, String s, String m, String p, String t, String w) paliTemplate;
+  final String Function(String animal, String season, String month,
+      String paksha, String tithi, String weekday) paliTemplate;
   final String poyaSuffix;
   final String fullMoon;
   final String newMoon;

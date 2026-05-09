@@ -336,7 +336,7 @@
   "beWeek_6": "Soravāraṃ",
   "beFullMoon": "Trăng rằm",
   "beNewMoon": "Trăng non",
-  "bePaliTemplate": "Ayaṃ\n{a} saṃvacchare\n{s} utu asmiṃ utumhi\n{m} māsassa\n{p}\n{t}\n{w}\nidanti daṭṭhabbaṃ.",
+  "bePaliTemplate": "Ayaṃ\n{animal} saṃvacchare\n{season} utu asmiṃ utumhi\n{month} māsassa\n{paksha}\n{tithi}\n{weekday}\nidanti daṭṭhabbaṃ.",
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
   "beMonth_Citta": "Citta",

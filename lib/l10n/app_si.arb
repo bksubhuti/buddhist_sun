@@ -134,7 +134,7 @@
   "beWeek_6": "සෝරවාරං",
   "beFullMoon": "පසළොස්වක",
   "beNewMoon": "අමාවක",
-  "bePaliTemplate": "අයං\n{a} සංවච්ඡරෙ\n{s} උතු අස්මිං උතුම්හි\n{m} මාසස්ස\n{p}\n{t}\n{w}\nඉදන්ති දට්ඨබ්බං.",
+  "bePaliTemplate": "අයං\n{animal} සංවච්ඡරෙ\n{season} උතු අස්මිං උතුම්හි\n{month} මාසස්ස\n{paksha}\n{tithi}\n{weekday}\nඉදන්ති දට්ඨබ්බං.",
   "beMonth_Magha": "මාඝ",
   "beMonth_Phagguna": "ඵග්ගුන",
   "beMonth_Citta": "චිත්ත",
