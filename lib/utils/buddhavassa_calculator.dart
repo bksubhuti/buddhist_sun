@@ -163,18 +163,16 @@ class BuddhavassaCalculator {
     final String poyaStatus =
         poyaName.isNotEmpty ? poyaName + loc.poyaSuffix : "";
 
-    // Season: use the next poya >= current date (matching author's corrected code)
-    final PoyaDay? nextSeasonEntry =
-        nextPoyas.isNotEmpty ? nextPoyas.first : null;
-    final String rawS =
-        nextSeasonEntry != null ? nextSeasonEntry.season : "Hemanta";
+    // The new month and season start the day after the full moon,
+    // so we determine the current month/season based on the Next Full Moon.
+    final String rawS = nextF != null ? nextF.season : (nextP != null ? nextP.season : "Hemanta");
 
     String seasonKey = rawS;
 
     final String displayS = loc.seasons[seasonKey] ?? seasonKey;
     final String animal = loc.animals[bY % 12];
 
-    final String sMonth = nextP != null ? nextP.month : "Vesakha";
+    final String sMonth = nextF != null ? nextF.month : (nextP != null ? nextP.month : "Vesakha");
     final String displayMonth = loc.months[sMonth] ?? sMonth;
 
     int paliIndex = tithi;
