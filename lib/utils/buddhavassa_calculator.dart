@@ -198,7 +198,7 @@ class BuddhavassaCalculator {
 
     if (paliIndex <= 0) paliIndex = 1;
 
-    final String tithiWord = loc.tithis[paliIndex % 15];
+    final String tithiWord = loc.tithis[(paliIndex - 1) % 15];
 
     final List<String> weekDays = loc.weekDays;
     final String weekDay = weekDays[d.weekday % 7];
