@@ -4,34 +4,40 @@ import '../l10n/app_localizations.dart';
 import '../utils/buddhavassa_data.dart';
 
 class PoyaBottomSheet {
-  static String _translateSeason(String raw, AppLocalizations l) {
-    switch (raw) {
+  static String _translateSeason(
+      String rawSeason, AppLocalizations localizations) {
+    switch (rawSeason) {
       case 'Hemanta':
-        return l.beSeason_Hemanta;
+        return localizations.beSeason_Hemanta;
       case 'Gimhana':
-        return l.beSeason_Gimhana;
+        return localizations.beSeason_Gimhana;
       case 'Vassana':
-        return l.beSeason_Vassana;
+        return localizations.beSeason_Vassana;
       case 'ReHemanta':
-        return l.beSeason_ReHemanta;
+        return localizations.beSeason_ReHemanta;
       default:
-        return raw;
+        return rawSeason;
     }
   }
 
-  static void show(BuildContext context, DateTime selectedDate, CalendarTradition tradition, AppLocalizations l) {
-    final int selYear = selectedDate.year;
+  static void show(BuildContext context, DateTime selectedDate,
+      CalendarTradition tradition, AppLocalizations localizations) {
+    final int selectedYear = selectedDate.year;
     final poyaList = BuddhavassaData.getPoyaList(tradition);
-    final yearPoyas = poyaList.where((p) => p.date.startsWith(selYear.toString())).toList();
+    final poyasForSelectedYear = poyaList
+        .where((poyaDay) => poyaDay.date.startsWith(selectedYear.toString()))
+        .toList();
 
-    final selectedStr = DateFormat('yyyy-MM-dd').format(selectedDate);
+    final selectedDateString = DateFormat('yyyy-MM-dd').format(selectedDate);
 
     // Find the index to highlight:
     // - exact match if selected date is a poya, otherwise the next upcoming poya.
-    int highlightIndex = yearPoyas.indexWhere((p) => p.date == selectedStr);
+    int highlightIndex = poyasForSelectedYear
+        .indexWhere((poyaDay) => poyaDay.date == selectedDateString);
     final bool isSelectedPoya = highlightIndex >= 0;
     if (!isSelectedPoya) {
-      highlightIndex = yearPoyas.indexWhere((p) => p.date.compareTo(selectedStr) > 0);
+      highlightIndex = poyasForSelectedYear.indexWhere(
+          (poyaDay) => poyaDay.date.compareTo(selectedDateString) > 0);
     }
 
     showModalBottomSheet(
@@ -54,10 +60,10 @@ class PoyaBottomSheet {
             if (highlightIndex >= 0) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  final ctx = highlightKey.currentContext;
-                  if (ctx != null) {
+                  final highlightContext = highlightKey.currentContext;
+                  if (highlightContext != null) {
                     Scrollable.ensureVisible(
-                      ctx,
+                      highlightContext,
                       alignment: 0.5,
                       duration: const Duration(milliseconds: 600),
                       curve: Curves.easeOutCubic,
@@ -79,12 +85,13 @@ class PoyaBottomSheet {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '$selYear ${l.bePoyaTitle}',
+                        '$selectedYear ${localizations.bePoyaTitle}',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       IconButton(
@@ -96,55 +103,140 @@ class PoyaBottomSheet {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: yearPoyas.isEmpty
+                  child: poyasForSelectedYear.isEmpty
                       ? const Center(child: Text("No Data"))
                       : SingleChildScrollView(
                           controller: scrollController,
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: yearPoyas.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final p = entry.value;
-                              final dt = DateTime.parse(p.date);
-                              final pName = p.moonPhase
-                                  .replaceAll("FullMoon", l.beFullMoon)
-                                  .replaceAll("NewMoon", l.beNewMoon);
+                            children: () {
+                              final List<Widget> listItems = [];
 
-                              Color? cardColor;
-                              if (index == highlightIndex) {
-                                cardColor = isSelectedPoya
-                                    ? Theme.of(context).colorScheme.primaryContainer
-                                    : (Theme.of(context).colorScheme.tertiaryContainer);
-                              }
+                              for (int i = 0;
+                                  i < poyasForSelectedYear.length;
+                                  i++) {
+                                final poyaDay = poyasForSelectedYear[i];
+                                final poyaDate = DateTime.parse(poyaDay.date);
 
-                              return Card(
-                                key: index == highlightIndex ? highlightKey : null,
-                                color: cardColor,
-                                child: ListTile(
-                                  dense: true,
-                                  leading: Text(
-                                    DateFormat('MMM dd').format(dt),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: index == highlightIndex
-                                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                                final bool isHighlight = (i == highlightIndex);
+                                Color? normalCardColor;
+                                if (isHighlight) {
+                                  normalCardColor = isSelectedPoya
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer;
+                                }
+
+                                // Safely handle properties (in case they parse as 'NaN' or null from CSV)
+                                final String moonPhaseStr =
+                                    poyaDay.moonPhase.toString().trim();
+                                final bool hasMoonPhase =
+                                    moonPhaseStr.isNotEmpty &&
+                                        moonPhaseStr != 'NaN' &&
+                                        moonPhaseStr != 'null';
+
+                                final String specialStr =
+                                    poyaDay.special.toString().trim();
+                                final bool hasSpecial = specialStr.isNotEmpty &&
+                                    specialStr != 'NaN' &&
+                                    specialStr != 'null';
+
+                                final String pakkhaStr =
+                                    poyaDay.pakkhaType.toString().trim();
+
+                                // 1. Render normal moon phase (Full/New Moon with 14 or 15 days count)
+                                if (hasMoonPhase) {
+                                  final localizedMoonPhaseName = moonPhaseStr
+                                      .replaceAll(
+                                          "FullMoon", localizations.beFullMoon)
+                                      .replaceAll(
+                                          "NewMoon", localizations.beNewMoon);
+
+                                  listItems.add(
+                                    Card(
+                                      key: isHighlight ? highlightKey : null,
+                                      color: normalCardColor,
+                                      child: ListTile(
+                                        dense: true,
+                                        leading: Text(
+                                          DateFormat('MMM dd').format(poyaDate),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: isHighlight
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimaryContainer
+                                                : null,
+                                          ),
+                                        ),
+                                        title: Text(
+                                          '$localizedMoonPhaseName $pakkhaStr'
+                                              .trim(),
+                                          style: TextStyle(
+                                            fontWeight: isHighlight
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
+                                        trailing: Text(
+                                          _translateSeason(
+                                              poyaDay.season, localizations),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                // 2. Render special entries (Vassa entry or pushed Pavāraṇā entry)
+                                if (hasSpecial) {
+                                  listItems.add(
+                                    Card(
+                                      // Only attach highlightKey here if this special item is the ONLY one for the day (e.g., Vassa)
+                                      key: (isHighlight && !hasMoonPhase)
+                                          ? highlightKey
                                           : null,
+                                      color: normalCardColor,
+                                      child: ListTile(
+                                        dense: true,
+                                        leading: Text(
+                                          DateFormat('MMM dd').format(poyaDate),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: isHighlight
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimaryContainer
+                                                : null,
+                                          ),
+                                        ),
+                                        title: Text(
+                                          '$specialStr $pakkhaStr'.trim(),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight
+                                                .bold, // Distinguish special day with bold text
+                                          ),
+                                        ),
+                                        trailing: Text(
+                                          _translateSeason(
+                                              poyaDay.season, localizations),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  title: Text(
-                                    pName,
-                                    style: TextStyle(
-                                      fontWeight: index == highlightIndex ? FontWeight.bold : FontWeight.normal,
-                                    ),
-                                  ),
-                                  trailing: Text(
-                                    _translateSeason(p.season, l),
-                                    style: Theme.of(context).textTheme.labelSmall,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                  );
+                                }
+                              }
+                              return listItems;
+                            }(),
                           ),
                         ),
                 ),

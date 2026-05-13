@@ -72,6 +72,10 @@ class BuddhavassaLocalization {
 }
 
 class BuddhavassaCalculator {
+  static bool _isValidMoonPhase(String phase) {
+    return phase == "FullMoon" || phase == "NewMoon";
+  }
+
   static BuddhavassaCalculation calculate(
       DateTime d, BuddhavassaLocalization loc, List<PoyaDay> poyaList) {
     // Normalize input date to midnight
@@ -98,13 +102,12 @@ class BuddhavassaCalculator {
 
     int tithi = 1;
     if (lastFullMoon != null) {
-      final int lastFmTime =
-          DateTime.parse(lastFullMoon.date).millisecondsSinceEpoch;
-      tithi = ((time - lastFmTime) / 86400000).round();
+      final DateTime lastFmDate = DateTime.parse(lastFullMoon.date);
+      tithi = d.difference(lastFmDate).inDays;
     }
-    if (tithi == 0) tithi = 1;
+    if (tithi <= 0) tithi = 1;
 
-    // Find next Amavaka & Full Moon for Paksha
+    // Find next Amāvaka & Full Moon for Pakkha
     final nextAmavakas = poyaList
         .where((p) =>
             p.moonPhase == "NewMoon" &&
@@ -147,12 +150,18 @@ class BuddhavassaCalculator {
     }
     bM = (bM <= 0) ? totM : (bM > totM ? totM : bM);
 
+    // FILTER FIX: Only consider actual Full/New moons for the "Next Poya" calculation
     final nextPoyas = poyaList
-        .where((p) => DateTime.parse(p.date).millisecondsSinceEpoch >= time)
+        .where((p) =>
+            _isValidMoonPhase(p.moonPhase) &&
+            DateTime.parse(p.date).millisecondsSinceEpoch >= time)
         .toList();
     final PoyaDay? nextP = nextPoyas.isNotEmpty ? nextPoyas.first : null;
 
-    final todayPoyas = poyaList.where((p) => p.date == ds).toList();
+    // FILTER FIX: Ensure today is only marked as Poya if it is an actual Full/New moon
+    final todayPoyas = poyaList
+        .where((p) => p.date == ds && _isValidMoonPhase(p.moonPhase))
+        .toList();
     final PoyaDay? todayP = todayPoyas.isNotEmpty ? todayPoyas.first : null;
 
     String poyaName = "";
@@ -165,14 +174,17 @@ class BuddhavassaCalculator {
 
     // The new month and season start the day after the full moon,
     // so we determine the current month/season based on the Next Full Moon.
-    final String rawS = nextF != null ? nextF.season : (nextP != null ? nextP.season : "Hemanta");
+    final String rawS = nextF != null
+        ? nextF.season
+        : (nextP != null ? nextP.season : "Hemanta");
 
     String seasonKey = rawS;
 
     final String displayS = loc.seasons[seasonKey] ?? seasonKey;
     final String animal = loc.animals[bY % 12];
 
-    final String sMonth = nextF != null ? nextF.month : (nextP != null ? nextP.month : "Vesakha");
+    final String sMonth =
+        nextF != null ? nextF.month : (nextP != null ? nextP.month : "Vesakha");
     final String displayMonth = loc.months[sMonth] ?? sMonth;
 
     int paliIndex = tithi;
@@ -191,9 +203,7 @@ class BuddhavassaCalculator {
       final DateTime amavakaDate = DateTime.parse(lastAmavaka.date);
       final DateTime amavakaNorm =
           DateTime(amavakaDate.year, amavakaDate.month, amavakaDate.day);
-      final int diffTime =
-          d.millisecondsSinceEpoch - amavakaNorm.millisecondsSinceEpoch;
-      paliIndex = (diffTime / (1000 * 60 * 60 * 24)).round();
+      paliIndex = d.difference(amavakaNorm).inDays;
     }
 
     if (paliIndex <= 0) paliIndex = 1;
@@ -213,10 +223,7 @@ class BuddhavassaCalculator {
 
     if (nextP != null) {
       final DateTime targetD = DateTime.parse(nextP.date);
-      statusAvasitthaD =
-          ((targetD.millisecondsSinceEpoch - d.millisecondsSinceEpoch) /
-                  (1000 * 60 * 60 * 24))
-              .round();
+      statusAvasitthaD = targetD.difference(d).inDays;
 
       if (statusAvasitthaD == 0) {
         isPoyaDay = true;
@@ -233,10 +240,7 @@ class BuddhavassaCalculator {
 
     if (nextF != null) {
       final DateTime fullMoonD = DateTime.parse(nextF.date);
-      currentAvasitthaD =
-          ((fullMoonD.millisecondsSinceEpoch - d.millisecondsSinceEpoch) /
-                  (1000 * 60 * 60 * 24))
-              .round();
+      currentAvasitthaD = fullMoonD.difference(d).inDays;
     }
 
     return BuddhavassaCalculation(
