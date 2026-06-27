@@ -66,6 +66,7 @@
     "description": "Civil Twilight"
   },
   "sunrise": "日出",
+  "custom_dawn": "Custom",
   "@sunrise": {
     "description": "Sunrise"
   },

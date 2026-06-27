@@ -28,15 +28,17 @@ const String AUTO_GPS_ENABLED = "autoGpsEnabled";
 const String UPOSATHA_NOTIFICATIONS_ENABLED = "uposathaNotificationsEnabled";
 const String AUTO_START_DAWN_TIMER = "autoStartDawnTimer";
 const String AUTO_START_NOON_TIMER = "autoStartNoonTimer";
+const String CUSTOM_DAWN_ANGLE = "customDawnAngle";
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
+const double DEFAULT_CUSTOM_DAWN_ANGLE = -8.0;
 const double DEFAULT_LAT = 1.1;
 const double DEFAULT_LNG = 1.1;
 const double DEFAULT_OFFSET = 6.5;
 const bool DEFAULT_SPEAKISON = false;
 const bool DEFAULT_SCREEN_ALWAYS_ON = false;
 const bool DEFAULT_BACKGROUND_ON = false;
-const int DEFAULT_SAFETY = 1;
+const int DEFAULT_SAFETY = 0;
 const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
 const int DEFAULT_LOCALEVAL = 0;
@@ -72,6 +74,18 @@ class Prefs {
 
   static Future<SharedPreferences> init() async =>
       instance = await SharedPreferences.getInstance();
+
+  /// One-time migration: -6° dawn option inserted at index 3,
+  /// so existing civil (3→4) and sunrise (4→5) must shift.
+  static Future<void> migrateDawnVal() async {
+    const key = '_dawnValMigrated_v2';
+    if (instance.getBool(key) == true) return;
+    final current = instance.getInt(DAWNVAL);
+    if (current != null && current >= 3) {
+      await instance.setInt(DAWNVAL, current + 1);
+    }
+    await instance.setBool(key, true);
+  }
 
   // get and set the default member values if null
   static String get cityName =>
@@ -173,6 +187,11 @@ class Prefs {
       instance.getBool(AUTO_START_NOON_TIMER) ?? DEFAULT_AUTO_START_NOON_TIMER;
   static set autoStartNoonTimer(bool value) =>
       instance.setBool(AUTO_START_NOON_TIMER, value);
+
+  static double get customDawnAngle =>
+      instance.getDouble(CUSTOM_DAWN_ANGLE) ?? DEFAULT_CUSTOM_DAWN_ANGLE;
+  static set customDawnAngle(double value) =>
+      instance.setDouble(CUSTOM_DAWN_ANGLE, value);
 
   static int get beforeUposathaNotificationDays =>
       instance.getInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS) ??

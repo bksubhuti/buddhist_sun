@@ -1,7 +1,6 @@
 //import 'package:buddhist_sun/src/services/solar_timer_service.dart';
 
 import 'package:buddhist_sun/src/services/solar_calc.dart';
-import 'package:buddhist_sun/utils/majjhantika_calculator.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -10,7 +9,6 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 
 //import 'package:logging/logging.dart';
 //import 'package:intl/intl.dart' show DateFormat;
-import 'package:solar_calculator/solar_calculator.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
@@ -245,43 +243,41 @@ class SolarTimerService {
     // 2 AM boundary
     final twoAm = DateTime(now.year, now.month, now.day, 2, 0);
 
-    // Get selected dawn Instant
-    late final Instant dawnInst;
+    // Get selected dawn DateTime
+    late final DateTime dawnDT;
     switch (Prefs.dawnVal) {
       case 0:
-        dawnInst = getNauticalTwilight();
+        dawnDT = getNauticalTwilight();
         break;
       case 1:
-        dawnInst = getSunrise40();
+        dawnDT = getSunrise40();
         break;
       case 2:
-        dawnInst = getSunrise30();
+        dawnDT = getSunrise30();
         break;
       case 3:
-        dawnInst = getCivilTwilight();
+        dawnDT = getCustomDawn();
         break;
       case 4:
-        dawnInst = getSunrise();
+        dawnDT = getCivilTwilight();
+        break;
+      case 5:
+        dawnDT = getSunrise();
+        break;
+      default:
+        dawnDT = getNauticalTwilight();
         break;
     }
 
-    // Convert Instant → DateTime today
-    final dawn =
-        DateTime(now.year, now.month, now.day, dawnInst.hour, dawnInst.minute);
-
     // Dawn + 1 hour
-    final dawnPlus1h = dawn.add(const Duration(hours: 1));
+    final dawnPlus1h = dawnDT.add(const Duration(hours: 1));
 
     // Dawn must be before solar noon (normal case)
-    final exactMajjhantika =
-        MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
-    final int safetyOffset = getSafetyOffset();
-    final solarNoon =
-        exactMajjhantika.subtract(Duration(minutes: safetyOffset));
+    final solarNoon = getSolarNoonDateTime();
 
     return now.isAfter(twoAm) &&
         now.isBefore(dawnPlus1h) &&
-        dawn.isBefore(solarNoon);
+        dawnDT.isBefore(solarNoon);
   }
 
 // ------------------------------------------------------------
@@ -290,36 +286,38 @@ class SolarTimerService {
   DateTime _getCountdownTarget() {
     final now = DateTime.now();
 
-    // Compute solar noon using new exact Majjhantika calculation
-    final exactMajjhantika =
-        MajjhantikaCalculator.getExactSolarNoon(now, Prefs.lng);
-    final int safetyOffset = getSafetyOffset();
-    final solarNoon =
-        exactMajjhantika.subtract(Duration(minutes: safetyOffset));
+    // Compute solar noon with safety
+    final solarNoon = getSolarNoonDateTime();
 
     // If dawn mode → countdown to dawn
     if (_isDawnMode()) {
-      late final Instant dawnInst;
+      late final DateTime dawnDT;
       switch (Prefs.dawnVal) {
         case 0:
-          dawnInst = getNauticalTwilight();
+          dawnDT = getNauticalTwilight();
           break;
         case 1:
-          dawnInst = getSunrise40();
+          dawnDT = getSunrise40();
           break;
         case 2:
-          dawnInst = getSunrise30();
+          dawnDT = getSunrise30();
           break;
         case 3:
-          dawnInst = getCivilTwilight();
+          dawnDT = getCustomDawn();
           break;
         case 4:
-          dawnInst = getSunrise();
+          dawnDT = getCivilTwilight();
+          break;
+        case 5:
+          dawnDT = getSunrise();
+          break;
+        default:
+          dawnDT = getNauticalTwilight();
           break;
       }
 
       return DateTime(
-          now.year, now.month, now.day, dawnInst.hour, dawnInst.minute);
+          now.year, now.month, now.day, dawnDT.hour, dawnDT.minute);
     }
 
     // Else → solar noon

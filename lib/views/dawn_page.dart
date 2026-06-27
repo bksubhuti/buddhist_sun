@@ -37,9 +37,12 @@ class DawnPageState extends State<DawnPage> {
         sDawn = getSunrise30String();
         break;
       case 3:
-        sDawn = getCivilTwilightString();
+        sDawn = getCustomDawnString();
         break;
       case 4:
+        sDawn = getCivilTwilightString();
+        break;
+      case 5:
         sDawn = getSunriseString();
         break;
     }
@@ -75,6 +78,12 @@ class DawnPageState extends State<DawnPage> {
               ),
               ColoredText(
                   '${AppLocalizations.of(context)!.nautical_twilight}: ${getNauticalTwilightString()}',
+                  style: TextStyle(fontSize: 15, letterSpacing: 2)),
+              Divider(
+                height: 15.0,
+              ),
+              ColoredText(
+                  '${AppLocalizations.of(context)!.custom_dawn} (${Prefs.customDawnAngle}°): ${getCustomDawnString()}',
                   style: TextStyle(fontSize: 15, letterSpacing: 2)),
               Divider(
                 height: 15.0,
@@ -150,9 +159,12 @@ class DawnPageState extends State<DawnPage> {
         dawnMethod = AppLocalizations.of(context)!.na_uyana;
         break;
       case 3:
-        dawnMethod = AppLocalizations.of(context)!.civil_twilight;
+        dawnMethod = AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
         break;
       case 4:
+        dawnMethod = AppLocalizations.of(context)!.civil_twilight;
+        break;
+      case 5:
         dawnMethod = AppLocalizations.of(context)!.sunrise;
         break;
     }

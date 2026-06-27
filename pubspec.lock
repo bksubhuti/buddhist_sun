@@ -693,6 +693,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  nrel_spa:
+    dependency: "direct main"
+    description:
+      name: nrel_spa
+      sha256: "9807c58dfd91a199bf4bbc16e400a42d75791e70e0b36c8bd0355da59044dfbf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -882,14 +890,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  solar_calculator:
-    dependency: "direct main"
-    description:
-      name: solar_calculator
-      sha256: "44468766b1ba777c9e0731db125468115581d5f22d66297be2cafacb7e87012d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   source_span:
     dependency: transitive
     description:

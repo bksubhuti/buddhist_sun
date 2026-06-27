@@ -66,6 +66,7 @@
     "description": "Civil Twilight"
   },
   "sunrise": "Bình minh",
+  "custom_dawn": "Custom",
   "@sunrise": {
     "description": "Sunrise"
   },

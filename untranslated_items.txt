@@ -97,6 +97,7 @@
     "nautical_twilight",
     "civil_twilight",
     "sunrise",
+    "custom_dawn",
     "date",
     "current_time",
     "late",

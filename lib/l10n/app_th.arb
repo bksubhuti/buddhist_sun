@@ -18,6 +18,7 @@
   "nautical_twilight": "สนธยาทะเล",
   "civil_twilight": "สนธยาพลเรือน",
   "sunrise": "พระอาทิตย์ขึ้น",
+  "custom_dawn": "Custom",
   "date": "วันที่",
   "current_time": "เวลาปัจจุบัน",
   "late": "เลยเที่ยง",

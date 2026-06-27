@@ -26,18 +26,21 @@ class _SettingsPageState extends State<SettingsPage> {
   List<String> _dawnMethodItems = <String>[];
   // You can toggle this based on user interactions or other
   bool showCityAndOffset = false;
+  late TextEditingController _customDawnController;
 
   @override
   void initState() {
     // debug mode to reset
     //Prefs.instance.clear();
     dbService.initDatabase();
+    _customDawnController = TextEditingController(text: Prefs.customDawnAngle.toString());
     super.initState();
   }
 
   @override
   void dispose() {
     dbService.dispose();
+    _customDawnController.dispose();
     super.dispose();
   }
 
@@ -58,6 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _dawnMethodItems.add(AppLocalizations.of(context)!.nautical_twilight);
       _dawnMethodItems.add(AppLocalizations.of(context)!.pa_auk);
       _dawnMethodItems.add(AppLocalizations.of(context)!.na_uyana);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.custom_dawn);
       _dawnMethodItems.add(AppLocalizations.of(context)!.civil_twilight);
       _dawnMethodItems.add(AppLocalizations.of(context)!.sunrise);
     }
@@ -206,6 +210,52 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
+              if (Prefs.dawnVal == 3) SizedBox(height: 15),
+              if (Prefs.dawnVal == 3)
+                Card(
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: Row(
+                      children: [
+                        SizedBox(height: 6.0),
+                        ColoredText("Angle (Degrees):",
+                            style: TextStyle(
+                              fontSize: 16,
+                            )),
+                        SizedBox(
+                          width: 10.0,
+                          height: 20,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                            ),
+                            controller: _customDawnController,
+                            style: TextStyle(
+                              color: (!Prefs.darkThemeOn)
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                            ),
+                            onChanged: (value) {
+                              double? angle = double.tryParse(value);
+                              if (angle != null) {
+                                Prefs.customDawnAngle = angle;
+                                // Need to notify listeners if they depend on this to redraw immediately
+                                // We can use settingsProvider.setDawnVal with current to trigger update
+                                settingsProvider.setDawnVal(_dawnMethodItems[Prefs.dawnVal]);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               SizedBox(height: 15),
               Card(
                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),

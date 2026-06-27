@@ -18,6 +18,7 @@
   "nautical_twilight": "नौसैनिक गोधूलि",
   "civil_twilight": "नागरिक गोधूलि",
   "sunrise": "सूर्योदय",
+  "custom_dawn": "Custom",
   "date": "तारीख़",
   "current_time": "वर्तमान समय",
   "late": "देर",

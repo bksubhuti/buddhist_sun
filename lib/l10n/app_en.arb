@@ -21,6 +21,7 @@
   "nautical_twilight": "Nautical Twilight",
   "civil_twilight": "Civil Twilight",
   "sunrise": "Sunrise",
+  "custom_dawn": "Custom",
   "date": "Date",
   "current_time": "Current Time",
   "late": "Late",

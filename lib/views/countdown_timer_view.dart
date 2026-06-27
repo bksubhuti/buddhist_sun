@@ -343,8 +343,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       case 2:
         return getSunrise30String();
       case 3:
-        return getCivilTwilightString();
+        return getCustomDawnString();
       case 4:
+        return getCivilTwilightString();
+      case 5:
         return getSunriseString();
       default:
         return getNauticalTwilightString();
@@ -361,8 +363,10 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       case 2:
         return AppLocalizations.of(context)!.na_uyana;
       case 3:
-        return AppLocalizations.of(context)!.civil_twilight;
+        return AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
       case 4:
+        return AppLocalizations.of(context)!.civil_twilight;
+      case 5:
         return AppLocalizations.of(context)!.sunrise;
       default:
         return AppLocalizations.of(context)!.nautical_twilight;
@@ -371,7 +375,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
 
   bool _isDawnMode() {
     // Get selected dawn today as DateTime
-    final dawnInst = () {
+    final dawnDT = () {
       switch (Prefs.dawnVal) {
         case 0:
           return getNauticalTwilight();
@@ -380,21 +384,15 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         case 2:
           return getSunrise30();
         case 3:
-          return getCivilTwilight();
+          return getCustomDawn();
         case 4:
+          return getCivilTwilight();
+        case 5:
           return getSunrise();
         default:
           return getNauticalTwilight();
       }
     }();
-
-    final dawnDT = DateTime(
-      dawnInst.year,
-      dawnInst.month,
-      dawnInst.day,
-      dawnInst.hour,
-      dawnInst.minute,
-    );
 
     return service.countdownTarget.hour == dawnDT.hour &&
         service.countdownTarget.minute == dawnDT.minute;
