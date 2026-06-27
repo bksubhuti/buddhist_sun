@@ -145,27 +145,41 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
       backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         title: Text(l.beTitle),
-        actions: [
-          PopupMenuButton<int>(
-            onSelected: (item) => _onMenuSelected(item, l),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 1,
-                child: Text(l.bePoyaMenu),
-              ),
-              PopupMenuItem(
-                value: 2,
-                child: Text(l.beVasMenu),
-              ),
-            ],
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _showPoyaModal(l),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              l.bePoyaMenu,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Icon(Icons.list_alt, size: 18),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             // Date picker row
             Row(
               children: [
@@ -211,6 +225,28 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
                 const SizedBox(width: 8),
                 Expanded(
                     child: _buildInfoCard(l.beDayLabel, calc.bDay.toString())),
+              ],
+            ),
+            // Atikkanta & Avasittha
+            Row(
+              children: [
+                Expanded(
+                  child: _buildEraCard(
+                    title: l.beAtikkanta,
+                    y: calc.atikkantaY.toString(),
+                    m: calc.atikkantaM.toString(),
+                    d: calc.atikkantaD.toString(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildEraCard(
+                    title: l.beAvasittha,
+                    y: calc.avasitthaY.toString(),
+                    m: calc.avasitthaM.toString(),
+                    d: calc.avasitthaD.toString(),
+                  ),
+                ),
               ],
             ),
 
@@ -260,29 +296,6 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
               ),
             ),
             const SizedBox(height: 8),
-
-            // Atikkanta & Avasittha
-            Row(
-              children: [
-                Expanded(
-                  child: _buildEraCard(
-                    title: l.beAtikkanta,
-                    y: calc.atikkantaY.toString(),
-                    m: calc.atikkantaM.toString(),
-                    d: calc.atikkantaD.toString(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildEraCard(
-                    title: l.beAvasittha,
-                    y: calc.avasitthaY.toString(),
-                    m: calc.avasitthaM.toString(),
-                    d: calc.avasitthaD.toString(),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

@@ -217,7 +217,7 @@ class PoyaBottomSheet {
                                           ),
                                         ),
                                         title: Text(
-                                          '$specialStr $pakkhaStr'.trim(),
+                                          '$specialStr',
                                           style: const TextStyle(
                                             fontWeight: FontWeight
                                                 .bold, // Distinguish special day with bold text

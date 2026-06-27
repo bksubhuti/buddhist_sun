@@ -100,9 +100,9 @@
   "beDateLabel": "Select Date (C.E.)",
   "beAtikkanta": "Atikkanta (Elapsed)",
   "beAvasittha": "Avasiṭṭha (remaining)",
-  "bePoyaMenu": "Poya Days",
+  "bePoyaMenu": "Pakkha Days",
   "beVasMenu": "Vas Season",
-  "bePoyaTitle": "Poya Day List",
+  "bePoyaTitle": "Pakkha List",
   "beVasTitle": "About Vas Season",
   "beContactTitle": "Contact & Downloads",
   "bePoyaSuffix": " Poya",
@@ -178,6 +178,6 @@
   "beTithi_11": "Ekādasamam",
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
-  "beTithi_14": "Caturdasamam",
+  "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam"
 }
