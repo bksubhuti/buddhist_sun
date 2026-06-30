@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/buddhavassa_data.dart';
+import '../src/services/solar_calc.dart';
+import '../src/models/prefs.dart';
 
 class PoyaBottomSheet {
   static String _translateSeason(
@@ -18,6 +20,68 @@ class PoyaBottomSheet {
       default:
         return rawSeason;
     }
+  }
+
+  static void _showSolarTimesDialog(
+      BuildContext context, DateTime date, AppLocalizations loc) {
+    final times = getSolarTimesForDate(date);
+    final dateStr = DateFormat('EEE, MMM dd, yyyy').format(date);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            dateStr,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _solarRow('${loc.solar_noon}:', times.solarNoon),
+                const Divider(height: 12),
+                _solarRow('${loc.astronomical_twilight}:', times.astronomicalTwilight),
+                _solarRow('${loc.nautical_twilight}:', times.nauticalTwilight),
+                _solarRow('${loc.pa_auk_angle}:', times.paAukAngle),
+                _solarRow('${loc.custom_dawn} (${Prefs.customDawnAngle}°):', times.customDawn),
+                _solarRow('${loc.na_uyana_angle}:', times.naUyanaAngle),
+                _solarRow('${loc.civil_twilight}:', times.civilTwilight),
+                _solarRow('${loc.sunrise}:', times.sunrise),
+                _solarRow('${loc.pa_auk}:', times.paAukSR),
+                _solarRow('${loc.na_uyana}:', times.naUyanaSR),
+                const Divider(height: 12),
+                _solarRow('Sunset:', times.sunset),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(loc.ok),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static Widget _solarRow(String label, String time) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(label, style: const TextStyle(fontSize: 13)),
+          ),
+          Text(time,
+              style:
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
   }
 
   static void show(BuildContext context, DateTime selectedDate,
@@ -182,12 +246,29 @@ class PoyaBottomSheet {
                                                 : FontWeight.normal,
                                           ),
                                         ),
-                                        trailing: Text(
-                                          _translateSeason(
-                                              poyaDay.season, localizations),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall,
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              _translateSeason(
+                                                  poyaDay.season, localizations),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            GestureDetector(
+                                              onTap: () => _showSolarTimesDialog(
+                                                  context, poyaDate, localizations),
+                                              child: Icon(
+                                                Icons.info_outline,
+                                                size: 20,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -223,12 +304,29 @@ class PoyaBottomSheet {
                                                 .bold, // Distinguish special day with bold text
                                           ),
                                         ),
-                                        trailing: Text(
-                                          _translateSeason(
-                                              poyaDay.season, localizations),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall,
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              _translateSeason(
+                                                  poyaDay.season, localizations),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            GestureDetector(
+                                              onTap: () => _showSolarTimesDialog(
+                                                  context, poyaDate, localizations),
+                                              child: Icon(
+                                                Icons.info_outline,
+                                                size: 20,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),

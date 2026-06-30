@@ -42,8 +42,10 @@
   "minutes4": "៤ នាទី",
   "minutes5": "៥ នាទី",
   "minutes10": "១០ នាទី",
-  "pa_auk": "Pa_Auk",
-  "na_uyana": "Na_uyana",
+  "pa_auk": "Pa_Auk (SR - 40 min)",
+  "na_uyana": "Na_uyana (SR - 30 min)",
+  "pa_auk_angle": "Pa_Auk (-9.8°)",
+  "na_uyana_angle": "Na_uyana (-7.7°)",
   "search_for_city": "ស្វែងរកឈ្មោះទីក្រុង",
   "gps_permission": "ការអនុញ្ញាតពីការកំណត់ទីតាំងសកល",
   "background_permission": "ការអនុញ្ញាតពីផ្ទៃខាងក្រោយ",
@@ -167,5 +169,6 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "today_is": "ថ្ងៃនេះគឺ "
 }

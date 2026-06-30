@@ -46,6 +46,8 @@ int getSafetyOffset() {
 ///   angles[1] → Custom Dawn Angle
 ///   angles[2] → 102° (nautical / -12°)
 ///   angles[3] → 108° (astronomical / -18°)
+///   angles[4] → 99.8° (Pa-Auk angle / -9.8°)
+///   angles[5] → 97.7° (Na-Uyana angle / -7.7°)
 SpaResult _getNrelResult() {
   DateTime now = DateTime.now();
   double tz = now.timeZoneOffset.inMinutes / 60.0;
@@ -58,7 +60,7 @@ SpaResult _getNrelResult() {
     Prefs.lat,
     Prefs.lng,
     tz,
-    customAngles: [96.0, customZenith, 102.0, 108.0],
+    customAngles: [96.0, customZenith, 102.0, 108.0, 99.8, 97.7],
   );
 }
 
@@ -116,6 +118,24 @@ DateTime getCustomDawn() {
 }
 
 String getCustomDawnString() => _formatHM(getCustomDawn());
+
+// ── Pa-Auk Angle Dawn (-9.8°, zenith 99.8°) ─────────────────────
+
+DateTime getPaAukAngleDawn() {
+  final result = _getNrelResult();
+  return _addSafety(_fractionalHoursToDateTime(result.angles[4].sunrise));
+}
+
+String getPaAukAngleDawnString() => _formatHM(getPaAukAngleDawn());
+
+// ── Na-Uyana Angle Dawn (-7.7°, zenith 97.7°) ─────────────────
+
+DateTime getNaUyanaAngleDawn() {
+  final result = _getNrelResult();
+  return _addSafety(_fractionalHoursToDateTime(result.angles[5].sunrise));
+}
+
+String getNaUyanaAngleDawnString() => _formatHM(getNaUyanaAngleDawn());
 
 // ── Civil Twilight (-6°, zenith 96°) ────────────────────────────────
 
@@ -197,3 +217,91 @@ DateTime getNuaticleDusk() {
 }
 
 String getDuskNauticleString() => _formatHM(getNuaticleDusk());
+
+// ── Solar times for a specific date ──────────────────────────────────
+
+/// Data class holding all solar times for a given date.
+class SolarTimesForDate {
+  final String astronomicalTwilight;
+  final String nauticalTwilight;
+  final String customDawn;
+  final String civilTwilight;
+  final String sunrise;
+  final String paAukSR;
+  final String naUyanaSR;
+  final String paAukAngle;
+  final String naUyanaAngle;
+  final String solarNoon;
+  final String sunset;
+
+  SolarTimesForDate({
+    required this.astronomicalTwilight,
+    required this.nauticalTwilight,
+    required this.customDawn,
+    required this.civilTwilight,
+    required this.sunrise,
+    required this.paAukSR,
+    required this.naUyanaSR,
+    required this.paAukAngle,
+    required this.naUyanaAngle,
+    required this.solarNoon,
+    required this.sunset,
+  });
+}
+
+/// Compute all solar times for a specific [date] using the user's saved location.
+SolarTimesForDate getSolarTimesForDate(DateTime date) {
+  DateTime now = DateTime.now();
+  double tz = now.timeZoneOffset.inMinutes / 60.0;
+  DateTime utcNoon = DateTime.utc(date.year, date.month, date.day, 12, 0, 0);
+  double customZenith = 90.0 - Prefs.customDawnAngle;
+
+  final result = getSpa(
+    utcNoon,
+    Prefs.lat,
+    Prefs.lng,
+    tz,
+    customAngles: [96.0, customZenith, 102.0, 108.0, 99.8, 97.7],
+  );
+
+  String fmtHM(double hours) {
+    int totalSeconds = (hours * 3600.0).round();
+    int h = totalSeconds ~/ 3600;
+    int m = (totalSeconds % 3600) ~/ 60;
+    return '${h}:${m.toString().padLeft(2, '0')}';
+  }
+
+  String fmtHMS(double hours) {
+    int totalSeconds = (hours * 3600.0).round();
+    int h = totalSeconds ~/ 3600;
+    int m = (totalSeconds % 3600) ~/ 60;
+    int s = totalSeconds % 60;
+    return '${h}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  // Sunrise-based dawn methods
+  String srString = fmtHM(result.sunrise);
+  int srTotalSec = (result.sunrise * 3600.0).round();
+  int sr40Sec = srTotalSec - 40 * 60;
+  int sr30Sec = srTotalSec - 30 * 60;
+
+  String fmtSec(int totalSec) {
+    int h = totalSec ~/ 3600;
+    int m = (totalSec % 3600) ~/ 60;
+    return '${h}:${m.toString().padLeft(2, '0')}';
+  }
+
+  return SolarTimesForDate(
+    astronomicalTwilight: fmtHM(result.angles[3].sunrise),
+    nauticalTwilight: fmtHM(result.angles[2].sunrise),
+    customDawn: fmtHM(result.angles[1].sunrise),
+    civilTwilight: fmtHM(result.angles[0].sunrise),
+    sunrise: srString,
+    paAukSR: fmtSec(sr40Sec),
+    naUyanaSR: fmtSec(sr30Sec),
+    paAukAngle: fmtHM(result.angles[4].sunrise),
+    naUyanaAngle: fmtHM(result.angles[5].sunrise),
+    solarNoon: fmtHMS(result.solarNoon),
+    sunset: fmtHM(result.sunset),
+  );
+}

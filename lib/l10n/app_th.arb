@@ -42,8 +42,10 @@
   "minutes4": "4 นาที",
   "minutes5": "5 นาที",
   "minutes10": "10 นาที",
-  "pa_auk": "พะอ๊อก",
-  "na_uyana": "นะ อุยะนะ",
+  "pa_auk": "พะอ๊อก (SR - 40 min)",
+  "na_uyana": "นะ อุยะนะ (SR - 30 min)",
+  "pa_auk_angle": "พะอ๊อก (-9.8°)",
+  "na_uyana_angle": "นะ อุยะนะ (-7.7°)",
   "search_for_city": "ค้นหาเมือง",
   "gps_permission": "การอนุญาต GPS",
   "background_permission": "การอนุญาตพื้นหลัง",
@@ -167,5 +169,6 @@
   "beTithi_12": "ทฺวาทสมํ",
   "beTithi_13": "เตรสมํ",
   "beTithi_14": "จตุทฺทสมํ",
-  "beTithi_15": "ปณฺณรสมํ"
+  "beTithi_15": "ปณฺณรสมํ",
+  "today_is": "วันนี้คือ "
 }

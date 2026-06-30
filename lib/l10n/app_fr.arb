@@ -42,8 +42,10 @@
   "minutes4": "4 minutes",
   "minutes5": "5 minutes",
   "minutes10": "10 minutes",
-  "na_uyana": "Na-Uyana",
-  "pa_auk": "Pa-Auk",
+  "na_uyana": "Na-Uyana (SR - 30 min)",
+  "pa_auk": "Pa-Auk (SR - 40 min)",
+  "pa_auk_angle": "Pa-Auk (-9.8°)",
+  "na_uyana_angle": "Na-Uyana (-7.7°)",
   "search_for_city": "Search for city",
   "gps_permission": "GPS Permission",
   "background_permission": "Background Permission",
@@ -63,5 +65,6 @@
   "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
   "buddhistSunCountdown": "Buddhist Sun Countdown",
   "autoStartDawnTimer": "Auto-Start Dawn Timer",
-  "autoStartNoonTimer": "Auto-Start Noon Timer"
+  "autoStartNoonTimer": "Auto-Start Noon Timer",
+  "today_is": "Aujourd'hui :"
 }

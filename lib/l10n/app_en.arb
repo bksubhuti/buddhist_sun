@@ -45,8 +45,10 @@
   "minutes4": "4 minutes",
   "minutes5": "5 minutes",
   "minutes10": "10 minutes",
-  "pa_auk": "Pa-Auk",
-  "na_uyana": "Na-Uyana",
+  "pa_auk": "Pa-Auk (SR - 40 min)",
+  "na_uyana": "Na-Uyana (SR - 30 min)",
+  "pa_auk_angle": "Pa-Auk (-9.8°)",
+  "na_uyana_angle": "Na-Uyana (-7.7°)",
   "search_for_city": "Search for city",
   "gps_permission": "GPS Permission",
   "background_permission": "Background Permission",
@@ -145,12 +147,24 @@
   "bePaliTemplate": "Ayaṃ\n{animal} saṃvacchare\n{season} utu asmiṃ utumhi\n{month} māsassa\n{paksha}\n{tithi}\n{weekday}\nidanti daṭṭhabbaṃ.",
   "@bePaliTemplate": {
     "placeholders": {
-      "animal": {"type": "String"},
-      "season": {"type": "String"},
-      "month": {"type": "String"},
-      "paksha": {"type": "String"},
-      "tithi": {"type": "String"},
-      "weekday": {"type": "String"}
+      "animal": {
+        "type": "String"
+      },
+      "season": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "paksha": {
+        "type": "String"
+      },
+      "tithi": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
     }
   },
   "beMonth_Magha": "Māgha",
@@ -180,5 +194,6 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "today_is": "Today is"
 }

@@ -42,8 +42,10 @@
   "4minutes": "လေးမိနစ်",
   "5minutes": "ငါးမိနစ်",
   "10minutes": "ဆယ်မိနစ်",
-  "na_uyana": "နာဂဥယျာန",
-  "pa_auk": "ဖားအောက်",
+  "na_uyana": "နာဂဥယျာန (SR - 30 min)",
+  "pa_auk": "ဖားအောက် (SR - 40 min)",
+  "pa_auk_angle": "ဖားအောက် (-9.8°)",
+  "na_uyana_angle": "နာဂဥယျာန (-7.7°)",
   "search_for_city": "မြို့ရှာရန်",
   "gps_permission": "ဂျီပီအက်စ် ခွင့်ပြုချက်",
   "background_permission": "နောက်ကွယ် ခွင့်ပြုချက်",
@@ -174,5 +176,6 @@
   "beTithi_12": "ဒွါဒသမံ",
   "beTithi_13": "တေရသမံ",
   "beTithi_14": "စတုဒ္ဒသမံ",
-  "beTithi_15": "ပဏ္ဏရသမံ"
+  "beTithi_15": "ပဏ္ဏရသမံ",
+  "today_is": "ယနေ့သည် "
 }

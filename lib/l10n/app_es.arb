@@ -4,5 +4,6 @@
   "buddhistSun": "Sol Budista",
   "buddhistSunCountdown": "Buddhist Sun Countdown",
   "autoStartDawnTimer": "Auto-Start Dawn Timer",
-  "autoStartNoonTimer": "Auto-Start Noon Timer"
+  "autoStartNoonTimer": "Auto-Start Noon Timer",
+  "today_is": "Hoy es"
 }

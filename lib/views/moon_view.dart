@@ -33,6 +33,8 @@ class _MoonPageState extends State<MoonPage> {
   double moonPhasePercentage =
       0.0; // Dummy value, you need to calculate this based on the selected date
   bool _noNextUposathaData = false;
+  PoyaDay? _todayPoya;
+  bool _isTodayUposatha = false;
 
   CalendarTradition get _tradition {
     switch (Prefs.selectedUposatha) {
@@ -152,23 +154,35 @@ class _MoonPageState extends State<MoonPage> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: ColoredText(
+                          _isTodayUposatha
+                              ? "${AppLocalizations.of(context)!.today_is} ${_todayPoya!.moonPhase.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}"
+                              : (_noNextUposathaData
+                                  ? "No Data"
+                                  : "${AppLocalizations.of(context)!.next}  ${_nextFullOrNewmoon.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}: ${_nextUposatha.year}-${_nextUposatha.month}-${_nextUposatha.day}"),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    icon: const Icon(Icons.event_note),
-                    onPressed: () {
-                      PoyaBottomSheet.show(context, selectedDate, _tradition, AppLocalizations.of(context)!);
-                    },
-                    label: ColoredText(
-                      _noNextUposathaData
-                          ? "No Data"
-                          : "${AppLocalizations.of(context)!.next}  ${_nextFullOrNewmoon.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}: ${_nextUposatha.year}-${_nextUposatha.month}-${_nextUposatha.day}",
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(40, 40),
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          PoyaBottomSheet.show(context, selectedDate, _tradition, AppLocalizations.of(context)!);
+                        },
+                        child: const Icon(Icons.event_note),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -269,9 +283,19 @@ class _MoonPageState extends State<MoonPage> {
     final poyaList = BuddhavassaData.getPoyaList(_tradition);
     String currentDateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     
+    _todayPoya = null;
+    _isTodayUposatha = false;
+    for (var poya in poyaList) {
+      if (poya.date == currentDateStr && (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
+        _todayPoya = poya;
+        _isTodayUposatha = true;
+        break;
+      }
+    }
+
     PoyaDay? nextPoya;
     for (var poya in poyaList) {
-      if (poya.date.compareTo(currentDateStr) > 0) {
+      if (poya.date.compareTo(currentDateStr) > 0 && (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
         nextPoya = poya;
         break;
       }

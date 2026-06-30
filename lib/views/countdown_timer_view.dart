@@ -343,10 +343,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       case 2:
         return getSunrise30String();
       case 3:
-        return getCustomDawnString();
+        return getPaAukAngleDawnString();
       case 4:
-        return getCivilTwilightString();
+        return getNaUyanaAngleDawnString();
       case 5:
+        return getCustomDawnString();
+      case 6:
+        return getCivilTwilightString();
+      case 7:
         return getSunriseString();
       default:
         return getNauticalTwilightString();
@@ -363,10 +367,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       case 2:
         return AppLocalizations.of(context)!.na_uyana;
       case 3:
-        return AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
+        return AppLocalizations.of(context)!.pa_auk_angle;
       case 4:
-        return AppLocalizations.of(context)!.civil_twilight;
+        return AppLocalizations.of(context)!.na_uyana_angle;
       case 5:
+        return AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
+      case 6:
+        return AppLocalizations.of(context)!.civil_twilight;
+      case 7:
         return AppLocalizations.of(context)!.sunrise;
       default:
         return AppLocalizations.of(context)!.nautical_twilight;
@@ -384,10 +392,14 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         case 2:
           return getSunrise30();
         case 3:
-          return getCustomDawn();
+          return getPaAukAngleDawn();
         case 4:
-          return getCivilTwilight();
+          return getNaUyanaAngleDawn();
         case 5:
+          return getCustomDawn();
+        case 6:
+          return getCivilTwilight();
+        case 7:
           return getSunrise();
         default:
           return getNauticalTwilight();

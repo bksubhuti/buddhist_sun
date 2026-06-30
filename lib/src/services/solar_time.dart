@@ -256,12 +256,18 @@ class SolarTimerService {
         dawnDT = getSunrise30();
         break;
       case 3:
-        dawnDT = getCustomDawn();
+        dawnDT = getPaAukAngleDawn();
         break;
       case 4:
-        dawnDT = getCivilTwilight();
+        dawnDT = getNaUyanaAngleDawn();
         break;
       case 5:
+        dawnDT = getCustomDawn();
+        break;
+      case 6:
+        dawnDT = getCivilTwilight();
+        break;
+      case 7:
         dawnDT = getSunrise();
         break;
       default:
@@ -303,12 +309,18 @@ class SolarTimerService {
           dawnDT = getSunrise30();
           break;
         case 3:
-          dawnDT = getCustomDawn();
+          dawnDT = getPaAukAngleDawn();
           break;
         case 4:
-          dawnDT = getCivilTwilight();
+          dawnDT = getNaUyanaAngleDawn();
           break;
         case 5:
+          dawnDT = getCustomDawn();
+          break;
+        case 6:
+          dawnDT = getCivilTwilight();
+          break;
+        case 7:
           dawnDT = getSunrise();
           break;
         default:

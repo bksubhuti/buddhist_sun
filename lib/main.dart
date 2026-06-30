@@ -105,6 +105,7 @@ Future<void> main() async {
 
   await Prefs.init();
   await Prefs.migrateDawnVal();
+  await Prefs.migrateDawnValV3();
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
   await createTimerChannelsOnce(); // ← moved AFTER initialize (harmless on iOS)
   await BackgroundTimePlayer.init();

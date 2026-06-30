@@ -42,8 +42,10 @@
   "minutes4": "৪ মিনিট",
   "minutes5": "৫ মিনিট",
   "minutes10": "১০ মিনিট",
-  "pa_auk": "পা-অউক",
-  "na_uyana": "না-উইয়ানা",
+  "pa_auk": "পা-অউক (SR - 40 min)",
+  "na_uyana": "না-উইয়ানা (SR - 30 min)",
+  "pa_auk_angle": "পা-অউক (-9.8°)",
+  "na_uyana_angle": "না-উইয়ানা (-7.7°)",
   "search_for_city": "শহর অনুসন্ধান",
   "gps_permission": "জিপিএস অনুমতি",
   "background_permission": "ব্যাকগ্রাউন্ড অনুমতি",
@@ -89,5 +91,6 @@
   "notificationTime": "নোটিফিকেশন সময়:",
   "buddhistSunCountdown": "Buddhist Sun Countdown",
   "autoStartDawnTimer": "Auto-Start Dawn Timer",
-  "autoStartNoonTimer": "Auto-Start Noon Timer"
+  "autoStartNoonTimer": "Auto-Start Noon Timer",
+  "today_is": "আজ "
 }

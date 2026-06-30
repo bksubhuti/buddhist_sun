@@ -162,13 +162,21 @@
   "@minutes10": {
     "description": "10 minutes"
   },
-  "pa_auk": "帕奥",
+  "pa_auk": "帕奥 (SR - 40 min)",
   "@pa_auk": {
-    "description": "Pa-Auk monastery standar of Dawnrise time"
+    "description": "Pa-Auk monastery standard of Dawnrise time"
   },
-  "na_uyana": "龙树林",
+  "pa_auk_angle": "帕奥 (-9.8°)",
+  "@pa_auk_angle": {
+    "description": "Pa-Auk monastery standard of Dawnrise angle"
+  },
+  "na_uyana": "龙树林 (SR - 30 min)",
   "@na_uyana": {
-    "description": "Na-Uyana monastery standar of Dawnrise time."
+    "description": "Na-Uyana monastery standard of Dawnrise time"
+  },
+  "na_uyana_angle": "龙树林 (-7.7°)",
+  "@na_uyana_angle": {
+    "description": "Na-Uyana monastery standard of Dawnrise angle"
   },
   "search_for_city": "城市搜索",
   "@search_for_city": {
@@ -364,5 +372,6 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "today_is": "今天是 "
 }

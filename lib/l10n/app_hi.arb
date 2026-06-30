@@ -42,8 +42,10 @@
   "minutes4": "4 मिनट",
   "minutes5": "5 मिनट",
   "minutes10": "10 मिनट",
-  "pa_auk": "पा-औक",
-  "na_uyana": "ना-उयाना",
+  "pa_auk": "पा-औक (SR - 40 min)",
+  "na_uyana": "ना-उयाना (SR - 30 min)",
+  "pa_auk_angle": "पा-औक (-9.8°)",
+  "na_uyana_angle": "ना-उयाना (-7.7°)",
   "search_for_city": "शहर खोजें",
   "gps_permission": "जीपीएस अनुमति",
   "background_permission": "पृष्ठभूमि अनुमति",
@@ -167,5 +169,6 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "today_is": "आज है "
 }

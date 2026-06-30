@@ -37,12 +37,18 @@ class DawnPageState extends State<DawnPage> {
         sDawn = getSunrise30String();
         break;
       case 3:
-        sDawn = getCustomDawnString();
+        sDawn = getPaAukAngleDawnString();
         break;
       case 4:
-        sDawn = getCivilTwilightString();
+        sDawn = getNaUyanaAngleDawnString();
         break;
       case 5:
+        sDawn = getCustomDawnString();
+        break;
+      case 6:
+        sDawn = getCivilTwilightString();
+        break;
+      case 7:
         sDawn = getSunriseString();
         break;
     }
@@ -96,6 +102,30 @@ class DawnPageState extends State<DawnPage> {
               ),
               ColoredText(
                   '${AppLocalizations.of(context)!.sunrise}: ${getSunriseString()}',
+                  style: TextStyle(fontSize: 15, letterSpacing: 2)),
+              Divider(
+                height: 15.0,
+              ),
+              ColoredText(
+                  '${AppLocalizations.of(context)!.pa_auk}: ${getSunrise40String()}',
+                  style: TextStyle(fontSize: 15, letterSpacing: 2)),
+              Divider(
+                height: 15.0,
+              ),
+              ColoredText(
+                  '${AppLocalizations.of(context)!.na_uyana}: ${getSunrise30String()}',
+                  style: TextStyle(fontSize: 15, letterSpacing: 2)),
+              Divider(
+                height: 15.0,
+              ),
+              ColoredText(
+                  '${AppLocalizations.of(context)!.pa_auk_angle}: ${getPaAukAngleDawnString()}',
+                  style: TextStyle(fontSize: 15, letterSpacing: 2)),
+              Divider(
+                height: 15.0,
+              ),
+              ColoredText(
+                  '${AppLocalizations.of(context)!.na_uyana_angle}: ${getNaUyanaAngleDawnString()}',
                   style: TextStyle(fontSize: 15, letterSpacing: 2)),
               Divider(
                 height: 15.0,
@@ -159,12 +189,18 @@ class DawnPageState extends State<DawnPage> {
         dawnMethod = AppLocalizations.of(context)!.na_uyana;
         break;
       case 3:
-        dawnMethod = AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
+        dawnMethod = AppLocalizations.of(context)!.pa_auk_angle;
         break;
       case 4:
-        dawnMethod = AppLocalizations.of(context)!.civil_twilight;
+        dawnMethod = AppLocalizations.of(context)!.na_uyana_angle;
         break;
       case 5:
+        dawnMethod = AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
+        break;
+      case 6:
+        dawnMethod = AppLocalizations.of(context)!.civil_twilight;
+        break;
+      case 7:
         dawnMethod = AppLocalizations.of(context)!.sunrise;
         break;
     }

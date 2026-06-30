@@ -31,7 +31,7 @@ const String AUTO_START_NOON_TIMER = "autoStartNoonTimer";
 const String CUSTOM_DAWN_ANGLE = "customDawnAngle";
 // default pref values
 const String DEFAULT_CITYNAME = "Not Set";
-const double DEFAULT_CUSTOM_DAWN_ANGLE = -8.0;
+const double DEFAULT_CUSTOM_DAWN_ANGLE = -8.5;
 const double DEFAULT_LAT = 1.1;
 const double DEFAULT_LNG = 1.1;
 const double DEFAULT_OFFSET = 6.5;
@@ -83,6 +83,21 @@ class Prefs {
     final current = instance.getInt(DAWNVAL);
     if (current != null && current >= 3) {
       await instance.setInt(DAWNVAL, current + 1);
+    }
+    await instance.setBool(key, true);
+  }
+
+  /// V3 migration: Pa-Auk angle and Na-Uyana angle inserted at indices 3 & 4,
+  /// so existing custom (3→5), civil (4→6), sunrise (5→7) must shift by +2.
+  /// Note: v2 migration ran first, so if user had old index 3 it became 4, etc.
+  /// After v2: 0=naut, 1=pa-auk-sr, 2=na-uyana-sr, 3=custom, 4=civil, 5=sunrise
+  /// After v3: 0=naut, 1=pa-auk-sr, 2=na-uyana-sr, 3=pa-auk-angle, 4=na-uyana-angle, 5=custom, 6=civil, 7=sunrise
+  static Future<void> migrateDawnValV3() async {
+    const key = '_dawnValMigrated_v3';
+    if (instance.getBool(key) == true) return;
+    final current = instance.getInt(DAWNVAL);
+    if (current != null && current >= 3) {
+      await instance.setInt(DAWNVAL, current + 2);
     }
     await instance.setBool(key, true);
   }

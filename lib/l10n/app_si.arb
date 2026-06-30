@@ -42,8 +42,10 @@
   "minutes4": "මිනිත්තු 4",
   "minutes5": "මිනිත්තු 5",
   "minutes10": "මිනිත්තු 10",
-  "pa_auk": "පා-අවුක්",
-  "na_uyana": "නා-උයන",
+  "pa_auk": "පා-අවුක් (SR - 40 min)",
+  "na_uyana": "නා-උයන (SR - 30 min)",
+  "pa_auk_angle": "පා-අවුක් (-9.8°)",
+  "na_uyana_angle": "නා-උයන (-7.7°)",
   "search_for_city": "නගරය සොයන්න",
   "gps_permission": "GPS අවසර",
   "background_permission": "Background අවසර",
@@ -163,5 +165,6 @@
   "beTithi_12": "ද්වාදසමං",
   "beTithi_13": "තෙරසමං",
   "beTithi_14": "චතුද්දසමං",
-  "beTithi_15": "පණ්ණරසමං"
+  "beTithi_15": "පණ්ණරසමං",
+  "today_is": "අද "
 }

@@ -61,6 +61,8 @@ class _SettingsPageState extends State<SettingsPage> {
       _dawnMethodItems.add(AppLocalizations.of(context)!.nautical_twilight);
       _dawnMethodItems.add(AppLocalizations.of(context)!.pa_auk);
       _dawnMethodItems.add(AppLocalizations.of(context)!.na_uyana);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.pa_auk_angle);
+      _dawnMethodItems.add(AppLocalizations.of(context)!.na_uyana_angle);
       _dawnMethodItems.add(AppLocalizations.of(context)!.custom_dawn);
       _dawnMethodItems.add(AppLocalizations.of(context)!.civil_twilight);
       _dawnMethodItems.add(AppLocalizations.of(context)!.sunrise);
@@ -200,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       color: (Prefs.lightThemeOn)
                                           ? Theme.of(context).primaryColor
                                           : Colors.white,
-                                      fontSize: 16,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold),
                                 ),
                               );
@@ -210,8 +212,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
-              if (Prefs.dawnVal == 3) SizedBox(height: 15),
-              if (Prefs.dawnVal == 3)
+              if (Prefs.dawnVal == 5) SizedBox(height: 15),
+              if (Prefs.dawnVal == 5)
                 Card(
                   margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                   elevation: 2,

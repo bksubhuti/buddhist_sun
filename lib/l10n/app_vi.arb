@@ -162,13 +162,21 @@
   "@minutes10": {
     "description": "10 minutes"
   },
-  "pa_auk": "Pa-Auk",
+  "pa_auk": "Pa-Auk (SR - 40 min)",
   "@pa_auk": {
     "description": "Pa-Auk monastery standard of Dawnrise time"
   },
-  "na_uyana": "Na-Uyana",
+  "pa_auk_angle": "Pa-Auk (-9.8°)",
+  "@pa_auk_angle": {
+    "description": "Pa-Auk monastery standard of Dawnrise angle"
+  },
+  "na_uyana": "Na-Uyana (SR - 30 min)",
   "@na_uyana": {
     "description": "Na-Uyana monastery standard of Dawnrise time."
+  },
+  "na_uyana_angle": "Na-Uyana (-7.7°)",
+  "@na_uyana_angle": {
+    "description": "Na-Uyana monastery standard of Dawnrise angle"
   },
   "search_for_city": "Tìm T.Phố",
   "@search_for_city": {
@@ -365,5 +373,6 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "today_is": "Hôm nay là "
 }
