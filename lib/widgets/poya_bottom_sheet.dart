@@ -226,6 +226,8 @@ class PoyaBottomSheet {
                                       color: normalCardColor,
                                       child: ListTile(
                                         dense: true,
+                                        onTap: () => _showSolarTimesDialog(
+                                            context, poyaDate, localizations),
                                         leading: Text(
                                           DateFormat('MMM dd').format(poyaDate),
                                           style: TextStyle(
@@ -256,16 +258,20 @@ class PoyaBottomSheet {
                                                   .textTheme
                                                   .labelSmall,
                                             ),
-                                            const SizedBox(width: 4),
-                                            GestureDetector(
-                                              onTap: () => _showSolarTimesDialog(
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const CircleBorder(),
+                                                padding: EdgeInsets.zero,
+                                                minimumSize: const Size(36, 36),
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                elevation: 2,
+                                              ),
+                                              onPressed: () => _showSolarTimesDialog(
                                                   context, poyaDate, localizations),
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.info_outline,
                                                 size: 20,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
                                               ),
                                             ),
                                           ],
@@ -286,6 +292,8 @@ class PoyaBottomSheet {
                                       color: normalCardColor,
                                       child: ListTile(
                                         dense: true,
+                                        onTap: () => _showSolarTimesDialog(
+                                            context, poyaDate, localizations),
                                         leading: Text(
                                           DateFormat('MMM dd').format(poyaDate),
                                           style: TextStyle(
@@ -314,16 +322,20 @@ class PoyaBottomSheet {
                                                   .textTheme
                                                   .labelSmall,
                                             ),
-                                            const SizedBox(width: 4),
-                                            GestureDetector(
-                                              onTap: () => _showSolarTimesDialog(
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const CircleBorder(),
+                                                padding: EdgeInsets.zero,
+                                                minimumSize: const Size(36, 36),
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                elevation: 2,
+                                              ),
+                                              onPressed: () => _showSolarTimesDialog(
                                                   context, poyaDate, localizations),
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.info_outline,
                                                 size: 20,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
                                               ),
                                             ),
                                           ],

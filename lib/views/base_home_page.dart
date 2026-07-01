@@ -393,7 +393,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
     // Uri.https safely builds the URL and auto-encodes the time string
     final Uri url = Uri.https(
       'www.kso.ac.at',
-      '/beobachtungen/ephemeris_en.php',
+      '/beobachtungen/ephem_mob.php',
       {
         'tz': tzOffset.toString(),
         'date': dateStr,
