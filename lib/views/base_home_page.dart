@@ -379,18 +379,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   Future<void> _launchVerifyUrl() async {
-    // KSO Observatory requires UTC time for its URL parameters
+    // 1. Get the local time and the offset
     final DateTime now = DateTime.now();
-    final DateTime utcNow = now.toUtc();
     final double tzOffset = now.timeZoneOffset.inMinutes / 60.0;
 
-    // Format strings to ensure double digits (e.g., '03' instead of '3')
+    // 2. Format strings using 'now' (Local Time), NOT 'utcNow'
     final String dateStr =
-        '${utcNow.year}-${utcNow.month.toString().padLeft(2, '0')}-${utcNow.day.toString().padLeft(2, '0')}';
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final String timeStr =
-        '${utcNow.hour.toString().padLeft(2, '0')}:${utcNow.minute.toString().padLeft(2, '0')}:${utcNow.second.toString().padLeft(2, '0')}';
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
 
-    // Uri.https safely builds the URL and auto-encodes the time string
+    // 3. Build the URI with the mobile endpoint
     final Uri url = Uri.https(
       'www.kso.ac.at',
       '/beobachtungen/ephem_mob.php',
@@ -403,7 +402,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
       },
     );
 
-    if (!await launchUrl(url)) {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
   }

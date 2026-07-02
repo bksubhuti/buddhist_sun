@@ -123,6 +123,8 @@
     "minutes10",
     "pa_auk",
     "na_uyana",
+    "pa_auk_angle",
+    "na_uyana_angle",
     "search_for_city",
     "gps_permission",
     "background_permission",
