@@ -84,6 +84,26 @@ class PoyaBottomSheet {
     );
   }
 
+  static Widget _seasonStatColumn(
+      BuildContext context, String label, String value) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+      ],
+    );
+  }
+
   static void show(BuildContext context, DateTime selectedDate,
       CalendarTradition tradition, AppLocalizations localizations) {
     final int selectedYear = selectedDate.year;
@@ -102,6 +122,61 @@ class PoyaBottomSheet {
     if (!isSelectedPoya) {
       highlightIndex = poyasForSelectedYear.indexWhere(
           (poyaDay) => poyaDay.date.compareTo(selectedDateString) > 0);
+    }
+
+    // Compute pakkha season progress for the highlighted entry
+    String? seasonName;
+    int pakkhaToday = 0;
+    int pakkhaPast = 0;
+    int pakkhaRemaining = 0;
+    int pakkhaTotal = 0;
+
+    if (highlightIndex >= 0) {
+      final highlightedPoya = poyasForSelectedYear[highlightIndex];
+      final currentSeason = highlightedPoya.season;
+      seasonName = currentSeason;
+
+      // Find the contiguous block of the same season around the highlighted entry.
+      // Walk backward to find the start of this season block.
+      int seasonStart = highlightIndex;
+      while (seasonStart > 0 &&
+          poyasForSelectedYear[seasonStart - 1].season == currentSeason) {
+        seasonStart--;
+      }
+      // Walk forward to find the end of this season block.
+      int seasonEnd = highlightIndex;
+      while (seasonEnd < poyasForSelectedYear.length - 1 &&
+          poyasForSelectedYear[seasonEnd + 1].season == currentSeason) {
+        seasonEnd++;
+      }
+
+      // Count only actual pakkha days (those with a moonPhase), not special-only entries.
+      // Also determine the position of the highlighted entry among them.
+      int pakkhaPosition = 0; // 1-indexed position of highlighted entry
+      for (int j = seasonStart; j <= seasonEnd; j++) {
+        final mp = poyasForSelectedYear[j].moonPhase.toString().trim();
+        final hasMoon = mp.isNotEmpty && mp != 'NaN' && mp != 'null';
+        if (hasMoon) {
+          pakkhaTotal++;
+          if (j < highlightIndex) {
+            pakkhaPast++;
+          } else if (j == highlightIndex) {
+            pakkhaPosition = pakkhaTotal;
+          }
+        }
+      }
+      // If the highlighted entry itself is a pakkha day
+      final highlightMp = highlightedPoya.moonPhase.toString().trim();
+      final highlightHasMoon =
+          highlightMp.isNotEmpty && highlightMp != 'NaN' && highlightMp != 'null';
+      if (highlightHasMoon) {
+        pakkhaToday = pakkhaPosition;
+        pakkhaRemaining = pakkhaTotal - pakkhaToday;
+      } else {
+        // Highlighted entry is a special day (no moon phase) — show relative to nearest pakkha
+        pakkhaToday = pakkhaPast; // treat "today" as the count so far
+        pakkhaRemaining = pakkhaTotal - pakkhaPast;
+      }
     }
 
     showModalBottomSheet(
@@ -165,6 +240,36 @@ class PoyaBottomSheet {
                     ],
                   ),
                 ),
+                // Season pakkha progress header
+                if (highlightIndex >= 0 && seasonName != null && pakkhaTotal > 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _seasonStatColumn(
+                              context, localizations.beSeason_Today, '$pakkhaToday'),
+                          _seasonStatColumn(
+                              context, localizations.beSeason_Past, '$pakkhaPast'),
+                          _seasonStatColumn(context,
+                              localizations.beSeason_Remaining, '$pakkhaRemaining'),
+                          _seasonStatColumn(context,
+                              _translateSeason(seasonName!, localizations),
+                              '$pakkhaTotal'),
+                        ],
+                      ),
+                    ),
+                  ),
                 const Divider(height: 1),
                 Expanded(
                   child: poyasForSelectedYear.isEmpty
