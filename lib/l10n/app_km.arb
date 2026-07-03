@@ -170,5 +170,8 @@
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam",
-  "today_is": "ថ្ងៃនេះគឺ "
+  "today_is": "ថ្ងៃនេះគឺ ",
+  "beSeason_Today": "ថ្ងៃនេះ",
+  "beSeason_Past": "កន្លងផុត",
+  "beSeason_Remaining": "នៅសល់"
 }

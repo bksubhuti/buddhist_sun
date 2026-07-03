@@ -374,5 +374,8 @@
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam",
-  "today_is": "Hôm nay là "
+  "today_is": "Hôm nay là ",
+  "beSeason_Today": "Hôm nay",
+  "beSeason_Past": "Đã qua",
+  "beSeason_Remaining": "Còn lại"
 }

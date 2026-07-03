@@ -166,5 +166,12 @@
   "beTithi_13": "තෙරසමං",
   "beTithi_14": "චතුද්දසමං",
   "beTithi_15": "පණ්ණරසමං",
-  "today_is": "අද "
+  "today_is": "අද ",
+  "speech_only_within_2_hours": "ධාවන කාලයට පැය 2 කට පෙර පමණක් හඬ දැනුම්දීම් සක්‍රිය කළ හැක.",
+  "safetyWarning": "ආරක්ෂිත අවවාදය",
+  "safetyWarningMessage": "ආරක්ෂිත මාදිලිය සක්‍රියයි. යෙදුම් වේලාව නිරීක්ෂණාගාර වේලාවෙන් මිනිත්තු {minutes} කින් වෙනස් වේ.",
+  "proceed": "ඉදිරියට යන්න",
+  "beSeason_Today": "අද",
+  "beSeason_Past": "පසුගිය",
+  "beSeason_Remaining": "ඉතිරි"
 }

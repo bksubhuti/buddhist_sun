@@ -373,5 +373,9 @@
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam",
-  "today_is": "今天是 "
+  "today_is": "今天是 ",
+  "dstSavingsNotice": "警告，本应用不会计算夏令时 (DST)。请注意相应变化。当夏令时发生时，您需要重置设置选项卡中的 GPS 或时差。",
+  "beSeason_Today": "今天",
+  "beSeason_Past": "已过",
+  "beSeason_Remaining": "剩余"
 }

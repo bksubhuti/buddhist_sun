@@ -177,5 +177,8 @@
   "beTithi_13": "တေရသမံ",
   "beTithi_14": "စတုဒ္ဒသမံ",
   "beTithi_15": "ပဏ္ဏရသမံ",
-  "today_is": "ယနေ့သည် "
+  "today_is": "ယနေ့သည် ",
+  "beSeason_Today": "ယနေ့",
+  "beSeason_Past": "လွန်ခဲ့သော",
+  "beSeason_Remaining": "ကျန်ရှိသော"
 }
