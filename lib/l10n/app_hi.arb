@@ -173,5 +173,8 @@
   "today_is": "आज है ",
   "beSeason_Today": "आज",
   "beSeason_Past": "बीत चुका",
-  "beSeason_Remaining": "शेष"
+  "beSeason_Remaining": "शेष",
+  "showEighthDayUposatha": "अष्टमी उपोसथ दिखाएं",
+  "beWaxing8th": "शुक्ल अष्टमी",
+  "beWaning8th": "कृष्ण अष्टमी"
 }

@@ -104,82 +104,12 @@ class PoyaBottomSheet {
     );
   }
 
-  static void show(BuildContext context, DateTime selectedDate,
-      CalendarTradition tradition, AppLocalizations localizations) {
+  static Future<void> show(BuildContext context, DateTime selectedDate,
+      CalendarTradition tradition, AppLocalizations localizations) async {
     final int selectedYear = selectedDate.year;
-    final poyaList = BuddhavassaData.getPoyaList(tradition);
-    final poyasForSelectedYear = poyaList
-        .where((poyaDay) => poyaDay.date.startsWith(selectedYear.toString()))
-        .toList();
-
     final selectedDateString = DateFormat('yyyy-MM-dd').format(selectedDate);
 
-    // Find the index to highlight:
-    // - exact match if selected date is a poya, otherwise the next upcoming poya.
-    int highlightIndex = poyasForSelectedYear
-        .indexWhere((poyaDay) => poyaDay.date == selectedDateString);
-    final bool isSelectedPoya = highlightIndex >= 0;
-    if (!isSelectedPoya) {
-      highlightIndex = poyasForSelectedYear.indexWhere(
-          (poyaDay) => poyaDay.date.compareTo(selectedDateString) > 0);
-    }
-
-    // Compute pakkha season progress for the highlighted entry
-    String? seasonName;
-    int pakkhaToday = 0;
-    int pakkhaPast = 0;
-    int pakkhaRemaining = 0;
-    int pakkhaTotal = 0;
-
-    if (highlightIndex >= 0) {
-      final highlightedPoya = poyasForSelectedYear[highlightIndex];
-      final currentSeason = highlightedPoya.season;
-      seasonName = currentSeason;
-
-      // Find the contiguous block of the same season around the highlighted entry.
-      // Walk backward to find the start of this season block.
-      int seasonStart = highlightIndex;
-      while (seasonStart > 0 &&
-          poyasForSelectedYear[seasonStart - 1].season == currentSeason) {
-        seasonStart--;
-      }
-      // Walk forward to find the end of this season block.
-      int seasonEnd = highlightIndex;
-      while (seasonEnd < poyasForSelectedYear.length - 1 &&
-          poyasForSelectedYear[seasonEnd + 1].season == currentSeason) {
-        seasonEnd++;
-      }
-
-      // Count only actual pakkha days (those with a moonPhase), not special-only entries.
-      // Also determine the position of the highlighted entry among them.
-      int pakkhaPosition = 0; // 1-indexed position of highlighted entry
-      for (int j = seasonStart; j <= seasonEnd; j++) {
-        final mp = poyasForSelectedYear[j].moonPhase.toString().trim();
-        final hasMoon = mp.isNotEmpty && mp != 'NaN' && mp != 'null';
-        if (hasMoon) {
-          pakkhaTotal++;
-          if (j < highlightIndex) {
-            pakkhaPast++;
-          } else if (j == highlightIndex) {
-            pakkhaPosition = pakkhaTotal;
-          }
-        }
-      }
-      // If the highlighted entry itself is a pakkha day
-      final highlightMp = highlightedPoya.moonPhase.toString().trim();
-      final highlightHasMoon =
-          highlightMp.isNotEmpty && highlightMp != 'NaN' && highlightMp != 'null';
-      if (highlightHasMoon) {
-        pakkhaToday = pakkhaPosition;
-        pakkhaRemaining = pakkhaTotal - pakkhaToday;
-      } else {
-        // Highlighted entry is a special day (no moon phase) — show relative to nearest pakkha
-        pakkhaToday = pakkhaPast; // treat "today" as the count so far
-        pakkhaRemaining = pakkhaTotal - pakkhaPast;
-      }
-    }
-
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -188,274 +118,420 @@ class PoyaBottomSheet {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.85,
-          minChildSize: 0.4,
-          maxChildSize: 1.0,
-          expand: false,
-          builder: (context, scrollController) {
-            final GlobalKey highlightKey = GlobalKey();
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final bool show8th = Prefs.showEighthDayUposatha;
+            final poyaList = BuddhavassaData.getPoyaList(tradition,
+                includeEighthDays: show8th);
+            final poyasForSelectedYear = poyaList
+                .where((poyaDay) =>
+                    poyaDay.date.startsWith(selectedYear.toString()))
+                .toList();
 
-            if (highlightIndex >= 0) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  final highlightContext = highlightKey.currentContext;
-                  if (highlightContext != null) {
-                    Scrollable.ensureVisible(
-                      highlightContext,
-                      alignment: 0.5,
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOutCubic,
-                    );
-                  }
-                });
-              });
+            // Find the index to highlight:
+            // - exact match if selected date is a poya/8th day, otherwise the next upcoming poya.
+            int highlightIndex = poyasForSelectedYear
+                .indexWhere((poyaDay) => poyaDay.date == selectedDateString);
+            final bool isSelectedPoya = highlightIndex >= 0;
+            if (!isSelectedPoya) {
+              highlightIndex = poyasForSelectedYear.indexWhere(
+                  (poyaDay) => poyaDay.date.compareTo(selectedDateString) > 0);
             }
 
-            return Column(
-              children: [
-                const SizedBox(height: 12),
-                Container(
-                  width: 40,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(2.5),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$selectedYear ${localizations.bePoyaTitle}',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
-                ),
-                // Season pakkha progress header
-                if (highlightIndex >= 0 && seasonName != null && pakkhaTotal > 0)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 4),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
+            // Compute pakkha season progress for the highlighted entry based on major Pakkhas
+            String? seasonName;
+            int pakkhaToday = 0;
+            int pakkhaPast = 0;
+            int pakkhaRemaining = 0;
+            int pakkhaTotal = 0;
+
+            if (highlightIndex >= 0) {
+              final highlightedPoya = poyasForSelectedYear[highlightIndex];
+              final currentSeason = highlightedPoya.season;
+              seasonName = currentSeason;
+
+              // Find the contiguous block of the same season around the highlighted entry.
+              int seasonStart = highlightIndex;
+              while (seasonStart > 0 &&
+                  poyasForSelectedYear[seasonStart - 1].season == currentSeason) {
+                seasonStart--;
+              }
+              int seasonEnd = highlightIndex;
+              while (seasonEnd < poyasForSelectedYear.length - 1 &&
+                  poyasForSelectedYear[seasonEnd + 1].season == currentSeason) {
+                seasonEnd++;
+              }
+
+              // Count canonical major pakkhas (Full/New Moon) for the season stats
+              int pakkhaPosition = 0;
+              for (int j = seasonStart; j <= seasonEnd; j++) {
+                final mp = poyasForSelectedYear[j].moonPhase.toString().trim();
+                final isMajorPakkha = (mp == "FullMoon" || mp == "NewMoon");
+                if (isMajorPakkha) {
+                  pakkhaTotal++;
+                  if (j < highlightIndex) {
+                    pakkhaPast++;
+                  } else if (j == highlightIndex) {
+                    pakkhaPosition = pakkhaTotal;
+                  }
+                }
+              }
+
+              final highlightMp = highlightedPoya.moonPhase.toString().trim();
+              if (highlightMp == "FullMoon" || highlightMp == "NewMoon") {
+                pakkhaToday = pakkhaPosition;
+                pakkhaRemaining = pakkhaTotal - pakkhaToday;
+              } else {
+                pakkhaToday = pakkhaPast;
+                pakkhaRemaining = pakkhaTotal - pakkhaPast;
+              }
+            }
+
+            return DraggableScrollableSheet(
+              initialChildSize: 0.85,
+              minChildSize: 0.4,
+              maxChildSize: 1.0,
+              expand: false,
+              builder: (context, scrollController) {
+                final GlobalKey highlightKey = GlobalKey();
+
+                if (highlightIndex >= 0) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Future.delayed(const Duration(milliseconds: 300), () {
+                      final highlightContext = highlightKey.currentContext;
+                      if (highlightContext != null) {
+                        Scrollable.ensureVisible(
+                          highlightContext,
+                          alignment: 0.5,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeOutCubic,
+                        );
+                      }
+                    });
+                  });
+                }
+
+                return Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    Container(
+                      width: 40,
+                      height: 5,
                       decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(2.5),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _seasonStatColumn(
-                              context, localizations.beSeason_Today, '$pakkhaToday'),
-                          _seasonStatColumn(
-                              context, localizations.beSeason_Past, '$pakkhaPast'),
-                          _seasonStatColumn(context,
-                              localizations.beSeason_Remaining, '$pakkhaRemaining'),
-                          _seasonStatColumn(context,
-                              _translateSeason(seasonName!, localizations),
-                              '$pakkhaTotal'),
+                          Text(
+                            '$selectedYear ${localizations.bePoyaTitle}',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    localizations.beTithi_8,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Transform.scale(
+                                    scale: 0.85,
+                                    child: Switch(
+                                      value: show8th,
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      onChanged: (val) {
+                                        Prefs.showEighthDayUposatha = val;
+                                        setModalState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 4),
+                              IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                const Divider(height: 1),
-                Expanded(
-                  child: poyasForSelectedYear.isEmpty
-                      ? const Center(child: Text("No Data"))
-                      : SingleChildScrollView(
-                          controller: scrollController,
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: () {
-                              final List<Widget> listItems = [];
-
-                              for (int i = 0;
-                                  i < poyasForSelectedYear.length;
-                                  i++) {
-                                final poyaDay = poyasForSelectedYear[i];
-                                final poyaDate = DateTime.parse(poyaDay.date);
-
-                                final bool isHighlight = (i == highlightIndex);
-                                Color? normalCardColor;
-                                if (isHighlight) {
-                                  normalCardColor = isSelectedPoya
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .tertiaryContainer;
-                                }
-
-                                // Safely handle properties (in case they parse as 'NaN' or null from CSV)
-                                final String moonPhaseStr =
-                                    poyaDay.moonPhase.toString().trim();
-                                final bool hasMoonPhase =
-                                    moonPhaseStr.isNotEmpty &&
-                                        moonPhaseStr != 'NaN' &&
-                                        moonPhaseStr != 'null';
-
-                                final String specialStr =
-                                    poyaDay.special.toString().trim();
-                                final bool hasSpecial = specialStr.isNotEmpty &&
-                                    specialStr != 'NaN' &&
-                                    specialStr != 'null';
-
-                                final String pakkhaStr =
-                                    poyaDay.pakkhaType.toString().trim();
-
-                                // 1. Render normal moon phase (Full/New Moon with 14 or 15 days count)
-                                if (hasMoonPhase) {
-                                  final localizedMoonPhaseName = moonPhaseStr
-                                      .replaceAll(
-                                          "FullMoon", localizations.beFullMoon)
-                                      .replaceAll(
-                                          "NewMoon", localizations.beNewMoon);
-
-                                  listItems.add(
-                                    Card(
-                                      key: isHighlight ? highlightKey : null,
-                                      color: normalCardColor,
-                                      child: ListTile(
-                                        dense: true,
-                                        onTap: () => _showSolarTimesDialog(
-                                            context, poyaDate, localizations),
-                                        leading: Text(
-                                          DateFormat('MMM dd').format(poyaDate),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: isHighlight
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimaryContainer
-                                                : null,
-                                          ),
-                                        ),
-                                        title: Text(
-                                          '$localizedMoonPhaseName $pakkhaStr'
-                                              .trim(),
-                                          style: TextStyle(
-                                            fontWeight: isHighlight
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
-                                          ),
-                                        ),
-                                        trailing: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              _translateSeason(
-                                                  poyaDay.season, localizations),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: const CircleBorder(),
-                                                padding: EdgeInsets.zero,
-                                                minimumSize: const Size(36, 36),
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                elevation: 2,
-                                              ),
-                                              onPressed: () => _showSolarTimesDialog(
-                                                  context, poyaDate, localizations),
-                                              child: const Icon(
-                                                Icons.info_outline,
-                                                size: 20,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                // 2. Render special entries (Vassa entry or pushed Pavāraṇā entry)
-                                if (hasSpecial) {
-                                  listItems.add(
-                                    Card(
-                                      // Only attach highlightKey here if this special item is the ONLY one for the day (e.g., Vassa)
-                                      key: (isHighlight && !hasMoonPhase)
-                                          ? highlightKey
-                                          : null,
-                                      color: normalCardColor,
-                                      child: ListTile(
-                                        dense: true,
-                                        onTap: () => _showSolarTimesDialog(
-                                            context, poyaDate, localizations),
-                                        leading: Text(
-                                          DateFormat('MMM dd').format(poyaDate),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: isHighlight
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimaryContainer
-                                                : null,
-                                          ),
-                                        ),
-                                        title: Text(
-                                          '$specialStr',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight
-                                                .bold, // Distinguish special day with bold text
-                                          ),
-                                        ),
-                                        trailing: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              _translateSeason(
-                                                  poyaDay.season, localizations),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: const CircleBorder(),
-                                                padding: EdgeInsets.zero,
-                                                minimumSize: const Size(36, 36),
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                elevation: 2,
-                                              ),
-                                              onPressed: () => _showSolarTimesDialog(
-                                                  context, poyaDate, localizations),
-                                              child: const Icon(
-                                                Icons.info_outline,
-                                                size: 20,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                              return listItems;
-                            }(),
+                    // Season pakkha progress header
+                    if (highlightIndex >= 0 &&
+                        seasonName != null &&
+                        pakkhaTotal > 0)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _seasonStatColumn(context,
+                                  localizations.beSeason_Today, '$pakkhaToday'),
+                              _seasonStatColumn(context,
+                                  localizations.beSeason_Past, '$pakkhaPast'),
+                              _seasonStatColumn(
+                                  context,
+                                  localizations.beSeason_Remaining,
+                                  '$pakkhaRemaining'),
+                              _seasonStatColumn(
+                                  context,
+                                  _translateSeason(
+                                      seasonName, localizations),
+                                  '$pakkhaTotal'),
+                            ],
                           ),
                         ),
-                ),
-              ],
+                      ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: poyasForSelectedYear.isEmpty
+                          ? const Center(child: Text("No Data"))
+                          : SingleChildScrollView(
+                              controller: scrollController,
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: () {
+                                  final List<Widget> listItems = [];
+
+                                  for (int i = 0;
+                                      i < poyasForSelectedYear.length;
+                                      i++) {
+                                    final poyaDay = poyasForSelectedYear[i];
+                                    final poyaDate =
+                                        DateTime.parse(poyaDay.date);
+
+                                    final bool isHighlight =
+                                        (i == highlightIndex);
+                                    Color? normalCardColor;
+                                    if (isHighlight) {
+                                      normalCardColor = isSelectedPoya
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .tertiaryContainer;
+                                    }
+
+                                    // Safely handle properties
+                                    final String moonPhaseStr =
+                                        poyaDay.moonPhase.toString().trim();
+                                    final bool hasMoonPhase =
+                                        moonPhaseStr.isNotEmpty &&
+                                            moonPhaseStr != 'NaN' &&
+                                            moonPhaseStr != 'null';
+
+                                    final String specialStr =
+                                        poyaDay.special.toString().trim();
+                                    final bool hasSpecial =
+                                        specialStr.isNotEmpty &&
+                                            specialStr != 'NaN' &&
+                                            specialStr != 'null';
+
+                                    final String pakkhaStr =
+                                        poyaDay.pakkhaType.toString().trim();
+
+                                    // 1. Render normal moon phase (Full/New Moon, or 8th Days)
+                                    if (hasMoonPhase) {
+                                      final isEighthDay =
+                                          moonPhaseStr == "Waxing8th" ||
+                                              moonPhaseStr == "Waning8th";
+                                      final localizedMoonPhaseName =
+                                          moonPhaseStr
+                                              .replaceAll("FullMoon",
+                                                  localizations.beFullMoon)
+                                              .replaceAll("NewMoon",
+                                                  localizations.beNewMoon)
+                                              .replaceAll("Waxing8th",
+                                                  localizations.beWaxing8th)
+                                              .replaceAll("Waning8th",
+                                                  localizations.beWaning8th);
+
+                                      final titleText = isEighthDay
+                                          ? localizedMoonPhaseName
+                                          : '$localizedMoonPhaseName $pakkhaStr'
+                                              .trim();
+
+                                      listItems.add(
+                                        Card(
+                                          key:
+                                              isHighlight ? highlightKey : null,
+                                          color: normalCardColor,
+                                          child: ListTile(
+                                            dense: true,
+                                            onTap: () => _showSolarTimesDialog(
+                                                context,
+                                                poyaDate,
+                                                localizations),
+                                            leading: Text(
+                                              DateFormat('MMM dd')
+                                                  .format(poyaDate),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: isHighlight
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                    : null,
+                                              ),
+                                            ),
+                                            title: Text(
+                                              titleText,
+                                              style: TextStyle(
+                                                fontWeight: isHighlight
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                              ),
+                                            ),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  _translateSeason(
+                                                      poyaDay.season,
+                                                      localizations),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    shape: const CircleBorder(),
+                                                    padding: EdgeInsets.zero,
+                                                    minimumSize:
+                                                        const Size(36, 36),
+                                                    tapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap,
+                                                    elevation: 2,
+                                                  ),
+                                                  onPressed: () =>
+                                                      _showSolarTimesDialog(
+                                                          context,
+                                                          poyaDate,
+                                                          localizations),
+                                                  child: const Icon(
+                                                    Icons.info_outline,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    // 2. Render special entries (Vassa entry or pushed Pavāraṇā entry)
+                                    if (hasSpecial) {
+                                      listItems.add(
+                                        Card(
+                                          key: (isHighlight && !hasMoonPhase)
+                                              ? highlightKey
+                                              : null,
+                                          color: normalCardColor,
+                                          child: ListTile(
+                                            dense: true,
+                                            onTap: () => _showSolarTimesDialog(
+                                                context,
+                                                poyaDate,
+                                                localizations),
+                                            leading: Text(
+                                              DateFormat('MMM dd')
+                                                  .format(poyaDate),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: isHighlight
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .onPrimaryContainer
+                                                    : null,
+                                              ),
+                                            ),
+                                            title: Text(
+                                              specialStr,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  _translateSeason(
+                                                      poyaDay.season,
+                                                      localizations),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    shape: const CircleBorder(),
+                                                    padding: EdgeInsets.zero,
+                                                    minimumSize:
+                                                        const Size(36, 36),
+                                                    tapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap,
+                                                    elevation: 2,
+                                                  ),
+                                                  onPressed: () =>
+                                                      _showSolarTimesDialog(
+                                                          context,
+                                                          poyaDate,
+                                                          localizations),
+                                                  child: const Icon(
+                                                    Icons.info_outline,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  return listItems;
+                                }(),
+                              ),
+                            ),
+                    ),
+                  ],
+                );
+              },
             );
           },
         );

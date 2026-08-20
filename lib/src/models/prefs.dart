@@ -60,6 +60,8 @@ const String UPOSATHA_NOTIFICATION_TIME = "uposathaNotificationTime";
 
 const int DEFAULT_BEFORE_UPOSATHA_NOTIFICATION_DAYS = 1;
 const String DEFAULT_UPOSATHA_NOTIFICATION_TIME = "06:00";
+const String SHOW_EIGHTH_DAY_UPOSATHA = "showEighthDayUposatha";
+const bool DEFAULT_SHOW_EIGHTH_DAY_UPOSATHA = true;
 
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
@@ -213,6 +215,12 @@ class Prefs {
       DEFAULT_BEFORE_UPOSATHA_NOTIFICATION_DAYS;
   static set beforeUposathaNotificationDays(int value) =>
       instance.setInt(BEFORE_UPOSATHA_NOTIFICATION_DAYS, value);
+
+  static bool get showEighthDayUposatha =>
+      instance.getBool(SHOW_EIGHTH_DAY_UPOSATHA) ??
+      DEFAULT_SHOW_EIGHTH_DAY_UPOSATHA;
+  static set showEighthDayUposatha(bool value) =>
+      instance.setBool(SHOW_EIGHTH_DAY_UPOSATHA, value);
 
   static TimeOfDay get uposathaNotificationTime {
     final stored = instance.getString(UPOSATHA_NOTIFICATION_TIME) ??

@@ -173,5 +173,8 @@
   "beTithi_12": "Dvādasamam",
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
-  "beTithi_15": "Paṇṇarasamam"
+  "beTithi_15": "Paṇṇarasamam",
+  "showEighthDayUposatha": "অষ্টমী উপোসথ দেখান",
+  "beWaxing8th": "শুক্ল অষ্টমী",
+  "beWaning8th": "কৃষ্ণ অষ্টমী"
 }

@@ -198,5 +198,8 @@
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam",
-  "today_is": "Today is"
+  "today_is": "Today is",
+  "showEighthDayUposatha": "Show 8th Day Uposatha",
+  "beWaxing8th": "Waxing 8th",
+  "beWaning8th": "Waning 8th"
 }

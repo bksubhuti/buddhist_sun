@@ -46,6 +46,8 @@ class BuddhavassaLocalization {
   final String poyaSuffix;
   final String fullMoon;
   final String newMoon;
+  final String waxing8th;
+  final String waning8th;
   final String pakshaSukka;
   final String pakshaKanha;
   final List<String> animals;
@@ -60,6 +62,8 @@ class BuddhavassaLocalization {
     required this.poyaSuffix,
     required this.fullMoon,
     required this.newMoon,
+    required this.waxing8th,
+    required this.waning8th,
     required this.pakshaSukka,
     required this.pakshaKanha,
     required this.animals,
@@ -72,12 +76,15 @@ class BuddhavassaLocalization {
 }
 
 class BuddhavassaCalculator {
-  static bool _isValidMoonPhase(String phase) {
-    return phase == "FullMoon" || phase == "NewMoon";
+  static bool _isValidMoonPhase(String phase, {bool include8th = false}) {
+    if (phase == "FullMoon" || phase == "NewMoon") return true;
+    if (include8th && (phase == "Waxing8th" || phase == "Waning8th")) return true;
+    return false;
   }
 
   static BuddhavassaCalculation calculate(
-      DateTime d, BuddhavassaLocalization loc, List<PoyaDay> poyaList) {
+      DateTime d, BuddhavassaLocalization loc, List<PoyaDay> poyaList,
+      {bool includeEighthDays = false}) {
     // Normalize input date to midnight
     d = DateTime(d.year, d.month, d.day);
     final String ds = DateFormat('yyyy-MM-dd').format(d);
@@ -150,23 +157,33 @@ class BuddhavassaCalculator {
     }
     bM = (bM <= 0) ? totM : (bM > totM ? totM : bM);
 
-    // FILTER FIX: Only consider actual Full/New moons for the "Next Poya" calculation
+    // Only consider actual Full/New moons (or 8th days if enabled) for the "Next Poya" calculation
     final nextPoyas = poyaList
         .where((p) =>
-            _isValidMoonPhase(p.moonPhase) &&
+            _isValidMoonPhase(p.moonPhase, include8th: includeEighthDays) &&
             DateTime.parse(p.date).millisecondsSinceEpoch >= time)
         .toList();
     final PoyaDay? nextP = nextPoyas.isNotEmpty ? nextPoyas.first : null;
 
-    // FILTER FIX: Ensure today is only marked as Poya if it is an actual Full/New moon
+    // Ensure today is only marked as Poya if it is an actual Full/New moon (or 8th day if enabled)
     final todayPoyas = poyaList
-        .where((p) => p.date == ds && _isValidMoonPhase(p.moonPhase))
+        .where((p) =>
+            p.date == ds &&
+            _isValidMoonPhase(p.moonPhase, include8th: includeEighthDays))
         .toList();
     final PoyaDay? todayP = todayPoyas.isNotEmpty ? todayPoyas.first : null;
 
     String poyaName = "";
     if (todayP != null) {
-      poyaName = (todayP.moonPhase == "FullMoon") ? loc.fullMoon : loc.newMoon;
+      if (todayP.moonPhase == "FullMoon") {
+        poyaName = loc.fullMoon;
+      } else if (todayP.moonPhase == "NewMoon") {
+        poyaName = loc.newMoon;
+      } else if (todayP.moonPhase == "Waxing8th") {
+        poyaName = loc.waxing8th;
+      } else if (todayP.moonPhase == "Waning8th") {
+        poyaName = loc.waning8th;
+      }
     }
 
     final String poyaStatus =
@@ -225,15 +242,16 @@ class BuddhavassaCalculator {
       final DateTime targetD = DateTime.parse(nextP.date);
       statusAvasitthaD = targetD.difference(d).inDays;
 
+      final String poyaNameLocalized = nextP.moonPhase
+          .replaceAll("FullMoon", loc.fullMoon)
+          .replaceAll("NewMoon", loc.newMoon)
+          .replaceAll("Waxing8th", loc.waxing8th)
+          .replaceAll("Waning8th", loc.waning8th);
+
       if (statusAvasitthaD == 0) {
         isPoyaDay = true;
-        poyaMessage = nextP.moonPhase
-            .replaceAll("FullMoon", loc.fullMoon)
-            .replaceAll("NewMoon", loc.newMoon);
+        poyaMessage = poyaNameLocalized;
       } else {
-        final String poyaNameLocalized = nextP.moonPhase
-            .replaceAll("FullMoon", loc.fullMoon)
-            .replaceAll("NewMoon", loc.newMoon);
         poyaMessage = loc.daysToPoya(statusAvasitthaD, poyaNameLocalized);
       }
     }

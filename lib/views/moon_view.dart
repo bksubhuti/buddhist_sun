@@ -160,10 +160,10 @@ class _MoonPageState extends State<MoonPage> {
                       Flexible(
                         child: ColoredText(
                           _isTodayUposatha
-                              ? "${AppLocalizations.of(context)!.today_is} ${_todayPoya!.moonPhase.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}"
+                              ? "${AppLocalizations.of(context)!.today_is} ${_formatMoonPhaseName(_todayPoya!.moonPhase, AppLocalizations.of(context)!)}"
                               : (_noNextUposathaData
                                   ? "No Data"
-                                  : "${AppLocalizations.of(context)!.next}  ${_nextFullOrNewmoon.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}: ${_nextUposatha.year}-${_nextUposatha.month}-${_nextUposatha.day}"),
+                                  : "${AppLocalizations.of(context)!.next}  ${_formatMoonPhaseName(_nextFullOrNewmoon, AppLocalizations.of(context)!)}: ${_nextUposatha.year}-${_nextUposatha.month}-${_nextUposatha.day}"),
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -177,8 +177,10 @@ class _MoonPageState extends State<MoonPage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {
-                          PoyaBottomSheet.show(context, selectedDate, _tradition, AppLocalizations.of(context)!);
+                        onPressed: () async {
+                          await PoyaBottomSheet.show(context, selectedDate, _tradition, AppLocalizations.of(context)!);
+                          _calculateNextUposatha();
+                          setState(() {});
                         },
                         child: const Icon(Icons.event_note),
                       ),
@@ -279,14 +281,28 @@ class _MoonPageState extends State<MoonPage> {
     print('Lunar Illumination: $illumination%');
   }
 
+  String _formatMoonPhaseName(String phase, AppLocalizations loc) {
+    return phase
+        .replaceAll('FullMoon', loc.beFullMoon)
+        .replaceAll('NewMoon', loc.beNewMoon)
+        .replaceAll('Waxing8th', loc.beWaxing8th)
+        .replaceAll('Waning8th', loc.beWaning8th);
+  }
+
   _calculateNextUposatha() {
-    final poyaList = BuddhavassaData.getPoyaList(_tradition);
+    final poyaList = BuddhavassaData.getPoyaList(_tradition,
+        includeEighthDays: Prefs.showEighthDayUposatha);
     String currentDateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     
     _todayPoya = null;
     _isTodayUposatha = false;
     for (var poya in poyaList) {
-      if (poya.date == currentDateStr && (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
+      if (poya.date == currentDateStr &&
+          (poya.moonPhase == "FullMoon" ||
+              poya.moonPhase == "NewMoon" ||
+              (Prefs.showEighthDayUposatha &&
+                  (poya.moonPhase == "Waxing8th" ||
+                      poya.moonPhase == "Waning8th")))) {
         _todayPoya = poya;
         _isTodayUposatha = true;
         break;
@@ -295,7 +311,12 @@ class _MoonPageState extends State<MoonPage> {
 
     PoyaDay? nextPoya;
     for (var poya in poyaList) {
-      if (poya.date.compareTo(currentDateStr) > 0 && (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
+      if (poya.date.compareTo(currentDateStr) > 0 &&
+          (poya.moonPhase == "FullMoon" ||
+              poya.moonPhase == "NewMoon" ||
+              (Prefs.showEighthDayUposatha &&
+                  (poya.moonPhase == "Waxing8th" ||
+                      poya.moonPhase == "Waning8th")))) {
         nextPoya = poya;
         break;
       }
@@ -303,11 +324,6 @@ class _MoonPageState extends State<MoonPage> {
 
     if (nextPoya != null) {
       _nextUposatha = DateTime.parse(nextPoya.date);
-      // We don't have context in initState, so we can't use AppLocalizations here easily if we want to replace FullMoon/NewMoon string here. 
-      // We will just store it directly for now, or use English as a fallback if context isn't ready. 
-      // Wait, _calculateNextUposatha is called in initState, so we can't use AppLocalizations.of(context) safely.
-      // So let's store the raw string, but it seems before it was just "fullmoon", "newmoon", etc.
-      // We can just set it to the raw moonPhase text from the CSV.
       _nextFullOrNewmoon = nextPoya.moonPhase;
       _noNextUposathaData = false;
     } else {

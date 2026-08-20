@@ -29,6 +29,12 @@ class BuddhavassaData {
     CalendarTradition.myanmar: [],
   };
 
+  static final Map<CalendarTradition, List<PoyaDay>> _calendarsWith8thDays = {
+    CalendarTradition.sriLanka: [],
+    CalendarTradition.thai: [],
+    CalendarTradition.myanmar: [],
+  };
+
   static String paliTemplate(String template, String a, String s, String m,
       String p, String t, String w) {
     return template
@@ -151,6 +157,47 @@ class BuddhavassaData {
         await _loadCsv('assets/calendars/thai.csv');
     _calendars[CalendarTradition.myanmar] =
         await _loadCsv('assets/calendars/myanmar.csv');
+
+    for (var tradition in CalendarTradition.values) {
+      _calendarsWith8thDays[tradition] =
+          _generate8thDays(_calendars[tradition] ?? []);
+    }
+  }
+
+  static List<PoyaDay> _generate8thDays(List<PoyaDay> baseList) {
+    final List<PoyaDay> fullList = List<PoyaDay>.from(baseList);
+    final moonPhaseDays = baseList
+        .where((p) => p.moonPhase == "FullMoon" || p.moonPhase == "NewMoon")
+        .toList();
+
+    for (int i = 0; i < moonPhaseDays.length - 1; i++) {
+      final prev = moonPhaseDays[i];
+      final curr = moonPhaseDays[i + 1];
+      try {
+        final prevDate = DateTime.parse(prev.date);
+        final eighthDate = prevDate.add(const Duration(days: 8));
+        final dateStr =
+            '${eighthDate.year.toString().padLeft(4, '0')}-${eighthDate.month.toString().padLeft(2, '0')}-${eighthDate.day.toString().padLeft(2, '0')}';
+
+        final String eighthPhase =
+            (curr.moonPhase == "FullMoon") ? "Waxing8th" : "Waning8th";
+
+        fullList.add(PoyaDay(
+          date: dateStr,
+          moonPhase: eighthPhase,
+          season: curr.season,
+          month: curr.month,
+          poyaName: curr.poyaName,
+          pakkhaType: "8",
+          special: '',
+        ));
+      } catch (e) {
+        print('Error generating 8th day between ${prev.date} and ${curr.date}: $e');
+      }
+    }
+
+    fullList.sort((a, b) => a.date.compareTo(b.date));
+    return fullList;
   }
 
   static Future<List<PoyaDay>> _loadCsv(String path) async {
@@ -180,7 +227,13 @@ class BuddhavassaData {
     return list;
   }
 
-  static List<PoyaDay> getPoyaList(CalendarTradition tradition) {
+  static List<PoyaDay> getPoyaList(CalendarTradition tradition,
+      {bool includeEighthDays = false}) {
+    if (includeEighthDays) {
+      return _calendarsWith8thDays[tradition] ??
+          _calendarsWith8thDays[CalendarTradition.sriLanka] ??
+          [];
+    }
     return _calendars[tradition] ?? _calendars[CalendarTradition.sriLanka]!;
   }
 }

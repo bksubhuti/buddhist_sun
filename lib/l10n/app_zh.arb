@@ -377,5 +377,8 @@
   "dstSavingsNotice": "警告，本应用不会计算夏令时 (DST)。请注意相应变化。当夏令时发生时，您需要重置设置选项卡中的 GPS 或时差。",
   "beSeason_Today": "今天",
   "beSeason_Past": "已过",
-  "beSeason_Remaining": "剩余"
+  "beSeason_Remaining": "剩余",
+  "showEighthDayUposatha": "显示初八/廿三布萨日",
+  "beWaxing8th": "上弦月 (初八)",
+  "beWaning8th": "下弦月 (廿三)"
 }

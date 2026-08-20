@@ -201,34 +201,37 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
   // ---------------------------------------------------
   if (beforeDays > 0) {
     if (beforeTime.isAfter(now)) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        beforeId,
-        "Uposatha Coming Soon",
-        "$beforeDays days until Uposatha.",
-        beforeTime,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'uposatha_channel',
-            'Uposatha Reminders',
-            channelDescription: 'Day-before reminder',
-            importance: Importance.max,
-            priority: Priority.high,
+      try {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          beforeId,
+          "Uposatha Coming Soon",
+          "$beforeDays days until Uposatha.",
+          beforeTime,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'uposatha_channel',
+              'Uposatha Reminders',
+              channelDescription: 'Day-before reminder',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
+            macOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
           ),
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ),
-          macOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      );
-
-      debugPrint("🟢 Before-notification scheduled for $beforeTime");
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        );
+        debugPrint("🟢 Before-notification scheduled for $beforeTime");
+      } catch (e) {
+        debugPrint("❌ Failed to schedule before-notification: $e");
+      }
     } else {
       debugPrint("⏩ Skipping before-notification (already past)");
     }
@@ -240,34 +243,37 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
   // ---------------------------------------------------
   // 2️⃣ DAY-OF NOTIFICATION (always delivered)
   // ---------------------------------------------------
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    dayOfId,
-    "Uposatha Today",
-    "Today is Uposatha Day.",
-    dayOfTime,
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'uposatha_channel',
-        'Uposatha Reminders',
-        channelDescription: 'Day-of reminder',
-        importance: Importance.max,
-        priority: Priority.high,
+  try {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      dayOfId,
+      "Uposatha Today",
+      "Today is Uposatha Day.",
+      dayOfTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'uposatha_channel',
+          'Uposatha Reminders',
+          channelDescription: 'Day-of reminder',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+        macOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
-      iOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
-      macOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
-    ),
-    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  );
-
-  debugPrint("🟢 Day-of scheduled for $dayOfTime");
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+    debugPrint("🟢 Day-of scheduled for $dayOfTime");
+  } catch (e) {
+    debugPrint("❌ Failed to schedule day-of notification: $e");
+  }
 }
 
 // ===============================================================
@@ -415,7 +421,7 @@ Future<void> showInstantNotification() async {
 /// Works 100% once the MP3 files are properly encoded (your bell.mp3 proves it)
 /// 2. TEST FUNCTION – now works perfectly with different sounds
 Future<void> doFourTimerTest() async {
-  await flutterLocalNotificationsPlugin.cancelAll();
+  await cancelAllTimerNotifications();
 
   final now = tz.TZDateTime.now(tz.local);
 
@@ -565,7 +571,7 @@ Future<void> scheduleAllTimerNotifications({
 
     final fireTime = tzTarget.subtract(Duration(minutes: minutesBefore));
     if (fireTime
-        .isBefore(DateTime.now().subtract(const Duration(seconds: 30)))) {
+        .isBefore(tz.TZDateTime.now(tz.local).subtract(const Duration(seconds: 30)))) {
       continue; // skip if way in the past
     }
 
@@ -580,16 +586,19 @@ Future<void> scheduleAllTimerNotifications({
       audioAttributesUsage: AudioAttributesUsage.notification,
     );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId,
-      '$minutesBefore minute${minutesBefore == 1 ? '' : 's'} remaining',
-      null,
-      tz.TZDateTime.from(fireTime, tz.local),
-      NotificationDetails(android: androidDetails),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
-
-    debugPrint("Scheduled ID $notificationId → $soundName.mp3 at $fireTime");
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        notificationId,
+        '$minutesBefore minute${minutesBefore == 1 ? '' : 's'} remaining',
+        null,
+        tz.TZDateTime.from(fireTime, tz.local),
+        NotificationDetails(android: androidDetails),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+      debugPrint("Scheduled ID $notificationId → $soundName.mp3 at $fireTime");
+    } catch (e) {
+      debugPrint("❌ Failed to schedule timer notification $notificationId: $e");
+    }
   }
 
   debugPrint("All timer voices scheduled for target: $targetTime");
@@ -619,14 +628,18 @@ Future<void> doElevenLabsCountdownTest() async {
       audioAttributesUsage: AudioAttributesUsage.notification,
     );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      7000 + index,
-      a['title'] as String,
-      null,
-      tz.TZDateTime.from(now.add(Duration(seconds: a['sec'] as int)), tz.local),
-      NotificationDetails(android: androidDetails),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        7000 + index,
+        a['title'] as String,
+        null,
+        tz.TZDateTime.from(now.add(Duration(seconds: a['sec'] as int)), tz.local),
+        NotificationDetails(android: androidDetails),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    } catch (e) {
+      debugPrint("❌ Failed to schedule test notification: $e");
+    }
     index++;
   }
 

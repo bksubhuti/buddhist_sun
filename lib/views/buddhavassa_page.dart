@@ -72,6 +72,8 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
       poyaSuffix: l.bePoyaSuffix,
       fullMoon: l.beFullMoon,
       newMoon: l.beNewMoon,
+      waxing8th: l.beWaxing8th,
+      waning8th: l.beWaning8th,
       pakshaSukka: l.bePaksha_Sukka,
       pakshaKanha: l.bePaksha_Kanha,
       animals: [
@@ -138,8 +140,10 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
       daysToPoya: (days, poya) => l.beDaysToPoya(days.toString(), poya),
     );
 
-    final poyaList = BuddhavassaData.getPoyaList(_tradition);
-    final calc = BuddhavassaCalculator.calculate(_selectedDate, loc, poyaList);
+    final poyaList = BuddhavassaData.getPoyaList(_tradition,
+        includeEighthDays: Prefs.showEighthDayUposatha);
+    final calc = BuddhavassaCalculator.calculate(_selectedDate, loc, poyaList,
+        includeEighthDays: Prefs.showEighthDayUposatha);
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -178,6 +182,34 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 8),
+            // Switch for 8th Day Uposatha
+            Card(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l.showEighthDayUposatha,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Switch(
+                      value: Prefs.showEighthDayUposatha,
+                      onChanged: (bool value) {
+                        setState(() {
+                          Prefs.showEighthDayUposatha = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             // Date picker row
@@ -365,8 +397,11 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
     }
   }
 
-  void _showPoyaModal(AppLocalizations l) {
-    PoyaBottomSheet.show(context, _selectedDate, _tradition, l);
+  void _showPoyaModal(AppLocalizations l) async {
+    await PoyaBottomSheet.show(context, _selectedDate, _tradition, l);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _showVasModal(AppLocalizations l) {

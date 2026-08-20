@@ -112,6 +112,7 @@ Future<void> main() async {
 
   // Finally schedule
   if (Prefs.uposathaNotificationsEnabled) {
+    await requestPermissions();
     await cancelAllUposathaNotifications();
     await scheduleUpcomingUposathaNotifications();
   }

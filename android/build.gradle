@@ -2,7 +2,7 @@
 
 // Keep only what you actually use; no need for plugin classpaths here anymore.
 buildscript {
-    ext.app_version = '8.10.0'
+    ext.app_version = '8.11.1'
     repositories {
         google()
         mavenCentral()

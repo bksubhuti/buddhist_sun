@@ -377,5 +377,8 @@
   "today_is": "Hôm nay là ",
   "beSeason_Today": "Hôm nay",
   "beSeason_Past": "Đã qua",
-  "beSeason_Remaining": "Còn lại"
+  "beSeason_Remaining": "Còn lại",
+  "showEighthDayUposatha": "Hiển thị ngày Bát quan trai mùng 8 / 23",
+  "beWaxing8th": "Mùng 8 (Trăng thượng huyền)",
+  "beWaning8th": "23 (Trăng hạ huyền)"
 }

@@ -173,5 +173,8 @@
   "beTithi_13": "Terasamam",
   "beTithi_14": "Cuddasamam",
   "beTithi_15": "Paṇṇarasamam",
-  "today_is": "Hoy es"
+  "today_is": "Hoy es",
+  "showEighthDayUposatha": "Mostrar Uposatha del 8º día",
+  "beWaxing8th": "Cuarto creciente (Día 8)",
+  "beWaning8th": "Cuarto menguante (Día 8)"
 }

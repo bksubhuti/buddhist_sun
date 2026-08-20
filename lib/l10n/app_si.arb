@@ -173,5 +173,8 @@
   "proceed": "ඉදිරියට යන්න",
   "beSeason_Today": "අද",
   "beSeason_Past": "පසුගිය",
-  "beSeason_Remaining": "ඉතිරි"
+  "beSeason_Remaining": "ඉතිරි",
+  "showEighthDayUposatha": "අටවක පොහොය පෙන්වන්න",
+  "beWaxing8th": "පුර අටවක",
+  "beWaning8th": "අව අටවක"
 }

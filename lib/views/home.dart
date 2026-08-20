@@ -136,6 +136,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     return 100 - (1 - result / (2 * pi)) * 100;
   }
 
+  String _formatMoonPhaseName(String phase, AppLocalizations loc) {
+    return phase
+        .replaceAll('FullMoon', loc.beFullMoon)
+        .replaceAll('NewMoon', loc.beNewMoon)
+        .replaceAll('Waxing8th', loc.beWaxing8th)
+        .replaceAll('Waning8th', loc.beWaning8th);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
@@ -158,14 +166,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       final String fortnightDay = mmDate.getFortnightDay();
 
       // Next uposatha
-      final poyaList = BuddhavassaData.getPoyaList(_tradition);
+      final poyaList = BuddhavassaData.getPoyaList(_tradition,
+          includeEighthDays: Prefs.showEighthDayUposatha);
       final String currentDateStr = DateFormat('yyyy-MM-dd').format(today);
 
       PoyaDay? todayPoya;
       bool isTodayUposatha = false;
       for (var poya in poyaList) {
         if (poya.date == currentDateStr &&
-            (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
+            (poya.moonPhase == "FullMoon" ||
+                poya.moonPhase == "NewMoon" ||
+                (Prefs.showEighthDayUposatha &&
+                    (poya.moonPhase == "Waxing8th" ||
+                        poya.moonPhase == "Waning8th")))) {
           todayPoya = poya;
           isTodayUposatha = true;
           break;
@@ -176,7 +189,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       if (!isTodayUposatha) {
         for (var poya in poyaList) {
           if (poya.date.compareTo(currentDateStr) > 0 &&
-              (poya.moonPhase == "FullMoon" || poya.moonPhase == "NewMoon")) {
+              (poya.moonPhase == "FullMoon" ||
+                  poya.moonPhase == "NewMoon" ||
+                  (Prefs.showEighthDayUposatha &&
+                      (poya.moonPhase == "Waxing8th" ||
+                          poya.moonPhase == "Waning8th")))) {
             nextPoya = poya;
             break;
           }
@@ -401,9 +418,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       Flexible(
                         child: ColoredText(
                           isTodayUposatha
-                              ? "${AppLocalizations.of(context)!.today_is} ${todayPoya!.moonPhase.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}"
+                              ? "${AppLocalizations.of(context)!.today_is} ${_formatMoonPhaseName(todayPoya!.moonPhase, AppLocalizations.of(context)!)}"
                               : (nextPoya != null
-                                  ? "${AppLocalizations.of(context)!.next}  ${nextPoya.moonPhase.replaceAll('FullMoon', AppLocalizations.of(context)!.beFullMoon).replaceAll('NewMoon', AppLocalizations.of(context)!.beNewMoon)}: ${nextPoya.date}"
+                                  ? "${AppLocalizations.of(context)!.next}  ${_formatMoonPhaseName(nextPoya.moonPhase, AppLocalizations.of(context)!)}: ${nextPoya.date}"
                                   : "No Data"),
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
@@ -419,8 +436,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {
-                          PoyaBottomSheet.show(context, today, _tradition, AppLocalizations.of(context)!);
+                        onPressed: () async {
+                          await PoyaBottomSheet.show(context, today, _tradition, AppLocalizations.of(context)!);
+                          setState(() {});
                         },
                         child: const Icon(Icons.event_note),
                       ),
