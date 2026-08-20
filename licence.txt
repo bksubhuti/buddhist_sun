@@ -1,8 +1,15 @@
 licences
 
+Buddhist Sun is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Meditation timer feature and bell sounds adapted and inspired by ekaTimer (GPLv3)
+https://github.com/vpnry/ekatimer
+
 sun picture derived by creativecommons cc-sa-attrib
 Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
-
 
 sqlite database is creative commons attrib
 https://simplemaps.com/data/world-cities

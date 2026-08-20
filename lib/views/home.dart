@@ -19,6 +19,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
+import 'package:buddhist_sun/views/meditation_timer_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -281,6 +282,30 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                 TextStyle(fontSize: 12.8, letterSpacing: 2.0)),
                       ],
                     )),
+                const SizedBox(height: 16),
+                Center(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MeditationTimerPage()),
+                      );
+                    },
+                    icon: const Icon(Icons.self_improvement, size: 20),
+                    label: Text(
+                      AppLocalizations.of(context)!.meditationTimer,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
 
                 // ════════════════════════════════════════════════════
                 // DAWN SECTION
@@ -437,7 +462,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           ),
                         ),
                         onPressed: () async {
-                          await PoyaBottomSheet.show(context, today, _tradition, AppLocalizations.of(context)!);
+                          await PoyaBottomSheet.show(context, today, _tradition,
+                              AppLocalizations.of(context)!);
                           setState(() {});
                         },
                         child: const Icon(Icons.event_note),

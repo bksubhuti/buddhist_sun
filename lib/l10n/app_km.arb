@@ -176,5 +176,7 @@
   "beSeason_Remaining": "នៅសល់",
   "showEighthDayUposatha": "បង្ហាញថ្ងៃសីល ៨ កើត/រោច",
   "beWaxing8th": "កើត ៨ កើត",
-  "beWaning8th": "រោច ៨ រោច"
+  "beWaning8th": "រោច ៨ រោច",
+  "meditationTimer": "Meditation Timer",
+  "startMeditation": "Start Meditation"
 }

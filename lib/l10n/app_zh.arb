@@ -380,5 +380,7 @@
   "beSeason_Remaining": "剩余",
   "showEighthDayUposatha": "显示初八/廿三布萨日",
   "beWaxing8th": "上弦月 (初八)",
-  "beWaning8th": "下弦月 (廿三)"
+  "beWaning8th": "下弦月 (廿三)",
+  "meditationTimer": "Meditation Timer",
+  "startMeditation": "Start Meditation"
 }

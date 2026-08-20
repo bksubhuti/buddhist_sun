@@ -13,6 +13,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/provider/locale_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/theme_change_notifier.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
+import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'src/services/plugin.dart';
@@ -108,6 +109,7 @@ Future<void> main() async {
   await Prefs.migrateDawnValV3();
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
   await createTimerChannelsOnce(); // ← moved AFTER initialize (harmless on iOS)
+  await createMeditationChannel();
   await BackgroundTimePlayer.init();
 
   // Finally schedule
@@ -137,6 +139,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider<SettingsProvider>(
             create: (context) => SettingsProvider(),
+          ),
+          ChangeNotifierProvider<MeditationTimerProvider>(
+            create: (context) => MeditationTimerProvider(),
           ),
         ],
         builder: (context, _) {

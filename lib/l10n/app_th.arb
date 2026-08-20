@@ -176,5 +176,7 @@
   "beSeason_Remaining": "เหลืออยู่",
   "showEighthDayUposatha": "แสดงวันพระ ๘ ค่ำ",
   "beWaxing8th": "ขึ้น ๘ ค่ำ",
-  "beWaning8th": "แรม ๘ ค่ำ"
+  "beWaning8th": "แรม ๘ ค่ำ",
+  "meditationTimer": "Meditation Timer",
+  "startMeditation": "Start Meditation"
 }

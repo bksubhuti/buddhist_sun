@@ -195,7 +195,8 @@ Future<void> _scheduleSingleUposatha(DateTime date) async {
   // Unique base ID for the year: month * 32 + day (max 12*32+31 = 415 -> +1000 = 1415)
   final int baseId = 1000 + (date.month * 32) + date.day;
   final int beforeId = baseId;
-  final int dayOfId = baseId + 500; // Max 1415 + 500 = 1915 (safe within 1000-1999 range)
+  final int dayOfId =
+      baseId + 500; // Max 1415 + 500 = 1915 (safe within 1000-1999 range)
   // ---------------------------------------------------
   // 1️⃣ BEFORE-NOTIFICATION  (only if > 0 days)
   // ---------------------------------------------------
@@ -570,8 +571,8 @@ Future<void> scheduleAllTimerNotifications({
     final notificationId = entry['id'] as int;
 
     final fireTime = tzTarget.subtract(Duration(minutes: minutesBefore));
-    if (fireTime
-        .isBefore(tz.TZDateTime.now(tz.local).subtract(const Duration(seconds: 30)))) {
+    if (fireTime.isBefore(
+        tz.TZDateTime.now(tz.local).subtract(const Duration(seconds: 30)))) {
       continue; // skip if way in the past
     }
 
@@ -633,7 +634,8 @@ Future<void> doElevenLabsCountdownTest() async {
         7000 + index,
         a['title'] as String,
         null,
-        tz.TZDateTime.from(now.add(Duration(seconds: a['sec'] as int)), tz.local),
+        tz.TZDateTime.from(
+            now.add(Duration(seconds: a['sec'] as int)), tz.local),
         NotificationDetails(android: androidDetails),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
@@ -644,4 +646,78 @@ Future<void> doElevenLabsCountdownTest() async {
   }
 
   debugPrint("13 voices scheduled using dedicated channels");
+}
+
+// ===============================================================
+//  MEDITATION TIMER NOTIFICATION HELPERS
+// ===============================================================
+const int MEDITATION_NOTIFICATION_ID = 8888;
+
+Future<void> createMeditationChannel() async {
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'meditation_channel',
+    'Meditation Timer',
+    description: 'Notifications for Meditation Timer completion',
+    importance: Importance.max,
+    playSound: true,
+  );
+
+  final android =
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+
+  await android?.createNotificationChannel(channel);
+  debugPrint("Meditation channel created/ensured");
+}
+
+Future<void> scheduleMeditationEndNotification({
+  required DateTime targetTime,
+  String title = 'Meditation Complete',
+  String body = 'Your meditation session has ended.',
+}) async {
+  try {
+    await cancelMeditationNotifications();
+    final tzTarget = tz.TZDateTime.from(targetTime, tz.local);
+    if (tzTarget.isBefore(tz.TZDateTime.now(tz.local))) return;
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      MEDITATION_NOTIFICATION_ID,
+      title,
+      body,
+      tzTarget,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'meditation_channel',
+          'Meditation Timer',
+          channelDescription: 'Notifications for Meditation Timer completion',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+        macOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+    debugPrint("🟢 Meditation completion scheduled for $tzTarget");
+  } catch (e) {
+    debugPrint("❌ Failed to schedule meditation notification: $e");
+  }
+}
+
+Future<void> cancelMeditationNotifications() async {
+  try {
+    await flutterLocalNotificationsPlugin.cancel(MEDITATION_NOTIFICATION_ID);
+    debugPrint("🛑 Meditation notification cancelled");
+  } catch (e) {
+    debugPrint("❌ Failed to cancel meditation notification: $e");
+  }
 }

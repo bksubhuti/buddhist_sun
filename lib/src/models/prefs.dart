@@ -63,6 +63,26 @@ const String DEFAULT_UPOSATHA_NOTIFICATION_TIME = "06:00";
 const String SHOW_EIGHTH_DAY_UPOSATHA = "showEighthDayUposatha";
 const bool DEFAULT_SHOW_EIGHTH_DAY_UPOSATHA = true;
 
+// Meditation Timer Prefs
+const String MEDITATION_DURATION_MINUTES = "meditationDurationMinutes";
+const int DEFAULT_MEDITATION_DURATION_MINUTES = 30;
+const String MEDITATION_TIMER_MODE = "meditationTimerMode";
+const String DEFAULT_MEDITATION_TIMER_MODE = "timed";
+const String MEDITATION_START_SOUND = "meditationStartSound";
+const String DEFAULT_MEDITATION_START_SOUND = "Bowl";
+const String MEDITATION_END_SOUND = "meditationEndSound";
+const String DEFAULT_MEDITATION_END_SOUND = "Bowl";
+const String MEDITATION_INTERVAL_SOUND = "meditationIntervalSound";
+const String DEFAULT_MEDITATION_INTERVAL_SOUND = "Bowl";
+const String MEDITATION_INTERVAL_MINUTES = "meditationIntervalMinutes";
+const int DEFAULT_MEDITATION_INTERVAL_MINUTES = 0;
+const String MEDITATION_PREP_DELAY_SECONDS = "meditationPrepDelaySeconds";
+const int DEFAULT_MEDITATION_PREP_DELAY_SECONDS = 5;
+const String MEDITATION_KEEP_SCREEN_ON = "meditationKeepScreenOn";
+const bool DEFAULT_MEDITATION_KEEP_SCREEN_ON = true;
+const String MEDITATION_VOLUME = "meditationVolume";
+const int DEFAULT_MEDITATION_VOLUME = 80;
+
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
 DateTime defaultLastDownload = DateTime(2025, 12, 1);
@@ -238,6 +258,59 @@ class Prefs {
         UPOSATHA_NOTIFICATION_TIME,
         '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}',
       );
+
+  // Meditation Timer getters & setters
+  static int get meditationDurationMinutes =>
+      instance.getInt(MEDITATION_DURATION_MINUTES) ??
+      DEFAULT_MEDITATION_DURATION_MINUTES;
+  static set meditationDurationMinutes(int value) =>
+      instance.setInt(MEDITATION_DURATION_MINUTES, value);
+
+  static String get meditationTimerMode =>
+      instance.getString(MEDITATION_TIMER_MODE) ??
+      DEFAULT_MEDITATION_TIMER_MODE;
+  static set meditationTimerMode(String value) =>
+      instance.setString(MEDITATION_TIMER_MODE, value);
+
+  static String get meditationStartSound =>
+      instance.getString(MEDITATION_START_SOUND) ??
+      DEFAULT_MEDITATION_START_SOUND;
+  static set meditationStartSound(String value) =>
+      instance.setString(MEDITATION_START_SOUND, value);
+
+  static String get meditationEndSound =>
+      instance.getString(MEDITATION_END_SOUND) ?? DEFAULT_MEDITATION_END_SOUND;
+  static set meditationEndSound(String value) =>
+      instance.setString(MEDITATION_END_SOUND, value);
+
+  static String get meditationIntervalSound =>
+      instance.getString(MEDITATION_INTERVAL_SOUND) ??
+      DEFAULT_MEDITATION_INTERVAL_SOUND;
+  static set meditationIntervalSound(String value) =>
+      instance.setString(MEDITATION_INTERVAL_SOUND, value);
+
+  static int get meditationIntervalMinutes =>
+      instance.getInt(MEDITATION_INTERVAL_MINUTES) ??
+      DEFAULT_MEDITATION_INTERVAL_MINUTES;
+  static set meditationIntervalMinutes(int value) =>
+      instance.setInt(MEDITATION_INTERVAL_MINUTES, value);
+
+  static int get meditationPrepDelaySeconds =>
+      instance.getInt(MEDITATION_PREP_DELAY_SECONDS) ??
+      DEFAULT_MEDITATION_PREP_DELAY_SECONDS;
+  static set meditationPrepDelaySeconds(int value) =>
+      instance.setInt(MEDITATION_PREP_DELAY_SECONDS, value);
+
+  static bool get meditationKeepScreenOn =>
+      instance.getBool(MEDITATION_KEEP_SCREEN_ON) ??
+      DEFAULT_MEDITATION_KEEP_SCREEN_ON;
+  static set meditationKeepScreenOn(bool value) =>
+      instance.setBool(MEDITATION_KEEP_SCREEN_ON, value);
+
+  static int get meditationVolume =>
+      instance.getInt(MEDITATION_VOLUME) ?? DEFAULT_MEDITATION_VOLUME;
+  static set meditationVolume(int value) =>
+      instance.setInt(MEDITATION_VOLUME, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

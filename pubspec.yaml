@@ -118,6 +118,7 @@ flutter:
     - assets/audio/timer_countdown_120_vi.m4a
     - assets/audio/timer_countdown_120_hi.m4a
     - assets/audio/timer_countdown_120_bn.m4a
+    - assets/audio/meditation_sounds/
 
 flutter_launcher_icons:
   android: true

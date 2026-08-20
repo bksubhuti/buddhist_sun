@@ -371,7 +371,8 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
       case 4:
         return AppLocalizations.of(context)!.na_uyana_angle;
       case 5:
-        return AppLocalizations.of(context)!.custom_dawn + " (${Prefs.customDawnAngle}°)";
+        return AppLocalizations.of(context)!.custom_dawn +
+            " (${Prefs.customDawnAngle}°)";
       case 6:
         return AppLocalizations.of(context)!.civil_twilight;
       case 7:

@@ -6,6 +6,7 @@ import 'package:buddhist_sun/views/dawn_page.dart';
 import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
+import 'package:buddhist_sun/views/meditation_timer_page.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
@@ -150,6 +151,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
         title: Text(AppLocalizations.of(context)!.buddhistSun),
         actions: [
           IconButton(
+            tooltip: 'Meditation Timer',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MeditationTimerPage()),
+              );
+            },
+            icon: const Icon(Icons.self_improvement),
+          ),
+          IconButton(
             onPressed: () {
               showHelpDialog(context);
             },
@@ -193,6 +205,18 @@ class Home_PageContainerState extends State<HomePageContainer> {
                   ),
                 ],
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.self_improvement),
+              title: ColoredText(AppLocalizations.of(context)!.meditationTimer),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MeditationTimerPage()),
+                );
+              },
             ),
             ListTile(
               leading: Icon(Icons.settings),
