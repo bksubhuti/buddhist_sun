@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/utils/buddhavassa_data.dart';
-import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'package:buddhist_sun/views/base_home_page.dart';
@@ -25,6 +26,14 @@ import 'package:buddhist_sun/src/services/example_includes.dart';
 // ----------------------------------------------------------
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  LicenseRegistry.addLicense(() async* {
+    yield const LicenseEntryWithLineBreaks(
+      ['buddhist_sun', 'ekaTimer'],
+      '''Meditation timer feature and bell sounds adapted and inspired by ekaTimer (GPLv3)
+https://github.com/vpnry/ekatimer''',
+    );
+  });
 
   await JustAudioBackground.init(
     androidNotificationChannelId: 'dawn_audio_channel',

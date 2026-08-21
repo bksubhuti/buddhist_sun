@@ -52,12 +52,31 @@ class MeditationTimerProvider extends ChangeNotifier {
   int get volume => _volume;
   double get volumeNormalized => (_volume / 100.0).clamp(0.0, 1.0);
 
+  String _ringStyle = 'subtractive';
+  String get ringStyle => _ringStyle;
+
+  void setRingStyle(String style) {
+    _ringStyle = style;
+    Prefs.meditationRingStyle = style;
+    notifyListeners();
+  }
+
   double get progress {
-    if (_status == MeditationTimerStatus.completed) return 1.0;
     if (_mode == MeditationTimerMode.unlimited) return 0.0;
+    if (_status == MeditationTimerStatus.idle) {
+      return _ringStyle == 'subtractive' ? 1.0 : 0.0;
+    }
     if (_totalDurationSeconds <= 0) return 0.0;
-    final p = 1.0 - (_remainingSeconds / _totalDurationSeconds);
-    return p.clamp(0.0, 1.0);
+
+    final ratio = (_remainingSeconds / _totalDurationSeconds).clamp(0.0, 1.0);
+
+    if (_ringStyle == 'subtractive') {
+      if (_status == MeditationTimerStatus.completed) return 0.0;
+      return ratio;
+    } else {
+      if (_status == MeditationTimerStatus.completed) return 1.0;
+      return 1.0 - ratio;
+    }
   }
 
   String get formattedDisplayTime {
@@ -130,6 +149,7 @@ class MeditationTimerProvider extends ChangeNotifier {
     _intervalMinutes = Prefs.meditationIntervalMinutes;
     _keepScreenOn = Prefs.meditationKeepScreenOn;
     _volume = Prefs.meditationVolume;
+    _ringStyle = Prefs.meditationRingStyle;
 
     final now = DateTime.now().add(Duration(minutes: _durationMinutes));
     _endAtHour = now.hour;

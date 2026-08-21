@@ -78,12 +78,19 @@ void main() {
       expect(Prefs.meditationVolume, equals(60));
     });
 
-    test('Progress calculation behaves correctly', () {
+    test('Progress calculation behaves correctly for subtractive and additive',
+        () {
       final provider = MeditationTimerProvider();
       provider.setMode(MeditationTimerMode.timed);
       provider.setDurationMinutes(30);
 
-      // Idle progress is 0.0
+      // Default subtractive style in idle is 1.0 (full solid ring)
+      expect(provider.ringStyle, equals('subtractive'));
+      expect(provider.progress, equals(1.0));
+
+      // Additive style in idle is 0.0 (empty ring)
+      provider.setRingStyle('additive');
+      expect(provider.ringStyle, equals('additive'));
       expect(provider.progress, equals(0.0));
     });
 
@@ -100,6 +107,27 @@ void main() {
       expect(provider.remainingSeconds, equals(120));
 
       provider.dispose();
+    });
+
+    test('Meditation presets persist and sort properly', () {
+      expect(Prefs.meditationPresets.length, equals(10));
+      expect(Prefs.meditationPresets,
+          equals([5, 10, 15, 20, 25, 30, 45, 60, 90, 120]));
+
+      // Add a custom preset
+      final list = List<int>.from(Prefs.meditationPresets);
+      list.add(22);
+      list.sort();
+      Prefs.meditationPresets = list;
+
+      expect(Prefs.meditationPresets.contains(22), isTrue);
+      expect(Prefs.meditationPresets.length, equals(11));
+      expect(Prefs.meditationPresets[4], equals(22)); // 5, 10, 15, 20, 22...
+
+      // Delete a preset
+      list.remove(22);
+      Prefs.meditationPresets = list;
+      expect(Prefs.meditationPresets.contains(22), isFalse);
     });
   });
 }

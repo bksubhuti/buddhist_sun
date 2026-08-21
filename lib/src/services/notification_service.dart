@@ -658,8 +658,8 @@ Future<void> createMeditationChannel() async {
     'meditation_channel',
     'Meditation Timer',
     description: 'Notifications for Meditation Timer completion',
-    importance: Importance.max,
-    playSound: true,
+    importance: Importance.high,
+    playSound: false,
   );
 
   final android =
@@ -677,6 +677,7 @@ Future<void> scheduleMeditationEndNotification({
 }) async {
   try {
     await cancelMeditationNotifications();
+    await createMeditationChannel();
     final tzTarget = tz.TZDateTime.from(targetTime, tz.local);
     if (tzTarget.isBefore(tz.TZDateTime.now(tz.local))) return;
 
@@ -690,19 +691,19 @@ Future<void> scheduleMeditationEndNotification({
           'meditation_channel',
           'Meditation Timer',
           channelDescription: 'Notifications for Meditation Timer completion',
-          importance: Importance.max,
+          importance: Importance.high,
           priority: Priority.high,
-          playSound: true,
+          playSound: false,
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
-          presentSound: true,
+          presentSound: false,
         ),
         macOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
-          presentSound: true,
+          presentSound: false,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

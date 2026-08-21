@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/widgets/duration_input_widget.dart';
 
 class DurationPickerDialog extends StatefulWidget {
   final int initialMinutes;
@@ -13,155 +14,257 @@ class DurationPickerDialog extends StatefulWidget {
   State<DurationPickerDialog> createState() => _DurationPickerDialogState();
 }
 
-class _DurationPickerDialogState extends State<DurationPickerDialog>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  late TextEditingController _textController;
-  late FixedExtentScrollController _hourController;
-  late FixedExtentScrollController _minuteController;
+class _DurationPickerDialogState extends State<DurationPickerDialog> {
+  late int _currentMinutes;
+  late List<int> _presets;
+  final GlobalKey<DurationInputWidgetState> _inputKey =
+      GlobalKey<DurationInputWidgetState>();
 
-  late int _selectedHours;
-  late int _selectedMinutes;
-
-  static const List<int> _presetOptions = [
-    5,
-    10,
-    15,
-    20,
-    25,
-    30,
-    45,
-    60,
-    90,
-    120,
-  ];
+  static const int _maxPresets = 12;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _selectedHours = widget.initialMinutes ~/ 60;
-    _selectedMinutes = widget.initialMinutes % 60;
-
-    _textController =
-        TextEditingController(text: widget.initialMinutes.toString());
-    _hourController = FixedExtentScrollController(initialItem: _selectedHours);
-    _minuteController =
-        FixedExtentScrollController(initialItem: _selectedMinutes);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _textController.dispose();
-    _hourController.dispose();
-    _minuteController.dispose();
-    super.dispose();
-  }
-
-  int get _totalMinutesFromWheels => (_selectedHours * 60) + _selectedMinutes;
-
-  int get _currentSelectedMinutes {
-    if (_tabController.index == 0) {
-      return _totalMinutesFromWheels;
-    } else {
-      return int.tryParse(_textController.text) ?? widget.initialMinutes;
-    }
+    _currentMinutes = widget.initialMinutes > 0 ? widget.initialMinutes : 30;
+    _presets = List<int>.from(Prefs.meditationPresets)..sort();
   }
 
   void _submit() {
-    int minutes = _currentSelectedMinutes;
+    int minutes = _currentMinutes;
     if (minutes <= 0) minutes = 1;
     if (minutes > 720) minutes = 720; // 12 hours max
 
     Navigator.of(context).pop(minutes);
   }
 
-  void _setPreset(int minutes) {
-    if (minutes < 1) minutes = 1;
-    if (minutes > 720) minutes = 720;
-    _textController.text = minutes.toString();
-
+  void _selectPreset(int minutes) {
     setState(() {
-      _selectedHours = minutes ~/ 60;
-      _selectedMinutes = minutes % 60;
+      _currentMinutes = minutes;
     });
+    _inputKey.currentState?.setMinutes(minutes, notifyParent: false);
+  }
 
-    if (_hourController.hasClients) {
-      _hourController.jumpToItem(_selectedHours);
-    }
-    if (_minuteController.hasClients) {
-      _minuteController.jumpToItem(_selectedMinutes);
+  void _handleAddPresetPressed() {
+    if (_presets.length >= _maxPresets) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Row(
+            children: [
+              Icon(Icons.info_outline),
+              SizedBox(width: 8),
+              Text('Maximum Presets'),
+            ],
+          ),
+          content: const Text(
+            '12 is the maximum presets.\n\nYou can delete or edit other presets by long-pressing on each preset.',
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      _showAddPresetDialog();
     }
   }
 
-  void _quickAdd(int addMinutes) {
-    int current = int.tryParse(_textController.text) ?? 0;
-    current += addMinutes;
-    if (current < 1) current = 1;
-    if (current > 720) current = 720;
-    _textController.text = current.toString();
+  /// Popup dialog for long-press on a preset (Edit or Delete)
+  void _showPresetActionPopup(int minutes) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Preset: $minutes min'),
+        content: Text(
+          'Choose an action for the $minutes minute preset:',
+        ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _deletePreset(minutes);
+            },
+            icon: const Icon(Icons.delete_outline, size: 18),
+            label: const Text('Delete'),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              const SizedBox(width: 4),
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  _showEditPresetDialog(minutes);
+                },
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                label: const Text('Edit'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-    setState(() {
-      _selectedHours = current ~/ 60;
-      _selectedMinutes = current % 60;
-    });
+  /// Edit Preset Dialog using reusable DurationInputWidget
+  Future<void> _showEditPresetDialog(int oldMinutes) async {
+    int editedMinutes = oldMinutes;
 
-    if (_hourController.hasClients) {
-      _hourController.jumpToItem(_selectedHours);
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            title: Row(
+              children: [
+                Icon(Icons.edit_outlined,
+                    color: Theme.of(ctx).colorScheme.primary, size: 22),
+                const SizedBox(width: 8),
+                Text('Edit ${oldMinutes}m Preset'),
+              ],
+            ),
+            content: SizedBox(
+              width: 320,
+              child: DurationInputWidget(
+                initialMinutes: oldMinutes,
+                onChanged: (val) {
+                  editedMinutes = val;
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  if (editedMinutes > 0 && editedMinutes <= 720) {
+                    Navigator.of(ctx).pop(editedMinutes);
+                  }
+                },
+                child: const Text('Save Preset'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (result != null && mounted) {
+      _presets.remove(oldMinutes);
+      if (!_presets.contains(result)) {
+        _presets.add(result);
+      }
+      _presets.sort();
+      Prefs.meditationPresets = _presets;
+      _selectPreset(result);
     }
-    if (_minuteController.hasClients) {
-      _minuteController.jumpToItem(_selectedMinutes);
+  }
+
+  /// Add Preset Dialog using reusable DurationInputWidget
+  Future<void> _showAddPresetDialog() async {
+    int newMinutes = _currentMinutes > 0 ? _currentMinutes : 20;
+
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            title: Row(
+              children: [
+                Icon(Icons.add_circle_outline,
+                    color: Theme.of(ctx).colorScheme.primary, size: 22),
+                const SizedBox(width: 8),
+                const Text('Add Preset'),
+              ],
+            ),
+            content: SizedBox(
+              width: 320,
+              child: DurationInputWidget(
+                initialMinutes: newMinutes,
+                onChanged: (val) {
+                  newMinutes = val;
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  if (newMinutes > 0 && newMinutes <= 720) {
+                    Navigator.of(ctx).pop(newMinutes);
+                  }
+                },
+                child: const Text('Add Preset'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (result != null && mounted) {
+      if (!_presets.contains(result)) {
+        _presets.add(result);
+        _presets.sort();
+        Prefs.meditationPresets = _presets;
+      }
+      _selectPreset(result);
     }
+  }
+
+  void _deletePreset(int minutes) {
+    _presets.remove(minutes);
+    _presets.sort();
+    Prefs.meditationPresets = _presets;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
-    final currentMins = _currentSelectedMinutes;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      title: Column(
+      title: Row(
         children: [
-          Row(
-            children: [
-              Icon(Icons.timer_outlined, color: primary, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                'Set Duration',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            height: 38,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: primary,
-              ),
-              labelColor: theme.colorScheme.onPrimary,
-              unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
-              dividerColor: Colors.transparent,
-              labelStyle:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              tabs: const [
-                Tab(text: 'Time Dial'),
-                Tab(text: 'Number Input'),
-              ],
+          Icon(Icons.timer_outlined, color: primary, size: 24),
+          const SizedBox(width: 8),
+          Text(
+            'Set Duration',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -172,223 +275,20 @@ class _DurationPickerDialogState extends State<DurationPickerDialog>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Main Tab View
-              SizedBox(
-                height: 170,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    // TAB 1 (LEFT / DEFAULT): Hour & Minute Wheels Dial
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Hours Wheel
-                            Column(
-                              children: [
-                                Text(
-                                  'Hours',
-                                  style: theme.textTheme.labelMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                SizedBox(
-                                  width: 70,
-                                  height: 110,
-                                  child: ListWheelScrollView.useDelegate(
-                                    itemExtent: 38,
-                                    controller: _hourController,
-                                    physics: const FixedExtentScrollPhysics(),
-                                    perspective: 0.005,
-                                    diameterRatio: 1.2,
-                                    useMagnifier: true,
-                                    magnification: 1.15,
-                                    onSelectedItemChanged: (index) {
-                                      setState(() => _selectedHours = index);
-                                      _textController.text =
-                                          _totalMinutesFromWheels.toString();
-                                    },
-                                    childDelegate:
-                                        ListWheelChildBuilderDelegate(
-                                      childCount: 13,
-                                      builder: (context, index) {
-                                        final isSelected =
-                                            index == _selectedHours;
-                                        return Center(
-                                          child: Text(
-                                            index.toString().padLeft(2, '0'),
-                                            style: TextStyle(
-                                              fontSize: isSelected ? 22 : 16,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              color: isSelected
-                                                  ? primary
-                                                  : theme.colorScheme
-                                                      .onSurfaceVariant
-                                                      .withAlpha(120),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                ':',
-                                style: theme.textTheme.headlineLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: primary,
-                                ),
-                              ),
-                            ),
-                            // Minutes Wheel
-                            Column(
-                              children: [
-                                Text(
-                                  'Minutes',
-                                  style: theme.textTheme.labelMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                SizedBox(
-                                  width: 70,
-                                  height: 110,
-                                  child: ListWheelScrollView.useDelegate(
-                                    itemExtent: 38,
-                                    controller: _minuteController,
-                                    physics: const FixedExtentScrollPhysics(),
-                                    perspective: 0.005,
-                                    diameterRatio: 1.2,
-                                    useMagnifier: true,
-                                    magnification: 1.15,
-                                    onSelectedItemChanged: (index) {
-                                      setState(() => _selectedMinutes = index);
-                                      _textController.text =
-                                          _totalMinutesFromWheels.toString();
-                                    },
-                                    childDelegate:
-                                        ListWheelChildBuilderDelegate(
-                                      childCount: 60,
-                                      builder: (context, index) {
-                                        final isSelected =
-                                            index == _selectedMinutes;
-                                        return Center(
-                                          child: Text(
-                                            index.toString().padLeft(2, '0'),
-                                            style: TextStyle(
-                                              fontSize: isSelected ? 22 : 16,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              color: isSelected
-                                                  ? primary
-                                                  : theme.colorScheme
-                                                      .onSurfaceVariant
-                                                      .withAlpha(120),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Total: $_totalMinutesFromWheels min',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // TAB 2 (RIGHT): Direct Number Entry
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 90,
-                              child: TextField(
-                                controller: _textController,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(4),
-                                ],
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: primary,
-                                ),
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 8,
-                                  ),
-                                  filled: true,
-                                  fillColor:
-                                      theme.colorScheme.surfaceContainerHighest,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide:
-                                        BorderSide(color: primary, width: 2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'minutes',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Quick adjustment chips
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            _buildQuickAddChip('+5m', 5),
-                            _buildQuickAddChip('+10m', 10),
-                            _buildQuickAddChip('+15m', 15),
-                            _buildQuickAddChip('+30m', 30),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              // Reusable Duration Input (Time Dial on left / default, Number Input on right)
+              DurationInputWidget(
+                key: _inputKey,
+                initialMinutes: _currentMinutes,
+                onChanged: (mins) {
+                  _currentMinutes = mins;
+                },
               ),
 
               const Divider(height: 16),
 
-              // Presets Section Below
+              // Presets Header
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Presets',
@@ -397,34 +297,71 @@ class _DurationPickerDialogState extends State<DurationPickerDialog>
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  Text(
+                    'Long-press to edit / delete',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: 10,
+                      color: theme.colorScheme.onSurfaceVariant.withAlpha(140),
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
+
+              // Dynamic Presets Wrap with Add Button at the end
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
                 alignment: WrapAlignment.start,
-                children: _presetOptions.map((minutes) {
-                  final isSelected = currentMins == minutes;
-                  return ChoiceChip(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  ..._presets.map((minutes) {
+                    final isSelected = _currentMinutes == minutes;
+                    return GestureDetector(
+                      onLongPress: () => _showPresetActionPopup(minutes),
+                      child: ChoiceChip(
+                        label: Text(
+                          minutes >= 60 && minutes % 60 == 0
+                              ? '${minutes ~/ 60}h'
+                              : '${minutes}m',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        selected: isSelected,
+                        onSelected: (_) => _selectPreset(minutes),
+                        selectedColor: primary.withAlpha(50),
+                        side: BorderSide(
+                          color: isSelected ? primary : Colors.transparent,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 0),
+                      ),
+                    );
+                  }).toList(),
+
+                  // Add Preset Button
+                  ActionChip(
+                    avatar: Icon(Icons.add, size: 16, color: primary),
                     label: Text(
-                      '$minutes m',
+                      'Add',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: FontWeight.w600,
+                        color: primary,
                       ),
                     ),
-                    selected: isSelected,
-                    onSelected: (_) => _setPreset(minutes),
-                    selectedColor: primary.withAlpha(50),
-                    side: BorderSide(
-                      color: isSelected ? primary : Colors.transparent,
-                    ),
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                  );
-                }).toList(),
+                    onPressed: _handleAddPresetPressed,
+                  ),
+                ],
               ),
             ],
           ),
@@ -441,16 +378,6 @@ class _DurationPickerDialogState extends State<DurationPickerDialog>
           child: const Text('Set Duration'),
         ),
       ],
-    );
-  }
-
-  Widget _buildQuickAddChip(String label, int minutes) {
-    return ActionChip(
-      label: Text(label, style: const TextStyle(fontSize: 11)),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-      onPressed: () => _quickAdd(minutes),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }

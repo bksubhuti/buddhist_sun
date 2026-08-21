@@ -29,6 +29,11 @@ class MeditationAudioService {
         androidWillPauseWhenDucked: true,
       ));
       _isInitialized = true;
+      _player.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed) {
+          _player.stop();
+        }
+      });
     } catch (e) {
       debugPrint("MeditationAudioService init error: $e");
     }

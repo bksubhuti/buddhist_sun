@@ -557,6 +557,49 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               value: timerProvider.keepScreenOn,
               onChanged: (val) => timerProvider.setKeepScreenOn(val),
             ),
+            const Divider(height: 24),
+
+            // Countdown Graphic Style (Subtractive vs Additive)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Timer Ring Style',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Subtractive removes the solid circle as time elapses. Additive fills it up.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(
+                        value: 'subtractive',
+                        label: Text('Subtractive (Default)'),
+                        icon: Icon(Icons.remove_circle_outline, size: 16),
+                      ),
+                      ButtonSegment(
+                        value: 'additive',
+                        label: Text('Additive'),
+                        icon: Icon(Icons.add_circle_outline, size: 16),
+                      ),
+                    ],
+                    selected: {timerProvider.ringStyle},
+                    onSelectionChanged: (newSelection) {
+                      timerProvider.setRingStyle(newSelection.first);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

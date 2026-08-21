@@ -11,6 +11,8 @@ showAboutBuddhistSunDialog(BuildContext context) async {
     context: context,
     applicationName: AppLocalizations.of(context)!.buddhistSun,
     applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
+    applicationLegalese:
+        'GNU General Public License v3\nMeditation timer adapted from ekaTimer (GPLv3)',
     children: [ColoredText(AppLocalizations.of(context)!.about_content)],
   );
 }

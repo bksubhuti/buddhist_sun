@@ -82,6 +82,21 @@ const String MEDITATION_KEEP_SCREEN_ON = "meditationKeepScreenOn";
 const bool DEFAULT_MEDITATION_KEEP_SCREEN_ON = true;
 const String MEDITATION_VOLUME = "meditationVolume";
 const int DEFAULT_MEDITATION_VOLUME = 80;
+const String MEDITATION_PRESETS = "meditationPresets";
+const List<String> DEFAULT_MEDITATION_PRESETS = [
+  "5",
+  "10",
+  "15",
+  "20",
+  "25",
+  "30",
+  "45",
+  "60",
+  "90",
+  "120"
+];
+const String MEDITATION_RING_STYLE = "meditationRingStyle";
+const String DEFAULT_MEDITATION_RING_STYLE = "subtractive";
 
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
@@ -311,6 +326,37 @@ class Prefs {
       instance.getInt(MEDITATION_VOLUME) ?? DEFAULT_MEDITATION_VOLUME;
   static set meditationVolume(int value) =>
       instance.setInt(MEDITATION_VOLUME, value);
+
+  static List<int> get meditationPresets {
+    final list = instance.getStringList(MEDITATION_PRESETS);
+    if (list == null || list.isEmpty) {
+      return [5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
+    }
+    final ints = list
+        .map((e) => int.tryParse(e))
+        .whereType<int>()
+        .where((m) => m > 0 && m <= 720)
+        .toList();
+    if (ints.isEmpty) {
+      return [5, 10, 15, 20, 25, 30, 45, 60, 90, 120];
+    }
+    ints.sort();
+    return ints;
+  }
+
+  static set meditationPresets(List<int> values) {
+    final sorted = List<int>.from(values)..sort();
+    instance.setStringList(
+      MEDITATION_PRESETS,
+      sorted.map((e) => e.toString()).toList(),
+    );
+  }
+
+  static String get meditationRingStyle =>
+      instance.getString(MEDITATION_RING_STYLE) ??
+      DEFAULT_MEDITATION_RING_STYLE;
+  static set meditationRingStyle(String value) =>
+      instance.setString(MEDITATION_RING_STYLE, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
