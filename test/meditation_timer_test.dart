@@ -1,8 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
+import 'package:buddhist_sun/views/meditation_timer_page.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -128,6 +133,68 @@ void main() {
       list.remove(22);
       Prefs.meditationPresets = list;
       expect(Prefs.meditationPresets.contains(22), isFalse);
+    });
+
+    test('Recent meditation times track 4 most recent durations properly', () {
+      Prefs.meditationRecentTimes = [30, 15, 45, 60];
+      expect(Prefs.meditationRecentTimes, equals([30, 15, 45, 60]));
+
+      // Add a new duration
+      Prefs.addMeditationRecentTime(25);
+      expect(Prefs.meditationRecentTimes, equals([25, 30, 15, 45]));
+
+      // Add an existing duration (moves to top)
+      Prefs.addMeditationRecentTime(15);
+      expect(Prefs.meditationRecentTimes, equals([15, 25, 30, 45]));
+
+      // Add another new duration
+      Prefs.addMeditationRecentTime(90);
+      expect(Prefs.meditationRecentTimes, equals([90, 15, 25, 30]));
+
+      final provider = MeditationTimerProvider();
+      provider.setDurationMinutes(90);
+      expect(provider.recentTimes, equals([90, 15, 25, 30]));
+      expect(provider.alternateRecentTimes, equals([15, 25, 30]));
+      provider.dispose();
+    });
+
+    testWidgets(
+        'MeditationTimerPage displays 3 alternate recent duration buttons in timed mode',
+        (WidgetTester tester) async {
+      Prefs.meditationRecentTimes = [30, 15, 45, 60];
+      Prefs.meditationTimerMode = 'timed';
+      Prefs.meditationDurationMinutes = 30;
+
+      final provider = MeditationTimerProvider();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: ChangeNotifierProvider<MeditationTimerProvider>.value(
+            value: provider,
+            child: const MeditationTimerPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify the top set time card displays the current duration (30 min)
+      expect(find.text('30 min'), findsOneWidget);
+
+      // Verify the 3 buttons show the 2nd, 3rd, and 4th recent times (15 min, 45 min, 1 hr)
+      expect(find.text('15 min'), findsOneWidget);
+      expect(find.text('45 min'), findsOneWidget);
+      expect(find.text('1 hr'), findsOneWidget);
+
+      provider.dispose();
     });
   });
 }

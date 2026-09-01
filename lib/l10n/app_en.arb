@@ -220,5 +220,178 @@
   "lifeRemaining": "Life Remaining",
   "lifeExceeded": "You have exceeded your expected lifespan. Every moment is a gift for Dhamma practice.",
   "editDeathSettings": "Edit Birthday & Age",
-  "maranasatiQuote": "Life is uncertain, death is certain. Strive on with diligence."
+  "maranasatiQuote": "Life is uncertain, death is certain. Strive on with diligence.",
+  "compass": "Compass",
+  "buddhistCompass": "Buddhist Compass",
+  "currentDirection": "Current Direction:",
+  "bearingTo": "Bearing to {targetName}:",
+  "@bearingTo": {
+    "placeholders": {
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceTo": "Distance to {targetName}:",
+  "@distanceTo": {
+    "placeholders": {
+      "targetName": {
+        "type": "String"
+      }
+    }
+  },
+  "vibration": "Vibration",
+  "place_bodhGaya": "Bodh Gaya",
+  "place_shwedagonPagoda": "Shwedagon Pagoda",
+  "place_select": "Select place",
+  "place_lumbiniPagoda": "Lumbini",
+  "place_sarnath": "Sarnath",
+  "place_kushinagar": "Kushinagar",
+  "place_mahaCetiya": "Ruwanwelisaya",
+  "place_toothRelicPagoda": "Temple of the Tooth",
+  "compassHelpContent": "1. When the app first starts, it will ask permission to use your location. Allow access.\n\n2. Select the Buddhist site you wish to face (default is Bodh Gaya, India). Wait a few seconds for it to register.\n\n3. Hold your phone parallel to the ground and slowly turn until the compass aligns with your chosen site.\n\n4. When you are facing the right direction, the compass becomes bright.\n\n5. Pray in that direction.\n\n6. Optionally, enable vibration mode for haptic feedback.",
+  "locationPermissionRationaleTitle": "Allow Location?",
+  "locationPermissionRationaleMessage": "Buddhist Compass needs your location to point toward your selected site.",
+  "locationPermissionRationaleNotNow": "Not now",
+  "locationPermissionRationaleContinue": "Continue",
+  "locationRequiredTitle": "Location Required",
+  "locationRequiredCancel": "Cancel",
+  "locationRequiredOpenSettings": "Open Settings",
+  "locationRequiredExit": "Exit",
+  "locationRequiredMessage1": "Location is required for the compass to work.",
+  "locationRequiredMessage2": "Location permission is permanently denied. Enable it in Settings.",
+  "locationServicesTitle": "Turn On Location Services",
+  "locationServicesContent": "Location Services are turned off. Turn them on in Settings to use the compass.",
+  "locationError": "Unable to get location. Please try again.",
+  "compassHeading": "Heading",
+  "compassTarget": "Target",
+  "compassDistance": "Distance",
+  "facingTarget": "Facing {target}",
+  "@facingTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "turnRightToFace": "Turn {degrees}° right to face {target}",
+  "@turnRightToFace": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "turnLeftToFace": "Turn {degrees}° left to face {target}",
+  "@turnLeftToFace": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "hapticPulseGuidance": "Haptic pulse when aligned on target",
+  "timerModeTimed": "Timed",
+  "timerModeEndAt": "End At",
+  "timerModeOpen": "Open",
+  "tapToChangeDuration": "Tap to change duration & presets",
+  "tapToChangeEndTime": "Tap to change end time",
+  "openUnlimitedMode": "Open / Unlimited Mode",
+  "openUnlimitedModeDesc": "Counts up continuously until you finish. Interval bells will chime as configured below.",
+  "bellsAndSettings": "Bells & Settings",
+  "bellVolume": "Bell Volume",
+  "startingBell": "Starting Bell",
+  "intervalBell": "Interval Bell",
+  "intervalSound": "Interval Sound",
+  "endingBell": "Ending Bell",
+  "everyNMinutes": "Every {minutes}m",
+  "@everyNMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "off": "Off",
+  "keepScreenAwake": "Keep Screen Awake",
+  "keepScreenAwakeDesc": "Prevent phone display from sleeping while meditating",
+  "timerRingStyle": "Timer Ring Style",
+  "timerRingStyleDesc": "Subtractive removes the solid circle as time elapses. Additive fills it up.",
+  "styleSubtractive": "Subtractive (Default)",
+  "styleAdditive": "Additive",
+  "endSession": "End Session",
+  "endSessionConfirm": "You have been meditating for {time}.\n\nDo you wish to end this session?",
+  "@endSessionConfirm": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionCompleted": "Session Completed",
+  "meditatedFor": "Meditated for {time}",
+  "@meditatedFor": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "meditationPaused": "Paused",
+  "meditationActive": "Meditation Active",
+  "timerElapsed": "Elapsed",
+  "timerRemaining": "Remaining",
+  "timerDone": "Done",
+  "aboutTimer": "About Timer",
+  "timerInfoDialogContent": "A quiet, dedicated timer for your meditation practice.\n\n• Timed: Meditate for a fixed duration.\n• End At: Meditate until a specific time of day.\n• Open: Meditate freely with optional interval chimes.\n\nTap the timer circle during a session to pause or resume.\n\nAudio chimes courtesy of Freesound.org and Suno.com.",
+  "tapScreenToResume": "Tap screen to resume",
+  "tapScreenToPause": "Tap screen to pause",
+  "setDuration": "Set Duration",
+  "presets": "Presets",
+  "addPreset": "Add",
+  "savePreset": "Save Preset",
+  "maxPresetsReached": "Maximum Presets",
+  "maxPresetsDesc": "12 is the maximum presets.\n\nYou can delete or edit other presets by long-pressing on each preset.",
+  "longPressToEdit": "Long-press to edit / delete",
+  "presetActionTitle": "Preset: {minutes} min",
+  "@presetActionTitle": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "presetActionDesc": "Choose an action for the {minutes} minute preset:",
+  "@presetActionDesc": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "editPreset": "Edit {minutes}m Preset",
+  "@editPreset": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "addPresetTitle": "Add Preset",
+  "delete": "Delete",
+  "edit": "Edit",
+  "timeUntilEndAt": "{time} from now",
+  "@timeUntilEndAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

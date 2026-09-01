@@ -51,6 +51,19 @@ class MeditationTimerProvider extends ChangeNotifier {
   bool get keepScreenOn => _keepScreenOn;
   int get volume => _volume;
   double get volumeNormalized => (_volume / 100.0).clamp(0.0, 1.0);
+  List<int> get recentTimes => Prefs.meditationRecentTimes;
+
+  List<int> get alternateRecentTimes {
+    final recents = List<int>.from(recentTimes);
+    recents.remove(_durationMinutes);
+    for (final def in [30, 15, 45, 60, 20, 10, 25]) {
+      if (recents.length >= 3) break;
+      if (def != _durationMinutes && !recents.contains(def)) {
+        recents.add(def);
+      }
+    }
+    return recents.take(3).toList();
+  }
 
   String _ringStyle = 'subtractive';
   String get ringStyle => _ringStyle;
@@ -166,6 +179,7 @@ class MeditationTimerProvider extends ChangeNotifier {
     if (minutes <= 0) minutes = 1;
     _durationMinutes = minutes;
     Prefs.meditationDurationMinutes = minutes;
+    Prefs.addMeditationRecentTime(minutes);
     notifyListeners();
   }
 
@@ -223,11 +237,22 @@ class MeditationTimerProvider extends ChangeNotifier {
   }
 
   Future<void> startSession() async {
+    if (_mode == MeditationTimerMode.timed) {
+      Prefs.addMeditationRecentTime(_durationMinutes);
+    }
     _elapsedSeconds = 0;
     _totalPauseDurationSeconds = 0;
     _lastIntervalMinute = -1;
 
     await _beginRunning();
+  }
+
+  Future<void> startSessionWithDuration(int minutes) async {
+    _mode = MeditationTimerMode.timed;
+    _durationMinutes = minutes;
+    Prefs.meditationTimerMode = 'timed';
+    Prefs.meditationDurationMinutes = minutes;
+    await startSession();
   }
 
   Future<void> _beginRunning() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/widgets/meditation_timer_display.dart';
@@ -42,6 +43,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
 
   Future<void> _handleStopAttempt(BuildContext context) async {
     final timerProvider = context.read<MeditationTimerProvider>();
+    final t = AppLocalizations.of(context)!;
 
     if (timerProvider.status == MeditationTimerStatus.completed) {
       timerProvider.resetToIdle();
@@ -53,14 +55,14 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('End Session?'),
+        title: Text(t.endSession),
         content: Text(
-          'You have been meditating for ${timerProvider.formattedElapsedTime}.\n\nDo you wish to end this session?',
+          t.endSessionConfirm(timerProvider.formattedElapsedTime),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Continue'),
+            child: Text(t.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -68,7 +70,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
               foregroundColor: Theme.of(ctx).colorScheme.onError,
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('End Session'),
+            child: Text(t.endSession),
           ),
         ],
       ),
@@ -87,6 +89,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final timerProvider = context.watch<MeditationTimerProvider>();
+    final t = AppLocalizations.of(context)!;
 
     // 1. Completed View
     if (timerProvider.status == MeditationTimerStatus.completed) {
@@ -106,7 +109,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Session Completed',
+                    t.sessionCompleted,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurface,
@@ -114,7 +117,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Meditated for ${timerProvider.formattedElapsedTime}',
+                    t.meditatedFor(timerProvider.formattedElapsedTime),
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: primary,
                       fontWeight: FontWeight.w600,
@@ -127,10 +130,10 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(Icons.check),
-                    label: const Padding(
+                    label: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      child: Text('Done', style: TextStyle(fontSize: 16)),
+                          const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      child: Text(t.timerDone, style: const TextStyle(fontSize: 16)),
                     ),
                     style: FilledButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -149,8 +152,8 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     // 3. Active Running / Paused Timer View
     final isPaused = timerProvider.status == MeditationTimerStatus.paused;
     final subtitle = timerProvider.mode == MeditationTimerMode.unlimited
-        ? 'Elapsed'
-        : 'Remaining';
+        ? t.timerElapsed
+        : t.timerRemaining;
 
     return PopScope(
       canPop: false,
@@ -172,7 +175,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close_rounded, size: 28),
-                      tooltip: 'End Session',
+                      tooltip: t.endSession,
                       onPressed: () => _handleStopAttempt(context),
                     ),
                     Row(
@@ -186,7 +189,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          isPaused ? 'Paused' : 'Meditation Active',
+                          isPaused ? t.meditationPaused : t.meditationActive,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -233,8 +236,8 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                         const SizedBox(height: 32),
                         Text(
                           isPaused
-                              ? 'Tap screen to resume'
-                              : 'Tap screen to pause',
+                              ? t.tapScreenToResume
+                              : t.tapScreenToPause,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurface.withAlpha(120),
                             letterSpacing: 1.2,
@@ -257,7 +260,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                     size: 22,
                   ),
                   label: Text(
-                    'End Meditation',
+                    t.endSession,
                     style: TextStyle(
                       color: theme.colorScheme.error,
                       fontWeight: FontWeight.w600,

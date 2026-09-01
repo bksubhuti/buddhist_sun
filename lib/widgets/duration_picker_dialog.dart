@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/widgets/duration_input_widget.dart';
 
@@ -45,26 +46,26 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
   }
 
   void _handleAddPresetPressed() {
+    final t = AppLocalizations.of(context)!;
+
     if (_presets.length >= _maxPresets) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.info_outline),
-              SizedBox(width: 8),
-              Text('Maximum Presets'),
+              const Icon(Icons.info_outline),
+              const SizedBox(width: 8),
+              Text(t.maxPresetsReached),
             ],
           ),
-          content: const Text(
-            '12 is the maximum presets.\n\nYou can delete or edit other presets by long-pressing on each preset.',
-          ),
+          content: Text(t.maxPresetsDesc),
           actions: [
             FilledButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK'),
+              child: Text(t.ok),
             ),
           ],
         ),
@@ -76,13 +77,15 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
 
   /// Popup dialog for long-press on a preset (Edit or Delete)
   void _showPresetActionPopup(int minutes) {
+    final t = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Preset: $minutes min'),
+        title: Text(t.presetActionTitle(minutes)),
         content: Text(
-          'Choose an action for the $minutes minute preset:',
+          t.presetActionDesc(minutes),
         ),
         actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: [
@@ -92,7 +95,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
               _deletePreset(minutes);
             },
             icon: const Icon(Icons.delete_outline, size: 18),
-            label: const Text('Delete'),
+            label: Text(t.delete),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(ctx).colorScheme.error,
             ),
@@ -102,7 +105,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
             children: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(t.cancel),
               ),
               const SizedBox(width: 4),
               FilledButton.icon(
@@ -111,7 +114,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                   _showEditPresetDialog(minutes);
                 },
                 icon: const Icon(Icons.edit_outlined, size: 18),
-                label: const Text('Edit'),
+                label: Text(t.edit),
               ),
             ],
           ),
@@ -123,6 +126,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
   /// Edit Preset Dialog using reusable DurationInputWidget
   Future<void> _showEditPresetDialog(int oldMinutes) async {
     int editedMinutes = oldMinutes;
+    final t = AppLocalizations.of(context)!;
 
     final result = await showDialog<int>(
       context: context,
@@ -139,7 +143,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                 Icon(Icons.edit_outlined,
                     color: Theme.of(ctx).colorScheme.primary, size: 22),
                 const SizedBox(width: 8),
-                Text('Edit ${oldMinutes}m Preset'),
+                Text(t.editPreset(oldMinutes)),
               ],
             ),
             content: SizedBox(
@@ -154,7 +158,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(t.cancel),
               ),
               FilledButton(
                 onPressed: () {
@@ -162,7 +166,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                     Navigator.of(ctx).pop(editedMinutes);
                   }
                 },
-                child: const Text('Save Preset'),
+                child: Text(t.savePreset),
               ),
             ],
           );
@@ -184,6 +188,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
   /// Add Preset Dialog using reusable DurationInputWidget
   Future<void> _showAddPresetDialog() async {
     int newMinutes = _currentMinutes > 0 ? _currentMinutes : 20;
+    final t = AppLocalizations.of(context)!;
 
     final result = await showDialog<int>(
       context: context,
@@ -200,7 +205,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                 Icon(Icons.add_circle_outline,
                     color: Theme.of(ctx).colorScheme.primary, size: 22),
                 const SizedBox(width: 8),
-                const Text('Add Preset'),
+                Text(t.addPresetTitle),
               ],
             ),
             content: SizedBox(
@@ -215,7 +220,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(t.cancel),
               ),
               FilledButton(
                 onPressed: () {
@@ -223,7 +228,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                     Navigator.of(ctx).pop(newMinutes);
                   }
                 },
-                child: const Text('Add Preset'),
+                child: Text(t.addPresetTitle),
               ),
             ],
           );
@@ -252,6 +257,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -262,7 +268,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
           Icon(Icons.timer_outlined, color: primary, size: 24),
           const SizedBox(width: 8),
           Text(
-            'Set Duration',
+            t.setDuration,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -291,14 +297,14 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Presets',
+                    t.presets,
                     style: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                   Text(
-                    'Long-press to edit / delete',
+                    t.longPressToEdit,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 10,
                       color: theme.colorScheme.onSurfaceVariant.withAlpha(140),
@@ -347,7 +353,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                   ActionChip(
                     avatar: Icon(Icons.add, size: 16, color: primary),
                     label: Text(
-                      'Add',
+                      t.addPreset,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -371,11 +377,11 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(t.cancel),
         ),
         FilledButton(
           onPressed: _submit,
-          child: const Text('Set Duration'),
+          child: Text(t.setDuration),
         ),
       ],
     );

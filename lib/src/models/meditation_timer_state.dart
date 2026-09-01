@@ -37,9 +37,95 @@ class MeditationSoundItem {
       assetPath: 'assets/audio/meditation_sounds/Bell.wav',
     ),
     MeditationSoundItem(
+      id: 'CalmBell',
+      displayName: 'Suno Calm Bell',
+      assetPath: 'assets/audio/meditation_sounds/suno-Calm-Bell.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'SingleBell',
+      displayName: 'Suno Single Bell',
+      assetPath: 'assets/audio/meditation_sounds/suno-Single-Bell.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'ZenBell',
+      displayName: 'Zen Bell',
+      assetPath:
+          'assets/audio/meditation_sounds/soundreality-bell-fx-410608.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'SingingBell',
+      displayName: 'Singing Bell',
+      assetPath:
+          'assets/audio/meditation_sounds/freesound_community-singing-bell-hit-2-75258.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'MindfulResonance',
+      displayName: 'Mindful Resonance',
+      assetPath:
+          'assets/audio/meditation_sounds/soundreality-cinematic-bell-519608.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'ClearBell',
+      displayName: 'Clear Bell',
+      assetPath:
+          'assets/audio/meditation_sounds/dragon-studio-bell-ring-390294.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'BronzeBell',
+      displayName: 'Bronze Bell',
+      assetPath:
+          'assets/audio/meditation_sounds/freesound_community-old-church-bell-6298.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'TempleChimes',
+      displayName: 'Temple Chimes',
+      assetPath:
+          'assets/audio/meditation_sounds/freesound_community-bells-1-72261.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'DeepBellLow',
+      displayName: 'Deep Bell (Low)',
+      assetPath:
+          'assets/audio/meditation_sounds/floraphonic-deep-meditation-bell-hit-root-chakra-1-174455.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'DeepBellWarm',
+      displayName: 'Deep Bell (Warm)',
+      assetPath:
+          'assets/audio/meditation_sounds/floraphonic-deep-meditation-bell-hit-heart-chakra-4-186970.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'DeepBellClear',
+      displayName: 'Deep Bell (Clear)',
+      assetPath:
+          'assets/audio/meditation_sounds/floraphonic-deep-meditation-bell-hit-throat-chakra-5-186971.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'DeepBellBright',
+      displayName: 'Deep Bell (Bright)',
+      assetPath:
+          'assets/audio/meditation_sounds/floraphonic-deep-meditation-bell-hit-third-eye-chakra-6-186972.mp3',
+    ),
+    MeditationSoundItem(
+      id: 'DeepBellPure',
+      displayName: 'Deep Bell (Pure)',
+      assetPath:
+          'assets/audio/meditation_sounds/floraphonic-deep-meditation-bell-hit-crown-chakra-7-186973.mp3',
+    ),
+    MeditationSoundItem(
       id: 'Bowl',
       displayName: 'Bowl',
       assetPath: 'assets/audio/meditation_sounds/Bowl.wav',
+    ),
+    MeditationSoundItem(
+      id: 'BowlFade',
+      displayName: 'Bowl (Fade)',
+      assetPath: 'assets/audio/meditation_sounds/Bowl-fade.wav',
+    ),
+    MeditationSoundItem(
+      id: 'BowlSlowFade',
+      displayName: 'Bowl (Slow Fade)',
+      assetPath: 'assets/audio/meditation_sounds/Bowl-slow-fade-.wav',
     ),
     MeditationSoundItem(
       id: 'BowlStrong',
@@ -47,14 +133,24 @@ class MeditationSoundItem {
       assetPath: 'assets/audio/meditation_sounds/BowlStrong.wav',
     ),
     MeditationSoundItem(
+      id: 'ThreeBowl',
+      displayName: 'Three Bowls',
+      assetPath: 'assets/audio/meditation_sounds/ThreeBowl.wav',
+    ),
+    MeditationSoundItem(
       id: 'Gong',
       displayName: 'Gong',
       assetPath: 'assets/audio/meditation_sounds/Gong.wav',
     ),
     MeditationSoundItem(
-      id: 'ThreeBowl',
-      displayName: 'Three Bowls',
-      assetPath: 'assets/audio/meditation_sounds/ThreeBowl.wav',
+      id: 'GongFade',
+      displayName: 'Gong (Fade)',
+      assetPath: 'assets/audio/meditation_sounds/Gong-fade.wav',
+    ),
+    MeditationSoundItem(
+      id: 'GongSlowFade',
+      displayName: 'Gong (Slow Fade)',
+      assetPath: 'assets/audio/meditation_sounds/Gong-slow-fade.wav',
     ),
     MeditationSoundItem(
       id: 'Sadhu',
@@ -66,12 +162,20 @@ class MeditationSoundItem {
       displayName: 'Garden Bird',
       assetPath: 'assets/audio/meditation_sounds/GardenBird.wav',
     ),
+    MeditationSoundItem(
+      id: 'Watch',
+      displayName: 'Watch Tick',
+      assetPath: 'assets/audio/meditation_sounds/Watch.wav',
+    ),
   ];
 
   static MeditationSoundItem fromId(String id) {
     return allSounds.firstWhere(
       (s) => s.id.toLowerCase() == id.toLowerCase(),
-      orElse: () => allSounds[2], // default to Bowl
+      orElse: () => allSounds.firstWhere(
+        (s) => s.id == 'Bowl',
+        orElse: () => allSounds.first,
+      ),
     );
   }
 }

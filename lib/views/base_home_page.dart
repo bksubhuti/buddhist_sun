@@ -7,7 +7,8 @@ import 'package:buddhist_sun/views/home.dart';
 import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
-// import 'package:buddhist_sun/views/death_contemplation_page.dart';
+import 'package:buddhist_sun/views/compass_page.dart';
+import 'package:buddhist_sun/views/death_contemplation_page.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
@@ -219,19 +220,18 @@ class Home_PageContainerState extends State<HomePageContainer> {
                 );
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.hourglass_bottom),
-            //   title:
-            //       ColoredText(AppLocalizations.of(context)!.deathContemplation),
-            //   onTap: () {
-            //     Navigator.pop(context); // close the drawer
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (context) => const DeathContemplationPage()),
-            //     );
-            //   },
-            // ),
+            ListTile(
+              leading: const Icon(Icons.explore),
+              title: ColoredText(AppLocalizations.of(context)!.compass),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CompassPage()),
+                );
+              },
+            ),
+            getDeathContemplationMenuItem(),
             ListTile(
               leading: Icon(Icons.settings),
               title: ColoredText(AppLocalizations.of(context)!.settings),
@@ -443,6 +443,22 @@ class Home_PageContainerState extends State<HomePageContainer> {
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  Widget getDeathContemplationMenuItem() {
+    if (!showDeath) return const SizedBox.shrink();
+    return ListTile(
+      leading: const Icon(Icons.hourglass_bottom),
+      title: ColoredText(AppLocalizations.of(context)!.deathContemplation),
+      onTap: () {
+        Navigator.pop(context); // close the drawer
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const DeathContemplationPage()),
+        );
+      },
+    );
   }
 
   showHelpDialog(BuildContext context) {

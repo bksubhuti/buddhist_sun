@@ -97,6 +97,11 @@ const List<String> DEFAULT_MEDITATION_PRESETS = [
 ];
 const String MEDITATION_RING_STYLE = "meditationRingStyle";
 const String DEFAULT_MEDITATION_RING_STYLE = "subtractive";
+const String MEDITATION_RECENT_TIMES = "meditationRecentTimes";
+const List<String> DEFAULT_MEDITATION_RECENT_TIMES = ["30", "15", "45", "60"];
+
+// Death Contemplation (Maranasati) Feature Flag
+bool showDeath = false;
 
 // Death Contemplation (Maranasati) Prefs
 const String DEATH_CONTEMPLATION_BIRTH_DATE = "deathContemplationBirthDate";
@@ -109,6 +114,23 @@ const bool DEFAULT_DEATH_CONTEMPLATION_SHOW_GAS_TANK = true;
 const String DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING =
     "deathContemplationGaugeShowRemaining";
 const bool DEFAULT_DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING = false;
+
+// Compass Prefs
+const String targetNamePref = "targetName";
+const String targetLatPref = "targetLat";
+const String targetLongPref = "targetLong";
+const String vibeOnPref = 'vibeOn';
+const String userDest1Pref = "userDest1";
+const String userDest1LatPref = "userDest1Lat";
+const String userDest1LongPref = "userDest1Long";
+
+const String defaultTargetName = "bodhGaya";
+const double defaultTargetLat = 24.6951;
+const double defaultTargetLong = 84.9913;
+const bool defaultVibeOn = false;
+const String defaultUserDest1 = "";
+const double defaultUserDest1Lat = 0.0;
+const double defaultUserDest1Long = 0.0;
 
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
@@ -370,6 +392,59 @@ class Prefs {
   static set meditationRingStyle(String value) =>
       instance.setString(MEDITATION_RING_STYLE, value);
 
+  static List<int> get meditationRecentTimes {
+    final list = instance.getStringList(MEDITATION_RECENT_TIMES);
+    if (list == null || list.isEmpty) {
+      return [30, 15, 45, 60];
+    }
+    final ints = list
+        .map((e) => int.tryParse(e))
+        .whereType<int>()
+        .where((m) => m > 0 && m <= 720)
+        .toList();
+    if (ints.isEmpty) {
+      return [30, 15, 45, 60];
+    }
+    final unique = <int>[];
+    for (final val in ints) {
+      if (!unique.contains(val)) {
+        unique.add(val);
+      }
+      if (unique.length == 4) break;
+    }
+    for (final def in [30, 15, 45, 60]) {
+      if (unique.length < 4 && !unique.contains(def)) {
+        unique.add(def);
+      }
+    }
+    return unique;
+  }
+
+  static set meditationRecentTimes(List<int> values) {
+    final unique = <int>[];
+    for (final val in values) {
+      if (val > 0 && !unique.contains(val)) {
+        unique.add(val);
+      }
+      if (unique.length == 4) break;
+    }
+    instance.setStringList(
+      MEDITATION_RECENT_TIMES,
+      unique.map((e) => e.toString()).toList(),
+    );
+  }
+
+  static void addMeditationRecentTime(int minutes) {
+    if (minutes <= 0) return;
+    final current = List<int>.from(meditationRecentTimes);
+    current.remove(minutes);
+    current.insert(0, minutes);
+    if (current.length > 4) {
+      current.removeRange(4, current.length);
+    }
+    meditationRecentTimes = current;
+  }
+
   // Death Contemplation getters & setters
   static DateTime? get deathContemplationBirthDate {
     final str = instance.getString(DEATH_CONTEMPLATION_BIRTH_DATE);
@@ -406,6 +481,40 @@ class Prefs {
 
   static set deathContemplationGaugeShowRemaining(bool value) =>
       instance.setBool(DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING, value);
+
+  // Compass getters & setters
+  static String get targetName =>
+      instance.getString(targetNamePref) ?? defaultTargetName;
+  static set targetName(String value) =>
+      instance.setString(targetNamePref, value);
+
+  static String get userDest1 =>
+      instance.getString(userDest1Pref) ?? defaultUserDest1;
+  static set userDest1(String value) =>
+      instance.setString(userDest1Pref, value);
+
+  static double get userDest1Lat =>
+      instance.getDouble(userDest1LatPref) ?? defaultUserDest1Lat;
+  static set userDest1Lat(double value) =>
+      instance.setDouble(userDest1LatPref, value);
+
+  static double get userDest1Long =>
+      instance.getDouble(userDest1LongPref) ?? defaultUserDest1Long;
+  static set userDest1Long(double value) =>
+      instance.setDouble(userDest1LongPref, value);
+
+  static double get targetLat =>
+      instance.getDouble(targetLatPref) ?? defaultTargetLat;
+  static set targetLat(double value) =>
+      instance.setDouble(targetLatPref, value);
+
+  static double get targetLong =>
+      instance.getDouble(targetLongPref) ?? defaultTargetLong;
+  static set targetLong(double value) =>
+      instance.setDouble(targetLongPref, value);
+
+  static bool get vibeOn => instance.getBool(vibeOnPref) ?? defaultVibeOn;
+  static set vibeOn(bool value) => instance.setBool(vibeOnPref, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

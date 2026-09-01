@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/widgets/duration_picker_dialog.dart';
@@ -71,14 +72,15 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   @override
   Widget build(BuildContext context) {
     final timerProvider = context.watch<MeditationTimerProvider>();
+    final t = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meditation Timer'),
+        title: Text(t.meditationTimer),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
-            tooltip: 'About Timer',
+            tooltip: t.aboutTimer,
             onPressed: () => _showInfoDialog(context),
           ),
         ],
@@ -94,9 +96,11 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               const SizedBox(height: 16),
 
               // 2. Timer Time Display (Show time card / tap to edit)
-              if (timerProvider.mode == MeditationTimerMode.timed)
-                _buildTimedModeContent(context, timerProvider)
-              else if (timerProvider.mode == MeditationTimerMode.endAt)
+              if (timerProvider.mode == MeditationTimerMode.timed) ...[
+                _buildTimedModeContent(context, timerProvider),
+                const SizedBox(height: 14),
+                _buildRecentTimesButtons(context, timerProvider),
+              ] else if (timerProvider.mode == MeditationTimerMode.endAt)
                 _buildEndAtModeContent(context, timerProvider)
               else
                 _buildUnlimitedModeContent(context),
@@ -107,11 +111,11 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               FilledButton.icon(
                 onPressed: () => _startMeditation(context),
                 icon: const Icon(Icons.play_arrow_rounded, size: 36),
-                label: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
-                    'Start Meditation',
-                    style: TextStyle(
+                    t.startMeditation,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -144,6 +148,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
     MeditationTimerProvider timerProvider,
   ) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(4),
@@ -155,21 +160,21 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
         children: [
           _buildModeTab(
             context: context,
-            label: 'Timed',
+            label: t.timerModeTimed,
             icon: Icons.timer,
             isSelected: timerProvider.mode == MeditationTimerMode.timed,
             onTap: () => timerProvider.setMode(MeditationTimerMode.timed),
           ),
           _buildModeTab(
             context: context,
-            label: 'End At',
+            label: t.timerModeEndAt,
             icon: Icons.alarm,
             isSelected: timerProvider.mode == MeditationTimerMode.endAt,
             onTap: () => timerProvider.setMode(MeditationTimerMode.endAt),
           ),
           _buildModeTab(
             context: context,
-            label: 'Open',
+            label: t.timerModeOpen,
             icon: Icons.all_inclusive,
             isSelected: timerProvider.mode == MeditationTimerMode.unlimited,
             onTap: () => timerProvider.setMode(MeditationTimerMode.unlimited),
@@ -233,6 +238,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   ) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: () => _openDurationPicker(context),
@@ -262,7 +268,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 Icon(Icons.edit_outlined, size: 16, color: primary),
                 const SizedBox(width: 4),
                 Text(
-                  'Tap to change duration & presets',
+                  t.tapToChangeDuration,
                   style: TextStyle(
                     fontSize: 13,
                     color: primary,
@@ -277,12 +283,97 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
     );
   }
 
+  Widget _buildRecentTimesButtons(
+    BuildContext context,
+    MeditationTimerProvider timerProvider,
+  ) {
+    final alternateTimes = timerProvider.alternateRecentTimes;
+    if (alternateTimes.isEmpty) return const SizedBox.shrink();
+
+    return Row(
+      children: [
+        for (int i = 0; i < alternateTimes.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: _buildRecentTimeButton(
+              context: context,
+              minutes: alternateTimes[i],
+              timerProvider: timerProvider,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildRecentTimeButton({
+    required BuildContext context,
+    required int minutes,
+    required MeditationTimerProvider timerProvider,
+  }) {
+    final theme = Theme.of(context);
+
+    return SizedBox(
+      height: 72,
+      child: FilledButton.tonal(
+        onPressed: () {
+          timerProvider.setMode(MeditationTimerMode.timed);
+          timerProvider.setDurationMinutes(minutes);
+          _startMeditation(context);
+        },
+        style: FilledButton.styleFrom(
+          backgroundColor:
+              theme.colorScheme.surfaceContainerHighest.withAlpha(150),
+          foregroundColor: theme.colorScheme.onSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: BorderSide(
+              color: theme.colorScheme.outlineVariant.withAlpha(90),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withAlpha(35),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.play_arrow_rounded,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              _formatDurationTitle(minutes),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildEndAtModeContent(
     BuildContext context,
     MeditationTimerProvider timerProvider,
   ) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     final hour = timerProvider.endAtHour == 0
         ? 12
@@ -307,9 +398,10 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
     final diffMinutes = target.difference(now).inMinutes;
     final diffHours = diffMinutes ~/ 60;
     final remMins = diffMinutes % 60;
-    final timeUntilStr = diffHours > 0
-        ? '$diffHours hr $remMins min from now'
-        : '$remMins min from now';
+    final timeStr = diffHours > 0
+        ? '$diffHours hr $remMins min'
+        : '$remMins min';
+    final timeUntilStr = t.timeUntilEndAt(timeStr);
 
     return GestureDetector(
       onTap: () => _pickEndAtTime(context),
@@ -346,7 +438,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 Icon(Icons.edit_outlined, size: 16, color: primary),
                 const SizedBox(width: 4),
                 Text(
-                  'Tap to change end time',
+                  t.tapToChangeEndTime,
                   style: TextStyle(
                     fontSize: 12,
                     color: primary,
@@ -364,6 +456,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   Widget _buildUnlimitedModeContent(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -380,7 +473,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           Icon(Icons.all_inclusive_rounded, size: 48, color: primary),
           const SizedBox(height: 8),
           Text(
-            'Open / Unlimited Mode',
+            t.openUnlimitedMode,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: primary,
@@ -388,7 +481,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            'Counts up continuously until you finish. Interval bells will chime as configured below.',
+            t.openUnlimitedModeDesc,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -405,6 +498,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   ) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 0,
@@ -417,7 +511,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           initiallyExpanded: false,
           leading: Icon(Icons.tune_rounded, color: primary),
           title: Text(
-            'Bells & Settings',
+            t.bellsAndSettings,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -453,7 +547,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'Bell Volume',
+                          t.bellVolume,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -486,7 +580,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             // Start Bell
             _buildSoundRow(
               context: context,
-              label: 'Starting Bell',
+              label: t.startingBell,
               selectedSound: timerProvider.startSound,
               timerProvider: timerProvider,
               onChanged: (sound) => timerProvider.setStartSound(sound),
@@ -499,7 +593,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    'Interval Bell',
+                    t.intervalBell,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -512,7 +606,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                   items: _intervalOptions.map((min) {
                     return DropdownMenuItem<int>(
                       value: min,
-                      child: Text(min == 0 ? 'Off' : 'Every ${min}m'),
+                      child: Text(min == 0 ? t.off : t.everyNMinutes(min)),
                     );
                   }).toList(),
                   onChanged: (val) {
@@ -525,7 +619,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               const SizedBox(height: 8),
               _buildSoundRow(
                 context: context,
-                label: 'Interval Sound',
+                label: t.intervalSound,
                 selectedSound: timerProvider.intervalSound,
                 timerProvider: timerProvider,
                 onChanged: (sound) => timerProvider.setIntervalSound(sound),
@@ -536,7 +630,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             // End Bell
             _buildSoundRow(
               context: context,
-              label: 'Ending Bell',
+              label: t.endingBell,
               selectedSound: timerProvider.endSound,
               timerProvider: timerProvider,
               onChanged: (sound) => timerProvider.setEndSound(sound),
@@ -546,13 +640,13 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             // Keep Screen On Switch
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text(
-                'Keep Screen Awake',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              title: Text(
+                t.keepScreenAwake,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
-              subtitle: const Text(
-                'Prevent phone display from sleeping while meditating',
-                style: TextStyle(fontSize: 12),
+              subtitle: Text(
+                t.keepScreenAwakeDesc,
+                style: const TextStyle(fontSize: 12),
               ),
               value: timerProvider.keepScreenOn,
               onChanged: (val) => timerProvider.setKeepScreenOn(val),
@@ -564,14 +658,14 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Timer Ring Style',
+                  t.timerRingStyle,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Subtractive removes the solid circle as time elapses. Additive fills it up.',
+                  t.timerRingStyleDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -580,16 +674,16 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 SizedBox(
                   width: double.infinity,
                   child: SegmentedButton<String>(
-                    segments: const [
+                    segments: [
                       ButtonSegment(
                         value: 'subtractive',
-                        label: Text('Subtractive (Default)'),
-                        icon: Icon(Icons.remove_circle_outline, size: 16),
+                        label: Text(t.styleSubtractive),
+                        icon: const Icon(Icons.remove_circle_outline, size: 16),
                       ),
                       ButtonSegment(
                         value: 'additive',
-                        label: Text('Additive'),
-                        icon: Icon(Icons.add_circle_outline, size: 16),
+                        label: Text(t.styleAdditive),
+                        icon: const Icon(Icons.add_circle_outline, size: 16),
                       ),
                     ],
                     selected: {timerProvider.ringStyle},
@@ -614,7 +708,6 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
     required ValueChanged<MeditationSoundItem> onChanged,
   }) {
     final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
 
     return Row(
       children: [
@@ -637,43 +730,37 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             );
           }).toList(),
           onChanged: (sound) {
-            if (sound != null) onChanged(sound);
+            if (sound != null) {
+              onChanged(sound);
+              if (sound.id != 'none') {
+                timerProvider.previewSound(sound);
+              }
+            }
           },
         ),
-        const SizedBox(width: 4),
-        if (selectedSound.id != 'none')
-          IconButton(
-            icon: Icon(Icons.play_circle_outline, color: primary, size: 22),
-            tooltip: 'Preview sound',
-            onPressed: () => timerProvider.previewSound(selectedSound),
-          ),
       ],
     );
   }
 
   void _showInfoDialog(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.self_improvement),
-            SizedBox(width: 8),
-            Text('Meditation Timer'),
+            const Icon(Icons.self_improvement),
+            const SizedBox(width: 8),
+            Text(t.meditationTimer),
           ],
         ),
-        content: const Text(
-          'A quiet, dedicated timer for your meditation practice.\n\n'
-          '• Timed: Meditate for a fixed duration.\n'
-          '• End At: Meditate until a specific time of day.\n'
-          '• Open: Meditate freely with optional interval chimes.\n\n'
-          'Tap the timer circle during a session to pause or resume.',
-        ),
+        content: Text(t.timerInfoDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
+            child: Text(t.ok),
           ),
         ],
       ),
