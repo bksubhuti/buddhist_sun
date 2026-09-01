@@ -98,6 +98,18 @@ const List<String> DEFAULT_MEDITATION_PRESETS = [
 const String MEDITATION_RING_STYLE = "meditationRingStyle";
 const String DEFAULT_MEDITATION_RING_STYLE = "subtractive";
 
+// Death Contemplation (Maranasati) Prefs
+const String DEATH_CONTEMPLATION_BIRTH_DATE = "deathContemplationBirthDate";
+const String DEATH_CONTEMPLATION_LIFE_EXPECTANCY =
+    "deathContemplationLifeExpectancy";
+const int DEFAULT_DEATH_CONTEMPLATION_LIFE_EXPECTANCY = 80;
+const String DEATH_CONTEMPLATION_SHOW_GAS_TANK =
+    "deathContemplationShowGasTank";
+const bool DEFAULT_DEATH_CONTEMPLATION_SHOW_GAS_TANK = true;
+const String DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING =
+    "deathContemplationGaugeShowRemaining";
+const bool DEFAULT_DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING = false;
+
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
 DateTime defaultLastDownload = DateTime(2025, 12, 1);
@@ -357,6 +369,43 @@ class Prefs {
       DEFAULT_MEDITATION_RING_STYLE;
   static set meditationRingStyle(String value) =>
       instance.setString(MEDITATION_RING_STYLE, value);
+
+  // Death Contemplation getters & setters
+  static DateTime? get deathContemplationBirthDate {
+    final str = instance.getString(DEATH_CONTEMPLATION_BIRTH_DATE);
+    if (str == null || str.isEmpty) return null;
+    return DateTime.tryParse(str);
+  }
+
+  static set deathContemplationBirthDate(DateTime? value) {
+    if (value == null) {
+      instance.remove(DEATH_CONTEMPLATION_BIRTH_DATE);
+    } else {
+      instance.setString(
+          DEATH_CONTEMPLATION_BIRTH_DATE, value.toIso8601String());
+    }
+  }
+
+  static int get deathContemplationLifeExpectancy =>
+      instance.getInt(DEATH_CONTEMPLATION_LIFE_EXPECTANCY) ??
+      DEFAULT_DEATH_CONTEMPLATION_LIFE_EXPECTANCY;
+
+  static set deathContemplationLifeExpectancy(int value) =>
+      instance.setInt(DEATH_CONTEMPLATION_LIFE_EXPECTANCY, value);
+
+  static bool get deathContemplationShowGasTank =>
+      instance.getBool(DEATH_CONTEMPLATION_SHOW_GAS_TANK) ??
+      DEFAULT_DEATH_CONTEMPLATION_SHOW_GAS_TANK;
+
+  static set deathContemplationShowGasTank(bool value) =>
+      instance.setBool(DEATH_CONTEMPLATION_SHOW_GAS_TANK, value);
+
+  static bool get deathContemplationGaugeShowRemaining =>
+      instance.getBool(DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING) ??
+      DEFAULT_DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING;
+
+  static set deathContemplationGaugeShowRemaining(bool value) =>
+      instance.setBool(DEATH_CONTEMPLATION_GAUGE_SHOW_REMAINING, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

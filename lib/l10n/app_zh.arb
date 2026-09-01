@@ -382,5 +382,22 @@
   "beWaxing8th": "上弦月 (初八)",
   "beWaning8th": "下弦月 (廿三)",
   "meditationTimer": "Meditation Timer",
-  "startMeditation": "Start Meditation"
+  "startMeditation": "Start Meditation",
+  "deathContemplation": "Maraṇānussati",
+  "maranasati": "Maraṇassati",
+  "birthday": "Date of Birth",
+  "lifeExpectancy": "Life Expectancy (Years)",
+  "yearsLeft": "Years",
+  "monthsLeft": "Months",
+  "daysLeft": "Days",
+  "hoursLeft": "Hours",
+  "minutesLeft": "Minutes",
+  "secondsLeft": "Seconds",
+  "timeRemaining": "Time Remaining",
+  "deathContemplationPrompt": "Please set your birthday and life expectancy in Settings.",
+  "lifeElapsed": "Life Elapsed",
+  "lifeRemaining": "Life Remaining",
+  "lifeExceeded": "You have exceeded your expected lifespan. Every moment is a gift for Dhamma practice.",
+  "editDeathSettings": "Edit Birthday & Age",
+  "maranasatiQuote": "Life is uncertain, death is certain. Strive on with diligence."
 }

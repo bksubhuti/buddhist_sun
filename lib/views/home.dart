@@ -20,6 +20,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
+// import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -306,6 +307,31 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     ),
                   ),
                 ),
+                // const SizedBox(height: 10),
+                // Center(
+                //   child: OutlinedButton.icon(
+                //     onPressed: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) =>
+                //                 const DeathContemplationPage()),
+                //       );
+                //     },
+                //     icon: const Icon(Icons.hourglass_bottom, size: 20),
+                //     label: Text(
+                //       AppLocalizations.of(context)!.deathContemplation,
+                //       style: const TextStyle(fontWeight: FontWeight.w600),
+                //     ),
+                //     style: OutlinedButton.styleFrom(
+                //       padding: const EdgeInsets.symmetric(
+                //           horizontal: 20, vertical: 10),
+                //       shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(20),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 // ════════════════════════════════════════════════════
                 // DAWN SECTION

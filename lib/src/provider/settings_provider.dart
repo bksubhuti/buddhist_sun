@@ -39,4 +39,8 @@ class SettingsProvider extends ChangeNotifier {
     _country = country;
     notifyListeners();
   }
+
+  void updateDeathContemplationSettings() {
+    notifyListeners();
+  }
 }

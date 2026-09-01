@@ -7,6 +7,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_language_widget.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 
@@ -33,7 +34,8 @@ class _SettingsPageState extends State<SettingsPage> {
     // debug mode to reset
     //Prefs.instance.clear();
     dbService.initDatabase();
-    _customDawnController = TextEditingController(text: Prefs.customDawnAngle.toString());
+    _customDawnController =
+        TextEditingController(text: Prefs.customDawnAngle.toString());
     super.initState();
   }
 
@@ -165,18 +167,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                 elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: Row(
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 6.0),
                       ColoredText("${AppLocalizations.of(context)!.dawn}:",
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           )),
-                      SizedBox(
-                        width: 10.0,
-                        height: 20,
-                      ),
+                      SizedBox(height: 6.0),
                       DropdownButton<String>(
                           value: _dawnMethodItems[Prefs.dawnVal],
                           style: TextStyle(
@@ -184,6 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ? Theme.of(context).primaryColor
                                 : Colors.white,
                           ),
+                          isExpanded: true,
                           isDense: true,
                           onChanged: (newValue) {
                             setState(() {
@@ -202,7 +203,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       color: (Prefs.lightThemeOn)
                                           ? Theme.of(context).primaryColor
                                           : Colors.white,
-                                      fontSize: 13,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
                               );
@@ -232,10 +233,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         Expanded(
                           child: TextField(
-                            keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: true, signed: true),
                             decoration: InputDecoration(
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 10.0),
                             ),
                             controller: _customDawnController,
                             style: TextStyle(
@@ -249,7 +252,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Prefs.customDawnAngle = angle;
                                 // Need to notify listeners if they depend on this to redraw immediately
                                 // We can use settingsProvider.setDawnVal with current to trigger update
-                                settingsProvider.setDawnVal(_dawnMethodItems[Prefs.dawnVal]);
+                                settingsProvider.setDawnVal(
+                                    _dawnMethodItems[Prefs.dawnVal]);
                               }
                             },
                           ),
@@ -263,19 +267,17 @@ class _SettingsPageState extends State<SettingsPage> {
                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                 elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: Row(
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 6.0),
                       ColoredText(
                           "${AppLocalizations.of(context)!.uposathaCountry}:",
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           )),
-                      SizedBox(
-                        width: 10.0,
-                        height: 20,
-                      ),
+                      SizedBox(height: 6.0),
                       DropdownButton<String>(
                           value: EnumToString.convertToString(
                               Prefs.selectedUposatha,
@@ -285,6 +287,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ? Theme.of(context).primaryColor
                                 : Colors.white,
                           ),
+                          isExpanded: true,
                           isDense: true,
                           onChanged: (newValue) {
                             setState(() {
@@ -355,6 +358,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SizedBox(height: 15),
               NotificationSettingsWidget(),
+              SizedBox(height: 15),
+              DeathContemplationSettingsWidget(settingsProvider),
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -499,6 +505,209 @@ class _SettingsPageState extends State<SettingsPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget DeathContemplationSettingsWidget(SettingsProvider settingsProvider) {
+    final birthDate = Prefs.deathContemplationBirthDate;
+    final birthDateFormatted = birthDate != null
+        ? DateFormat('yyyy-MM-dd').format(birthDate)
+        : AppLocalizations.of(context)!.not_set;
+
+    return Card(
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 12, 15, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.hourglass_bottom,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 24,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ColoredText(
+                    AppLocalizations.of(context)!.deathContemplation,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              AppLocalizations.of(context)!.maranasatiQuote,
+              style: TextStyle(
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const Divider(height: 20),
+            // Birthday
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ColoredText(
+                    AppLocalizations.of(context)!.birthday,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton.icon(
+                      icon: const Icon(Icons.calendar_today, size: 18),
+                      label: Text(
+                        birthDateFormatted,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () async {
+                        final initial = birthDate ?? DateTime(1990, 1, 1);
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: initial,
+                          firstDate: DateTime(1900, 1, 1),
+                          lastDate: DateTime.now(),
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            Prefs.deathContemplationBirthDate = picked;
+                          });
+                          settingsProvider.updateDeathContemplationSettings();
+                        }
+                      },
+                    ),
+                    if (birthDate != null)
+                      IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        tooltip: 'Clear',
+                        onPressed: () {
+                          setState(() {
+                            Prefs.deathContemplationBirthDate = null;
+                          });
+                          settingsProvider.updateDeathContemplationSettings();
+                        },
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // Expected Life Expectancy Age
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ColoredText(
+                    AppLocalizations.of(context)!.lifeExpectancy,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        final current = Prefs.deathContemplationLifeExpectancy;
+                        if (current > 1) {
+                          setState(() {
+                            Prefs.deathContemplationLifeExpectancy =
+                                current - 1;
+                          });
+                          settingsProvider.updateDeathContemplationSettings();
+                        }
+                      },
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        final controller = TextEditingController(
+                          text:
+                              Prefs.deathContemplationLifeExpectancy.toString(),
+                        );
+                        final result = await showDialog<int>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text(
+                                AppLocalizations.of(context)!.lifeExpectancy),
+                            content: TextField(
+                              controller: controller,
+                              keyboardType: TextInputType.number,
+                              autofocus: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Age (Years)',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child:
+                                    Text(AppLocalizations.of(context)!.cancel),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  final val = int.tryParse(controller.text);
+                                  if (val != null && val > 0 && val <= 130) {
+                                    Navigator.pop(ctx, val);
+                                  }
+                                },
+                                child: Text(AppLocalizations.of(context)!.ok),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (result != null) {
+                          setState(() {
+                            Prefs.deathContemplationLifeExpectancy = result;
+                          });
+                          settingsProvider.updateDeathContemplationSettings();
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Text(
+                          '${Prefs.deathContemplationLifeExpectancy}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        final current = Prefs.deathContemplationLifeExpectancy;
+                        if (current < 130) {
+                          setState(() {
+                            Prefs.deathContemplationLifeExpectancy =
+                                current + 1;
+                          });
+                          settingsProvider.updateDeathContemplationSettings();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
