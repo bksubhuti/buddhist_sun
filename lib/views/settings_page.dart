@@ -81,81 +81,99 @@ class _SettingsPageState extends State<SettingsPage> {
     _addDawnMethodItemsToMemberList();
 
     return Scaffold(
-      appBar: AppBar(title: Text('settings')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Column(
             children: [
               Card(
-                margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                margin: const EdgeInsets.fromLTRB(10, 0, 10, 8),
                 elevation: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 50, width: 50.0),
-                    ColoredText(AppLocalizations.of(context)!.language + ":",
-                        style: TextStyle(
-                          fontSize: 18,
-                        )),
-                    SizedBox(width: 40.0),
-                    SelectLanguageWidget(),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: ColoredText(
+                          "${AppLocalizations.of(context)!.language}:",
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      SelectLanguageWidget(),
+                    ],
+                  ),
                 ),
               ),
               ThemeSettingView(),
-              SizedBox(height: 25),
+              const SizedBox(height: 15),
               Card(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(height: 6.0),
-                      ColoredText(AppLocalizations.of(context)!.safety,
-                          style: TextStyle(
-                            fontSize: 15,
-                          )),
-                      SizedBox(width: 10.0),
-                      DropdownButton<String>(
-                          value: _safetyItems[Prefs.safety],
-                          style: TextStyle(
-                            color: (!Prefs.darkThemeOn)
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                      Flexible(
+                        child: ColoredText(
+                          "${AppLocalizations.of(context)!.safety}:",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          isDense: false,
-                          onChanged: (newValue) {
-                            setState(() {
-                              Prefs.safety = _safetyItems.indexOf(newValue!);
-                              settingsProvider.setSafety(Prefs.safety);
-                            });
-                          },
-                          items: _safetyItems.map<DropdownMenuItem<String>>(
-                            (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: TextStyle(
-                                      color: (!Prefs.darkThemeOn)
-                                          ? Theme.of(context).primaryColor
-                                          : Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              );
-                            },
-                          ).toList()),
-                      SizedBox(
-                        width: 12,
+                        ),
                       ),
-                      (Prefs.safety > 0)
-                          ? //Text('\ud83d\udee1')
-                          Icon(Icons.health_and_safety_outlined,
-                              color: Theme.of(context).colorScheme.primary)
-                          : Text(""),
+                      const SizedBox(width: 10.0),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          DropdownButton<String>(
+                            value: _safetyItems[Prefs.safety],
+                            style: TextStyle(
+                              color: (!Prefs.darkThemeOn)
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                            ),
+                            underline: const SizedBox(),
+                            isDense: true,
+                            onChanged: (newValue) {
+                              setState(() {
+                                Prefs.safety = _safetyItems.indexOf(newValue!);
+                                settingsProvider.setSafety(Prefs.safety);
+                              });
+                            },
+                            items: _safetyItems.map<DropdownMenuItem<String>>(
+                              (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: TextStyle(
+                                        color: (!Prefs.darkThemeOn)
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              },
+                            ).toList(),
+                          ),
+                          if (Prefs.safety > 0) ...[
+                            const SizedBox(width: 6),
+                            Icon(Icons.health_and_safety_outlined,
+                                color: Theme.of(context).colorScheme.primary),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -419,32 +437,33 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget NotificationSettingsWidget() {
     return Card(
-      // 🟢 NEW
       margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ColoredText(
               AppLocalizations.of(context)!.uposathaNotifications,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ColoredText(
-                  AppLocalizations.of(context)!.daysBefore,
-                  style: TextStyle(fontSize: 16),
+                Expanded(
+                  child: ColoredText(
+                    AppLocalizations.of(context)!.daysBefore,
+                    style: const TextStyle(fontSize: 15),
+                  ),
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.remove),
+                      icon: const Icon(Icons.remove_circle_outline),
+                      visualDensity: VisualDensity.compact,
                       onPressed: () {
                         setState(() {
                           final current = Prefs.beforeUposathaNotificationDays;
@@ -463,7 +482,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.add_circle_outline),
+                      visualDensity: VisualDensity.compact,
                       onPressed: () {
                         setState(() {
                           Prefs.beforeUposathaNotificationDays =
@@ -476,14 +496,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
+            const SizedBox(height: 6),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ColoredText(
-                  AppLocalizations.of(context)!.notificationTime,
-                  style: TextStyle(fontSize: 16),
+                Expanded(
+                  child: ColoredText(
+                    AppLocalizations.of(context)!.notificationTime,
+                    style: const TextStyle(fontSize: 15),
+                  ),
                 ),
-                TextButton(
+                TextButton.icon(
+                  style: TextButton.styleFrom(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  icon: const Icon(Icons.access_time, size: 18),
                   onPressed: () async {
                     final initialTime = Prefs.uposathaNotificationTime;
                     final picked = await showTimePicker(
@@ -497,10 +526,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       rescheduleUposathaNotifications();
                     }
                   },
-                  child: Text(
+                  label: Text(
                     Prefs.uposathaNotificationTime.format(context),
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

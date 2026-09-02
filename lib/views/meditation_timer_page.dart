@@ -112,13 +112,17 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 onPressed: () => _startMeditation(context),
                 icon: const Icon(Icons.play_arrow_rounded, size: 36),
                 label: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Text(
-                    t.startMeditation,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 8.0),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      t.startMeditation,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ),
                 ),
@@ -199,33 +203,39 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected ? primary : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: isSelected
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
                   color: isSelected
                       ? theme.colorScheme.onPrimary
                       : theme.colorScheme.onSurfaceVariant,
                 ),
-              ),
-            ],
+                const SizedBox(width: 5),
+                Text(
+                  label,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isSelected
+                        ? theme.colorScheme.onPrimary
+                        : theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -267,12 +277,15 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               children: [
                 Icon(Icons.edit_outlined, size: 16, color: primary),
                 const SizedBox(width: 4),
-                Text(
-                  t.tapToChangeDuration,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: primary,
-                    fontWeight: FontWeight.w600,
+                Flexible(
+                  child: Text(
+                    t.tapToChangeDuration,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -398,9 +411,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
     final diffMinutes = target.difference(now).inMinutes;
     final diffHours = diffMinutes ~/ 60;
     final remMins = diffMinutes % 60;
-    final timeStr = diffHours > 0
-        ? '$diffHours hr $remMins min'
-        : '$remMins min';
+    final timeStr =
+        diffHours > 0 ? '$diffHours hr $remMins min' : '$remMins min';
     final timeUntilStr = t.timeUntilEndAt(timeStr);
 
     return GestureDetector(
@@ -437,12 +449,15 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               children: [
                 Icon(Icons.edit_outlined, size: 16, color: primary),
                 const SizedBox(width: 4),
-                Text(
-                  t.tapToChangeEndTime,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: primary,
-                    fontWeight: FontWeight.w600,
+                Flexible(
+                  child: Text(
+                    t.tapToChangeEndTime,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -642,7 +657,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               contentPadding: EdgeInsets.zero,
               title: Text(
                 t.keepScreenAwake,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
                 t.keepScreenAwakeDesc,
