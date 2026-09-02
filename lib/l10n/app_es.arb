@@ -210,7 +210,7 @@
   "place_kushinagar": "Kushinagar",
   "place_mahaCetiya": "Ruwanwelisaya",
   "place_toothRelicPagoda": "Templo del Diente",
-  "compassHelpContent": "1. Cuando la aplicación se inicie por primera vez, solicitará permiso para usar su ubicación. Permita el acceso.\n\n2. Seleccione el sitio budista hacia el que desea orientarse (por defecto es Bodh Gaya, India).\n\n3. Sostenga su teléfono paralelo al suelo y gire lentamente hasta que la brújula se alinee con el lugar elegido.\n\n4. Cuando esté en la dirección correcta, la brújula se iluminará.\n\n5. Ore o medite en esa dirección.\n\n6. Opcionalmente, active la vibración para obtener retroalimentación háptica.",
+  "compassHelpContent": "1. Permita el acceso a la ubicación cuando se le solicite para que la brújula calcule la dirección geodésica y distancia exacta al sitio sagrado.\n\n2. Seleccione el sitio de peregrinación budista deseado o ingrese un destino personalizado.\n\n3. Sostenga su teléfono plano (paralelo al suelo) y gire lentamente el cuerpo hasta que la aguja apunte hacia adelante.\n\n4. Al alinearse con el objetivo, la brújula brillará en dorado y el aviso confirmará que está orientado hacia el sitio.\n\n5. Toque el ícono del Globo terráqueo (🌐) en la barra superior para ver el mapa de ruta interactivo. Toque la mini brújula para volver.\n\n6. Active el modo de vibración para recibir pulsos hápticos cuando esté alineado con el objetivo.\n\n7. Rinda homenaje, recite cánticos o medite mirando hacia el sagrado Árbol Bodhi o sitio de peregrinación.",
   "locationPermissionRationaleTitle": "¿Permitir ubicación?",
   "locationPermissionRationaleMessage": "La Brújula Budista necesita su ubicación para apuntar hacia el sitio seleccionado.",
   "locationPermissionRationaleNotNow": "Ahora no",
@@ -278,5 +278,9 @@
   "addPresetTitle": "Añadir preajuste",
   "delete": "Eliminar",
   "edit": "Editar",
-  "timeUntilEndAt": "en {time}"
+  "timeUntilEndAt": "en {time}",
+  "mapView": "Vista de Mapa",
+  "compassView": "Vista de Brújula",
+  "yourLocation": "Tu Ubicación",
+  "otherApps": "Otras aplicaciones"
 }

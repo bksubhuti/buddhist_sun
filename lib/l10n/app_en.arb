@@ -249,7 +249,7 @@
   "place_kushinagar": "Kushinagar",
   "place_mahaCetiya": "Ruwanwelisaya",
   "place_toothRelicPagoda": "Temple of the Tooth",
-  "compassHelpContent": "1. When the app first starts, it will ask permission to use your location. Allow access.\n\n2. Select the Buddhist site you wish to face (default is Bodh Gaya, India). Wait a few seconds for it to register.\n\n3. Hold your phone parallel to the ground and slowly turn until the compass aligns with your chosen site.\n\n4. When you are facing the right direction, the compass becomes bright.\n\n5. Pray in that direction.\n\n6. Optionally, enable vibration mode for haptic feedback.",
+  "compassHelpContent": "1. Allow location access when prompted so the compass can calculate the exact geodesic direction and distance to the sacred site.\n\n2. Select your desired Buddhist pilgrimage site or enter a custom destination.\n\n3. Hold your phone flat (parallel to the ground) and slowly turn your body until the needle points straight ahead.\n\n4. When aligned on target, the compass glows vibrant gold and the banner confirms you are facing the site.\n\n5. Tap the Globe icon (🌐) in the top app bar to view the interactive flight path map. Tap the mini-compass on the map to switch back.\n\n6. Enable Vibration for haptic pulses that notify you when you are on target.\n\n7. Pay respect, chant, or meditate facing the sacred Bodhi Tree or pilgrimage site.",
   "locationPermissionRationaleTitle": "Allow Location?",
   "locationPermissionRationaleMessage": "Buddhist Compass needs your location to point toward your selected site.",
   "locationPermissionRationaleNotNow": "Not now",
@@ -349,7 +349,7 @@
   "timerRemaining": "Remaining",
   "timerDone": "Done",
   "aboutTimer": "About Timer",
-  "timerInfoDialogContent": "A quiet, dedicated timer for your meditation practice.\n\n• Timed: Meditate for a fixed duration.\n• End At: Meditate until a specific time of day.\n• Open: Meditate freely with optional interval chimes.\n\nTap the timer circle during a session to pause or resume.\n\nAudio chimes courtesy of Freesound.org and Suno.com.",
+  "timerInfoDialogContent": "A quiet, dedicated timer for your meditation practice.\n\n• Timed: Meditate for a fixed duration.\n• End At: Meditate until a specific time of day.\n• Open: Meditate freely with optional interval chimes.\n\nTap the timer circle during a session to pause or resume.\n\nAudio chimes courtesy of Freesound.org, Pixabay.com, and Suno.com.",
   "tapScreenToResume": "Tap screen to resume",
   "tapScreenToPause": "Tap screen to pause",
   "setDuration": "Set Duration",
@@ -393,5 +393,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mapView": "Map View",
+  "compassView": "Compass View",
+  "yourLocation": "Your Location",
+  "otherApps": "Other Apps"
 }

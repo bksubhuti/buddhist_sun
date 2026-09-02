@@ -233,15 +233,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
             ),
             getDeathContemplationMenuItem(),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: ColoredText(AppLocalizations.of(context)!.settings),
-              onTap: () {
-                Navigator.pop(context); // close the drawer
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.calendar_month),
               title: ColoredText(AppLocalizations.of(context)!.beTitle),
               onTap: () {
@@ -250,22 +241,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const BuddhavassaPage()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.help),
-              title: ColoredText(AppLocalizations.of(context)!.help,
-                  style: TextStyle()),
-              onTap: () {
-                showHelpDialog(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.info),
-              title: ColoredText(AppLocalizations.of(context)!.about,
-                  style: TextStyle()),
-              onTap: () {
-                showAboutBuddhistSunDialog(context);
               },
             ),
             ListTile(
@@ -307,6 +282,31 @@ class Home_PageContainerState extends State<HomePageContainer> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.settings),
+              title: ColoredText(AppLocalizations.of(context)!.settings),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.help),
+              title: ColoredText(AppLocalizations.of(context)!.help,
+                  style: TextStyle()),
+              onTap: () {
+                showHelpDialog(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: ColoredText(AppLocalizations.of(context)!.about,
+                  style: TextStyle()),
+              onTap: () {
+                showAboutBuddhistSunDialog(context);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.star), // Added Icon
               title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
               focusColor: Theme.of(context).focusColor,
@@ -314,6 +314,21 @@ class Home_PageContainerState extends State<HomePageContainer> {
               onTap: () {
                 final InAppReview inAppReview = InAppReview.instance;
                 inAppReview.openStoreListing(appStoreId: '1585091207');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.apps),
+              title: ColoredText(AppLocalizations.of(context)!.otherApps),
+              focusColor: Theme.of(context).focusColor,
+              hoverColor: Theme.of(context).hoverColor,
+              onTap: () async {
+                Navigator.pop(context); // close the drawer
+                final Uri url =
+                    Uri.parse('https://americanmonk.org/categories/software/');
+                if (!await launchUrl(url,
+                    mode: LaunchMode.externalApplication)) {
+                  throw Exception('Could not launch $url');
+                }
               },
             ),
           ],

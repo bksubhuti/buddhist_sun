@@ -414,7 +414,7 @@
   "place_kushinagar": "拘尸那罗",
   "place_mahaCetiya": "茹万韦利塞亚大塔",
   "place_toothRelicPagoda": "佛牙寺",
-  "compassHelpContent": "1. 首次打开应用时，请允许使用位置权限。\n\n2. 选择您希望朝向的佛教圣地（默认是印度菩提伽耶）。\n\n3. 将手机水平持平，缓缓转身，直到指南针对准所选圣地。\n\n4. 当对准正确方向时，指南针会变亮。\n\n5. 朝向该方向礼佛祈愿。\n\n6. 可在下方开启震动提示功能。",
+  "compassHelpContent": "1. 首次使用请允许定位权限，以便指南针精确计算朝向圣地的方位角与大圆距离。\n\n2. 选择您希望朝向的佛教圣地（或输入自定义目的地）。\n\n3. 将手机水平持平（与地面平行），缓缓转身，直到指针正对前方圣地标记。\n\n4. 当精准对准目标时，指南针将呈现金色光芒，提示栏会确认已正对圣地。\n\n5. 点击顶部导航栏的地球图标（🌐）可切换至交互式大圆航线地图。点击地图左上角的小指南针即可返回全屏罗盘。\n\n6. 开启震动提示后，当对准圣地时手机将轻柔脉冲震动提醒。\n\n7. 朝向神圣菩提树或圣地礼佛、诵经或静坐禅修。",
   "locationPermissionRationaleTitle": "允许访问位置信息？",
   "locationPermissionRationaleMessage": "佛教指南针需要您的位置信息以指向所选圣地。",
   "locationPermissionRationaleNotNow": "暂不",
@@ -482,5 +482,9 @@
   "addPresetTitle": "添加预设",
   "delete": "删除",
   "edit": "编辑",
-  "timeUntilEndAt": "距现在 {time}"
+  "timeUntilEndAt": "距现在 {time}",
+  "mapView": "地图视图",
+  "compassView": "罗盘视图",
+  "yourLocation": "您的位置",
+  "otherApps": "其他应用"
 }

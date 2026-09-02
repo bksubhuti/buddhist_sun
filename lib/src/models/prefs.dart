@@ -120,6 +120,7 @@ const String targetNamePref = "targetName";
 const String targetLatPref = "targetLat";
 const String targetLongPref = "targetLong";
 const String vibeOnPref = 'vibeOn';
+const String compassShowMapPref = "compassShowMap";
 const String userDest1Pref = "userDest1";
 const String userDest1LatPref = "userDest1Lat";
 const String userDest1LongPref = "userDest1Long";
@@ -128,6 +129,7 @@ const String defaultTargetName = "bodhGaya";
 const double defaultTargetLat = 24.6951;
 const double defaultTargetLong = 84.9913;
 const bool defaultVibeOn = false;
+const bool defaultCompassShowMap = false;
 const String defaultUserDest1 = "";
 const double defaultUserDest1Lat = 0.0;
 const double defaultUserDest1Long = 0.0;
@@ -515,6 +517,11 @@ class Prefs {
 
   static bool get vibeOn => instance.getBool(vibeOnPref) ?? defaultVibeOn;
   static set vibeOn(bool value) => instance.setBool(vibeOnPref, value);
+
+  static bool get compassShowMap =>
+      instance.getBool(compassShowMapPref) ?? defaultCompassShowMap;
+  static set compassShowMap(bool value) =>
+      instance.setBool(compassShowMapPref, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

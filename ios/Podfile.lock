@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_compass (0.0.1):
+    - Flutter
   - flutter_tts (0.0.1):
     - Flutter
   - flutter_volume_controller (0.0.1):
@@ -18,6 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - flutter_volume_controller (from `.symlinks/plugins/flutter_volume_controller/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
@@ -30,6 +33,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_compass:
+    :path: ".symlinks/plugins/flutter_compass/ios"
   flutter_tts:
     :path: ".symlinks/plugins/flutter_tts/ios"
   flutter_volume_controller:
@@ -39,6 +44,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_compass: b236ab69b61545cce89fd58527f401a7587d5cc1
   flutter_tts: b88dbc8655d3dc961bc4a796e4e16a4cc1795833
   flutter_volume_controller: c2be490cb0487e8b88d0d9fc2b7e1c139a4ebccb
   Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321

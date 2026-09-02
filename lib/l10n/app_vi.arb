@@ -414,7 +414,7 @@
   "place_kushinagar": "Câu Thi Na (Kushinagar)",
   "place_mahaCetiya": "Đại Bảo Tháp Ruwanwelisaya",
   "place_toothRelicPagoda": "Chùa Răng Phật",
-  "compassHelpContent": "1. Khi ứng dụng khởi động lần đầu, ứng dụng sẽ xin phép sử dụng vị trí của bạn. Vui lòng cho phép.\n\n2. Chọn thánh tích Phật giáo bạn muốn hướng về (mặc định là Bồ Đề Đạo Tràng, Ấn Độ).\n\n3. Giữ điện thoại song song với mặt đất và từ từ xoay cho đến khi la bàn thẳng hàng với địa điểm đã chọn.\n\n4. Khi bạn hướng đúng hướng, la bàn sẽ sáng lên.\n\n5. Cầu nguyện hoặc hướng tâm về hướng đó.\n\n6. Tùy chọn: bật chế độ rung để có phản hồi xúc giác.",
+  "compassHelpContent": "1. Cho phép quyền truy cập vị trí khi được nhắc để la bàn tính toán chính xác phương vị và khoảng cách trắc địa đến thánh tích.\n\n2. Chọn thánh tích Phật giáo bạn muốn hướng về hoặc nhập điểm đến tùy chỉnh.\n\n3. Giữ điện thoại nằm ngang song song với mặt đất và từ từ xoay người cho đến khi kim chỉ thẳng về thánh tích.\n\n4. Khi thẳng hàng với mục tiêu, la bàn sẽ phát sáng rực rỡ màu vàng kim và biểu ngữ sẽ xác nhận bạn đang đối diện thánh tích.\n\n5. Nhấn vào biểu tượng Quả địa cầu (🌐) ở thanh trên cùng để xem bản đồ lộ trình đường bay. Nhấn vào la bàn mini trên bản đồ để chuyển lại.\n\n6. Bật chế độ Rung để nhận phản hồi xúc giác nhẹ nhàng khi bạn hướng đúng mục tiêu.\n\n7. Đảnh lễ, tụng kinh hoặc hành thiền hướng về Cây Bồ Đề thiêng liêng hoặc thánh tích Phật giáo.",
   "locationPermissionRationaleTitle": "Cho phép truy cập vị trí?",
   "locationPermissionRationaleMessage": "La bàn Phật giáo cần vị trí của bạn để chỉ hướng đến địa điểm đã chọn.",
   "locationPermissionRationaleNotNow": "Không phải bây giờ",
@@ -482,5 +482,9 @@
   "addPresetTitle": "Thêm cài đặt sẵn",
   "delete": "Xóa",
   "edit": "Sửa",
-  "timeUntilEndAt": "{time} nữa"
+  "timeUntilEndAt": "{time} nữa",
+  "mapView": "Xem bản đồ",
+  "compassView": "Xem la bàn",
+  "yourLocation": "Vị trí của bạn",
+  "otherApps": "Các ứng dụng khác"
 }

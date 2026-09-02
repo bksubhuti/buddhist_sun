@@ -210,7 +210,7 @@
   "place_kushinagar": "Kushinagar",
   "place_mahaCetiya": "Ruwanwelisaya",
   "place_toothRelicPagoda": "Temple de la Dent",
-  "compassHelpContent": "1. Lorsque l'application démarre pour la première fois, elle demande la permission d'utiliser votre position. Autorisez l'accès.\n\n2. Sélectionnez le site bouddhiste vers lequel vous souhaitez vous orienter (par défaut Bodh Gaya, Inde).\n\n3. Tenez votre téléphone parallèlement au sol et tournez lentement jusqu'à ce que la boussole s'aligne avec le site choisi.\n\n4. Lorsque vous êtes dans la bonne direction, la boussole s'illumine.\n\n5. Priez ou méditez dans cette direction.\n\n6. Optionnel : activez le mode vibration pour un retour haptique.",
+  "compassHelpContent": "1. Autorisez l'accès à la localisation lorsque demandé afin que la boussole calcule la direction géodésique et la distance exacte vers le site sacré.\n\n2. Sélectionnez le lieu de pèlerinage bouddhiste souhaité ou définissez une destination personnalisée.\n\n3. Tenez votre téléphone à plat (parallèle au sol) et tournez lentement jusqu'à ce que l'aiguille pointe tout droit.\n\n4. Lorsque vous êtes aligné sur la cible, la boussole s'illumine d'un éclat doré et la bannière confirme votre orientation.\n\n5. Touchez l'icône du Globe (🌐) dans la barre supérieure pour afficher la carte interactive du trajet géodésique. Touchez la mini-boussole pour revenir.\n\n6. Activez le mode vibration pour obtenir un retour haptique lorsque vous êtes sur la cible.\n\n7. Rendez hommage, récitez des chants ou méditez en faisant face à l'Arbre de la Bodhi sacré ou au lieu saint.",
   "locationPermissionRationaleTitle": "Autoriser la localisation ?",
   "locationPermissionRationaleMessage": "La Boussole Bouddhiste a besoin de votre position pour pointer vers le site sélectionné.",
   "locationPermissionRationaleNotNow": "Pas maintenant",
@@ -278,5 +278,9 @@
   "addPresetTitle": "Ajouter un préréglage",
   "delete": "Supprimer",
   "edit": "Modifier",
-  "timeUntilEndAt": "dans {time}"
+  "timeUntilEndAt": "dans {time}",
+  "mapView": "Vue Carte",
+  "compassView": "Vue Boussole",
+  "yourLocation": "Votre Emplacement",
+  "otherApps": "Autres applications"
 }

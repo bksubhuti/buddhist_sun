@@ -20,6 +20,7 @@ void main() {
       expect(Prefs.targetLat, equals(24.6951));
       expect(Prefs.targetLong, equals(84.9913));
       expect(Prefs.vibeOn, isFalse);
+      expect(Prefs.compassShowMap, isFalse);
       expect(Prefs.userDest1, isEmpty);
       expect(Prefs.userDest1Lat, equals(0.0));
       expect(Prefs.userDest1Long, equals(0.0));
@@ -30,6 +31,7 @@ void main() {
       Prefs.targetLat = 16.7984;
       Prefs.targetLong = 96.1495;
       Prefs.vibeOn = true;
+      Prefs.compassShowMap = true;
       Prefs.userDest1 = 'My Temple';
       Prefs.userDest1Lat = 12.34;
       Prefs.userDest1Long = 56.78;
@@ -38,6 +40,7 @@ void main() {
       expect(Prefs.targetLat, equals(16.7984));
       expect(Prefs.targetLong, equals(96.1495));
       expect(Prefs.vibeOn, isTrue);
+      expect(Prefs.compassShowMap, isTrue);
       expect(Prefs.userDest1, equals('My Temple'));
       expect(Prefs.userDest1Lat, equals(12.34));
       expect(Prefs.userDest1Long, equals(56.78));

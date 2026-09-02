@@ -33,17 +33,17 @@ class MeditationSoundItem {
     MeditationSoundItem(id: 'none', displayName: 'None', assetPath: null),
     MeditationSoundItem(
       id: 'Bell',
-      displayName: 'Bell',
+      displayName: 'Bicycle',
       assetPath: 'assets/audio/meditation_sounds/Bell.wav',
     ),
     MeditationSoundItem(
       id: 'CalmBell',
-      displayName: 'Suno Calm Bell',
+      displayName: 'Suno Chung Chime',
       assetPath: 'assets/audio/meditation_sounds/suno-Calm-Bell.mp3',
     ),
     MeditationSoundItem(
       id: 'SingleBell',
-      displayName: 'Suno Single Bell',
+      displayName: 'Suno Calm Bell',
       assetPath: 'assets/audio/meditation_sounds/suno-Single-Bell.mp3',
     ),
     MeditationSoundItem(
@@ -66,13 +66,13 @@ class MeditationSoundItem {
     ),
     MeditationSoundItem(
       id: 'ClearBell',
-      displayName: 'Clear Bell',
+      displayName: 'Ding Bell',
       assetPath:
           'assets/audio/meditation_sounds/dragon-studio-bell-ring-390294.mp3',
     ),
     MeditationSoundItem(
       id: 'BronzeBell',
-      displayName: 'Bronze Bell',
+      displayName: 'Church Bell',
       assetPath:
           'assets/audio/meditation_sounds/freesound_community-old-church-bell-6298.mp3',
     ),
@@ -170,8 +170,10 @@ class MeditationSoundItem {
   ];
 
   static MeditationSoundItem fromId(String id) {
+    final search = id.trim().toLowerCase();
     return allSounds.firstWhere(
-      (s) => s.id.toLowerCase() == id.toLowerCase(),
+      (s) =>
+          s.id.toLowerCase() == search || s.displayName.toLowerCase() == search,
       orElse: () => allSounds.firstWhere(
         (s) => s.id == 'Bowl',
         orElse: () => allSounds.first,
