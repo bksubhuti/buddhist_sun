@@ -486,5 +486,8 @@
   "mapView": "Xem bản đồ",
   "compassView": "Xem la bàn",
   "yourLocation": "Vị trí của bạn",
-  "otherApps": "Các ứng dụng khác"
+  "otherApps": "Các ứng dụng khác",
+  "place_mahamuni": "Chùa Mahamuni",
+  "place_watPhraKaew": "Chùa Phật Ngọc",
+  "enterCustom": "nhập tùy chỉnh"
 }

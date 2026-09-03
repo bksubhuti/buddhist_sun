@@ -27,6 +27,8 @@ void main() {
       expect(provider.formattedDisplayTime, equals('30:00'));
       expect(provider.startSound.id, equals('Bowl'));
       expect(provider.endSound.id, equals('Bowl'));
+      expect(provider.intervalSound.id, equals('ClearBell'));
+      expect(MeditationSoundItem.fromId('ding').id, equals('ClearBell'));
       expect(provider.volume, equals(80));
       expect(provider.volumeNormalized, equals(0.8));
     });
@@ -76,6 +78,11 @@ void main() {
       provider.setIntervalMinutes(15);
       expect(provider.intervalMinutes, equals(15));
       expect(Prefs.meditationIntervalMinutes, equals(15));
+
+      final zenBell = MeditationSoundItem.fromId('ZenBell');
+      provider.setIntervalSound(zenBell);
+      expect(provider.intervalSound.id, equals('ZenBell'));
+      expect(Prefs.meditationIntervalSound, equals('ZenBell'));
 
       provider.setVolume(60);
       expect(provider.volume, equals(60));
@@ -193,6 +200,79 @@ void main() {
       expect(find.text('15 min'), findsOneWidget);
       expect(find.text('45 min'), findsOneWidget);
       expect(find.text('1 hr'), findsOneWidget);
+
+      provider.dispose();
+    });
+
+    testWidgets(
+        'MeditationTimerPage displays Volume below start button, and Interval Bell between Starting & Ending Bell in settings',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      Prefs.meditationIntervalMinutes = 0;
+      final provider = MeditationTimerProvider();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: ChangeNotifierProvider<MeditationTimerProvider>.value(
+            value: provider,
+            child: const MeditationTimerPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 1. Verify Volume is visible directly on the main screen below Start Meditation
+      expect(find.text('Bell Volume', skipOffstage: false), findsOneWidget);
+      expect(find.byType(Slider), findsOneWidget);
+
+      // Verify relative positions: Start Meditation is above Bell Volume, which is above Bells & Settings
+      final startMeditationTop =
+          tester.getTopLeft(find.text('Start Meditation')).dy;
+      final volumeTop = tester.getTopLeft(find.text('Bell Volume')).dy;
+      final settingsTop = tester.getTopLeft(find.text('Bells & Settings')).dy;
+      expect(startMeditationTop < volumeTop, isTrue);
+      expect(volumeTop < settingsTop, isTrue);
+
+      // 2. Expand Bells & Settings
+      await tester.tap(find.text('Bells & Settings'));
+      await tester.pumpAndSettle();
+
+      // Starting Bell, Interval Bell, and Ending Bell are visible
+      expect(find.text('Starting Bell', skipOffstage: false), findsOneWidget);
+      expect(find.text('Interval Bell', skipOffstage: false), findsOneWidget);
+      expect(find.text('Ending Bell', skipOffstage: false), findsOneWidget);
+
+      // Verify order: Starting Bell is above Interval Bell, which is above Ending Bell
+      final startingBellTop = tester.getTopLeft(find.text('Starting Bell')).dy;
+      final intervalBellTop = tester.getTopLeft(find.text('Interval Bell')).dy;
+      final endingBellTop = tester.getTopLeft(find.text('Ending Bell')).dy;
+      expect(startingBellTop < intervalBellTop, isTrue);
+      expect(intervalBellTop < endingBellTop, isTrue);
+
+      // When interval is Off, Interval Sound row is not shown
+      expect(find.text('Interval Sound', skipOffstage: false), findsNothing);
+
+      // Enable interval
+      provider.setIntervalMinutes(15);
+      await tester.pumpAndSettle();
+
+      // Now Interval Sound row appears and is selectable
+      expect(find.text('Interval Sound', skipOffstage: false), findsOneWidget);
 
       provider.dispose();
     });

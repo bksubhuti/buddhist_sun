@@ -28,6 +28,14 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       'latitude': 16.7984,
       'longitude': 96.1495
     }, // Shwedagon, Myanmar
+    'mahamuni': {
+      'latitude': 21.9519,
+      'longitude': 96.0785
+    }, // Mahamuni, Mandalay, Myanmar
+    'watPhraKaew': {
+      'latitude': 13.7514,
+      'longitude': 100.4925
+    }, // Wat Phra Kaew, Bangkok, Thailand
     'mahaCetiya': {
       'latitude': 8.3500,
       'longitude': 80.3964
@@ -36,6 +44,10 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       'latitude': 7.2936,
       'longitude': 80.6413
     }, // Sri Dalada Maligawa, Sri Lanka
+    'userDest1': {
+      'latitude': 0.0,
+      'longitude': 0.0,
+    }, // Custom place
   };
 
   late String _selectedId;
@@ -44,13 +56,11 @@ class _PlaceSelectorState extends State<PlaceSelector> {
   void initState() {
     super.initState();
 
-    // Rebuild the map fresh every time PlaceSelector is constructed
-    if (Prefs.userDest1.isNotEmpty) {
-      _placeById['userDest1'] = {
-        'latitude': Prefs.userDest1Lat,
-        'longitude': Prefs.userDest1Long,
-      };
-    }
+    // Rebuild the map with saved coordinates for custom place
+    _placeById['userDest1'] = {
+      'latitude': Prefs.userDest1Lat,
+      'longitude': Prefs.userDest1Long,
+    };
 
     _selectedId = _normalizeSavedTarget(Prefs.targetName);
   }
@@ -70,10 +80,23 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       case 'Swedagon Pagoda':
       case 'Shwedagon Pagoda':
         return 'shwedagonPagoda';
+      case 'mahamuni':
+      case 'Mahamuni':
+      case 'Mahamuni Pagoda':
+        return 'mahamuni';
+      case 'watPhraKaew':
+      case 'Wat Phra Kaew':
+        return 'watPhraKaew';
       case 'Maha Cetiya':
         return 'mahaCetiya';
       case 'Tooth Relic Pagoda':
         return 'toothRelicPagoda';
+      case 'statueOfLiberty':
+      case 'Statue of Liberty':
+        return 'statueOfLiberty';
+      case 'userDest1':
+      case 'enter custom':
+        return 'userDest1';
       default:
         return 'bodhGaya';
     }
@@ -92,19 +115,145 @@ class _PlaceSelectorState extends State<PlaceSelector> {
         return t.place_kushinagar;
       case 'shwedagonPagoda':
         return t.place_shwedagonPagoda;
+      case 'mahamuni':
+        return t.place_mahamuni;
+      case 'watPhraKaew':
+        return t.place_watPhraKaew;
       case 'mahaCetiya':
         return t.place_mahaCetiya;
       case 'toothRelicPagoda':
         return t.place_toothRelicPagoda;
+      case 'statueOfLiberty':
+        return 'Statue of Liberty';
       case 'userDest1':
-        return Prefs.userDest1;
+        return Prefs.userDest1.trim().isNotEmpty
+            ? Prefs.userDest1
+            : t.enterCustom;
       default:
         return id;
     }
   }
 
+  Future<void> _showCustomPlaceDialog(BuildContext context) async {
+    final t = AppLocalizations.of(context)!;
+    final nameController = TextEditingController(
+      text: Prefs.userDest1.trim().isNotEmpty ? Prefs.userDest1 : '',
+    );
+    final latController = TextEditingController(
+      text: Prefs.userDest1Lat != 0.0 ? Prefs.userDest1Lat.toString() : '0',
+    );
+    final longController = TextEditingController(
+      text: Prefs.userDest1Long != 0.0 ? Prefs.userDest1Long.toString() : '0',
+    );
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            Icon(Icons.edit_location_alt_outlined,
+                color: Theme.of(ctx).colorScheme.primary),
+            const SizedBox(width: 8),
+            Text(t.enterCustom),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'enter custom',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.label_outline),
+                ),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: latController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: true,
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  labelText: 'Latitude (-90 to 90)',
+                  hintText: '0.0',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.explore_outlined),
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: longController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: true,
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  labelText: 'Longitude (-180 to 180)',
+                  hintText: '0.0',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.explore_outlined),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(t.ok),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted) {
+      final name = nameController.text.trim();
+      final lat = double.tryParse(latController.text.trim()) ?? 0.0;
+      final long = double.tryParse(longController.text.trim()) ?? 0.0;
+
+      Prefs.userDest1 = name;
+      Prefs.userDest1Lat = lat;
+      Prefs.userDest1Long = long;
+
+      setState(() {
+        _placeById['userDest1'] = {
+          'latitude': lat,
+          'longitude': long,
+        };
+        _selectedId = 'userDest1';
+      });
+
+      Prefs.targetName = 'userDest1';
+      Prefs.targetLat = lat;
+      Prefs.targetLong = long;
+
+      widget.onLocationChanged?.call();
+    }
+  }
+
   void _onPlaceSelected(String? id) {
     if (id == null) return;
+
+    if (id == 'userDest1') {
+      _showCustomPlaceDialog(context);
+      return;
+    }
 
     setState(() {
       _selectedId = id;
@@ -127,7 +276,10 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       case 'lumbiniPagoda':
         return 'assets/images/flags/flag_nepal.png';
       case 'shwedagonPagoda':
+      case 'mahamuni':
         return 'assets/images/flags/flag_myanmar.png';
+      case 'watPhraKaew':
+        return 'assets/images/flags/flag_thailand.png';
       case 'mahaCetiya':
       case 'toothRelicPagoda':
         return 'assets/images/flags/flag_sri_lanka.png';
@@ -173,7 +325,7 @@ class _PlaceSelectorState extends State<PlaceSelector> {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Icon(
-        Icons.place_rounded,
+        Icons.edit_location_alt_outlined,
         size: 14,
         color: Theme.of(context).colorScheme.primary,
       ),
@@ -184,6 +336,7 @@ class _PlaceSelectorState extends State<PlaceSelector> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -194,43 +347,58 @@ class _PlaceSelectorState extends State<PlaceSelector> {
           color: theme.colorScheme.outlineVariant.withAlpha(100),
         ),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selectedId,
-          isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: primary),
-          iconSize: 26,
-          elevation: 8,
-          borderRadius: BorderRadius.circular(20),
-          style: TextStyle(
-            color: theme.colorScheme.onSurface,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-          onChanged: _onPlaceSelected,
-          items: _placeById.keys.map((id) {
-            return DropdownMenuItem<String>(
-              value: id,
-              child: Row(
-                children: [
-                  _buildFlagWidget(id),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      _labelFor(id, context),
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: id == _selectedId
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedId,
+                isExpanded: true,
+                icon: Icon(Icons.keyboard_arrow_down_rounded, color: primary),
+                iconSize: 26,
+                elevation: 8,
+                borderRadius: BorderRadius.circular(20),
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                onChanged: _onPlaceSelected,
+                items: _placeById.keys.map((id) {
+                  return DropdownMenuItem<String>(
+                    value: id,
+                    child: Row(
+                      children: [
+                        _buildFlagWidget(id),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            _labelFor(id, context),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: id == _selectedId
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                }).toList(),
               ),
-            );
-          }).toList(),
-        ),
+            ),
+          ),
+          if (_selectedId == 'userDest1') ...[
+            const SizedBox(width: 4),
+            IconButton(
+              icon: Icon(Icons.edit_outlined, size: 20, color: primary),
+              tooltip: t.edit,
+              visualDensity: VisualDensity.compact,
+              onPressed: () => _showCustomPlaceDialog(context),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -46,7 +46,8 @@ void main() {
       expect(Prefs.userDest1Long, equals(56.78));
     });
 
-    testWidgets('PlaceSelector renders with localized options', (WidgetTester tester) async {
+    testWidgets('PlaceSelector renders with localized options',
+        (WidgetTester tester) async {
       Prefs.targetName = 'bodhGaya';
       await tester.pumpWidget(
         MaterialApp(
@@ -69,6 +70,45 @@ void main() {
       expect(find.byType(PlaceSelector), findsOneWidget);
       expect(find.byType(DropdownButton<String>), findsOneWidget);
       expect(find.text('Bodh Gaya'), findsOneWidget);
+    });
+
+    testWidgets(
+        'PlaceSelector includes Mahamuni, Wat Phra Kaew, and enter custom',
+        (WidgetTester tester) async {
+      Prefs.targetName = 'userDest1';
+      Prefs.userDest1 = '';
+      Prefs.userDest1Lat = 0.0;
+      Prefs.userDest1Long = 0.0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const Scaffold(
+            body: PlaceSelector(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Custom place initially defaults to 'enter custom'
+      expect(find.text('enter custom'), findsOneWidget);
+      // An edit button is present when userDest1 is selected
+      expect(find.byIcon(Icons.edit_outlined), findsOneWidget);
+
+      // Open dropdown to see items
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mahamuni Pagoda'), findsWidgets);
+      expect(find.text('Wat Phra Kaew'), findsWidgets);
     });
   });
 }

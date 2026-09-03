@@ -282,5 +282,8 @@
   "mapView": "සිතියම් දැක්ම",
   "compassView": "මාලිමා දැක්ම",
   "yourLocation": "ඔබගේ ස්ථානය",
-  "otherApps": "වෙනත් ඇප්ස්"
+  "otherApps": "වෙනත් ඇප්ස්",
+  "place_mahamuni": "මහාමුනි පැගෝඩාව",
+  "place_watPhraKaew": "වට් ප්‍රා කෙව්",
+  "enterCustom": "අභිරුචි ඇතුලත් කරන්න"
 }

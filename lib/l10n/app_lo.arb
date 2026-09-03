@@ -307,5 +307,8 @@
   "mapView": "ມຸມມອງແຜນທີ່",
   "compassView": "ມຸມມອງເຂັມທິດ",
   "yourLocation": "ຕຳແໜ່ງຂອງທ່ານ",
-  "otherApps": "ແອັບອື່ນໆ"
+  "otherApps": "ແອັບອື່ນໆ",
+  "place_mahamuni": "ວັດມະຫາມຸນີ",
+  "place_watPhraKaew": "ວັດພຣະແກ້ວ",
+  "enterCustom": "ປ້ອນກຳນົດເອງ"
 }

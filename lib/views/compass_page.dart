@@ -59,12 +59,20 @@ class _CompassPageState extends State<CompassPage>
         return t.place_kushinagar;
       case 'shwedagonPagoda':
         return t.place_shwedagonPagoda;
+      case 'mahamuni':
+        return t.place_mahamuni;
+      case 'watPhraKaew':
+        return t.place_watPhraKaew;
       case 'mahaCetiya':
         return t.place_mahaCetiya;
       case 'toothRelicPagoda':
         return t.place_toothRelicPagoda;
+      case 'statueOfLiberty':
+        return 'Statue of Liberty';
       case 'userDest1':
-        return Prefs.userDest1;
+        return Prefs.userDest1.trim().isNotEmpty
+            ? Prefs.userDest1
+            : t.enterCustom;
       default:
         return Prefs.targetName;
     }

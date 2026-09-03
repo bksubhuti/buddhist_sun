@@ -289,5 +289,8 @@
   "mapView": "မြေပုံ မြင်ကွင်း",
   "compassView": "သံလိုက်အိမ်မြှောင် မြင်ကွင်း",
   "yourLocation": "သင့်တည်နေရာ",
-  "otherApps": "အခြားအက်ပ်များ"
+  "otherApps": "အခြားအက်ပ်များ",
+  "place_mahamuni": "မဟာမုနိဘုရား",
+  "place_watPhraKaew": "မြဘုရား",
+  "enterCustom": "စိတ်ကြိုက်ထည့်ပါ"
 }

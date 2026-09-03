@@ -45,7 +45,6 @@ class MeditationAudioService {
     try {
       await init();
       await _player.stop();
-      await _player.setVolume(volume.clamp(0.0, 1.0));
       await _player.setAudioSource(
         AudioSource.asset(
           sound.assetPath!,
@@ -56,6 +55,7 @@ class MeditationAudioService {
           ),
         ),
       );
+      await _player.setVolume(volume.clamp(0.0, 1.0));
       _player.play(); // Play asynchronously without blocking timer execution
     } catch (e) {
       debugPrint("MeditationAudioService playSound error: $e");

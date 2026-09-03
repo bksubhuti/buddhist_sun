@@ -282,5 +282,8 @@
   "mapView": "มุมมองแผนที่",
   "compassView": "มุมมองเข็มทิศ",
   "yourLocation": "ตำแหน่งของคุณ",
-  "otherApps": "แอปอื่นๆ"
+  "otherApps": "แอปอื่นๆ",
+  "place_mahamuni": "วัดมหามุนี",
+  "place_watPhraKaew": "วัดพระแก้ว",
+  "enterCustom": "ป้อนกำหนดเอง"
 }

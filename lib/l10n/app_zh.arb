@@ -486,5 +486,8 @@
   "mapView": "地图视图",
   "compassView": "罗盘视图",
   "yourLocation": "您的位置",
-  "otherApps": "其他应用"
+  "otherApps": "其他应用",
+  "place_mahamuni": "马哈木尼佛塔",
+  "place_watPhraKaew": "玉佛寺",
+  "enterCustom": "输入自定义"
 }

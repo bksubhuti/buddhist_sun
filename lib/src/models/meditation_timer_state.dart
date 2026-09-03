@@ -171,6 +171,9 @@ class MeditationSoundItem {
 
   static MeditationSoundItem fromId(String id) {
     final search = id.trim().toLowerCase();
+    if (search == 'ding') {
+      return allSounds.firstWhere((s) => s.id == 'ClearBell');
+    }
     return allSounds.firstWhere(
       (s) =>
           s.id.toLowerCase() == search || s.displayName.toLowerCase() == search,
@@ -180,4 +183,14 @@ class MeditationSoundItem {
       ),
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MeditationSoundItem &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

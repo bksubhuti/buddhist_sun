@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -26,7 +27,7 @@ class MeditationTimerProvider extends ChangeNotifier {
   int _totalPauseDurationSeconds = 0;
 
   MeditationSoundItem _startSound = MeditationSoundItem.fromId('Bowl');
-  MeditationSoundItem _intervalSound = MeditationSoundItem.fromId('Bowl');
+  MeditationSoundItem _intervalSound = MeditationSoundItem.fromId('ClearBell');
   MeditationSoundItem _endSound = MeditationSoundItem.fromId('Bowl');
   int _intervalMinutes = 0;
   bool _keepScreenOn = true;
@@ -167,6 +168,31 @@ class MeditationTimerProvider extends ChangeNotifier {
     final now = DateTime.now().add(Duration(minutes: _durationMinutes));
     _endAtHour = now.hour;
     _endAtMinute = now.minute;
+
+    _loadSystemVolume();
+  }
+
+  Future<void> _loadSystemVolume() async {
+    if (kIsWeb) return;
+    try {
+      await FlutterVolumeController.updateShowSystemUI(false)
+          .catchError((_) {});
+      final sysVol =
+          await FlutterVolumeController.getVolume().catchError((_) => null);
+      if (sysVol != null) {
+        _volume = (sysVol * 100).round().clamp(0, 100);
+        Prefs.meditationVolume = _volume;
+        notifyListeners();
+      }
+      FlutterVolumeController.addListener((newVol) {
+        final newVolInt = (newVol * 100).round().clamp(0, 100);
+        if (_volume != newVolInt) {
+          _volume = newVolInt;
+          Prefs.meditationVolume = _volume;
+          notifyListeners();
+        }
+      });
+    } catch (_) {}
   }
 
   void setMode(MeditationTimerMode newMode) {
@@ -216,11 +242,14 @@ class MeditationTimerProvider extends ChangeNotifier {
   void setVolume(int value) {
     _volume = value.clamp(0, 100);
     Prefs.meditationVolume = _volume;
+    if (!kIsWeb) {
+      FlutterVolumeController.setVolume(_volume / 100.0).catchError((_) {});
+    }
     notifyListeners();
   }
 
   Future<void> previewSound(MeditationSoundItem sound) async {
-    await _audioService.playSound(sound, volume: volumeNormalized);
+    await _audioService.playSound(sound, volume: 1.0);
   }
 
   void setKeepScreenOn(bool value) {
@@ -298,7 +327,7 @@ class MeditationTimerProvider extends ChangeNotifier {
     notifyListeners();
 
     // Play starting bell asynchronously without delaying timer
-    _audioService.playSound(_startSound, volume: volumeNormalized);
+    _audioService.playSound(_startSound, volume: 1.0);
 
     // Schedule background completion notification if timed / endAt
     if (_endTime != null) {
@@ -330,14 +359,19 @@ class MeditationTimerProvider extends ChangeNotifier {
         now.difference(_startTime!).inSeconds - _totalPauseDurationSeconds;
     _elapsedSeconds = totalSeconds >= 0 ? totalSeconds : 0;
 
-    // Check interval bell
-    if (_intervalMinutes > 0 && _elapsedSeconds > 0) {
+    final isSessionEnding = (_mode == MeditationTimerMode.timed ||
+            _mode == MeditationTimerMode.endAt) &&
+        _endTime != null &&
+        (now.isAfter(_endTime!) || _elapsedSeconds >= _totalDurationSeconds);
+
+    // Check interval bell (only if session is not ending)
+    if (_intervalMinutes > 0 && _elapsedSeconds > 0 && !isSessionEnding) {
       final currentMinute = _elapsedSeconds ~/ 60;
       if (currentMinute > 0 &&
           currentMinute % _intervalMinutes == 0 &&
           currentMinute != _lastIntervalMinute) {
         _lastIntervalMinute = currentMinute;
-        _audioService.playSound(_intervalSound, volume: volumeNormalized);
+        _audioService.playSound(_intervalSound, volume: 1.0);
       }
     }
 
@@ -347,7 +381,8 @@ class MeditationTimerProvider extends ChangeNotifier {
         final remaining = _totalDurationSeconds - _elapsedSeconds;
         _remainingSeconds = remaining >= 0 ? remaining : 0;
 
-        if (now.isAfter(_endTime!) || _elapsedSeconds > _totalDurationSeconds) {
+        if (now.isAfter(_endTime!) ||
+            _elapsedSeconds >= _totalDurationSeconds) {
           _remainingSeconds = 0;
           _completeSession();
           return;
@@ -399,7 +434,7 @@ class MeditationTimerProvider extends ChangeNotifier {
       _elapsedSeconds = _totalDurationSeconds;
     }
 
-    await _audioService.playSound(_endSound, volume: volumeNormalized);
+    await _audioService.playSound(_endSound, volume: 1.0);
     notifyListeners();
   }
 
@@ -412,7 +447,7 @@ class MeditationTimerProvider extends ChangeNotifier {
 
     if (completed) {
       _status = MeditationTimerStatus.completed;
-      await _audioService.playSound(_endSound, volume: volumeNormalized);
+      await _audioService.playSound(_endSound, volume: 1.0);
     } else {
       _status = MeditationTimerStatus.idle;
     }
@@ -430,6 +465,11 @@ class MeditationTimerProvider extends ChangeNotifier {
   @override
   void dispose() {
     _tickTimer?.cancel();
+    if (!kIsWeb) {
+      try {
+        FlutterVolumeController.removeListener();
+      } catch (_) {}
+    }
     _audioService.dispose();
     super.dispose();
   }

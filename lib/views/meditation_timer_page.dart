@@ -14,7 +14,96 @@ class MeditationTimerPage extends StatefulWidget {
 }
 
 class _MeditationTimerPageState extends State<MeditationTimerPage> {
-  static const List<int> _intervalOptions = [0, 5, 10, 15, 20, 30, 45, 60];
+  static const List<int> _intervalOptions = [
+    0,
+    1,
+    2,
+    3,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    45,
+    60
+  ];
+
+  List<int> _getIntervalOptions(int current) {
+    final options = List<int>.from(_intervalOptions);
+    if (!options.contains(current)) {
+      options.add(current);
+      options.sort();
+    }
+    return options;
+  }
+
+  Widget _buildVolumeCard(
+    BuildContext context,
+    MeditationTimerProvider timerProvider,
+  ) {
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+    final t = AppLocalizations.of(context)!;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withAlpha(100),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    timerProvider.volume == 0
+                        ? Icons.volume_off_outlined
+                        : (timerProvider.volume < 50
+                            ? Icons.volume_down_outlined
+                            : Icons.volume_up_outlined),
+                    size: 20,
+                    color: primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    t.bellVolume,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '${timerProvider.volume}%',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: primary,
+                ),
+              ),
+            ],
+          ),
+          Slider(
+            value: timerProvider.volume.toDouble(),
+            min: 0,
+            max: 100,
+            divisions: 20,
+            label: '${timerProvider.volume}%',
+            onChanged: (val) {
+              timerProvider.setVolume(val.round());
+            },
+            onChangeEnd: (val) {
+              timerProvider.previewSound(timerProvider.startSound);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<void> _openDurationPicker(BuildContext context) async {
     final timerProvider = context.read<MeditationTimerProvider>();
@@ -134,9 +223,14 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-              // 4. Expansion View for Bells & Other Settings
+              // 4. Bell Volume (Below start button and above settings)
+              _buildVolumeCard(context, timerProvider),
+
+              const SizedBox(height: 16),
+
+              // 5. Expansion View for Bells & Other Settings
               _buildSoundSettingsExpansionCard(context, timerProvider),
 
               const SizedBox(height: 20),
@@ -532,7 +626,9 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             ),
           ),
           subtitle: Text(
-            'Bell: ${timerProvider.startSound.displayName} • Vol: ${timerProvider.volume}%',
+            'Start: ${timerProvider.startSound.displayName}'
+            ' • ${timerProvider.intervalMinutes > 0 ? "${t.everyNMinutes(timerProvider.intervalMinutes)} (${timerProvider.intervalSound.displayName})" : "Interval: ${t.off}"}'
+            ' • End: ${timerProvider.endSound.displayName}',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -541,56 +637,6 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           children: [
             const Divider(height: 1),
             const SizedBox(height: 16),
-
-            // Dedicated Bell Volume
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          timerProvider.volume == 0
-                              ? Icons.volume_off_outlined
-                              : (timerProvider.volume < 50
-                                  ? Icons.volume_down_outlined
-                                  : Icons.volume_up_outlined),
-                          size: 18,
-                          color: primary,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          t.bellVolume,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '${timerProvider.volume}%',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: primary,
-                      ),
-                    ),
-                  ],
-                ),
-                Slider(
-                  value: timerProvider.volume.toDouble(),
-                  min: 0,
-                  max: 100,
-                  divisions: 20,
-                  label: '${timerProvider.volume}%',
-                  onChanged: (val) {
-                    timerProvider.setVolume(val.round());
-                  },
-                ),
-              ],
-            ),
-            const Divider(height: 20),
 
             // Start Bell
             _buildSoundRow(
@@ -602,7 +648,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             ),
             const Divider(height: 24),
 
-            // Interval Bell
+            // Interval Bell (in the middle of Start Bell and End Bell)
             Row(
               children: [
                 Expanded(
@@ -618,7 +664,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                   value: timerProvider.intervalMinutes,
                   underline: const SizedBox(),
                   borderRadius: BorderRadius.circular(16),
-                  items: _intervalOptions.map((min) {
+                  items: _getIntervalOptions(timerProvider.intervalMinutes)
+                      .map((min) {
                     return DropdownMenuItem<int>(
                       value: min,
                       child: Text(min == 0 ? t.off : t.everyNMinutes(min)),
@@ -754,6 +801,16 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             }
           },
         ),
+        if (selectedSound.id != 'none') ...[
+          const SizedBox(width: 4),
+          IconButton(
+            icon: Icon(Icons.play_circle_outline,
+                color: theme.colorScheme.primary, size: 22),
+            tooltip: 'Preview sound',
+            visualDensity: VisualDensity.compact,
+            onPressed: () => timerProvider.previewSound(selectedSound),
+          ),
+        ],
       ],
     );
   }
