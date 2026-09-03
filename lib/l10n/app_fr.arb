@@ -282,5 +282,8 @@
   "mapView": "Vue Carte",
   "compassView": "Vue Boussole",
   "yourLocation": "Votre Emplacement",
-  "otherApps": "Autres applications"
+  "otherApps": "Autres applications",
+  "place_mahamuni": "Pagode Mahamuni",
+  "place_watPhraKaew": "Wat Phra Kaew",
+  "enterCustom": "personnalisé"
 }

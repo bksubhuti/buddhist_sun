@@ -397,5 +397,8 @@
   "mapView": "Map View",
   "compassView": "Compass View",
   "yourLocation": "Your Location",
-  "otherApps": "Other Apps"
+  "otherApps": "Other Apps",
+  "place_mahamuni": "Mahamuni Pagoda",
+  "place_watPhraKaew": "Wat Phra Kaew",
+  "enterCustom": "enter custom"
 }

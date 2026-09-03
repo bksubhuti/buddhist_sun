@@ -282,5 +282,8 @@
   "mapView": "मानचित्र दृश्य",
   "compassView": "दिक्सूचक दृश्य",
   "yourLocation": "आपका स्थान",
-  "otherApps": "अन्य ऐप्स"
+  "otherApps": "अन्य ऐप्स",
+  "place_mahamuni": "महामुनि पैगोडा",
+  "place_watPhraKaew": "वाट फ्रा केव",
+  "enterCustom": "कस्टम दर्ज करें"
 }

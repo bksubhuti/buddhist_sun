@@ -282,5 +282,8 @@
   "mapView": "Vista de Mapa",
   "compassView": "Vista de Brújula",
   "yourLocation": "Tu Ubicación",
-  "otherApps": "Otras aplicaciones"
+  "otherApps": "Otras aplicaciones",
+  "place_mahamuni": "Pagoda Mahamuni",
+  "place_watPhraKaew": "Wat Phra Kaew",
+  "enterCustom": "ingresar personalizado"
 }

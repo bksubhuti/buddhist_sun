@@ -282,5 +282,8 @@
   "mapView": "মানচিত্র দৃশ্য",
   "compassView": "কম্পাস দৃশ্য",
   "yourLocation": "আপনার অবস্থান",
-  "otherApps": "অন্যান্য অ্যাপস"
+  "otherApps": "অন্যান্য অ্যাপস",
+  "place_mahamuni": "মহামুনি প্যাগোডা",
+  "place_watPhraKaew": "ওয়াট প্রা কেও",
+  "enterCustom": "কাস্টম লিখুন"
 }

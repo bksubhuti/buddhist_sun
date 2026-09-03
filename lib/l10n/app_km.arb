@@ -282,5 +282,8 @@
   "mapView": "ទិដ្ឋភាពផែនទី",
   "compassView": "ទិដ្ឋភាពត្រីវិស័យ",
   "yourLocation": "ទីតាំងរបស់អ្នក",
-  "otherApps": "កម្មវិធីផ្សេងទៀត"
+  "otherApps": "កម្មវិធីផ្សេងទៀត",
+  "place_mahamuni": "វត្តមហាមុនី",
+  "place_watPhraKaew": "វត្តព្រះកែវ",
+  "enterCustom": "បញ្ចូលផ្ទាល់ខ្លួន"
 }
