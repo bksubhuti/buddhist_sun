@@ -116,6 +116,7 @@ https://github.com/vpnry/ekatimer''',
   await Prefs.init();
   await Prefs.migrateDawnVal();
   await Prefs.migrateDawnValV3();
+  await Prefs.migrateMeditationSounds();
   await createUposathaChannel(); // ← moved AFTER initialize (harmless on iOS)
   await createTimerChannelsOnce(); // ← moved AFTER initialize (harmless on iOS)
   await createMeditationChannel();

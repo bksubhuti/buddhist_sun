@@ -20,7 +20,14 @@
 -dontwarn com.google.android.gms.maps.**
 
 # Audio & Notifications
--dontwarn com.ryanheise.just_audio.**
+-keep class com.ryanheise.just_audio.** { *; }
+-keep class com.ryanheise.audioservice.** { *; }
+-dontwarn com.ryanheise.**
+-keep class com.dexterous.flutterlocalnotifications.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class * extends com.google.gson.reflect.TypeToken { *; }
+-keep class com.google.gson.** { *; }
 -dontwarn com.dexterous.flutterlocalnotifications.**
 
 # Play Core & Flutter Deferred Components

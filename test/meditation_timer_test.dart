@@ -276,5 +276,77 @@ void main() {
 
       provider.dispose();
     });
+
+    test(
+        'Bowl and Gong sounds use fade assets and slow variants are properly named',
+        () {
+      final bowl = MeditationSoundItem.fromId('Bowl');
+      expect(bowl.assetPath,
+          equals('assets/audio/meditation_sounds/Bowl-fade.wav'));
+      expect(bowl.displayName, equals('Bowl'));
+
+      final bowlSlow = MeditationSoundItem.fromId('BowlSlow');
+      expect(bowlSlow.assetPath,
+          equals('assets/audio/meditation_sounds/Bowl-slow-fade-.wav'));
+      expect(bowlSlow.displayName, equals('Bowl (Slow)'));
+
+      final gong = MeditationSoundItem.fromId('Gong');
+      expect(gong.assetPath,
+          equals('assets/audio/meditation_sounds/Gong-fade.wav'));
+      expect(gong.displayName, equals('Gong'));
+
+      final gongSlow = MeditationSoundItem.fromId('GongSlow');
+      expect(gongSlow.assetPath,
+          equals('assets/audio/meditation_sounds/Gong-slow-fade.wav'));
+      expect(gongSlow.displayName, equals('Gong (Slow)'));
+
+      // Ensure no sounds refer to deleted Bowl.wav or Gong.wav
+      for (final sound in MeditationSoundItem.allSounds) {
+        expect(sound.assetPath?.endsWith('/Bowl.wav') ?? false, isFalse);
+        expect(sound.assetPath?.endsWith('/Gong.wav') ?? false, isFalse);
+      }
+    });
+
+    test('MeditationSoundItem.fromId handles legacy sound aliases safely', () {
+      expect(MeditationSoundItem.fromId('BowlFade').id, equals('Bowl'));
+      expect(MeditationSoundItem.fromId('Bowl (Fade)').id, equals('Bowl'));
+      expect(MeditationSoundItem.fromId('BowlSlowFade').id, equals('BowlSlow'));
+      expect(MeditationSoundItem.fromId('Bowl (Slow Fade)').id,
+          equals('BowlSlow'));
+
+      expect(MeditationSoundItem.fromId('GongFade').id, equals('Gong'));
+      expect(MeditationSoundItem.fromId('Gong (Fade)').id, equals('Gong'));
+      expect(MeditationSoundItem.fromId('GongSlowFade').id, equals('GongSlow'));
+      expect(MeditationSoundItem.fromId('Gong (Slow Fade)').id,
+          equals('GongSlow'));
+    });
+
+    test('Prefs and migration handle legacy sound keys cleanly', () async {
+      await Prefs.instance.setString('meditationStartSound', 'BowlSlowFade');
+      await Prefs.instance.setString('meditationIntervalSound', 'GongFade');
+      await Prefs.instance.setString('meditationEndSound', 'BowlFade');
+
+      // Getters normalize immediately
+      expect(Prefs.meditationStartSound, equals('BowlSlow'));
+      expect(Prefs.meditationIntervalSound, equals('Gong'));
+      expect(Prefs.meditationEndSound, equals('Bowl'));
+
+      // Reset migration flag and run migration
+      await Prefs.instance.remove('_meditationSoundsMigrated_v1');
+      await Prefs.migrateMeditationSounds();
+
+      // Check stored raw values in SharedPreferences
+      expect(
+          Prefs.instance.getString('meditationStartSound'), equals('BowlSlow'));
+      expect(
+          Prefs.instance.getString('meditationIntervalSound'), equals('Gong'));
+      expect(Prefs.instance.getString('meditationEndSound'), equals('Bowl'));
+      expect(Prefs.instance.getBool('_meditationSoundsMigrated_v1'), isTrue);
+
+      // Restore defaults for subsequent tests
+      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationIntervalSound = 'ClearBell';
+      Prefs.meditationEndSound = 'Bowl';
+    });
   });
 }

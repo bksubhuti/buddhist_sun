@@ -175,6 +175,56 @@ class Prefs {
     await instance.setBool(key, true);
   }
 
+  /// One-time migration: Bowl/Gong audio cleanup.
+  /// BowlFade -> Bowl
+  /// BowlSlowFade -> BowlSlow
+  /// GongFade -> Gong
+  /// GongSlowFade -> GongSlow
+  static Future<void> migrateMeditationSounds() async {
+    const key = '_meditationSoundsMigrated_v1';
+    if (instance.getBool(key) == true) return;
+
+    final start = instance.getString(MEDITATION_START_SOUND);
+    if (start != null) {
+      final normalized =
+          _normalizeSoundId(start, DEFAULT_MEDITATION_START_SOUND);
+      if (normalized != start) {
+        await instance.setString(MEDITATION_START_SOUND, normalized);
+      }
+    }
+
+    final end = instance.getString(MEDITATION_END_SOUND);
+    if (end != null) {
+      final normalized = _normalizeSoundId(end, DEFAULT_MEDITATION_END_SOUND);
+      if (normalized != end) {
+        await instance.setString(MEDITATION_END_SOUND, normalized);
+      }
+    }
+
+    final interval = instance.getString(MEDITATION_INTERVAL_SOUND);
+    if (interval != null) {
+      final normalized =
+          _normalizeSoundId(interval, DEFAULT_MEDITATION_INTERVAL_SOUND);
+      if (normalized != interval) {
+        await instance.setString(MEDITATION_INTERVAL_SOUND, normalized);
+      }
+    }
+
+    await instance.setBool(key, true);
+  }
+
+  static String _normalizeSoundId(String? raw, String fallback) {
+    if (raw == null || raw.trim().isEmpty) return fallback;
+    final lower = raw.trim().toLowerCase();
+    if (lower == 'bowlfade' || lower == 'bowl (fade)') return 'Bowl';
+    if (lower == 'bowlslowfade' || lower == 'bowl (slow fade)')
+      return 'BowlSlow';
+    if (lower == 'gongfade' || lower == 'gong (fade)') return 'Gong';
+    if (lower == 'gongslowfade' || lower == 'gong (slow fade)')
+      return 'GongSlow';
+    return raw;
+  }
+
   // get and set the default member values if null
   static String get cityName =>
       instance.getString(CITYNAME) ?? DEFAULT_CITYNAME;
@@ -323,20 +373,20 @@ class Prefs {
   static set meditationTimerMode(String value) =>
       instance.setString(MEDITATION_TIMER_MODE, value);
 
-  static String get meditationStartSound =>
-      instance.getString(MEDITATION_START_SOUND) ??
-      DEFAULT_MEDITATION_START_SOUND;
+  static String get meditationStartSound => _normalizeSoundId(
+      instance.getString(MEDITATION_START_SOUND),
+      DEFAULT_MEDITATION_START_SOUND);
   static set meditationStartSound(String value) =>
       instance.setString(MEDITATION_START_SOUND, value);
 
-  static String get meditationEndSound =>
-      instance.getString(MEDITATION_END_SOUND) ?? DEFAULT_MEDITATION_END_SOUND;
+  static String get meditationEndSound => _normalizeSoundId(
+      instance.getString(MEDITATION_END_SOUND), DEFAULT_MEDITATION_END_SOUND);
   static set meditationEndSound(String value) =>
       instance.setString(MEDITATION_END_SOUND, value);
 
-  static String get meditationIntervalSound =>
-      instance.getString(MEDITATION_INTERVAL_SOUND) ??
-      DEFAULT_MEDITATION_INTERVAL_SOUND;
+  static String get meditationIntervalSound => _normalizeSoundId(
+      instance.getString(MEDITATION_INTERVAL_SOUND),
+      DEFAULT_MEDITATION_INTERVAL_SOUND);
   static set meditationIntervalSound(String value) =>
       instance.setString(MEDITATION_INTERVAL_SOUND, value);
 

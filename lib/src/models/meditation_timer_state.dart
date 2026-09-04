@@ -115,16 +115,11 @@ class MeditationSoundItem {
     MeditationSoundItem(
       id: 'Bowl',
       displayName: 'Bowl',
-      assetPath: 'assets/audio/meditation_sounds/Bowl.wav',
-    ),
-    MeditationSoundItem(
-      id: 'BowlFade',
-      displayName: 'Bowl (Fade)',
       assetPath: 'assets/audio/meditation_sounds/Bowl-fade.wav',
     ),
     MeditationSoundItem(
-      id: 'BowlSlowFade',
-      displayName: 'Bowl (Slow Fade)',
+      id: 'BowlSlow',
+      displayName: 'Bowl (Slow)',
       assetPath: 'assets/audio/meditation_sounds/Bowl-slow-fade-.wav',
     ),
     MeditationSoundItem(
@@ -140,16 +135,11 @@ class MeditationSoundItem {
     MeditationSoundItem(
       id: 'Gong',
       displayName: 'Gong',
-      assetPath: 'assets/audio/meditation_sounds/Gong.wav',
-    ),
-    MeditationSoundItem(
-      id: 'GongFade',
-      displayName: 'Gong (Fade)',
       assetPath: 'assets/audio/meditation_sounds/Gong-fade.wav',
     ),
     MeditationSoundItem(
-      id: 'GongSlowFade',
-      displayName: 'Gong (Slow Fade)',
+      id: 'GongSlow',
+      displayName: 'Gong (Slow)',
       assetPath: 'assets/audio/meditation_sounds/Gong-slow-fade.wav',
     ),
     MeditationSoundItem(
@@ -173,6 +163,18 @@ class MeditationSoundItem {
     final search = id.trim().toLowerCase();
     if (search == 'ding') {
       return allSounds.firstWhere((s) => s.id == 'ClearBell');
+    }
+    if (search == 'bowlfade' || search == 'bowl (fade)') {
+      return allSounds.firstWhere((s) => s.id == 'Bowl');
+    }
+    if (search == 'bowlslowfade' || search == 'bowl (slow fade)') {
+      return allSounds.firstWhere((s) => s.id == 'BowlSlow');
+    }
+    if (search == 'gongfade' || search == 'gong (fade)') {
+      return allSounds.firstWhere((s) => s.id == 'Gong');
+    }
+    if (search == 'gongslowfade' || search == 'gong (slow fade)') {
+      return allSounds.firstWhere((s) => s.id == 'GongSlow');
     }
     return allSounds.firstWhere(
       (s) =>
