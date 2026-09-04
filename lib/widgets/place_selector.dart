@@ -62,7 +62,8 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       'longitude': Prefs.userDest1Long,
     };
 
-    _selectedId = _normalizeSavedTarget(Prefs.targetName);
+    final normalized = _normalizeSavedTarget(Prefs.targetName);
+    _selectedId = _placeById.containsKey(normalized) ? normalized : 'bodhGaya';
   }
 
   String _normalizeSavedTarget(String saved) {
@@ -93,7 +94,7 @@ class _PlaceSelectorState extends State<PlaceSelector> {
         return 'toothRelicPagoda';
       case 'statueOfLiberty':
       case 'Statue of Liberty':
-        return 'statueOfLiberty';
+        return 'bodhGaya';
       case 'userDest1':
       case 'enter custom':
         return 'userDest1';
@@ -123,8 +124,6 @@ class _PlaceSelectorState extends State<PlaceSelector> {
         return t.place_mahaCetiya;
       case 'toothRelicPagoda':
         return t.place_toothRelicPagoda;
-      case 'statueOfLiberty':
-        return 'Statue of Liberty';
       case 'userDest1':
         return Prefs.userDest1.trim().isNotEmpty
             ? Prefs.userDest1
