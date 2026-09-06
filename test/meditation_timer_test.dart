@@ -348,5 +348,109 @@ void main() {
       Prefs.meditationIntervalSound = 'ClearBell';
       Prefs.meditationEndSound = 'Bowl';
     });
+
+    test(
+        'Vibration Only sound option is available, has correct properties, and persists in Prefs',
+        () {
+      final vibe = MeditationSoundItem.vibration;
+      expect(vibe.id, equals('vibration'));
+      expect(vibe.displayName, equals('Vibration Only'));
+      expect(vibe.isVibration, isTrue);
+      expect(vibe.isNone, isFalse);
+      expect(vibe.assetPath, isNull);
+
+      // Verify it is in allSounds list at index 1 (right after None)
+      expect(MeditationSoundItem.allSounds[0].id, equals('none'));
+      expect(MeditationSoundItem.allSounds[1].id, equals('vibration'));
+
+      // Verify fromId aliases
+      expect(MeditationSoundItem.fromId('vibration').id, equals('vibration'));
+      expect(MeditationSoundItem.fromId('Vibration Only').id,
+          equals('vibration'));
+      expect(MeditationSoundItem.fromId('VIBRATE').id, equals('vibration'));
+
+      // Test provider configuration and persistence
+      final provider = MeditationTimerProvider();
+      provider.setStartSound(vibe);
+      provider.setIntervalSound(vibe);
+      provider.setEndSound(vibe);
+
+      expect(provider.startSound.id, equals('vibration'));
+      expect(provider.intervalSound.id, equals('vibration'));
+      expect(provider.endSound.id, equals('vibration'));
+
+      expect(Prefs.meditationStartSound, equals('vibration'));
+      expect(Prefs.meditationIntervalSound, equals('vibration'));
+      expect(Prefs.meditationEndSound, equals('vibration'));
+
+      // Restore defaults
+      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationIntervalSound = 'ClearBell';
+      Prefs.meditationEndSound = 'Bowl';
+      provider.dispose();
+    });
+
+    testWidgets(
+        'MeditationTimerPage displays Vibration Only and test vibration icon button when selected',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      Prefs.meditationStartSound = 'vibration';
+      Prefs.meditationIntervalMinutes = 10;
+      Prefs.meditationIntervalSound = 'ClearBell';
+      Prefs.meditationEndSound = 'vibration';
+
+      final provider = MeditationTimerProvider();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: ChangeNotifierProvider<MeditationTimerProvider>.value(
+            value: provider,
+            child: const MeditationTimerPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Expand Bells & Settings
+      await tester.tap(find.text('Bells & Settings'));
+      await tester.pumpAndSettle();
+
+      // Subtitle reflects Vibration Only
+      expect(find.textContaining('Start: Vibration Only'), findsOneWidget);
+      expect(find.textContaining('End: Vibration Only'), findsOneWidget);
+
+      // Verify Test vibration tooltip and icon appear for vibration selections
+      expect(find.byTooltip('Test vibration'), findsNWidgets(2));
+      expect(find.byIcon(Icons.vibration_rounded), findsNWidgets(2));
+
+      // ClearBell has Preview sound tooltip
+      expect(find.byTooltip('Preview sound'), findsOneWidget);
+
+      // Tap test vibration button
+      await tester.tap(find.byTooltip('Test vibration').first);
+      await tester.pumpAndSettle();
+
+      // Restore defaults
+      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationIntervalMinutes = 0;
+      Prefs.meditationIntervalSound = 'ClearBell';
+      Prefs.meditationEndSound = 'Bowl';
+      provider.dispose();
+    });
   });
 }

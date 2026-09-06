@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:vibration/vibration.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -248,8 +249,29 @@ class MeditationTimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _vibrate({int duration = 500, List<int>? pattern}) async {
+    if (kIsWeb) return;
+    try {
+      final hasVibrator =
+          await Vibration.hasVibrator().catchError((_) => false);
+      if (hasVibrator == true) {
+        final hasCustom = await Vibration.hasCustomVibrationsSupport()
+            .catchError((_) => false);
+        if (pattern != null && hasCustom == true) {
+          await Vibration.vibrate(pattern: pattern).catchError((_) => null);
+        } else {
+          await Vibration.vibrate(duration: duration).catchError((_) => null);
+        }
+      }
+    } catch (_) {}
+  }
+
   Future<void> previewSound(MeditationSoundItem sound) async {
-    await _audioService.playSound(sound, volume: 1.0);
+    if (sound.id == 'vibration') {
+      await _vibrate(duration: 400, pattern: [0, 200, 150, 200]);
+    } else {
+      await _audioService.playSound(sound, volume: 1.0);
+    }
   }
 
   void setKeepScreenOn(bool value) {
@@ -326,8 +348,12 @@ class MeditationTimerProvider extends ChangeNotifier {
     _startTick();
     notifyListeners();
 
-    // Play starting bell asynchronously without delaying timer
-    _audioService.playSound(_startSound, volume: 1.0);
+    // Play starting bell or vibrate asynchronously without delaying timer
+    if (_startSound.id == 'vibration') {
+      _vibrate(duration: 500);
+    } else {
+      _audioService.playSound(_startSound, volume: 1.0);
+    }
 
     // Schedule background completion notification if timed / endAt
     if (_endTime != null) {
@@ -371,7 +397,11 @@ class MeditationTimerProvider extends ChangeNotifier {
           currentMinute % _intervalMinutes == 0 &&
           currentMinute != _lastIntervalMinute) {
         _lastIntervalMinute = currentMinute;
-        _audioService.playSound(_intervalSound, volume: 1.0);
+        if (_intervalSound.id == 'vibration') {
+          _vibrate(duration: 400, pattern: [0, 250, 200, 250]);
+        } else {
+          _audioService.playSound(_intervalSound, volume: 1.0);
+        }
       }
     }
 
@@ -434,7 +464,11 @@ class MeditationTimerProvider extends ChangeNotifier {
       _elapsedSeconds = _totalDurationSeconds;
     }
 
-    await _audioService.playSound(_endSound, volume: 1.0);
+    if (_endSound.id == 'vibration') {
+      await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+    } else {
+      await _audioService.playSound(_endSound, volume: 1.0);
+    }
     notifyListeners();
   }
 
@@ -447,7 +481,11 @@ class MeditationTimerProvider extends ChangeNotifier {
 
     if (completed) {
       _status = MeditationTimerStatus.completed;
-      await _audioService.playSound(_endSound, volume: 1.0);
+      if (_endSound.id == 'vibration') {
+        await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+      } else {
+        await _audioService.playSound(_endSound, volume: 1.0);
+      }
     } else {
       _status = MeditationTimerStatus.idle;
     }

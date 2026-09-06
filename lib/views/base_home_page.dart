@@ -114,7 +114,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
     // these toggles always get set to false unless auto-start is true
     Prefs.backgroundOn = false;
-    Prefs.screenAlwaysOn = false;
     //    _dummyPage = DummyPage();
     _page1 = Home();
     _page2 = CountdownTimerView(goToHome: goToHome);
@@ -130,7 +129,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     // this does not get called.. but it is here anyway.
     // no dispose on exit is called. :)
     Prefs.backgroundOn = false;
-    Prefs.screenAlwaysOn = false;
     Prefs.speakIsOn = false;
     print("set the toggles in prefs to false");
     _pageController.dispose();

@@ -97,7 +97,12 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
               timerProvider.setVolume(val.round());
             },
             onChangeEnd: (val) {
-              timerProvider.previewSound(timerProvider.startSound);
+              if (timerProvider.endSound.id != 'none' &&
+                  timerProvider.endSound.id != 'vibration') {
+                timerProvider.previewSound(timerProvider.endSound);
+              } else {
+                timerProvider.previewSound(MeditationSoundItem.fromId('Bowl'));
+              }
             },
           ),
         ],
@@ -804,9 +809,16 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
         if (selectedSound.id != 'none') ...[
           const SizedBox(width: 4),
           IconButton(
-            icon: Icon(Icons.play_circle_outline,
-                color: theme.colorScheme.primary, size: 22),
-            tooltip: 'Preview sound',
+            icon: Icon(
+              selectedSound.id == 'vibration'
+                  ? Icons.vibration_rounded
+                  : Icons.play_circle_outline,
+              color: theme.colorScheme.primary,
+              size: 22,
+            ),
+            tooltip: selectedSound.id == 'vibration'
+                ? 'Test vibration'
+                : 'Preview sound',
             visualDensity: VisualDensity.compact,
             onPressed: () => timerProvider.previewSound(selectedSound),
           ),

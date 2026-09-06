@@ -316,8 +316,8 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
 
               // Dynamic Presets Wrap with Add Button at the end
               Wrap(
-                spacing: 6,
-                runSpacing: 6,
+                spacing: 8,
+                runSpacing: 8,
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
@@ -331,10 +331,9 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                               ? '${minutes ~/ 60}h'
                               : '${minutes}m',
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                            fontSize: 16,
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.w600,
                           ),
                         ),
                         selected: isSelected,
@@ -344,27 +343,27 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                           color: isSelected ? primary : Colors.transparent,
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 0),
+                            horizontal: 10, vertical: 8),
                       ),
                     );
                   }).toList(),
 
                   // Add Preset Button
                   ActionChip(
-                    avatar: Icon(Icons.add, size: 16, color: primary),
+                    avatar: Icon(Icons.add, size: 20, color: primary),
                     label: Text(
                       t.addPreset,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: primary,
                       ),
                     ),
                     backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(18)),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     onPressed: _handleAddPresetPressed,
                   ),
                 ],

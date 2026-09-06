@@ -29,8 +29,18 @@ class MeditationSoundItem {
     assetPath: null,
   );
 
+  static const MeditationSoundItem vibration = MeditationSoundItem(
+    id: 'vibration',
+    displayName: 'Vibration Only',
+    assetPath: null,
+  );
+
+  bool get isNone => id == 'none';
+  bool get isVibration => id == 'vibration';
+
   static const List<MeditationSoundItem> allSounds = [
-    MeditationSoundItem(id: 'none', displayName: 'None', assetPath: null),
+    none,
+    vibration,
     MeditationSoundItem(
       id: 'Bell',
       displayName: 'Bicycle',
@@ -161,6 +171,11 @@ class MeditationSoundItem {
 
   static MeditationSoundItem fromId(String id) {
     final search = id.trim().toLowerCase();
+    if (search == 'vibration' ||
+        search == 'vibration only' ||
+        search == 'vibrate') {
+      return vibration;
+    }
     if (search == 'ding') {
       return allSounds.firstWhere((s) => s.id == 'ClearBell');
     }

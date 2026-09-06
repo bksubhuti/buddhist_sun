@@ -84,6 +84,11 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
     _disposed = false;
     service.delegate = this;
     _wakeOn = Prefs.screenAlwaysOn;
+    if (_wakeOn) {
+      try {
+        WakelockPlus.enable();
+      } catch (_) {}
+    }
 
     _speakIsOn = Prefs.instance.getBool(SPEAKISON) ?? false;
     service.doTimerStuff();
@@ -118,6 +123,9 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
   @override
   void dispose() {
     _disposed = true;
+    try {
+      WakelockPlus.disable();
+    } catch (_) {}
     if (!kIsWeb) {
       FlutterVolumeController.removeListener();
     }

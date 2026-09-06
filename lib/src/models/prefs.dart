@@ -36,7 +36,7 @@ const double DEFAULT_LAT = 1.1;
 const double DEFAULT_LNG = 1.1;
 const double DEFAULT_OFFSET = 6.5;
 const bool DEFAULT_SPEAKISON = false;
-const bool DEFAULT_SCREEN_ALWAYS_ON = false;
+const bool DEFAULT_SCREEN_ALWAYS_ON = true;
 const bool DEFAULT_BACKGROUND_ON = false;
 const int DEFAULT_SAFETY = 0;
 const int DEFAULT_DAWNVAL = 1;
@@ -216,6 +216,7 @@ class Prefs {
   static String _normalizeSoundId(String? raw, String fallback) {
     if (raw == null || raw.trim().isEmpty) return fallback;
     final lower = raw.trim().toLowerCase();
+    if (lower == 'vibration only' || lower == 'vibrate') return 'vibration';
     if (lower == 'bowlfade' || lower == 'bowl (fade)') return 'Bowl';
     if (lower == 'bowlslowfade' || lower == 'bowl (slow fade)')
       return 'BowlSlow';
