@@ -43,11 +43,11 @@ const int DEFAULT_DAWNVAL = 1;
 const bool DEFAULT_RETRIEVE_CITYNAME = true;
 const int DEFAULT_LOCALEVAL = 0;
 const int DEFAULT_THEME_INDEX = 24;
-const bool DEFAULT_LIGHT_THEME_ON = true;
+const bool DEFAULT_LIGHT_THEME_ON = false;
 const bool defaultUseM3 = true;
-const bool defaultDarkThemeOn = false;
+const bool defaultDarkThemeOn = true;
 const bool DEFAULT_AUTO_GPS_ENABLED = false;
-const int defaultSelectedPageColor = 0;
+const int defaultSelectedPageColor = 2;
 const String selectedPageColorPref = "selectedPageColor";
 const String themeNamePref = "themeNamePref";
 const String defaultThemeName = '';
@@ -62,6 +62,8 @@ const int DEFAULT_BEFORE_UPOSATHA_NOTIFICATION_DAYS = 1;
 const String DEFAULT_UPOSATHA_NOTIFICATION_TIME = "06:00";
 const String SHOW_EIGHTH_DAY_UPOSATHA = "showEighthDayUposatha";
 const bool DEFAULT_SHOW_EIGHTH_DAY_UPOSATHA = true;
+const String SHOW_SHADOW_ON_HOME = "showShadowOnHome";
+const bool DEFAULT_SHOW_SHADOW_ON_HOME = true;
 
 // Meditation Timer Prefs
 const String MEDITATION_DURATION_MINUTES = "meditationDurationMinutes";
@@ -290,6 +292,11 @@ class Prefs {
       instance.getInt(selectedPageColorPref) ?? defaultSelectedPageColor;
   static set selectedPageColor(int value) =>
       instance.setInt(selectedPageColorPref, value);
+
+  static bool get showShadowOnHome =>
+      instance.getBool(SHOW_SHADOW_ON_HOME) ?? DEFAULT_SHOW_SHADOW_ON_HOME;
+  static set showShadowOnHome(bool value) =>
+      instance.setBool(SHOW_SHADOW_ON_HOME, value);
 
   static UposathaCountry get selectedUposatha =>
       EnumToString.fromString(
@@ -585,7 +592,7 @@ class Prefs {
       case 2:
         return Colors.black;
       default:
-        return Colors.white;
+        return Colors.black;
     }
   }
 }

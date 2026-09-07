@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:nrel_spa/nrel_spa.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
@@ -52,9 +53,9 @@ SpaResult _getNrelResult() {
   DateTime now = DateTime.now();
   double tz = now.timeZoneOffset.inMinutes / 60.0;
   DateTime utcNoon = DateTime.utc(now.year, now.month, now.day, 12, 0, 0);
-  
+
   double customZenith = 90.0 - Prefs.customDawnAngle;
-  
+
   return getSpa(
     utcNoon,
     Prefs.lat,
@@ -175,6 +176,36 @@ DateTime getSunrise30() {
 
 String getSunrise30String() => _formatHM(getSunrise30());
 
+// ── Selected Aruṇa (Dawn based on Settings) ─────────────────────────
+
+/// Returns the Aruṇa (Dawn) DateTime corresponding to the user-selected
+/// method in Settings (Prefs.dawnVal).
+DateTime getSelectedDawn() {
+  switch (Prefs.dawnVal) {
+    case 0:
+      return getNauticalTwilight();
+    case 1:
+      return getSunrise40();
+    case 2:
+      return getSunrise30();
+    case 3:
+      return getPaAukAngleDawn();
+    case 4:
+      return getNaUyanaAngleDawn();
+    case 5:
+      return getCustomDawn();
+    case 6:
+      return getCivilTwilight();
+    case 7:
+      return getSunrise();
+    default:
+      return getNauticalTwilight();
+  }
+}
+
+/// Formatted Aruṇa string based on user's dawn setting.
+String getSelectedDawnString() => _formatHM(getSelectedDawn());
+
 // ── Solar Noon ───────────────────────────────────────────────────────
 
 /// Raw solar noon (no safety) — used by countdown timer internally.
@@ -213,7 +244,7 @@ String getDuskCivilString() => _formatHM(getCivilDusk());
 
 DateTime getNuaticleDusk() {
   final result = _getNrelResult();
-  return _subtractSafety(_fractionalHoursToDateTime(result.angles[1].sunset));
+  return _subtractSafety(_fractionalHoursToDateTime(result.angles[2].sunset));
 }
 
 String getDuskNauticleString() => _formatHM(getNuaticleDusk());
@@ -304,4 +335,81 @@ SolarTimesForDate getSolarTimesForDate(DateTime date) {
     solarNoon: fmtHMS(result.solarNoon),
     sunset: fmtHM(result.sunset),
   );
+}
+
+// ── Real-Time Solar Position & Shadow Modeling ───────────────────────
+
+/// Represents the sun's instantaneous spherical coordinates and resulting shadow.
+class SolarPosition {
+  final DateTime time;
+  final double
+      azimuth; // Degrees clockwise from North (0°=N, 90°=E, 180°=S, 270°=W)
+  final double elevation; // Degrees above horizon (90° - zenith)
+  final double zenith; // Degrees from zenith
+  final double?
+      shadowLength; // Shadow length ratio to gnomon height (null if below horizon)
+  final double
+      shadowAzimuth; // Azimuth where shadow points ((azimuth + 180) % 360)
+
+  const SolarPosition({
+    required this.time,
+    required this.azimuth,
+    required this.elevation,
+    required this.zenith,
+    this.shadowLength,
+    required this.shadowAzimuth,
+  });
+
+  /// True when the sun is above the geometric horizon.
+  bool get isDay => elevation > 0.0;
+}
+
+/// Calculate the instantaneous solar position and shadow geometry for any [moment].
+SolarPosition getSolarPositionAt(DateTime moment) {
+  // NREL SPA expects year, month, day, hour, min, sec passed in a DateTime
+  // along with the timezone offset parameter. Construct a UTC DateTime with the local fields.
+  DateTime localMoment = DateTime.utc(
+    moment.year,
+    moment.month,
+    moment.day,
+    moment.hour,
+    moment.minute,
+    moment.second,
+  );
+  double tz = moment.timeZoneOffset.inMinutes / 60.0;
+  final result = getSpa(localMoment, Prefs.lat, Prefs.lng, tz);
+
+  final double zenith = result.zenith;
+  final double azimuth = result.azimuth;
+  final double elevation = 90.0 - zenith;
+  final double shadowAzimuth = (azimuth + 180.0) % 360.0;
+
+  double? shadowLength;
+  if (elevation > 4.0) {
+    double rad = elevation * (math.pi / 180.0);
+    shadowLength = 1.0 / math.tan(rad);
+  }
+
+  return SolarPosition(
+    time: moment,
+    azimuth: azimuth,
+    elevation: elevation,
+    zenith: zenith,
+    shadowLength: shadowLength,
+    shadowAzimuth: shadowAzimuth,
+  );
+}
+
+/// Sample the diurnal trajectory curve for a given [date].
+/// Returns [samples] points sampled evenly across the day.
+List<SolarPosition> getDaySolarArc(DateTime date, {int samples = 72}) {
+  final List<SolarPosition> arc = [];
+  int intervalMinutes = (24 * 60) ~/ samples;
+  DateTime dayStart = DateTime(date.year, date.month, date.day, 0, 0, 0);
+
+  for (int i = 0; i <= samples; i++) {
+    DateTime t = dayStart.add(Duration(minutes: i * intervalMinutes));
+    arc.add(getSolarPositionAt(t));
+  }
+  return arc;
 }

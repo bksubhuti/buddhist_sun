@@ -8,6 +8,7 @@ import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
+import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/death_contemplation_page.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
@@ -151,17 +152,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
         title: Text(AppLocalizations.of(context)!.buddhistSun),
         actions: [
           IconButton(
-            tooltip: 'Meditation Timer',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MeditationTimerPage()),
-              );
-            },
-            icon: const Icon(Icons.self_improvement),
-          ),
-          IconButton(
             onPressed: () {
               showHelpDialog(context);
             },
@@ -226,6 +216,18 @@ class Home_PageContainerState extends State<HomePageContainer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CompassPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.wb_sunny_outlined),
+              title: const ColoredText('Sun & Shadow'),
+              onTap: () {
+                Navigator.pop(context); // close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SunShadowPage()),
                 );
               },
             ),

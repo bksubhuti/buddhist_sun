@@ -7,7 +7,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
   ThemeMode themeMode = (Prefs.darkThemeOn) ? ThemeMode.dark : ThemeMode.light;
   // ignore: unused_field
   int _themeIndex = 1;
-  final List<bool> _isSelected = [true, false, false];
+  final List<bool> _isSelected = [false, false, true];
 
   set useM3(bool val) {
     notifyListeners();
@@ -31,7 +31,6 @@ class ThemeChangeNotifier extends ChangeNotifier {
   bool get isDarkMode => themeMode == ThemeMode.dark;
 
   toggleTheme(int index) {
-    themeMode = ThemeMode.light;
     for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
       if (buttonIndex == index) {
         _isSelected[buttonIndex] = true;
@@ -45,21 +44,25 @@ class ThemeChangeNotifier extends ChangeNotifier {
         Prefs.selectedPageColor = 0;
         themeMode = ThemeMode.light;
         Prefs.darkThemeOn = false;
+        Prefs.lightThemeOn = true;
         break;
       case 1:
         Prefs.selectedPageColor = 1;
         themeMode = ThemeMode.light;
         Prefs.darkThemeOn = false;
+        Prefs.lightThemeOn = true;
         break;
       case 2:
         Prefs.selectedPageColor = 2;
         themeMode = ThemeMode.dark;
         Prefs.darkThemeOn = true;
+        Prefs.lightThemeOn = false;
         break;
       default:
-        Prefs.selectedPageColor = 0;
-        themeMode = ThemeMode.light;
-        Prefs.darkThemeOn = false;
+        Prefs.selectedPageColor = 2;
+        themeMode = ThemeMode.dark;
+        Prefs.darkThemeOn = true;
+        Prefs.lightThemeOn = false;
         break;
     }
 

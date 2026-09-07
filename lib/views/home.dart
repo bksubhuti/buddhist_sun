@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui' show FontFeature;
 
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ import 'dart:async';
 import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
+import 'package:buddhist_sun/views/sun_shadow_view.dart';
+import 'package:buddhist_sun/views/buddhavassa_page.dart';
 // import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
 class Home extends StatefulWidget {
@@ -210,22 +213,46 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 35.0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
               child: Column(children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const LiveHomeClock(),
+                      _buildViewToggle(context),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 6.0),
                 // ════════════════════════════════════════════════════
                 // NOON SECTION (existing)
                 // ════════════════════════════════════════════════════
-                Center(
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/buddhist_sun_app_logo.png",
-                      fit: BoxFit.cover,
-                      width: 100.0,
-                      height: 100.0,
-                    ),
-                  ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: Prefs.showShadowOnHome
+                      ? const Center(
+                          key: ValueKey('shadow_view'),
+                          child: MiniSunShadowWidget(size: 185.0),
+                        )
+                      : Center(
+                          key: const ValueKey('logo_view'),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 25.0),
+                            child: ClipOval(
+                              child: Image.asset(
+                                "assets/buddhist_sun_app_logo.png",
+                                fit: BoxFit.cover,
+                                width: 135.0,
+                                height: 135.0,
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 if (Prefs.autoGpsEnabled && !_initPerformed) ...[
@@ -244,13 +271,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 ColoredText(Prefs.cityName,
                     style: TextStyle(fontSize: 15, letterSpacing: 2)),
                 Divider(
-                  height: 30.0,
+                  height: 20.0,
                 ),
                 ColoredText(
                     AppLocalizations.of(context)!.date + ":  " + getNowString(),
                     style: TextStyle(fontSize: 22)),
                 Divider(
-                  height: 30.0,
+                  height: 15.0,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -267,70 +294,74 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 ),
                 ColoredText(AppLocalizations.of(context)!.solar_noon,
                     style: TextStyle(fontSize: 30, letterSpacing: 2)),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 30.0),
-                        ColoredText(
-                            '${AppLocalizations.of(context)!.gps}: ${Prefs.lat}, ${Prefs.lng}',
-                            style:
-                                TextStyle(fontSize: 12.8, letterSpacing: 2.0)),
-                        SizedBox(height: 10.0),
-                        ColoredText(
-                            "${AppLocalizations.of(context)!.gmt_offset}: ${Prefs.offset} hours",
-                            style:
-                                TextStyle(fontSize: 12.8, letterSpacing: 2.0)),
-                      ],
-                    )),
-                const SizedBox(height: 16),
-                Center(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MeditationTimerPage()),
-                      );
-                    },
-                    icon: const Icon(Icons.self_improvement, size: 20),
-                    label: Text(
-                      AppLocalizations.of(context)!.meditationTimer,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                const SizedBox(height: 24),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 14,
+                  runSpacing: 10,
+                  children: [
+                    IconButton.outlined(
+                      tooltip: AppLocalizations.of(context)!.meditationTimer,
+                      icon: const Icon(Icons.self_improvement),
+                      iconSize: 31.2,
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(14.5),
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MeditationTimerPage()),
+                        );
+                      },
                     ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Center(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CompassPage()),
-                      );
-                    },
-                    icon: const Icon(Icons.explore, size: 20),
-                    label: Text(
-                      AppLocalizations.of(context)!.compass,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                    IconButton.outlined(
+                      tooltip: AppLocalizations.of(context)!.compass,
+                      icon: const Icon(Icons.explore),
+                      iconSize: 31.2,
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(14.5),
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CompassPage()),
+                        );
+                      },
                     ),
-                  ),
+                    IconButton.outlined(
+                      tooltip: 'Sun & Shadow',
+                      icon: const Icon(Icons.wb_sunny_outlined),
+                      iconSize: 31.2,
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(14.5),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SunShadowPage()),
+                        );
+                      },
+                    ),
+                    IconButton.outlined(
+                      tooltip: AppLocalizations.of(context)!.beTitle,
+                      icon: const Icon(Icons.calendar_month),
+                      iconSize: 31.2,
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(14.5),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const BuddhavassaPage()),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 // const SizedBox(height: 10),
                 // Center(
@@ -600,6 +631,95 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
+  Widget _buildViewToggle(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final isShadow = Prefs.showShadowOnHome;
+
+    return Tooltip(
+      message: isShadow ? 'Switch to Logo' : 'Switch to Sun & Shadow',
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: primaryColor.withOpacity(0.25),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                if (isShadow) {
+                  setState(() => Prefs.showShadowOnHome = false);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Opacity(
+                  opacity: !isShadow ? 1.0 : 0.4,
+                  child: Container(
+                    padding: const EdgeInsets.all(1.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: !isShadow
+                          ? Border.all(color: primaryColor, width: 1.5)
+                          : null,
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/buddhist_sun_app_logo.png",
+                        width: 19.0,
+                        height: 19.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 3),
+            Transform.scale(
+              scale: 0.72,
+              child: Switch(
+                value: isShadow,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onChanged: (bool val) {
+                  setState(() {
+                    Prefs.showShadowOnHome = val;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 3),
+            InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                if (!isShadow) {
+                  setState(() => Prefs.showShadowOnHome = true);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Icon(
+                  Icons.wb_sunny_outlined,
+                  size: 20,
+                  color: isShadow
+                      ? primaryColor
+                      : theme.colorScheme.onSurface.withOpacity(0.35),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _refreshGps() async {
     if (mounted) {
       setState(() => _initPerformed = false);
@@ -609,5 +729,102 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     if (mounted) {
       setState(() => _initPerformed = true);
     }
+  }
+}
+
+/// Live digital clock positioned at the top left of the Home screen.
+/// Updates cleanly every second using an isolated timer to avoid rebuilding
+/// the rest of the Home screen.
+class LiveHomeClock extends StatefulWidget {
+  const LiveHomeClock({Key? key}) : super(key: key);
+
+  @override
+  State<LiveHomeClock> createState() => _LiveHomeClockState();
+}
+
+class _LiveHomeClockState extends State<LiveHomeClock>
+    with WidgetsBindingObserver {
+  Timer? _timer;
+  DateTime _now = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startTimer();
+    }
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _now = DateTime.now();
+    if (mounted) setState(() {});
+
+    // Synchronize to the start of the next second
+    final int delayMs = 1000 - _now.millisecond;
+    _timer = Timer(Duration(milliseconds: delayMs), () {
+      if (!mounted) return;
+      setState(() => _now = DateTime.now());
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) {
+          setState(() => _now = DateTime.now());
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String timeStr = DateFormat('HH:mm:ss').format(_now);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
+    return Tooltip(
+      message: AppLocalizations.of(context)?.current_time ?? 'Current Time',
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: primaryColor.withOpacity(0.25),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.access_time_filled_rounded,
+              size: 15,
+              color: primaryColor,
+            ),
+            const SizedBox(width: 6),
+            ColoredText(
+              timeStr,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.0,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

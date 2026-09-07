@@ -5,12 +5,13 @@ import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/select_theme_widget.dart';
 
 class ThemeSettingView extends StatelessWidget {
-  const ThemeSettingView({key});
+  const ThemeSettingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ExpansionTile(
+        initiallyExpanded: true,
         leading: const Icon(Icons.color_lens),
         title: Text(AppLocalizations.of(context)!.theme,
             style: Theme.of(context).textTheme.titleLarge),
