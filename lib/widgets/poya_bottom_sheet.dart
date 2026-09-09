@@ -42,10 +42,12 @@ class PoyaBottomSheet {
               children: [
                 _solarRow('${loc.solar_noon}:', times.solarNoon),
                 const Divider(height: 12),
-                _solarRow('${loc.astronomical_twilight}:', times.astronomicalTwilight),
+                _solarRow('${loc.astronomical_twilight}:',
+                    times.astronomicalTwilight),
                 _solarRow('${loc.nautical_twilight}:', times.nauticalTwilight),
                 _solarRow('${loc.pa_auk_angle}:', times.paAukAngle),
-                _solarRow('${loc.custom_dawn} (${Prefs.customDawnAngle}°):', times.customDawn),
+                _solarRow('${loc.custom_dawn} (${Prefs.customDawnAngle}°):',
+                    times.customDawn),
                 _solarRow('${loc.na_uyana_angle}:', times.naUyanaAngle),
                 _solarRow('${loc.civil_twilight}:', times.civilTwilight),
                 _solarRow('${loc.sunrise}:', times.sunrise),
@@ -153,7 +155,8 @@ class PoyaBottomSheet {
               // Find the contiguous block of the same season around the highlighted entry.
               int seasonStart = highlightIndex;
               while (seasonStart > 0 &&
-                  poyasForSelectedYear[seasonStart - 1].season == currentSeason) {
+                  poyasForSelectedYear[seasonStart - 1].season ==
+                      currentSeason) {
                 seasonStart--;
               }
               int seasonEnd = highlightIndex;
@@ -301,8 +304,7 @@ class PoyaBottomSheet {
                                   '$pakkhaRemaining'),
                               _seasonStatColumn(
                                   context,
-                                  _translateSeason(
-                                      seasonName, localizations),
+                                  _translateSeason(seasonName, localizations),
                                   '$pakkhaTotal'),
                             ],
                           ),
@@ -311,7 +313,7 @@ class PoyaBottomSheet {
                     const Divider(height: 1),
                     Expanded(
                       child: poyasForSelectedYear.isEmpty
-                          ? const Center(child: Text("No Data"))
+                          ? Center(child: Text(localizations.noData))
                           : SingleChildScrollView(
                               controller: scrollController,
                               padding: const EdgeInsets.all(8),

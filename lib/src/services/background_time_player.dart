@@ -52,10 +52,9 @@ class BackgroundTimePlayer {
   static Future<Uri> _getLogoUri() async {
     if (_logoUri != null) return _logoUri!;
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/buddhist_sun_app_logo.png');
+    final file = File('${dir.path}/notification_logo.png');
     if (!await file.exists()) {
-      final byteData =
-          await rootBundle.load('assets/buddhist_sun_app_logo.png');
+      final byteData = await rootBundle.load('assets/notification_logo.png');
       await file.writeAsBytes(byteData.buffer
           .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
     }

@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.7.3+69
+version: 1.7.4+71
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -110,6 +110,7 @@ flutter:
     - assets/moon_free.png
     - assets/moon_free2.png
     - assets/buddhist_sun_app_logo.png
+    - assets/notification_logo.png
     - assets/uposatha.json
     - assets/audio/timer_countdown_120_en.m4a
     - assets/audio/timer_countdown_120_my.m4a
@@ -120,9 +121,11 @@ flutter:
     - assets/audio/timer_countdown_120_vi.m4a
     - assets/audio/timer_countdown_120_hi.m4a
     - assets/audio/timer_countdown_120_bn.m4a
+    - assets/audio/silence.m4a
     - assets/audio/meditation_sounds/
     - assets/images/compass_normal.png
     - assets/images/compass_on_target.png
+    - assets/images/compass_buddha.png
     - assets/images/flags/
 
 flutter_launcher_icons:
@@ -149,6 +152,8 @@ flutter_launcher_icons:
   - family: NotoSansMyanmar
     fonts:
       - asset: assets/fonts/NotoSansMyanmar-Regular.ttf
+  - family: NotoSansSinhala
+    fonts:
       - asset: assets/fonts/NotoSansSinhala-VariableFont_wdth,wght.ttf
 #
   # For details regarding fonts from package dependencies,

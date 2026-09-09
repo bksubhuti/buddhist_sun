@@ -177,17 +177,7 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
-              Locale('en', ''),
-              Locale('my', ''),
-              Locale('si', ''),
-              Locale('th', ''),
-              Locale('km', ''),
-              Locale('zh', ''),
-              Locale('vi', ''),
-              Locale('hi', ''),
-              Locale('bn', ''),
-            ],
+            supportedLocales: AppLocalizations.supportedLocales,
             home: HomePageContainer(),
           );
         },

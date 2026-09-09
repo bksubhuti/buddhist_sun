@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 
@@ -214,18 +215,20 @@ class _SunShadowPageState extends State<SunShadowPage>
   }
 
   void _showVinayaInfoDialog() {
+    final t = AppLocalizations.of(context)!;
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
-          children: const [
-            Icon(Icons.wb_sunny, color: Colors.amber),
-            SizedBox(width: 8),
+          children: [
+            const Icon(Icons.wb_sunny, color: Colors.amber),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Chāyā: The Monastic Shadow Stick',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                t.vinayaTitle,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -233,17 +236,17 @@ class _SunShadowPageState extends State<SunShadowPage>
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'In the Buddhist Vinaya Piṭaka (Monastic Code), the shadow (chāyā) of a vertical rod (gnomon / chāyā-yanta) has been used for 2,500 years to determine the time for the midday meal.\n',
-                style: TextStyle(fontSize: 14, height: 1.4),
+                '${t.vinayaIntro}\n',
+                style: const TextStyle(fontSize: 14, height: 1.4),
               ),
               Text(
-                '• Kāla (Allowed Time): Monastics must conclude eating before the sun crosses the meridian at Solar Noon.\n\n'
-                '• Majjhantika (Solar Noon): As noon approaches, the shadow contracts to its shortest length of the day and points along the true North–South meridian line.\n\n'
-                '• Vikāla (Forbidden Time): Once the shadow passes its minimum and begins lengthening, solar noon has passed.\n\n'
-                '• 3D Simulation: This interactive tool calculates the exact astronomical position of the sun using the NREL SPA algorithm and renders the dynamic shadow stick in real-time perspective.',
-                style: TextStyle(fontSize: 13, height: 1.4),
+                '${t.vinayaBulletKala}\n\n'
+                '${t.vinayaBulletMajjhantika}\n\n'
+                '${t.vinayaBulletVikala}\n\n'
+                '${t.vinayaBulletSimulation}',
+                style: const TextStyle(fontSize: 13, height: 1.4),
               ),
             ],
           ),
@@ -251,7 +254,7 @@ class _SunShadowPageState extends State<SunShadowPage>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Close'),
+            child: Text(t.close),
           ),
         ],
       ),
@@ -288,6 +291,7 @@ class _SunShadowPageState extends State<SunShadowPage>
         _displayTime.isAfter(noonRaw) &&
         diffToDusk.inMinutes.abs() <= 60;
 
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
 
     late final String bannerText;
@@ -300,8 +304,8 @@ class _SunShadowPageState extends State<SunShadowPage>
     if (isArunaPhase) {
       final isBeforeAruna = _displayTime.isBefore(aruna);
       bannerText = isBeforeAruna
-          ? 'Aruṇa (${_formatDuration(diffToAruna.abs())} to Aruṇa)'
-          : 'Aruṇa (${_formatDuration(diffToAruna)} past Aruṇa)';
+          ? t.bannerArunaTo(_formatDuration(diffToAruna.abs()))
+          : t.bannerArunaPast(_formatDuration(diffToAruna));
       bannerIcon = Icons.wb_twilight;
       bannerIconColor =
           isDark ? Colors.orange.shade300 : Colors.orange.shade800;
@@ -312,8 +316,8 @@ class _SunShadowPageState extends State<SunShadowPage>
     } else if (isDuskPhase) {
       final isBeforeDusk = _displayTime.isBefore(dusk);
       bannerText = isBeforeDusk
-          ? 'Dusk (${_formatDuration(diffToDusk.abs())} to Dusk)'
-          : 'Dusk (${_formatDuration(diffToDusk)} past Dusk)';
+          ? t.bannerDuskTo(_formatDuration(diffToDusk.abs()))
+          : t.bannerDuskPast(_formatDuration(diffToDusk));
       bannerIcon = Icons.nights_stay_outlined;
       bannerIconColor =
           isDark ? Colors.indigo.shade300 : Colors.indigo.shade700;
@@ -322,14 +326,14 @@ class _SunShadowPageState extends State<SunShadowPage>
       bannerTextColor =
           isDark ? Colors.indigo.shade200 : Colors.indigo.shade900;
     } else if (isBeforeNoon) {
-      bannerText = 'Kāla (${_formatDuration(diffFromNoon.abs())} to Noon)';
+      bannerText = t.bannerKalaTo(_formatDuration(diffFromNoon.abs()));
       bannerIcon = Icons.wb_sunny;
       bannerIconColor = Colors.amber.shade700;
       bannerBgColor = Colors.amber.withValues(alpha: isDark ? 0.15 : 0.12);
       bannerBorderColor = Colors.amber.withValues(alpha: isDark ? 0.40 : 0.35);
       bannerTextColor = isDark ? Colors.amber.shade200 : Colors.amber.shade900;
     } else {
-      bannerText = 'Vikāla (${_formatDuration(diffFromNoon)} past Noon)';
+      bannerText = t.bannerVikalaPast(_formatDuration(diffFromNoon));
       bannerIcon = Icons.wb_twilight;
       bannerIconColor = Colors.blueGrey;
       bannerBgColor = Colors.blueGrey.withValues(alpha: isDark ? 0.15 : 0.12);
@@ -354,9 +358,9 @@ class _SunShadowPageState extends State<SunShadowPage>
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Sun & Shadow',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            Text(
+              t.sunAndShadow,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             Text(
               '${_displayTime.day}.${_displayTime.month}.${_displayTime.year} • GPS: ${Prefs.lat.toStringAsFixed(3)}, ${Prefs.lng.toStringAsFixed(3)}',
@@ -371,7 +375,7 @@ class _SunShadowPageState extends State<SunShadowPage>
           IconButton(
             tooltip: _compassTracking
                 ? 'Compass Active: ${_sensorHeading.toStringAsFixed(0)}° (Tap to unlock)'
-                : 'Align with Device Compass',
+                : t.alignCompass,
             icon: Icon(
               _compassTracking ? Icons.explore : Icons.explore_off_outlined,
               color: _compassTracking ? primaryColor : null,
@@ -379,12 +383,12 @@ class _SunShadowPageState extends State<SunShadowPage>
             onPressed: _toggleCompass,
           ),
           IconButton(
-            tooltip: 'Reset 3D Perspective',
+            tooltip: t.reset3DPerspective,
             icon: const Icon(Icons.refresh),
             onPressed: _resetCamera,
           ),
           IconButton(
-            tooltip: 'Monastic Vinaya Context',
+            tooltip: t.vinayaContext,
             icon: const Icon(Icons.info_outline),
             onPressed: _showVinayaInfoDialog,
           ),
@@ -501,11 +505,13 @@ class _SunShadowPageState extends State<SunShadowPage>
                       child: Text(
                         _compassTracking
                             ? (pos.elevation <= 0
-                                ? 'Compass Live (${_sensorHeading.toStringAsFixed(0)}°) • Sun below horizon (side view)'
-                                : 'Compass Live (${_sensorHeading.toStringAsFixed(0)}°) • Drag vertically to tilt')
+                                ? t.compassLiveSunBelow(
+                                    _sensorHeading.toStringAsFixed(0))
+                                : t.compassLiveDrag(
+                                    _sensorHeading.toStringAsFixed(0)))
                             : (pos.elevation <= 0
-                                ? 'Sun below horizon (side view) • Drag to rotate'
-                                : 'Drag to rotate • Tap compass to re-align'),
+                                ? t.sunBelowHorizonDrag
+                                : t.dragToRotateCompass),
                         style: TextStyle(
                           fontSize: 10,
                           color: theme.colorScheme.onSurface
@@ -525,17 +531,18 @@ class _SunShadowPageState extends State<SunShadowPage>
                 children: [
                   _buildMetricCard(
                     context,
-                    label: 'Elevation',
+                    label: t.elevation,
                     value: '${pos.elevation.toStringAsFixed(1)}°',
-                    subtext:
-                        pos.elevation > 0 ? 'Above Horizon' : 'Night (Under)',
+                    subtext: pos.elevation > 0
+                        ? t.aboveHorizon
+                        : t.nightUnderHorizon,
                     icon: Icons.north_east,
                     color: Colors.orange,
                   ),
                   const SizedBox(width: 8),
                   _buildMetricCard(
                     context,
-                    label: 'Azimuth',
+                    label: t.azimuth,
                     value: '${pos.azimuth.toStringAsFixed(1)}°',
                     subtext: _azimuthToDirection(pos.azimuth),
                     icon: Icons.explore,
@@ -544,24 +551,22 @@ class _SunShadowPageState extends State<SunShadowPage>
                   const SizedBox(width: 8),
                   _buildMetricCard(
                     context,
-                    label: 'Shadow Length',
+                    label: t.shadowLength,
                     value: pos.shadowLength != null
-                        ? '${pos.shadowLength!.toStringAsFixed(2)} × Pin'
-                        : 'No Direct Shadow',
+                        ? '${pos.shadowLength!.toStringAsFixed(2)} ${t.timesPin}'
+                        : t.noDirectShadow,
                     subtext: pos.shadowLength != null
-                        ? 'Min at Noon'
-                        : (pos.elevation > 0
-                            ? 'Sun at Horizon (<4°)'
-                            : 'Below Horizon'),
+                        ? t.minAtNoon
+                        : (pos.elevation > 0 ? t.sunAtHorizon : t.belowHorizon),
                     icon: Icons.straighten,
                     color: Colors.teal,
                   ),
                   const SizedBox(width: 8),
                   _buildMetricCard(
                     context,
-                    label: 'Solar Noon',
+                    label: t.solar_noon,
                     value: noonStr,
-                    subtext: 'Daily Min Shadow',
+                    subtext: t.dailyMinShadow,
                     icon: Icons.wb_sunny_outlined,
                     color: Colors.amber,
                   ),
@@ -609,8 +614,8 @@ class _SunShadowPageState extends State<SunShadowPage>
                         ),
                         label: Text(
                           _isLive
-                              ? 'Real-Time Clock: Activated'
-                              : 'Real-Time Clock: Inactive',
+                              ? t.realTimeClockActivated
+                              : t.realTimeClockInactive,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
@@ -713,7 +718,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                'Scrub Time: $timeStr',
+                                t.scrubTime(timeStr),
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -751,8 +756,8 @@ class _SunShadowPageState extends State<SunShadowPage>
                         _buildJumpChip(
                           context: context,
                           label: _isLive
-                              ? 'Real-Time Clock (Active)'
-                              : 'Real-Time Clock',
+                              ? t.realTimeClockActiveChip
+                              : t.realTimeClockChip,
                           icon: _isLive ? Icons.check_circle : Icons.schedule,
                           isHighlight: _isLive,
                           onTap: _toggleRealTimeClock,
@@ -760,7 +765,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         const SizedBox(width: 6),
                         _buildJumpChip(
                           context: context,
-                          label: 'Aruṇa',
+                          label: t.aruna,
                           icon: Icons.wb_twilight,
                           isHighlight: _activeMilestone == 'aruna',
                           onTap: () => _jumpToTime(aruna, 'aruna'),
@@ -768,7 +773,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         const SizedBox(width: 6),
                         _buildJumpChip(
                           context: context,
-                          label: 'Sunrise',
+                          label: t.sunrise,
                           icon: Icons.wb_sunny_outlined,
                           isHighlight: _activeMilestone == 'sunrise',
                           onTap: () => _jumpToTime(sunrise, 'sunrise'),
@@ -776,7 +781,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         const SizedBox(width: 6),
                         _buildJumpChip(
                           context: context,
-                          label: 'Solar Noon (Min Shadow)',
+                          label: t.solarNoonMinShadow,
                           icon: Icons.wb_sunny,
                           isHighlight: _activeMilestone == 'noon',
                           onTap: () => _jumpToTime(noonRaw, 'noon'),
@@ -784,7 +789,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         const SizedBox(width: 6),
                         _buildJumpChip(
                           context: context,
-                          label: 'Sunset',
+                          label: t.sunset,
                           icon: Icons.nights_stay_outlined,
                           isHighlight: _activeMilestone == 'sunset',
                           onTap: () => _jumpToTime(sunset, 'sunset'),
@@ -792,7 +797,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         const SizedBox(width: 6),
                         _buildJumpChip(
                           context: context,
-                          label: 'Dusk',
+                          label: t.dusk,
                           icon: Icons.nights_stay,
                           isHighlight: _activeMilestone == 'dusk',
                           onTap: () => _jumpToTime(dusk, 'dusk'),
@@ -1864,11 +1869,16 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
     // Yaw tracks phone compass heading in real-time (matching screenshot), or uses override if passed
     final yaw = widget.yaw ?? _compassYaw;
 
+    final loc = AppLocalizations.of(context);
+    final liveLabel = loc?.liveSunShadow ?? 'Live Sun and Shadow';
+    final tooltipMsg =
+        loc?.sunShadowTooltip ?? 'Sun & Shadow (Live) - Tap to expand';
+
     return Semantics(
-      label: 'Live Sun and Shadow',
+      label: liveLabel,
       button: true,
       child: Tooltip(
-        message: 'Sun & Shadow (Live) - Tap to expand',
+        message: tooltipMsg,
         child: Material(
           color: Colors.transparent,
           child: InkWell(

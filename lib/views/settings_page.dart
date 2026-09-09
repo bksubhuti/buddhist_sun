@@ -241,7 +241,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Row(
                       children: [
                         SizedBox(height: 6.0),
-                        ColoredText("Angle (Degrees):",
+                        ColoredText(AppLocalizations.of(context)!.angleDegrees,
                             style: TextStyle(
                               fontSize: 16,
                             )),
@@ -632,7 +632,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (birthDate != null)
                           IconButton(
                             icon: const Icon(Icons.clear, size: 18),
-                            tooltip: 'Clear',
+                            tooltip: AppLocalizations.of(context)!.clear,
                             onPressed: () {
                               setState(() {
                                 Prefs.deathContemplationBirthDate = null;

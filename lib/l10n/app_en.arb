@@ -400,5 +400,127 @@
   "otherApps": "Other Apps",
   "place_mahamuni": "Mahamuni Pagoda",
   "place_watPhraKaew": "Wat Phra Kaew",
-  "enterCustom": "enter custom"
+  "enterCustom": "enter custom",
+  "sunAndShadow": "Sun & Shadow",
+  "alignCompass": "Align with Device Compass",
+  "reset3DPerspective": "Reset 3D Perspective",
+  "vinayaContext": "Monastic Vinaya Context",
+  "close": "Close",
+  "elevation": "Elevation",
+  "azimuth": "Azimuth",
+  "shadowLength": "Shadow Length",
+  "aboveHorizon": "Above Horizon",
+  "nightUnderHorizon": "Night (Under)",
+  "minAtNoon": "Min at Noon",
+  "noDirectShadow": "No Direct Shadow",
+  "sunAtHorizon": "Sun at Horizon (<4°)",
+  "belowHorizon": "Below Horizon",
+  "dailyMinShadow": "Daily Min Shadow",
+  "timesPin": "× Pin",
+  "realTimeClockActivated": "Real-Time Clock: Activated",
+  "realTimeClockInactive": "Real-Time Clock: Inactive",
+  "scrubTime": "Scrub Time: {time}",
+  "@scrubTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "realTimeClockActiveChip": "Real-Time Clock (Active)",
+  "realTimeClockChip": "Real-Time Clock",
+  "solarNoonMinShadow": "Solar Noon (Min Shadow)",
+  "liveSunShadow": "Live Sun and Shadow",
+  "sunShadowTooltip": "Sun & Shadow (Live) - Tap to expand",
+  "switchToLogo": "Switch to Logo",
+  "switchToSunShadow": "Switch to Sun & Shadow",
+  "aruna": "Aruṇa",
+  "dusk": "Dusk",
+  "sunset": "Sunset",
+  "civilDusk": "Civil Dusk",
+  "nauticalDusk": "Nautical Dusk",
+  "uposathaCalendar": "{tradition} Calendar",
+  "@uposathaCalendar": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerArunaTo": "Aruṇa ({diff} to Aruṇa)",
+  "@bannerArunaTo": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerArunaPast": "Aruṇa ({diff} past Aruṇa)",
+  "@bannerArunaPast": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerDuskTo": "Dusk ({diff} to Dusk)",
+  "@bannerDuskTo": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerDuskPast": "Dusk ({diff} past Dusk)",
+  "@bannerDuskPast": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerKalaTo": "Kāla ({diff} to Noon)",
+  "@bannerKalaTo": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerVikalaPast": "Vikāla ({diff} past Noon)",
+  "@bannerVikalaPast": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "vinayaTitle": "Chāyā: The Monastic Shadow Stick",
+  "vinayaIntro": "In the Buddhist Vinaya Piṭaka (Monastic Code), the shadow (chāyā) of a vertical rod (gnomon / chāyā-yanta) has been used for 2,500 years to determine the time for the midday meal.",
+  "vinayaBulletKala": "• Kāla (Allowed Time): Monastics must conclude eating before the sun crosses the meridian at Solar Noon.",
+  "vinayaBulletMajjhantika": "• Majjhantika (Solar Noon): As noon approaches, the shadow contracts to its shortest length of the day and points along the true North–South meridian line.",
+  "vinayaBulletVikala": "• Vikāla (Forbidden Time): Once the shadow passes its minimum and begins lengthening, solar noon has passed.",
+  "vinayaBulletSimulation": "• 3D Simulation: This interactive tool calculates the exact astronomical position of the sun using the NREL SPA algorithm and renders the dynamic shadow stick in real-time perspective.",
+  "compassLiveDrag": "Compass Live ({heading}°) • Drag vertically to tilt",
+  "@compassLiveDrag": {
+    "placeholders": {
+      "heading": {
+        "type": "String"
+      }
+    }
+  },
+  "compassLiveSunBelow": "Compass Live ({heading}°) • Sun below horizon (side view)",
+  "@compassLiveSunBelow": {
+    "placeholders": {
+      "heading": {
+        "type": "String"
+      }
+    }
+  },
+  "sunBelowHorizonDrag": "Sun below horizon (side view) • Drag to rotate",
+  "dragToRotateCompass": "Drag to rotate • Tap compass to re-align",
+  "angleDegrees": "Angle (Degrees):",
+  "clear": "Clear",
+  "setLocale": "Set Locale",
+  "noData": "No Data"
 }

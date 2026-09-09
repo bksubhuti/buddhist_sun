@@ -95,6 +95,8 @@ class _CompassPageState extends State<CompassPage>
     precacheImage(
         const AssetImage('assets/images/compass_on_target.png'), context);
     precacheImage(
+        const AssetImage('assets/images/compass_buddha.png'), context);
+    precacheImage(
         const AssetImage('assets/images/flags/flag_india.png'), context);
     precacheImage(
         const AssetImage('assets/images/flags/flag_nepal.png'), context);
@@ -532,6 +534,7 @@ class _CompassPageState extends State<CompassPage>
   Widget _buildCompass({double size = 290}) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
 
     return ValueListenableBuilder<bool>(
       valueListenable: _onTargetNotifier,
@@ -547,31 +550,44 @@ class _CompassPageState extends State<CompassPage>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Outer Halo Glow
+                  // Outer Halo Glow & Inner Fill
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: 290,
                     height: 290,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: theme.colorScheme.surfaceContainerHighest
-                          .withAlpha(80),
+                      color: isDark
+                          ? (onTarget
+                              ? Color.alphaBlend(
+                                  primary.withAlpha(65),
+                                  theme.colorScheme.surfaceContainerHighest,
+                                )
+                              : theme.colorScheme.surfaceContainerHighest
+                                  .withAlpha(140))
+                          : (onTarget
+                              ? Color.alphaBlend(
+                                  primary.withAlpha(45),
+                                  theme.colorScheme.surfaceContainerHighest,
+                                )
+                              : theme.colorScheme.surfaceContainerHighest
+                                  .withAlpha(160)),
                       boxShadow: onTarget
                           ? [
                               BoxShadow(
-                                color: primary.withAlpha(140),
+                                color: primary.withAlpha(150),
                                 blurRadius: 36,
                                 spreadRadius: 6,
                               ),
                               BoxShadow(
-                                color: Colors.amber.withAlpha(90),
-                                blurRadius: 20,
+                                color: primary.withAlpha(70),
+                                blurRadius: 18,
                                 spreadRadius: 2,
                               ),
                             ]
                           : [
                               BoxShadow(
-                                color: Colors.black.withAlpha(20),
+                                color: Colors.black.withAlpha(isDark ? 30 : 15),
                                 blurRadius: 18,
                                 spreadRadius: 1,
                               ),
@@ -645,6 +661,19 @@ class _CompassPageState extends State<CompassPage>
                         ],
                       );
                     },
+                  ),
+
+                  // Fixed Upright Transparent Buddha on Top (stays stationary while compass dial spins)
+                  IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 250),
+                      opacity: onTarget ? 0.95 : 0.88,
+                      child: Image.asset(
+                        'assets/images/compass_buddha.png',
+                        height: 38,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
 
                   // Fixed Top Device Heading Indicator

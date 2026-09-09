@@ -13,7 +13,7 @@ Future showSetLocaleDialog(BuildContext context) async {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Set Locale"),
+    title: Text(AppLocalizations.of(context)!.setLocale),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [

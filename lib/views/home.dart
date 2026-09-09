@@ -332,7 +332,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       },
                     ),
                     IconButton.outlined(
-                      tooltip: 'Sun & Shadow',
+                      tooltip: AppLocalizations.of(context)!.sunAndShadow,
                       icon: const Icon(Icons.wb_sunny_outlined),
                       iconSize: 31.2,
                       style: IconButton.styleFrom(
@@ -471,13 +471,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 Divider(height: 15.0),
 
                 // Sunset / Dusk times
-                ColoredText('Sunset: ${getSunsetString()}',
+                ColoredText(
+                    '${AppLocalizations.of(context)!.sunset}: ${getSunsetString()}',
                     style: TextStyle(fontSize: 15, letterSpacing: 2)),
                 Divider(height: 15.0),
-                ColoredText('Civil Dusk: ${getDuskCivilString()}',
+                ColoredText(
+                    '${AppLocalizations.of(context)!.civilDusk}: ${getDuskCivilString()}',
                     style: TextStyle(fontSize: 15, letterSpacing: 2)),
                 Divider(height: 15.0),
-                ColoredText('Nauticle Dusk: ${getDuskNauticleString()}',
+                ColoredText(
+                    '${AppLocalizations.of(context)!.nauticalDusk}: ${getDuskNauticleString()}',
                     style: TextStyle(fontSize: 15, letterSpacing: 2)),
 
                 // ════════════════════════════════════════════════════
@@ -508,7 +511,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
                 // Uposatha calendar tradition
                 ColoredText(
-                  "${EnumToString.convertToString(Prefs.selectedUposatha, camelCase: true)} Calendar",
+                  AppLocalizations.of(context)!.uposathaCalendar(
+                    EnumToString.convertToString(Prefs.selectedUposatha,
+                        camelCase: true),
+                  ),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -528,7 +534,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               ? "${AppLocalizations.of(context)!.today_is} ${_formatMoonPhaseName(todayPoya!.moonPhase, AppLocalizations.of(context)!)}"
                               : (nextPoya != null
                                   ? "${AppLocalizations.of(context)!.next}  ${_formatMoonPhaseName(nextPoya.moonPhase, AppLocalizations.of(context)!)}: ${nextPoya.date}"
-                                  : "No Data"),
+                                  : AppLocalizations.of(context)!.noData),
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
@@ -637,7 +643,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final isShadow = Prefs.showShadowOnHome;
 
     return Tooltip(
-      message: isShadow ? 'Switch to Logo' : 'Switch to Sun & Shadow',
+      message: isShadow
+          ? AppLocalizations.of(context)!.switchToLogo
+          : AppLocalizations.of(context)!.switchToSunShadow,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(

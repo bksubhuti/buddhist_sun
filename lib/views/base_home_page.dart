@@ -221,7 +221,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             ),
             ListTile(
               leading: const Icon(Icons.wb_sunny_outlined),
-              title: const ColoredText('Sun & Shadow'),
+              title: ColoredText(AppLocalizations.of(context)!.sunAndShadow),
               onTap: () {
                 Navigator.pop(context); // close the drawer
                 Navigator.push(
