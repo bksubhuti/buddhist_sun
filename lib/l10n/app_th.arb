@@ -337,5 +337,7 @@
   "angleDegrees": "มุม (องศา):",
   "clear": "ล้าง",
   "setLocale": "ตั้งค่าภาษา",
-  "noData": "ไม่มีข้อมูล"
+  "noData": "ไม่มีข้อมูล",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

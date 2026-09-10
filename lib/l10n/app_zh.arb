@@ -541,5 +541,7 @@
   "angleDegrees": "角度（度）：",
   "clear": "清除",
   "setLocale": "选择语言",
-  "noData": "暂无数据"
+  "noData": "暂无数据",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

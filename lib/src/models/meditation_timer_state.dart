@@ -42,6 +42,11 @@ class MeditationSoundItem {
     none,
     vibration,
     MeditationSoundItem(
+      id: 'SingleBell',
+      displayName: 'Suno Calm Bell',
+      assetPath: 'assets/audio/meditation_sounds/suno-Single-Bell.mp3',
+    ),
+    MeditationSoundItem(
       id: 'Bell',
       displayName: 'Bicycle',
       assetPath: 'assets/audio/meditation_sounds/Bell.wav',
@@ -50,11 +55,6 @@ class MeditationSoundItem {
       id: 'CalmBell',
       displayName: 'Suno Chung Chime',
       assetPath: 'assets/audio/meditation_sounds/suno-Calm-Bell.mp3',
-    ),
-    MeditationSoundItem(
-      id: 'SingleBell',
-      displayName: 'Suno Calm Bell',
-      assetPath: 'assets/audio/meditation_sounds/suno-Single-Bell.mp3',
     ),
     MeditationSoundItem(
       id: 'ZenBell',
@@ -195,7 +195,7 @@ class MeditationSoundItem {
       (s) =>
           s.id.toLowerCase() == search || s.displayName.toLowerCase() == search,
       orElse: () => allSounds.firstWhere(
-        (s) => s.id == 'Bowl',
+        (s) => s.id == 'SingleBell',
         orElse: () => allSounds.first,
       ),
     );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:vibration/vibration.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -8,7 +9,8 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
 
-class MeditationTimerProvider extends ChangeNotifier {
+class MeditationTimerProvider extends ChangeNotifier
+    with WidgetsBindingObserver {
   final MeditationAudioService _audioService = MeditationAudioService();
 
   MeditationTimerMode _mode = MeditationTimerMode.timed;
@@ -27,24 +29,81 @@ class MeditationTimerProvider extends ChangeNotifier {
   DateTime? _pauseStartTime;
   int _totalPauseDurationSeconds = 0;
 
-  MeditationSoundItem _startSound = MeditationSoundItem.fromId('Bowl');
+  MeditationSoundItem _startSound = MeditationSoundItem.fromId('SingleBell');
   MeditationSoundItem _intervalSound = MeditationSoundItem.fromId('ClearBell');
-  MeditationSoundItem _endSound = MeditationSoundItem.fromId('Bowl');
+  MeditationSoundItem _endSound = MeditationSoundItem.fromId('SingleBell');
   int _intervalMinutes = 0;
   bool _keepScreenOn = true;
   int _volume = 80;
 
+  bool _hasCompletedTarget = false;
   int _lastIntervalMinute = -1;
   Timer? _tickTimer;
 
   // Getters
   MeditationTimerMode get mode => _mode;
   MeditationTimerStatus get status => _status;
+  bool get hasCompletedTarget => _hasCompletedTarget;
+  bool get isOvertime =>
+      (_mode == MeditationTimerMode.timed ||
+          _mode == MeditationTimerMode.endAt) &&
+      (_hasCompletedTarget ||
+          (_status == MeditationTimerStatus.running &&
+              _totalDurationSeconds > 0 &&
+              elapsedSeconds >= _totalDurationSeconds));
+
+  int get overtimeSeconds {
+    if (!isOvertime) return 0;
+    final diff = elapsedSeconds - _totalDurationSeconds;
+    return diff > 0 ? diff : 0;
+  }
+
+  String get formattedOvertime {
+    final s = overtimeSeconds;
+    final hours = s ~/ 3600;
+    final minutes = (s % 3600) ~/ 60;
+    final seconds = s % 60;
+    if (hours > 0) {
+      return '+$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+    return '+$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  String get formattedTargetDuration {
+    final total = _totalDurationSeconds > 0
+        ? _totalDurationSeconds
+        : _durationMinutes * 60;
+    final hours = total ~/ 3600;
+    final minutes = (total % 3600) ~/ 60;
+    final seconds = total % 60;
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   int get durationMinutes => _durationMinutes;
   int get endAtHour => _endAtHour;
   int get endAtMinute => _endAtMinute;
-  int get elapsedSeconds => _elapsedSeconds;
-  int get remainingSeconds => _remainingSeconds;
+  int get elapsedSeconds {
+    if (_status == MeditationTimerStatus.running && _startTime != null) {
+      final total = DateTime.now().difference(_startTime!).inSeconds -
+          _totalPauseDurationSeconds;
+      return total >= 0 ? total : 0;
+    }
+    return _elapsedSeconds;
+  }
+
+  int get remainingSeconds {
+    if (_status == MeditationTimerStatus.running &&
+        (_mode == MeditationTimerMode.timed ||
+            _mode == MeditationTimerMode.endAt)) {
+      final rem = _totalDurationSeconds - elapsedSeconds;
+      return rem >= 0 ? rem : 0;
+    }
+    return _remainingSeconds;
+  }
+
   int get totalDurationSeconds => _totalDurationSeconds;
   MeditationSoundItem get startSound => _startSound;
   MeditationSoundItem get intervalSound => _intervalSound;
@@ -83,13 +142,13 @@ class MeditationTimerProvider extends ChangeNotifier {
     }
     if (_totalDurationSeconds <= 0) return 0.0;
 
-    final ratio = (_remainingSeconds / _totalDurationSeconds).clamp(0.0, 1.0);
+    final ratio = (remainingSeconds / _totalDurationSeconds).clamp(0.0, 1.0);
 
     if (_ringStyle == 'subtractive') {
-      if (_status == MeditationTimerStatus.completed) return 0.0;
+      if (_status == MeditationTimerStatus.completed || isOvertime) return 0.0;
       return ratio;
     } else {
-      if (_status == MeditationTimerStatus.completed) return 1.0;
+      if (_status == MeditationTimerStatus.completed || isOvertime) return 1.0;
       return 1.0 - ratio;
     }
   }
@@ -113,10 +172,15 @@ class MeditationTimerProvider extends ChangeNotifier {
       return '00:00';
     }
 
+    if (isOvertime) {
+      return formattedOvertime;
+    }
+
     if (_mode == MeditationTimerMode.unlimited) {
-      final hours = _elapsedSeconds ~/ 3600;
-      final minutes = (_elapsedSeconds % 3600) ~/ 60;
-      final seconds = _elapsedSeconds % 60;
+      final elapsed = elapsedSeconds;
+      final hours = elapsed ~/ 3600;
+      final minutes = (elapsed % 3600) ~/ 60;
+      final seconds = elapsed % 60;
       if (hours > 0) {
         return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
       }
@@ -124,9 +188,10 @@ class MeditationTimerProvider extends ChangeNotifier {
     }
 
     // timed or endAt: show remaining countdown
-    final hours = _remainingSeconds ~/ 3600;
-    final minutes = (_remainingSeconds % 3600) ~/ 60;
-    final seconds = _remainingSeconds % 60;
+    final rem = remainingSeconds;
+    final hours = rem ~/ 3600;
+    final minutes = (rem % 3600) ~/ 60;
+    final seconds = rem % 60;
     if (hours > 0) {
       return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
@@ -134,9 +199,10 @@ class MeditationTimerProvider extends ChangeNotifier {
   }
 
   String get formattedElapsedTime {
-    final hours = _elapsedSeconds ~/ 3600;
-    final minutes = (_elapsedSeconds % 3600) ~/ 60;
-    final seconds = _elapsedSeconds % 60;
+    final elapsed = elapsedSeconds;
+    final hours = elapsed ~/ 3600;
+    final minutes = (elapsed % 3600) ~/ 60;
+    final seconds = elapsed % 60;
     if (hours > 0) {
       return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
@@ -145,6 +211,25 @@ class MeditationTimerProvider extends ChangeNotifier {
 
   MeditationTimerProvider() {
     _loadFromPrefs();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      syncWithCurrentTime();
+    }
+  }
+
+  void syncWithCurrentTime() {
+    if (_status != MeditationTimerStatus.running || _startTime == null) return;
+    _onTick();
+    _startTick();
+    try {
+      WidgetsBinding.instance.scheduleFrame();
+    } catch (_) {}
   }
 
   void _loadFromPrefs() {
@@ -308,6 +393,7 @@ class MeditationTimerProvider extends ChangeNotifier {
 
   Future<void> _beginRunning() async {
     _status = MeditationTimerStatus.running;
+    _hasCompletedTarget = false;
     _startTime = DateTime.now();
 
     switch (_mode) {
@@ -351,8 +437,15 @@ class MeditationTimerProvider extends ChangeNotifier {
     // Play starting bell or vibrate asynchronously without delaying timer
     if (_startSound.id == 'vibration') {
       _vibrate(duration: 500);
+      _audioService.startSession(
+        startSound: MeditationSoundItem.none,
+        volume: 1.0,
+      );
     } else {
-      _audioService.playSound(_startSound, volume: 1.0);
+      _audioService.startSession(
+        startSound: _startSound,
+        volume: 1.0,
+      );
     }
 
     // Schedule background completion notification if timed / endAt
@@ -400,7 +493,7 @@ class MeditationTimerProvider extends ChangeNotifier {
         if (_intervalSound.id == 'vibration') {
           _vibrate(duration: 400, pattern: [0, 250, 200, 250]);
         } else {
-          _audioService.playSound(_intervalSound, volume: 1.0);
+          _audioService.playIntervalSound(_intervalSound, volume: 1.0);
         }
       }
     }
@@ -411,11 +504,14 @@ class MeditationTimerProvider extends ChangeNotifier {
         final remaining = _totalDurationSeconds - _elapsedSeconds;
         _remainingSeconds = remaining >= 0 ? remaining : 0;
 
-        if (now.isAfter(_endTime!) ||
-            _elapsedSeconds >= _totalDurationSeconds) {
-          _remainingSeconds = 0;
-          _completeSession();
-          return;
+        if (isSessionEnding && !_hasCompletedTarget) {
+          _hasCompletedTarget = true;
+          cancelMeditationNotifications();
+          if (_endSound.id == 'vibration') {
+            _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+          } else {
+            _audioService.playEndSound(_endSound, volume: 1.0);
+          }
         }
       }
     }
@@ -429,6 +525,7 @@ class MeditationTimerProvider extends ChangeNotifier {
     _pauseStartTime = DateTime.now();
     _stopTick();
     await cancelMeditationNotifications();
+    await _audioService.pauseSession();
     notifyListeners();
   }
 
@@ -448,27 +545,7 @@ class MeditationTimerProvider extends ChangeNotifier {
 
     _status = MeditationTimerStatus.running;
     _startTick();
-    notifyListeners();
-  }
-
-  Future<void> _completeSession() async {
-    _stopTick();
-    await cancelMeditationNotifications();
-    try {
-      await WakelockPlus.disable();
-    } catch (_) {}
-
-    _status = MeditationTimerStatus.completed;
-    _remainingSeconds = 0;
-    if (_mode == MeditationTimerMode.timed && _totalDurationSeconds > 0) {
-      _elapsedSeconds = _totalDurationSeconds;
-    }
-
-    if (_endSound.id == 'vibration') {
-      await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
-    } else {
-      await _audioService.playSound(_endSound, volume: 1.0);
-    }
+    await _audioService.resumeSession();
     notifyListeners();
   }
 
@@ -479,29 +556,39 @@ class MeditationTimerProvider extends ChangeNotifier {
       await WakelockPlus.disable();
     } catch (_) {}
 
-    if (completed) {
+    if (completed || _hasCompletedTarget) {
       _status = MeditationTimerStatus.completed;
-      if (_endSound.id == 'vibration') {
-        await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+      if (!_hasCompletedTarget) {
+        if (_endSound.id == 'vibration') {
+          await _audioService.endSession();
+          await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+        } else {
+          await _audioService.playEndSound(_endSound, volume: 1.0);
+        }
       } else {
-        await _audioService.playSound(_endSound, volume: 1.0);
+        await _audioService.endSession();
       }
     } else {
       _status = MeditationTimerStatus.idle;
+      await _audioService.endSession();
     }
     notifyListeners();
   }
 
   void resetToIdle() {
     _stopTick();
+    cancelMeditationNotifications();
     _status = MeditationTimerStatus.idle;
     _elapsedSeconds = 0;
     _remainingSeconds = 0;
+    _hasCompletedTarget = false;
+    _audioService.endSession();
     notifyListeners();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _tickTimer?.cancel();
     if (!kIsWeb) {
       try {

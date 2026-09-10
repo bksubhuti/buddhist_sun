@@ -698,12 +698,14 @@ Future<void> scheduleMeditationEndNotification({
         iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
-          presentSound: false,
+          presentSound: true,
+          interruptionLevel: InterruptionLevel.timeSensitive,
         ),
         macOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
-          presentSound: false,
+          presentSound: true,
+          interruptionLevel: InterruptionLevel.timeSensitive,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

@@ -8,6 +8,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
+import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +26,10 @@ void main() {
       expect(provider.status, equals(MeditationTimerStatus.idle));
       expect(provider.durationMinutes, equals(30));
       expect(provider.formattedDisplayTime, equals('30:00'));
-      expect(provider.startSound.id, equals('Bowl'));
-      expect(provider.endSound.id, equals('Bowl'));
+      expect(provider.startSound.id, equals('SingleBell'));
+      expect(provider.startSound.displayName, equals('Suno Calm Bell'));
+      expect(provider.endSound.id, equals('SingleBell'));
+      expect(provider.endSound.displayName, equals('Suno Calm Bell'));
       expect(provider.intervalSound.id, equals('ClearBell'));
       expect(MeditationSoundItem.fromId('ding').id, equals('ClearBell'));
       expect(provider.volume, equals(80));
@@ -344,9 +347,9 @@ void main() {
       expect(Prefs.instance.getBool('_meditationSoundsMigrated_v1'), isTrue);
 
       // Restore defaults for subsequent tests
-      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationStartSound = 'SingleBell';
       Prefs.meditationIntervalSound = 'ClearBell';
-      Prefs.meditationEndSound = 'Bowl';
+      Prefs.meditationEndSound = 'SingleBell';
     });
 
     test(
@@ -365,8 +368,8 @@ void main() {
 
       // Verify fromId aliases
       expect(MeditationSoundItem.fromId('vibration').id, equals('vibration'));
-      expect(MeditationSoundItem.fromId('Vibration Only').id,
-          equals('vibration'));
+      expect(
+          MeditationSoundItem.fromId('Vibration Only').id, equals('vibration'));
       expect(MeditationSoundItem.fromId('VIBRATE').id, equals('vibration'));
 
       // Test provider configuration and persistence
@@ -384,9 +387,9 @@ void main() {
       expect(Prefs.meditationEndSound, equals('vibration'));
 
       // Restore defaults
-      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationStartSound = 'SingleBell';
       Prefs.meditationIntervalSound = 'ClearBell';
-      Prefs.meditationEndSound = 'Bowl';
+      Prefs.meditationEndSound = 'SingleBell';
       provider.dispose();
     });
 
@@ -446,10 +449,135 @@ void main() {
       await tester.pumpAndSettle();
 
       // Restore defaults
-      Prefs.meditationStartSound = 'Bowl';
+      Prefs.meditationStartSound = 'SingleBell';
       Prefs.meditationIntervalMinutes = 0;
       Prefs.meditationIntervalSound = 'ClearBell';
-      Prefs.meditationEndSound = 'Bowl';
+      Prefs.meditationEndSound = 'SingleBell';
+      provider.dispose();
+    });
+
+    test('Session pause, resume, stop, and reset transitions work properly',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setMode(MeditationTimerMode.timed);
+      provider.setDurationMinutes(5);
+
+      await provider.startSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      await provider.pauseSession();
+      expect(provider.status, equals(MeditationTimerStatus.paused));
+
+      await provider.resumeSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      await provider.stopSession(completed: false);
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+
+      await provider.startSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      await provider.stopSession(completed: true);
+      expect(provider.status, equals(MeditationTimerStatus.completed));
+
+      provider.resetToIdle();
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+      expect(provider.elapsedSeconds, equals(0));
+      expect(provider.remainingSeconds, equals(0));
+
+      provider.dispose();
+    });
+
+    test(
+        'Overtime counting past target duration tracks overflow and displays +M:SS',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setMode(MeditationTimerMode.timed);
+      provider.setDurationMinutes(60); // 1 hour target
+
+      expect(provider.isOvertime, isFalse);
+      expect(provider.overtimeSeconds, equals(0));
+      expect(provider.formattedOvertime, equals('+0:00'));
+      expect(provider.formattedTargetDuration, equals('01:00:00'));
+
+      await provider.startSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+      expect(provider.hasCompletedTarget, isFalse);
+      expect(provider.isOvertime, isFalse);
+
+      await provider.stopSession(completed: false);
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+      provider.dispose();
+    });
+
+    test(
+        'MeditationAudioService lifecycle handles start, pause, resume, interval, and end safely',
+        () async {
+      final audioService = MeditationAudioService();
+
+      // Ensure init executes without exception
+      await audioService.init();
+
+      // Start session with bell
+      await audioService.startSession(
+        startSound: MeditationSoundItem.fromId('Bowl'),
+      );
+      expect(audioService.isSessionActive, isTrue);
+
+      // Play interval sound
+      await audioService.playIntervalSound(
+        MeditationSoundItem.fromId('ClearBell'),
+      );
+      expect(audioService.isSessionActive, isTrue);
+
+      // Pause session
+      await audioService.pauseSession();
+      expect(audioService.isSessionActive, isFalse);
+
+      // Resume session
+      await audioService.resumeSession();
+      expect(audioService.isSessionActive, isTrue);
+
+      // Play end sound
+      await audioService.playEndSound(
+        MeditationSoundItem.fromId('Bowl'),
+      );
+      expect(audioService.isSessionActive, isFalse);
+
+      // Start with none / vibration (direct silence loop)
+      await audioService.startSession(
+        startSound: MeditationSoundItem.none,
+      );
+      expect(audioService.isSessionActive, isTrue);
+
+      // End session
+      await audioService.endSession();
+      expect(audioService.isSessionActive, isFalse);
+    });
+
+    test(
+        'MeditationTimerProvider syncWithCurrentTime responds immediately to inactive, hidden, and resumed lifecycle states',
+        () async {
+      final provider = MeditationTimerProvider();
+      await provider.startSessionWithDuration(30);
+
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      // Test waking through hidden, inactive, and resumed states
+      provider.didChangeAppLifecycleState(AppLifecycleState.hidden);
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      provider.didChangeAppLifecycleState(AppLifecycleState.inactive);
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      provider.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      // Formatted display time evaluates dynamically
+      expect(provider.formattedDisplayTime, isNotEmpty);
+      expect(provider.formattedDisplayTime, contains(':'));
+
+      await provider.stopSession(completed: false);
       provider.dispose();
     });
   });

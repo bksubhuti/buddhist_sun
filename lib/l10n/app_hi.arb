@@ -337,5 +337,7 @@
   "angleDegrees": "कोण (डिग्री):",
   "clear": "साफ़ करें",
   "setLocale": "भाषा चुनें",
-  "noData": "कोई डेटा नहीं"
+  "noData": "कोई डेटा नहीं",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

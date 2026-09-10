@@ -337,5 +337,7 @@
   "angleDegrees": "কোণ (ডিগ্রি):",
   "clear": "মুছুন",
   "setLocale": "ভাষা নির্ধারণ",
-  "noData": "তথ্য নেই"
+  "noData": "তথ্য নেই",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

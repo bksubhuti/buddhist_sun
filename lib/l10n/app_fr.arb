@@ -337,5 +337,7 @@
   "angleDegrees": "Angle (Degrés) :",
   "clear": "Effacer",
   "setLocale": "Changer de langue",
-  "noData": "Aucune donnée"
+  "noData": "Aucune donnée",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

@@ -71,9 +71,9 @@ const int DEFAULT_MEDITATION_DURATION_MINUTES = 30;
 const String MEDITATION_TIMER_MODE = "meditationTimerMode";
 const String DEFAULT_MEDITATION_TIMER_MODE = "timed";
 const String MEDITATION_START_SOUND = "meditationStartSound";
-const String DEFAULT_MEDITATION_START_SOUND = "Bowl";
+const String DEFAULT_MEDITATION_START_SOUND = "SingleBell";
 const String MEDITATION_END_SOUND = "meditationEndSound";
-const String DEFAULT_MEDITATION_END_SOUND = "Bowl";
+const String DEFAULT_MEDITATION_END_SOUND = "SingleBell";
 const String MEDITATION_INTERVAL_SOUND = "meditationIntervalSound";
 const String DEFAULT_MEDITATION_INTERVAL_SOUND = "ClearBell";
 const String MEDITATION_INTERVAL_MINUTES = "meditationIntervalMinutes";
@@ -210,6 +210,18 @@ class Prefs {
       if (normalized != interval) {
         await instance.setString(MEDITATION_INTERVAL_SOUND, normalized);
       }
+    }
+
+    // Migrate default sound from Bowl to Suno Calm Bell (SingleBell) for users who had default
+    const keyDefault = '_meditationDefaultSunoCalmBell_v1';
+    if (instance.getBool(keyDefault) != true) {
+      if (start == null || start == 'Bowl') {
+        await instance.setString(MEDITATION_START_SOUND, 'SingleBell');
+      }
+      if (end == null || end == 'Bowl') {
+        await instance.setString(MEDITATION_END_SOUND, 'SingleBell');
+      }
+      await instance.setBool(keyDefault, true);
     }
 
     await instance.setBool(key, true);

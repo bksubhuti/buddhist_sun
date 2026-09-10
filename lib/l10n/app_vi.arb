@@ -541,5 +541,7 @@
   "angleDegrees": "Góc (Độ):",
   "clear": "Xóa",
   "setLocale": "Chọn ngôn ngữ",
-  "noData": "Không có dữ liệu"
+  "noData": "Không có dữ liệu",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

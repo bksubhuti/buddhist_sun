@@ -337,5 +337,7 @@
   "angleDegrees": "មុំ (ដឺក្រេ):",
   "clear": "សម្អាត",
   "setLocale": "កំណត់ភាសា",
-  "noData": "គ្មានទិន្នន័យ"
+  "noData": "គ្មានទិន្នន័យ",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

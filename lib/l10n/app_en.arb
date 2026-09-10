@@ -522,5 +522,7 @@
   "angleDegrees": "Angle (Degrees):",
   "clear": "Clear",
   "setLocale": "Set Locale",
-  "noData": "No Data"
+  "noData": "No Data",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

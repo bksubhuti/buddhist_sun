@@ -362,5 +362,7 @@
   "angleDegrees": "ມຸມ (ອົງສາ):",
   "clear": "ລຶບ",
   "setLocale": "ເລືອກພາສາ",
-  "noData": "ບໍ່ມີຂໍ້ມູນ"
+  "noData": "ບໍ່ມີຂໍ້ມູນ",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

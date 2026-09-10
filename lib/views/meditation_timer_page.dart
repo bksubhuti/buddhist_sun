@@ -101,7 +101,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                   timerProvider.endSound.id != 'vibration') {
                 timerProvider.previewSound(timerProvider.endSound);
               } else {
-                timerProvider.previewSound(MeditationSoundItem.fromId('Bowl'));
+                timerProvider
+                    .previewSound(MeditationSoundItem.fromId('SingleBell'));
               }
             },
           ),

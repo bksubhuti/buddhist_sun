@@ -337,5 +337,7 @@
   "angleDegrees": "ဒီဂရီထောင့်:",
   "clear": "ရှင်းလင်းရန်",
   "setLocale": "ဘာသာစကား သတ်မှတ်ရန်",
-  "noData": "အချက်အလက် မရှိပါ"
+  "noData": "အချက်အလက် မရှိပါ",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }

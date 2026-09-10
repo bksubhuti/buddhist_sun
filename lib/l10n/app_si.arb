@@ -337,5 +337,7 @@
   "angleDegrees": "කෝණය (අංශක):",
   "clear": "මකන්න",
   "setLocale": "භාෂාව තෝරන්න",
-  "noData": "දත්ත නැත"
+  "noData": "දත්ත නැත",
+  "timerOvertime": "Overtime",
+  "finishSession": "Finish Session"
 }
