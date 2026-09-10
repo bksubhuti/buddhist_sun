@@ -17,13 +17,13 @@ import 'package:flutter_mmcalendar/flutter_mmcalendar.dart';
 import 'package:buddhist_sun/utils/buddhavassa_data.dart';
 import 'package:intl/intl.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
+import 'package:buddhist_sun/widgets/current_location_map.dart';
 // import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
 class Home extends StatefulWidget {
@@ -616,27 +616,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   ),
                 ),
                 Divider(thickness: 3),
-                SizedBox(height: 10),
-                Container(
-                  width: 350,
+                const SizedBox(height: 12),
+                CurrentLocationMapWidget(
+                  latitude: Prefs.lat,
+                  longitude: Prefs.lng,
+                  cityName: Prefs.cityName,
                   height: 350,
-                  child: GoogleMap(
-                    markers: {
-                      Marker(
-                        markerId: MarkerId(Prefs.cityName),
-                        position: LatLng(Prefs.lat, Prefs.lng),
-                        infoWindow: InfoWindow(title: Prefs.cityName),
-                      ),
-                    },
-                    mapType: MapType.satellite,
-                    initialCameraPosition: CameraPosition(
-                      zoom: 16,
-                      target: LatLng(Prefs.lat, Prefs.lng),
-                    ),
-                  ),
                 ),
 
-                SizedBox(height: 40), // Bottom padding for scrolling
+                const SizedBox(height: 40), // Bottom padding for scrolling
               ]),
             ),
           ),

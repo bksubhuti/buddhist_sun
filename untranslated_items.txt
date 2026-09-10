@@ -1,1 +1,89 @@
-{}
+{
+  "bn": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "es": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "fr": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "hi": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "km": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "lo": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "my": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "si": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "th": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "vi": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ],
+
+  "zh": [
+    "pasteFromMaps",
+    "readingLocation",
+    "clipboardEmpty",
+    "noCoordinatesFound",
+    "locationLoaded"
+  ]
+}

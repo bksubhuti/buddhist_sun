@@ -140,6 +140,13 @@ const String defaultUserDest1 = "";
 const double defaultUserDest1Lat = 0.0;
 const double defaultUserDest1Long = 0.0;
 
+const String mapCompassSyncPref = "mapCompassSync";
+const bool defaultMapCompassSync = true;
+const String mapZoomLevelPref = "mapZoomLevel";
+const double defaultMapZoomLevel = 16.5;
+const String mapTypePref = "mapType";
+const String defaultMapType = "satellite";
+
 // set default to one month before the last known data point we ship with.
 // it will download every 30 days thereafter.
 DateTime defaultLastDownload = DateTime(2025, 12, 1);
@@ -596,6 +603,20 @@ class Prefs {
       instance.getBool(compassShowMapPref) ?? defaultCompassShowMap;
   static set compassShowMap(bool value) =>
       instance.setBool(compassShowMapPref, value);
+
+  static bool get mapCompassSync =>
+      instance.getBool(mapCompassSyncPref) ?? defaultMapCompassSync;
+  static set mapCompassSync(bool value) =>
+      instance.setBool(mapCompassSyncPref, value);
+
+  static double get mapZoomLevel =>
+      instance.getDouble(mapZoomLevelPref) ?? defaultMapZoomLevel;
+  static set mapZoomLevel(double value) =>
+      instance.setDouble(mapZoomLevelPref, value);
+
+  static String get mapType =>
+      instance.getString(mapTypePref) ?? defaultMapType;
+  static set mapType(String value) => instance.setString(mapTypePref, value);
 
   // App Navigation Restoration
   static String get lastScreen =>

@@ -10,6 +10,7 @@ import 'package:buddhist_sun/views/show_set_locale_dialog.dart';
 import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:buddhist_sun/src/services/gps_service.dart'; // ⬅️ add this
+import 'package:buddhist_sun/widgets/current_location_map.dart';
 import 'dart:async';
 
 class GPSLocation extends StatefulWidget {
@@ -165,17 +166,13 @@ class _GPSLocationState extends State<GPSLocation> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Container(
-          width: 350,
+        const SizedBox(height: 12),
+        CurrentLocationMapWidget(
+          latitude: Prefs.lat,
+          longitude: Prefs.lng,
+          cityName: Prefs.cityName,
           height: 350,
-          child: GoogleMap(
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              markers: Set<Marker>.of(_markers),
-              mapType: MapType.satellite,
-              initialCameraPosition: CameraPosition(
-                  zoom: 16, target: LatLng(Prefs.lat, Prefs.lng))),
+          controllerCompleter: _controller,
         ),
       ]),
     ));

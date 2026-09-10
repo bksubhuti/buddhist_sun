@@ -1,6 +1,8 @@
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/geo_share_parser.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PlaceSelector extends StatefulWidget {
   final Function()? onLocationChanged;
@@ -145,79 +147,173 @@ class _PlaceSelectorState extends State<PlaceSelector> {
       text: Prefs.userDest1Long != 0.0 ? Prefs.userDest1Long.toString() : '0',
     );
 
+    bool isPasting = false;
+    String? statusMessage;
+    bool isError = false;
+
     final result = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Row(
-          children: [
-            Icon(Icons.edit_location_alt_outlined,
-                color: Theme.of(ctx).colorScheme.primary),
-            const SizedBox(width: 8),
-            Text(t.enterCustom),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      builder: (ctx) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Row(
             children: [
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'enter custom',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  prefixIcon: const Icon(Icons.label_outline),
-                ),
-                textCapitalization: TextCapitalization.words,
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: latController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: true,
-                  decimal: true,
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Latitude (-90 to 90)',
-                  hintText: '0.0',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  prefixIcon: const Icon(Icons.explore_outlined),
-                ),
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: longController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: true,
-                  decimal: true,
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Longitude (-180 to 180)',
-                  hintText: '0.0',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  prefixIcon: const Icon(Icons.explore_outlined),
-                ),
-              ),
+              Icon(Icons.edit_location_alt_outlined,
+                  color: Theme.of(dialogContext).colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(t.enterCustom),
             ],
           ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 11, horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  icon: isPasting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.content_paste_go, size: 20),
+                  label: Text(
+                    isPasting ? t.readingLocation : t.pasteFromMaps,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  onPressed: isPasting
+                      ? null
+                      : () async {
+                          setDialogState(() {
+                            isPasting = true;
+                            statusMessage = null;
+                          });
+                          try {
+                            final data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            final text = data?.text?.trim() ?? '';
+                            if (text.isEmpty) {
+                              setDialogState(() {
+                                isPasting = false;
+                                isError = true;
+                                statusMessage = t.clipboardEmpty;
+                              });
+                              return;
+                            }
+                            final res = await GeoShareParser.parse(text);
+                            if (res != null) {
+                              latController.text = res.latitude.toString();
+                              longController.text = res.longitude.toString();
+                              if (res.name != null &&
+                                  res.name!.isNotEmpty &&
+                                  (nameController.text.trim().isEmpty ||
+                                      nameController.text == 'enter custom')) {
+                                nameController.text = res.name!;
+                              }
+                              setDialogState(() {
+                                isPasting = false;
+                                isError = false;
+                                statusMessage = res.name != null
+                                    ? '✓ ${res.name}'
+                                    : '✓ ${t.locationLoaded}';
+                              });
+                            } else {
+                              setDialogState(() {
+                                isPasting = false;
+                                isError = true;
+                                statusMessage = t.noCoordinatesFound;
+                              });
+                            }
+                          } catch (e) {
+                            setDialogState(() {
+                              isPasting = false;
+                              isError = true;
+                              statusMessage = 'Error: $e';
+                            });
+                          }
+                        },
+                ),
+                if (statusMessage != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    statusMessage!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isError
+                          ? Theme.of(dialogContext).colorScheme.error
+                          : Theme.of(dialogContext).colorScheme.primary,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 14),
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    hintText: 'enter custom',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    prefixIcon: const Icon(Icons.label_outline),
+                  ),
+                  textCapitalization: TextCapitalization.words,
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: latController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Latitude (-90 to 90)',
+                    hintText: '0.0',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    prefixIcon: const Icon(Icons.explore_outlined),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: longController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Longitude (-180 to 180)',
+                    hintText: '0.0',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    prefixIcon: const Icon(Icons.explore_outlined),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(t.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(t.ok),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.ok),
-          ),
-        ],
       ),
     );
 
