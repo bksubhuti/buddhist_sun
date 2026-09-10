@@ -397,6 +397,7 @@ class _CompassPageState extends State<CompassPage>
   @override
   void initState() {
     super.initState();
+    Prefs.lastScreen = 'compass';
     WidgetsBinding.instance.addObserver(this);
     if (_userLatitude != 0.0 && _userLongitude != 0.0) {
       _bearing = _calculateBearing(

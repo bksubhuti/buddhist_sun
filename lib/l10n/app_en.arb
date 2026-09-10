@@ -524,5 +524,6 @@
   "setLocale": "Set Locale",
   "noData": "No Data",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "For sessions over 3 hours, please keep screen on. The system may stop background timers if the screen turns off."
 }

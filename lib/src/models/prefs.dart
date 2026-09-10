@@ -65,6 +65,10 @@ const bool DEFAULT_SHOW_EIGHTH_DAY_UPOSATHA = true;
 const String SHOW_SHADOW_ON_HOME = "showShadowOnHome";
 const bool DEFAULT_SHOW_SHADOW_ON_HOME = true;
 
+// App Navigation Restoration Prefs
+const String LAST_SCREEN = "lastScreen";
+const String DEFAULT_LAST_SCREEN = "noon";
+
 // Meditation Timer Prefs
 const String MEDITATION_DURATION_MINUTES = "meditationDurationMinutes";
 const int DEFAULT_MEDITATION_DURATION_MINUTES = 30;
@@ -592,6 +596,11 @@ class Prefs {
       instance.getBool(compassShowMapPref) ?? defaultCompassShowMap;
   static set compassShowMap(bool value) =>
       instance.setBool(compassShowMapPref, value);
+
+  // App Navigation Restoration
+  static String get lastScreen =>
+      instance.getString(LAST_SCREEN) ?? DEFAULT_LAST_SCREEN;
+  static set lastScreen(String value) => instance.setString(LAST_SCREEN, value);
 
   static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {

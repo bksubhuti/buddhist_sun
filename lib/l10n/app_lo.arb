@@ -364,5 +364,6 @@
   "setLocale": "ເລືອກພາສາ",
   "noData": "ບໍ່ມີຂໍ້ມູນ",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "ສຳລັບເວລາຫຼາຍກວ່າ 3 ຊົ່ວໂມງ, ກະລຸນາເປີດໜ້າຈໍໄວ້. ລະບົບອາດຈະຢຸດໂມງຈັບເວລາຖ້າໜ້າຈໍປິດ."
 }

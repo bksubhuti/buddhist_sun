@@ -49,8 +49,96 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   final String title = "Buddhist Sun";
 
+  static String _tabIndexToName(int index) {
+    switch (index) {
+      case 0:
+        return 'noon';
+      case 1:
+        return 'timer';
+      case 2:
+        return 'dawn';
+      case 3:
+        return 'moon';
+      case 4:
+        return 'gps';
+      default:
+        return 'noon';
+    }
+  }
+
+  int _calculateInitialIndex() {
+    if (Prefs.lat == 1.1) {
+      return 4; // Unconfigured GPS, prioritize GPS setup
+    }
+    final saved = Prefs.lastScreen;
+    switch (saved) {
+      case 'noon':
+        return 0;
+      case 'timer':
+        return 1;
+      case 'dawn':
+        return 2;
+      case 'moon':
+        return 3;
+      case 'gps':
+        return 4;
+      default:
+        return 0;
+    }
+  }
+
+  Future<T?> _navigateAndRemember<T>(Widget page, String screenKey) async {
+    Prefs.lastScreen = screenKey;
+    final result = await Navigator.push<T>(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+    );
+    if (mounted) {
+      Prefs.lastScreen = _tabIndexToName(_currentIndex);
+    }
+    return result;
+  }
+
+  void _restoreSubPageIfNeeded() {
+    if (Prefs.lat == 1.1) return;
+
+    final saved = Prefs.lastScreen;
+    Widget? subPage;
+    switch (saved) {
+      case 'meditation_timer':
+        subPage = const MeditationTimerPage();
+        break;
+      case 'compass':
+        subPage = const CompassPage();
+        break;
+      case 'sun_shadow':
+        subPage = const SunShadowPage();
+        break;
+      case 'buddhavassa':
+        subPage = const BuddhavassaPage();
+        break;
+      case 'settings':
+        subPage = SettingsPage();
+        break;
+      case 'death_contemplation':
+        if (showDeath) {
+          subPage = const DeathContemplationPage();
+        }
+        break;
+    }
+
+    if (subPage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _navigateAndRemember(subPage!, saved);
+        }
+      });
+    }
+  }
+
   void goToHome() {
     _currentIndex = 0;
+    Prefs.lastScreen = 'noon';
     _pageController.jumpToPage(_currentIndex);
     setState(() {});
   }
@@ -62,7 +150,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   late GPSLocation _page5;
   //late DummyPage _dummyPage;
 
-  int _currentIndex = (Prefs.lat == 1.1) ? 4 : 0;
+  late int _currentIndex;
   //Widget _currentPage = Home();
   bool _initializedAutoStart = false;
 
@@ -111,6 +199,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
   @override
   void initState() {
     super.initState();
+    _currentIndex = _calculateInitialIndex();
     _pageController = PageController(initialPage: _currentIndex);
 
     // these toggles always get set to false unless auto-start is true
@@ -122,6 +211,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _page4 = MoonPage();
     _page5 = GPSLocation();
 //    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
+
+    _restoreSubPageIfNeeded();
   }
 
   @override
@@ -143,6 +234,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
       // need to update the state._page1.;
     });
+    Prefs.lastScreen = _tabIndexToName(index);
   }
 
   @override
@@ -159,9 +251,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()));
-              (context);
+              _navigateAndRemember(SettingsPage(), 'settings');
             },
             icon: Icon(Icons.settings),
           ),
@@ -201,10 +291,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.meditationTimer),
               onTap: () {
                 Navigator.pop(context); // close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MeditationTimerPage()),
+                _navigateAndRemember(
+                  const MeditationTimerPage(),
+                  'meditation_timer',
                 );
               },
             ),
@@ -213,9 +302,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.compass),
               onTap: () {
                 Navigator.pop(context); // close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CompassPage()),
+                _navigateAndRemember(
+                  const CompassPage(),
+                  'compass',
                 );
               },
             ),
@@ -224,10 +313,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.sunAndShadow),
               onTap: () {
                 Navigator.pop(context); // close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SunShadowPage()),
+                _navigateAndRemember(
+                  const SunShadowPage(),
+                  'sun_shadow',
                 );
               },
             ),
@@ -237,10 +325,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.beTitle),
               onTap: () {
                 Navigator.pop(context); // close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BuddhavassaPage()));
+                _navigateAndRemember(
+                  const BuddhavassaPage(),
+                  'buddhavassa',
+                );
               },
             ),
             ListTile(
@@ -286,8 +374,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
               title: ColoredText(AppLocalizations.of(context)!.settings),
               onTap: () {
                 Navigator.pop(context); // close the drawer
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                _navigateAndRemember(
+                  SettingsPage(),
+                  'settings',
+                );
               },
             ),
             ListTile(
@@ -345,6 +435,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             int diffIndex = _currentIndex - index;
             diffIndex = (diffIndex < 0) ? diffIndex * -1 : diffIndex;
             setState(() => _currentIndex = index);
+            Prefs.lastScreen = _tabIndexToName(index);
             if (diffIndex == 1) {
               _pageController.animateToPage(index,
                   duration: Duration(milliseconds: 200), curve: Curves.easeIn);
@@ -416,8 +507,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
             setState(() {
               _currentIndex = index;
             });
-
-            //setState(() => _currentIndex = index);
+            Prefs.lastScreen = _tabIndexToName(index);
           },
           children: <Widget>[
             _page1,
@@ -467,10 +557,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
       title: ColoredText(AppLocalizations.of(context)!.deathContemplation),
       onTap: () {
         Navigator.pop(context); // close the drawer
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const DeathContemplationPage()),
+        _navigateAndRemember(
+          const DeathContemplationPage(),
+          'death_contemplation',
         );
       },
     );

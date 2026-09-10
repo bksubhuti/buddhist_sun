@@ -5,6 +5,7 @@ import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/widgets/duration_picker_dialog.dart';
 import 'package:buddhist_sun/views/active_meditation_page.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
 
 class MeditationTimerPage extends StatefulWidget {
   const MeditationTimerPage({Key? key}) : super(key: key);
@@ -14,6 +15,12 @@ class MeditationTimerPage extends StatefulWidget {
 }
 
 class _MeditationTimerPageState extends State<MeditationTimerPage> {
+  @override
+  void initState() {
+    super.initState();
+    Prefs.lastScreen = 'meditation_timer';
+  }
+
   static const List<int> _intervalOptions = [
     0,
     1,
@@ -390,6 +397,40 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 ),
               ],
             ),
+            if (timerProvider.durationMinutes > 180) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.errorContainer.withAlpha(90),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.error.withAlpha(120),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 18,
+                      color: theme.colorScheme.error,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        t.screenOffWarningOver3Hours,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: theme.colorScheme.onErrorContainer,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),

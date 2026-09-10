@@ -27,6 +27,7 @@ class _DeathContemplationPageState extends State<DeathContemplationPage> {
   @override
   void initState() {
     super.initState();
+    Prefs.lastScreen = 'death_contemplation';
     _currentTime = DateTime.now();
     // Live ticking countdown update every second
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -1036,13 +1037,14 @@ class _DeathContemplationPageState extends State<DeathContemplationPage> {
               l.meditationTimer,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => const MeditationTimerPage(),
                 ),
               );
+              Prefs.lastScreen = 'death_contemplation';
             },
           ),
         ),

@@ -42,7 +42,8 @@ class DurationInputWidgetState extends State<DurationInputWidget>
   @override
   void didUpdateWidget(covariant DurationInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialMinutes != widget.initialMinutes) {
+    if (oldWidget.initialMinutes != widget.initialMinutes &&
+        widget.initialMinutes != currentMinutes) {
       setMinutes(widget.initialMinutes, notifyParent: false);
     }
   }
@@ -146,124 +147,131 @@ class DurationInputWidgetState extends State<DurationInputWidget>
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Hours Wheel
-                      Column(
-                        children: [
-                          Text(
-                            'Hours',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          SizedBox(
-                            width: 70,
-                            height: 105,
-                            child: ListWheelScrollView.useDelegate(
-                              itemExtent: 36,
-                              controller: _hourController,
-                              physics: const FixedExtentScrollPhysics(),
-                              perspective: 0.005,
-                              diameterRatio: 1.2,
-                              useMagnifier: true,
-                              magnification: 1.15,
-                              onSelectedItemChanged: (index) {
-                                setState(() => _selectedHours = index);
-                                _textController.text =
-                                    _totalMinutesFromWheels.toString();
-                                widget.onChanged(_totalMinutesFromWheels);
-                              },
-                              childDelegate: ListWheelChildBuilderDelegate(
-                                childCount: 13,
-                                builder: (context, index) {
-                                  final isSelected = index == _selectedHours;
-                                  return Center(
-                                    child: Text(
-                                      index.toString().padLeft(2, '0'),
-                                      style: TextStyle(
-                                        fontSize: isSelected ? 22 : 16,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: isSelected
-                                            ? primary
-                                            : theme.colorScheme.onSurfaceVariant
-                                                .withAlpha(120),
-                                      ),
-                                    ),
-                                  );
-                                },
+                  NotificationListener<ScrollEndNotification>(
+                    onNotification: (notification) {
+                      widget.onChanged(_totalMinutesFromWheels);
+                      return false;
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Hours Wheel
+                        Column(
+                          children: [
+                            Text(
+                              'Hours',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          ':',
-                          style: theme.textTheme.headlineLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: primary,
+                            const SizedBox(height: 4),
+                            SizedBox(
+                              width: 70,
+                              height: 105,
+                              child: ListWheelScrollView.useDelegate(
+                                itemExtent: 36,
+                                controller: _hourController,
+                                physics: const FixedExtentScrollPhysics(),
+                                perspective: 0.005,
+                                diameterRatio: 1.2,
+                                useMagnifier: true,
+                                magnification: 1.15,
+                                onSelectedItemChanged: (index) {
+                                  setState(() => _selectedHours = index);
+                                  _textController.text =
+                                      _totalMinutesFromWheels.toString();
+                                },
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 13,
+                                  builder: (context, index) {
+                                    final isSelected = index == _selectedHours;
+                                    return Center(
+                                      child: Text(
+                                        index.toString().padLeft(2, '0'),
+                                        style: TextStyle(
+                                          fontSize: isSelected ? 22 : 16,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: isSelected
+                                              ? primary
+                                              : theme
+                                                  .colorScheme.onSurfaceVariant
+                                                  .withAlpha(120),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            ':',
+                            style: theme.textTheme.headlineLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: primary,
+                            ),
                           ),
                         ),
-                      ),
-                      // Minutes Wheel
-                      Column(
-                        children: [
-                          Text(
-                            'Minutes',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          SizedBox(
-                            width: 70,
-                            height: 105,
-                            child: ListWheelScrollView.useDelegate(
-                              itemExtent: 36,
-                              controller: _minuteController,
-                              physics: const FixedExtentScrollPhysics(),
-                              perspective: 0.005,
-                              diameterRatio: 1.2,
-                              useMagnifier: true,
-                              magnification: 1.15,
-                              onSelectedItemChanged: (index) {
-                                setState(() => _selectedMinutes = index);
-                                _textController.text =
-                                    _totalMinutesFromWheels.toString();
-                                widget.onChanged(_totalMinutesFromWheels);
-                              },
-                              childDelegate: ListWheelChildBuilderDelegate(
-                                childCount: 60,
-                                builder: (context, index) {
-                                  final isSelected = index == _selectedMinutes;
-                                  return Center(
-                                    child: Text(
-                                      index.toString().padLeft(2, '0'),
-                                      style: TextStyle(
-                                        fontSize: isSelected ? 22 : 16,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: isSelected
-                                            ? primary
-                                            : theme.colorScheme.onSurfaceVariant
-                                                .withAlpha(120),
-                                      ),
-                                    ),
-                                  );
-                                },
+                        // Minutes Wheel
+                        Column(
+                          children: [
+                            Text(
+                              'Minutes',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(height: 4),
+                            SizedBox(
+                              width: 70,
+                              height: 105,
+                              child: ListWheelScrollView.useDelegate(
+                                itemExtent: 36,
+                                controller: _minuteController,
+                                physics: const FixedExtentScrollPhysics(),
+                                perspective: 0.005,
+                                diameterRatio: 1.2,
+                                useMagnifier: true,
+                                magnification: 1.15,
+                                onSelectedItemChanged: (index) {
+                                  setState(() => _selectedMinutes = index);
+                                  _textController.text =
+                                      _totalMinutesFromWheels.toString();
+                                },
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 60,
+                                  builder: (context, index) {
+                                    final isSelected =
+                                        index == _selectedMinutes;
+                                    return Center(
+                                      child: Text(
+                                        index.toString().padLeft(2, '0'),
+                                        style: TextStyle(
+                                          fontSize: isSelected ? 22 : 16,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: isSelected
+                                              ? primary
+                                              : theme
+                                                  .colorScheme.onSurfaceVariant
+                                                  .withAlpha(120),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Text(
                     'Total: $_totalMinutesFromWheels min',

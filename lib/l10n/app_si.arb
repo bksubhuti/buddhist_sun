@@ -339,5 +339,6 @@
   "setLocale": "භාෂාව තෝරන්න",
   "noData": "දත්ත නැත",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "පැය 3කට වැඩි කාලසීමාවන් සඳහා තිරය ක්‍රියාත්මකව තබා ගන්න. තිරය ක්‍රියා විරහිත වුවහොත් පද්ධතිය මඟින් ටයිමරය නැවැත්විය හැක."
 }

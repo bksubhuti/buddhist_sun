@@ -30,8 +30,16 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
     _presets = List<int>.from(Prefs.meditationPresets)..sort();
   }
 
+  @override
+  void didUpdateWidget(covariant DurationPickerDialog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialMinutes != widget.initialMinutes) {
+      _currentMinutes = widget.initialMinutes;
+    }
+  }
+
   void _submit() {
-    int minutes = _currentMinutes;
+    int minutes = _inputKey.currentState?.currentMinutes ?? _currentMinutes;
     if (minutes <= 0) minutes = 1;
     if (minutes > 720) minutes = 720; // 12 hours max
 
@@ -286,9 +294,46 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                 key: _inputKey,
                 initialMinutes: _currentMinutes,
                 onChanged: (mins) {
-                  _currentMinutes = mins;
+                  setState(() {
+                    _currentMinutes = mins;
+                  });
                 },
               ),
+
+              if (_currentMinutes > 180) ...[
+                const SizedBox(height: 10),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.errorContainer.withAlpha(90),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: theme.colorScheme.error.withAlpha(120),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber_rounded,
+                        color: theme.colorScheme.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          t.screenOffWarningOver3Hours,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.colorScheme.onErrorContainer,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
 
               const Divider(height: 16),
 
@@ -303,11 +348,15 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> {
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  Text(
-                    t.longPressToEdit,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      color: theme.colorScheme.onSurfaceVariant.withAlpha(140),
+                  Flexible(
+                    child: Text(
+                      t.longPressToEdit,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontSize: 10,
+                        color:
+                            theme.colorScheme.onSurfaceVariant.withAlpha(140),
+                      ),
                     ),
                   ),
                 ],

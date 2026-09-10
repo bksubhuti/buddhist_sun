@@ -339,5 +339,6 @@
   "setLocale": "ตั้งค่าภาษา",
   "noData": "ไม่มีข้อมูล",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "สำหรับการนั่งสมาธิเกิน 3 ชั่วโมง โปรดเปิดหน้าจอไว้ ระบบอาจหยุดตัวนับเวลาหากปิดหน้าจอ"
 }

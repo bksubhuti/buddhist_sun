@@ -339,5 +339,6 @@
   "setLocale": "កំណត់ភាសា",
   "noData": "គ្មានទិន្នន័យ",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "សម្រាប់រយៈពេលលើសពី ៣ ម៉ោង សូមបើកអេក្រង់ទុក។ ប្រព័ន្ធអាចបញ្ឈប់កម្មវិធីកំណត់ម៉ោងប្រសិនបើអេក្រង់បិទ។"
 }

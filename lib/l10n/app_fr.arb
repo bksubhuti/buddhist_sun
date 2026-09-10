@@ -339,5 +339,6 @@
   "setLocale": "Changer de langue",
   "noData": "Aucune donnée",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "Pour les sessions de plus de 3 heures, veuillez garder l'écran allumé. Le système peut interrompre le minuteur si l'écran s'éteint."
 }

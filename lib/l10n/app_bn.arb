@@ -339,5 +339,6 @@
   "setLocale": "ভাষা নির্ধারণ",
   "noData": "তথ্য নেই",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "৩ ঘণ্টার বেশি সেশনের জন্য, অনুগ্রহ করে স্ক্রিন চালু রাখুন। স্ক্রিন বন্ধ হলে সিস্টেম টাইমার বন্ধ করে দিতে পারে।"
 }

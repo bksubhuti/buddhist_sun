@@ -8,6 +8,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/models/meditation_timer_state.dart';
 import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
+import 'package:buddhist_sun/widgets/duration_picker_dialog.dart';
 import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 void main() {
@@ -578,6 +579,61 @@ void main() {
       expect(provider.formattedDisplayTime, contains(':'));
 
       await provider.stopSession(completed: false);
+      provider.dispose();
+    });
+
+    testWidgets(
+        'DurationPickerDialog and MeditationTimerPage display warning banner when duration exceeds 3 hours',
+        (tester) async {
+      // 1. DurationPickerDialog with 30 min shows no warning
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(
+            body: DurationPickerDialog(
+              key: Key('dp_30'),
+              initialMinutes: 30,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.warning_amber_rounded), findsNothing);
+
+      // 2. DurationPickerDialog with 240 min (4 hrs) shows warning
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(
+            body: DurationPickerDialog(
+              key: Key('dp_240'),
+              initialMinutes: 240,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+
+      // 3. MeditationTimerPage with > 180 min shows warning
+      final provider = MeditationTimerProvider();
+      provider.setDurationMinutes(240);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<MeditationTimerProvider>.value(
+          value: provider,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const MeditationTimerPage(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+
       provider.dispose();
     });
   });

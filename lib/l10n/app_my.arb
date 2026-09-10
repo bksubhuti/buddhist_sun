@@ -339,5 +339,6 @@
   "setLocale": "ဘာသာစကား သတ်မှတ်ရန်",
   "noData": "အချက်အလက် မရှိပါ",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "၃ နာရီထက်ပိုသော အချိန်များအတွက် မျက်နှာပြင်ကို ဖွင့်ထားပေးပါ။ မျက်နှာပြင်ပိတ်ပါက စနစ်မှ တိုင်မာကို ရပ်တန့်နိုင်ပါသည်။"
 }

@@ -339,5 +339,6 @@
   "setLocale": "भाषा चुनें",
   "noData": "कोई डेटा नहीं",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "3 घंटे से अधिक के सत्रों के लिए, कृपया स्क्रीन चालू रखें। स्क्रीन बंद होने पर सिस्टम टाइमर को रोक सकता है।"
 }

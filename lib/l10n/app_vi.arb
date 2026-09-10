@@ -543,5 +543,6 @@
   "setLocale": "Chọn ngôn ngữ",
   "noData": "Không có dữ liệu",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "Đối với các thời thiền trên 3 giờ, vui lòng giữ màn hình sáng. Hệ thống có thể dừng bộ đếm nếu màn hình tắt."
 }

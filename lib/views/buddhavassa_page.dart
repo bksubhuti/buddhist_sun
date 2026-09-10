@@ -30,6 +30,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
   @override
   void initState() {
     super.initState();
+    Prefs.lastScreen = 'buddhavassa';
     _selectedDate = DateTime.now();
   }
 

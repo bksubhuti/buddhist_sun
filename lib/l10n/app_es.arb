@@ -339,5 +339,6 @@
   "setLocale": "Establecer idioma",
   "noData": "Sin datos",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "Para sesiones de más de 3 horas, mantenga la pantalla encendida. El sistema puede detener el temporizador si se apaga la pantalla."
 }

@@ -31,12 +31,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
+    super.initState();
+    Prefs.lastScreen = 'settings';
     // debug mode to reset
     //Prefs.instance.clear();
     dbService.initDatabase();
     _customDawnController =
         TextEditingController(text: Prefs.customDawnAngle.toString());
-    super.initState();
   }
 
   @override

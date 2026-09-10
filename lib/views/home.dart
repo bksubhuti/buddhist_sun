@@ -37,6 +37,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   static bool _initPerformed = false;
 
   Map data = {};
+
+  Future<T?> _navigateAndRemember<T>(Widget page, String screenKey) async {
+    Prefs.lastScreen = screenKey;
+    final result = await Navigator.push<T>(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+    );
+    if (mounted) {
+      Prefs.lastScreen = 'noon';
+    }
+    return result;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -308,11 +321,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(14.5),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MeditationTimerPage()),
+                        _navigateAndRemember(
+                          const MeditationTimerPage(),
+                          'meditation_timer',
                         );
                       },
                     ),
@@ -324,10 +335,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(14.5),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CompassPage()),
+                        _navigateAndRemember(
+                          const CompassPage(),
+                          'compass',
                         );
                       },
                     ),
@@ -339,10 +349,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(14.5),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SunShadowPage()),
+                        _navigateAndRemember(
+                          const SunShadowPage(),
+                          'sun_shadow',
                         );
                       },
                     ),
@@ -354,10 +363,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(14.5),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BuddhavassaPage()),
+                        _navigateAndRemember(
+                          const BuddhavassaPage(),
+                          'buddhavassa',
                         );
                       },
                     ),

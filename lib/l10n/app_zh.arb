@@ -543,5 +543,6 @@
   "setLocale": "选择语言",
   "noData": "暂无数据",
   "timerOvertime": "Overtime",
-  "finishSession": "Finish Session"
+  "finishSession": "Finish Session",
+  "screenOffWarningOver3Hours": "超过3小时的禅修，请保持屏幕常亮。息屏可能导致系统终止后台计时器。"
 }

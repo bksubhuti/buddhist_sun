@@ -52,6 +52,7 @@ class _SunShadowPageState extends State<SunShadowPage>
   @override
   void initState() {
     super.initState();
+    Prefs.lastScreen = 'sun_shadow';
     final initialPos = getSolarPositionAt(_displayTime);
     _wasBelowHorizon = initialPos.elevation <= 0.0;
     _pitch = _wasBelowHorizon ? _nightPitch : _dayPitch;
@@ -1882,13 +1883,14 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SunShadowPage(),
                 ),
               );
+              Prefs.lastScreen = 'noon';
             },
             borderRadius: BorderRadius.circular(widget.size / 2.0),
             child: Container(
