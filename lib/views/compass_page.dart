@@ -7,9 +7,17 @@ import 'package:buddhist_sun/widgets/place_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemNavigator;
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:flutter_earth_globe/flutter_earth_globe.dart';
+import 'package:flutter_earth_globe/flutter_earth_globe_controller.dart';
+import 'package:flutter_earth_globe/globe_coordinates.dart';
+import 'package:flutter_earth_globe/point.dart';
+import 'package:flutter_earth_globe/point_connection.dart';
+import 'package:flutter_earth_globe/point_connection_style.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vibration/vibration.dart';
+
+enum CompassViewMode { compass, map2d, earth }
 
 class CompassPage extends StatefulWidget {
   const CompassPage({Key? key}) : super(key: key);
@@ -34,8 +42,10 @@ class _CompassPageState extends State<CompassPage>
   final int limits = 3;
   bool _isLoadingLocation = true;
   bool _isChangingLocation = false;
-  late bool _showMap = Prefs.compassShowMap;
+  late CompassViewMode _viewMode;
+  bool _earthAlignWithDirection = true;
   GoogleMapController? _mapController;
+  late FlutterEarthGlobeController _globeController;
   StreamSubscription<CompassEvent>? _compassSub;
   StreamSubscription<Position>? _posSub;
   bool _wasOnTarget = false;
@@ -45,6 +55,35 @@ class _CompassPageState extends State<CompassPage>
   bool _askedThisSession = false;
   bool _showingDialog = false;
   Key _placeSelectorKey = UniqueKey();
+  int _cardPointerCount = 0;
+  bool _isInteractingWithCard = false;
+
+  void _onCardPointerDown(PointerDownEvent event) {
+    _cardPointerCount++;
+    if (!_isInteractingWithCard) {
+      setState(() {
+        _isInteractingWithCard = true;
+      });
+    }
+  }
+
+  void _onCardPointerUp(PointerUpEvent event) {
+    _cardPointerCount = math.max(0, _cardPointerCount - 1);
+    if (_cardPointerCount == 0 && _isInteractingWithCard) {
+      setState(() {
+        _isInteractingWithCard = false;
+      });
+    }
+  }
+
+  void _onCardPointerCancel(PointerCancelEvent event) {
+    _cardPointerCount = math.max(0, _cardPointerCount - 1);
+    if (_cardPointerCount == 0 && _isInteractingWithCard) {
+      setState(() {
+        _isInteractingWithCard = false;
+      });
+    }
+  }
 
   String _targetDisplayName(BuildContext context) {
     final t = AppLocalizations.of(context)!;
@@ -104,6 +143,9 @@ class _CompassPageState extends State<CompassPage>
         const AssetImage('assets/images/flags/flag_sri_lanka.png'), context);
     precacheImage(
         const AssetImage('assets/images/flags/flag_myanmar.png'), context);
+    precacheImage(const AssetImage('assets/images/2k_earth-day.jpg'), context);
+    precacheImage(
+        const AssetImage('assets/images/2k_earth-night.jpg'), context);
   }
 
   Future<void> _getLocation(BuildContext context) async {
@@ -127,15 +169,12 @@ class _CompassPageState extends State<CompassPage>
           _userLongitude = position.longitude;
           _bearing = _calculateBearing(
               _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
+          _distance = _calculateDistance(
+              _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
           _isLoadingLocation = false;
         });
-        _calculateDistance(_userLatitude, _userLongitude, _targetLatitude,
-                _targetLongitude)
-            .then((d) {
-          if (mounted) setState(() => _distance = d);
-        });
-        if (_showMap) {
-          _updateMapCamera();
+        if (_viewMode != CompassViewMode.compass) {
+          _refreshMapView();
         }
       }
     } catch (e) {
@@ -356,9 +395,13 @@ class _CompassPageState extends State<CompassPage>
     return (bearingDeg + 360) % 360;
   }
 
-  Future<double> _calculateDistance(
-      double startLat, double startLng, double endLat, double endLng) async {
-    double distanceInMeters = Geolocator.distanceBetween(
+  double _calculateDistance(
+      double startLat, double startLng, double endLat, double endLng) {
+    if ((startLat == 0.0 && startLng == 0.0) ||
+        (endLat == 0.0 && endLng == 0.0)) {
+      return 0.0;
+    }
+    final double distanceInMeters = Geolocator.distanceBetween(
       startLat,
       startLng,
       endLat,
@@ -366,6 +409,38 @@ class _CompassPageState extends State<CompassPage>
     );
 
     return distanceInMeters / 1000;
+  }
+
+  double _calculateGlobeZoomForDistance(double distanceKm) {
+    if (distanceKm <= 0.0) return 0.0;
+
+    // Card dimensions: 290 x 290.
+    // 65% of the card is 290 * 0.65 = 188.5 px (20% less than original 85%).
+    const double targetSpan = 188.5;
+    const double baseRadius = 94.25;
+    const double earthRadiusKm = 6371.0;
+
+    // Angular distance theta in radians (0 to pi)
+    final double theta = (distanceKm / earthRadiusKm).clamp(0.01, math.pi);
+    final double sinHalf = math.sin(theta / 2.0);
+
+    // If points are on opposite sides of the globe (e.g. Statue of Liberty ~14,000 km, theta >= 95°),
+    // the Earth sphere itself should take up ~65% of the card with both points showing.
+    // At baseRadius = 94.25 and zoom = 0.0, the Earth diameter is exactly 188.5px (65% of card).
+    if (distanceKm >= 9500 || theta >= (math.pi * 0.52)) {
+      return 0.0;
+    }
+
+    // For regional / continental routes (e.g. Sri Lanka to Bodh Gaya ~2,000 km),
+    // the distance between the two points on screen should take up 65% of the card.
+    // Screen distance = 2 * R * sin(theta / 2) = targetSpan
+    // => R = targetSpan / (2 * sin(theta / 2))
+    // Since R = baseRadius * 2^zoom:
+    // => zoom = log2(R / baseRadius)
+    final double desiredRadius = targetSpan / (2.0 * sinHalf);
+    final double zoom = math.log(desiredRadius / baseRadius) / math.ln2;
+
+    return zoom.clamp(0.0, 2.75);
   }
 
   LatLng _calculateMidpoint(
@@ -402,16 +477,42 @@ class _CompassPageState extends State<CompassPage>
     if (_userLatitude != 0.0 && _userLongitude != 0.0) {
       _bearing = _calculateBearing(
           _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
-      _calculateDistance(
-              _userLatitude, _userLongitude, _targetLatitude, _targetLongitude)
-          .then((d) {
-        if (mounted) setState(() => _distance = d);
-      });
+      _distance = _calculateDistance(
+          _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
     }
     _vibrationEnabled = Prefs.vibeOn;
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
     _startCompass();
+
+    final modeStr = Prefs.compassViewMode;
+    if (modeStr == 'map2d') {
+      _viewMode = CompassViewMode.map2d;
+    } else if (modeStr == 'earth') {
+      _viewMode = CompassViewMode.earth;
+    } else {
+      _viewMode = CompassViewMode.compass;
+    }
+
+    _globeController = FlutterEarthGlobeController(
+      rotationSpeed: 0.05,
+      isRotating: false,
+      zoom: 0.0,
+      minZoom: -1.5,
+      maxZoom: 3.5,
+      zoomSensitivity: 1.5,
+      showAtmosphere: true,
+      atmosphereColor: const Color(0xFF4A90E2).withAlpha(120),
+      surface: const AssetImage('assets/images/2k_earth-day.jpg'),
+      nightSurface: const AssetImage('assets/images/2k_earth-night.jpg'),
+      isDayNightCycleEnabled: false,
+    );
+    _globeController.onLoaded = () {
+      if (mounted && _viewMode == CompassViewMode.earth) {
+        _updateGlobePointsAndCamera(animateCamera: true);
+      }
+    };
+    _onTargetNotifier.addListener(_handleOnTargetChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final ok = await _ensureLocationPermissionWithPrompt(context);
@@ -450,8 +551,8 @@ class _CompassPageState extends State<CompassPage>
         _vibrationEnabled = Prefs.vibeOn;
         _startCompass();
         _startLocationStream();
-        if (_showMap) {
-          _updateMapCamera();
+        if (_viewMode != CompassViewMode.compass) {
+          _refreshMapView();
         }
       }
     }
@@ -463,7 +564,11 @@ class _CompassPageState extends State<CompassPage>
     _stopAllSensors();
     _controller.dispose();
     _directionNotifier.dispose();
+    _onTargetNotifier.removeListener(_handleOnTargetChanged);
     _onTargetNotifier.dispose();
+    _globeController.onLoaded = null;
+    _globeController.onPointConnectionAdded = null;
+    _globeController.onResetGlobeRotation = null;
     super.dispose();
   }
 
@@ -481,13 +586,13 @@ class _CompassPageState extends State<CompassPage>
         _userLongitude = pos.longitude;
         _bearing = _calculateBearing(
             _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
+        _distance = _calculateDistance(
+            _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
         _isLoadingLocation = false;
       });
-      _calculateDistance(
-              _userLatitude, _userLongitude, _targetLatitude, _targetLongitude)
-          .then((d) {
-        if (mounted) setState(() => _distance = d);
-      });
+      if (_viewMode == CompassViewMode.earth) {
+        _updateGlobePointsAndCamera(animateCamera: false);
+      }
     });
   }
 
@@ -715,7 +820,9 @@ class _CompassPageState extends State<CompassPage>
 
   Widget _buildAlignmentBadge() {
     final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
+    final String distStr = _distance >= 1000
+        ? '${(_distance / 1000).toStringAsFixed(1)}k km'
+        : '${_distance.toInt()} km';
 
     return ValueListenableBuilder<double>(
       valueListenable: _directionNotifier,
@@ -723,61 +830,70 @@ class _CompassPageState extends State<CompassPage>
         final onTarget = (_angDiff(_bearing, direction).abs() <= limits);
         final diff = _angDiff(_bearing, direction);
 
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-          decoration: BoxDecoration(
-            color: onTarget
-                ? primary.withAlpha(220)
-                : theme.colorScheme.surfaceContainerHighest.withAlpha(160),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
+        return GestureDetector(
+          onTap: () {
+            if (_viewMode == CompassViewMode.earth) {
+              _updateGlobePointsAndCamera(animateCamera: true);
+            } else if (_viewMode == CompassViewMode.map2d) {
+              _updateMapCamera();
+            }
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            decoration: BoxDecoration(
               color: onTarget
-                  ? primary
-                  : theme.colorScheme.outlineVariant.withAlpha(100),
-              width: 1.5,
-            ),
-            boxShadow: onTarget
-                ? [
-                    BoxShadow(
-                      color: primary.withAlpha(100),
-                      blurRadius: 16,
-                      spreadRadius: 1,
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                onTarget
-                    ? Icons.check_circle_rounded
-                    : (diff > 0
-                        ? Icons.turn_right_rounded
-                        : Icons.turn_left_rounded),
-                size: 20,
+                  ? (theme.brightness == Brightness.dark
+                      ? const Color(0xFFFFB300).withAlpha(225)
+                      : const Color(0xFFFFB300))
+                  : theme.colorScheme.surfaceContainerHighest.withAlpha(160),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
                 color: onTarget
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.primary,
+                    ? const Color(0xFFFFD54F)
+                    : theme.colorScheme.outlineVariant.withAlpha(100),
+                width: 1.5,
               ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  _alignmentGuidanceText(context, direction),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: onTarget
-                        ? theme.colorScheme.onPrimary
-                        : theme.colorScheme.onSurface,
-                    letterSpacing: 0.3,
+              boxShadow: onTarget
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFFFB300).withAlpha(120),
+                        blurRadius: 16,
+                        spreadRadius: 1,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  onTarget
+                      ? Icons.check_circle_rounded
+                      : (diff > 0
+                          ? Icons.turn_right_rounded
+                          : Icons.turn_left_rounded),
+                  size: 20,
+                  color: onTarget ? Colors.black87 : theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    '${_alignmentGuidanceText(context, direction)} • $distStr',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: onTarget
+                          ? Colors.black87
+                          : theme.colorScheme.onSurface,
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -901,8 +1017,311 @@ class _CompassPageState extends State<CompassPage>
     );
   }
 
+  void _refreshMapView() {
+    if (!mounted || _viewMode == CompassViewMode.compass) return;
+    if (_viewMode == CompassViewMode.earth) {
+      _updateGlobePointsAndCamera(animateCamera: true);
+    } else if (_viewMode == CompassViewMode.map2d) {
+      _updateMapCamera();
+    }
+  }
+
+  void _setViewMode(CompassViewMode mode) {
+    if (_viewMode == mode) return;
+    setState(() {
+      _viewMode = mode;
+      Prefs.compassViewMode = mode.name;
+      Prefs.compassShowMap = (mode != CompassViewMode.compass);
+      if (mode != CompassViewMode.map2d) {
+        _mapController = null;
+      }
+    });
+    if (mode == CompassViewMode.earth) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _viewMode == CompassViewMode.earth) {
+          _updateGlobePointsAndCamera(animateCamera: true);
+        }
+      });
+    } else if (mode == CompassViewMode.map2d) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _viewMode == CompassViewMode.map2d) {
+          _updateMapCamera();
+        }
+      });
+    }
+  }
+
+  double _getGlobeRotationTurns() {
+    final double userLat = (_userLatitude != 0.0)
+        ? _userLatitude
+        : ((Prefs.lat != 1.1) ? Prefs.lat : 0.0);
+    final double userLng = (_userLongitude != 0.0)
+        ? _userLongitude
+        : ((Prefs.lng != 1.1) ? Prefs.lng : 0.0);
+    if (!_earthAlignWithDirection || (userLat == 0.0 && userLng == 0.0)) {
+      return 0.0;
+    }
+    final LatLng midPoint =
+        _calculateMidpoint(userLat, userLng, _targetLatitude, _targetLongitude);
+    final double midBearing = _calculateBearing(midPoint.latitude,
+        midPoint.longitude, _targetLatitude, _targetLongitude);
+    return -midBearing / 360.0;
+  }
+
+  void _addRouteConnections(double userLat, double userLng, bool onTarget) {
+    _globeController.removePointConnection('pilgrimage_route_casing');
+    _globeController.removePointConnection('pilgrimage_route');
+
+    // 1. High contrast dark casing line underneath for visibility over terrain/clouds
+    _globeController.addPointConnection(PointConnection(
+      id: 'pilgrimage_route_casing',
+      start: GlobeCoordinates(userLat, userLng),
+      end: GlobeCoordinates(_targetLatitude, _targetLongitude),
+      curveScale: 0.12,
+      style: PointConnectionStyle(
+        type: PointConnectionType.solid,
+        color: Colors.black.withAlpha(onTarget ? 220 : 180),
+        lineWidth: onTarget ? 7.0 : 5.5,
+        animateOnAdd: false,
+      ),
+    ));
+
+    // 2. Vibrant Geodesic Great-Circle Route line on top
+    _globeController.addPointConnection(PointConnection(
+      id: 'pilgrimage_route',
+      start: GlobeCoordinates(userLat, userLng),
+      end: GlobeCoordinates(_targetLatitude, _targetLongitude),
+      curveScale: 0.12,
+      style: PointConnectionStyle(
+        type: PointConnectionType.solid,
+        color: onTarget ? const Color(0xFFFFB300) : const Color(0xFF00E5FF),
+        lineWidth: onTarget ? 4.5 : 3.2,
+        animateOnAdd: false,
+      ),
+    ));
+
+    // Force animationProgress to 1.0 so flutter_earth_globe GPU painter renders the arc
+    for (final c in _globeController.connections) {
+      c.animationProgress = 1.0;
+    }
+  }
+
+  void _handleOnTargetChanged() {
+    if (!mounted || _viewMode != CompassViewMode.earth) return;
+    final double userLat = (_userLatitude != 0.0)
+        ? _userLatitude
+        : ((Prefs.lat != 1.1) ? Prefs.lat : 0.0);
+    final double userLng = (_userLongitude != 0.0)
+        ? _userLongitude
+        : ((Prefs.lng != 1.1) ? Prefs.lng : 0.0);
+    if (userLat != 0.0 || userLng != 0.0) {
+      final bool onTarget = _onTargetNotifier.value;
+      _addRouteConnections(userLat, userLng, onTarget);
+      _updateGlobePointsAndCamera(animateCamera: false);
+    }
+  }
+
+  void _updateGlobePointsAndCamera({bool animateCamera = true}) {
+    if (!mounted) return;
+
+    final double userLat = (_userLatitude != 0.0)
+        ? _userLatitude
+        : ((Prefs.lat != 1.1) ? Prefs.lat : 0.0);
+    final double userLng = (_userLongitude != 0.0)
+        ? _userLongitude
+        : ((Prefs.lng != 1.1) ? Prefs.lng : 0.0);
+
+    _globeController.removePoint('north_pole');
+    _globeController.removePoint('user_location');
+    _globeController.removePoint('target_site');
+    _globeController.removePointConnection('pilgrimage_route_casing');
+    _globeController.removePointConnection('pilgrimage_route');
+
+    final t = AppLocalizations.of(context);
+    final String userLabel = t?.yourLocation ?? 'Your Location';
+    final String targetLabel = _targetDisplayName(context);
+    final bool onTarget = _isWithinLimits();
+
+    // North pole orientation marker
+    _globeController.addPoint(Point(
+      id: 'north_pole',
+      coordinates: const GlobeCoordinates(90, 0),
+      label: 'N',
+      isLabelVisible: true,
+      style: const PointStyle(
+        color: Colors.white70,
+        size: 0,
+        altitude: 0.01,
+      ),
+      labelBuilder: (context, point, isHovering, isVisible) {
+        return AnimatedRotation(
+          turns: -_getGlobeRotationTurns(),
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOutCubic,
+          child: Container(
+            width: 18,
+            height: 18,
+            decoration: BoxDecoration(
+              color: Colors.black.withAlpha(200),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white70, width: 1.0),
+            ),
+            child: const Center(
+              child: Text(
+                'N',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ));
+
+    if (userLat != 0.0 || userLng != 0.0) {
+      _globeController.addPoint(Point(
+        id: 'user_location',
+        coordinates: GlobeCoordinates(userLat, userLng),
+        label: userLabel,
+        isLabelVisible: true,
+        style: const PointStyle(
+          color: Color(0xFF00E5FF),
+          size: 0,
+          altitude: 0.02,
+        ),
+        labelBuilder: (context, point, isHovering, isVisible) {
+          return AnimatedRotation(
+            turns: -_getGlobeRotationTurns(),
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOutCubic,
+            child: Tooltip(
+              message: point.label ?? userLabel,
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D1B2A).withAlpha(235),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF00E5FF),
+                    width: 2.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00E5FF).withAlpha(160),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.my_location_rounded,
+                    size: 14,
+                    color: Color(0xFF00E5FF),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ));
+    }
+
+    final String cardinal = _cardinalDirection(_bearing);
+    final String distStr = _distance >= 1000
+        ? '${(_distance / 1000).toStringAsFixed(1)}k km'
+        : '${_distance.toInt()} km';
+
+    _globeController.addPoint(Point(
+      id: 'target_site',
+      coordinates: GlobeCoordinates(_targetLatitude, _targetLongitude),
+      label: targetLabel,
+      isLabelVisible: true,
+      style: const PointStyle(
+        color: Color(0xFFFFB300),
+        size: 0,
+        altitude: 0.03,
+      ),
+      labelBuilder: (context, point, isHovering, isVisible) {
+        final Color destColor =
+            onTarget ? const Color(0xFFFFD54F) : const Color(0xFFFFB300);
+        return AnimatedRotation(
+          turns: -_getGlobeRotationTurns(),
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOutCubic,
+          child: Tooltip(
+            message: '$targetLabel • ${_bearing.toInt()}° $cardinal ($distStr)',
+            child: Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1C1300).withAlpha(235),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: destColor,
+                  width: 2.0,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: destColor.withAlpha(180),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.place_rounded,
+                  size: 16,
+                  color: destColor,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ));
+
+    if (userLat != 0.0 || userLng != 0.0) {
+      _addRouteConnections(userLat, userLng, onTarget);
+
+      final LatLng midPoint = _calculateMidpoint(
+          userLat, userLng, _targetLatitude, _targetLongitude);
+      final double targetZoom = _calculateGlobeZoomForDistance(_distance);
+      _globeController.setZoom(targetZoom);
+      if (animateCamera) {
+        try {
+          _globeController.focusOnCoordinates(
+            GlobeCoordinates(midPoint.latitude, midPoint.longitude),
+            animate: true,
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOutCubic,
+          );
+        } catch (_) {}
+      }
+    } else {
+      _globeController.setZoom(0.0);
+      if (animateCamera) {
+        try {
+          _globeController.focusOnCoordinates(
+            GlobeCoordinates(_targetLatitude, _targetLongitude),
+            animate: true,
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeInOutCubic,
+          );
+        } catch (_) {}
+      }
+    }
+  }
+
   void _updateMapCamera() {
-    if (!_showMap || _mapController == null || !mounted) return;
+    if (_viewMode != CompassViewMode.map2d ||
+        _mapController == null ||
+        !mounted) return;
     final controller = _mapController;
     if (controller == null) return;
 
@@ -962,15 +1381,9 @@ class _CompassPageState extends State<CompassPage>
 
   Widget _buildMiniBuddhistCompassWidget() {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _showMap = false;
-          Prefs.compassShowMap = false;
-          _mapController = null;
-        });
-      },
+      onTap: () => _setViewMode(CompassViewMode.compass),
       child: Tooltip(
-        message: AppLocalizations.of(context)!.compassView,
+        message: AppLocalizations.of(context)?.compassView ?? 'Compass View',
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -989,7 +1402,243 @@ class _CompassPageState extends State<CompassPage>
     );
   }
 
-  Widget _buildMapView() {
+  Widget _buildGlobeView() {
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+
+    if (_globeController.surface == null) {
+      _globeController
+          .loadSurface(const AssetImage('assets/images/2k_earth-day.jpg'));
+    }
+
+    if (_globeController.points.isEmpty ||
+        (_globeController.connections.isEmpty &&
+            (_userLatitude != 0.0 || Prefs.lat != 1.1))) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _viewMode == CompassViewMode.earth) {
+          _updateGlobePointsAndCamera(animateCamera: false);
+        }
+      });
+    }
+
+    final double rotationTurns = _getGlobeRotationTurns();
+
+    return Container(
+      width: 290,
+      height: 290,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        color: const Color(0xFF070B19),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(80),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(
+          color: primary.withAlpha(120),
+          width: 2.5,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ListenableBuilder(
+            listenable: _globeController,
+            builder: (context, _) {
+              if (_globeController.surface == null) {
+                return const Center(
+                  child: SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  ),
+                );
+              }
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final size =
+                      Size(constraints.maxWidth, constraints.maxHeight);
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(size: size),
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: AnimatedRotation(
+                        turns: rotationTurns,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOutCubic,
+                        child: FlutterEarthGlobe(
+                          controller: _globeController,
+                          radius: 94.25,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          // Live Mini Buddhist Compass in Top-Left Corner (tap returns to Compass)
+          Positioned(
+            top: 8,
+            left: 8,
+            child: _buildMiniBuddhistCompassWidget(),
+          ),
+          // Direction Alignment Toggle in Bottom-Left Corner
+          Positioned(
+            bottom: 10,
+            left: 10,
+            child: Material(
+              color: theme.colorScheme.surface.withAlpha(220),
+              borderRadius: BorderRadius.circular(16),
+              elevation: 3,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  setState(() {
+                    _earthAlignWithDirection = !_earthAlignWithDirection;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 9.0, vertical: 5.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _earthAlignWithDirection
+                            ? Icons.navigation_rounded
+                            : Icons.north_rounded,
+                        size: 14,
+                        color: primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _earthAlignWithDirection ? 'Aligned' : 'North Up',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Controls in Bottom-Right Corner (Zoom In/Out + Recenter)
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Zoom +/- pill
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withAlpha(220),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: primary.withAlpha(80),
+                      width: 1.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(80),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(14)),
+                          onTap: () {
+                            _globeController.setZoom(
+                              (_globeController.zoom + 0.35).clamp(
+                                  _globeController.minZoom,
+                                  _globeController.maxZoom),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.add_rounded,
+                              size: 16,
+                              color: primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 1,
+                        width: 18,
+                        color: primary.withAlpha(50),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(14)),
+                          onTap: () {
+                            _globeController.setZoom(
+                              (_globeController.zoom - 0.35).clamp(
+                                  _globeController.minZoom,
+                                  _globeController.maxZoom),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.remove_rounded,
+                              size: 16,
+                              color: primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5),
+                // Recenter / Focus Route button
+                Material(
+                  color: theme.colorScheme.surface.withAlpha(220),
+                  borderRadius: BorderRadius.circular(16),
+                  elevation: 3,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () =>
+                        _updateGlobePointsAndCamera(animateCamera: true),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Icon(
+                        Icons.center_focus_strong_rounded,
+                        size: 18,
+                        color: primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGoogleMapView() {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final t = AppLocalizations.of(context)!;
@@ -1097,7 +1746,9 @@ class _CompassPageState extends State<CompassPage>
                 onMapCreated: (controller) {
                   _mapController = controller;
                   Future.delayed(const Duration(milliseconds: 300), () {
-                    if (mounted && _showMap && _mapController == controller) {
+                    if (mounted &&
+                        _viewMode == CompassViewMode.map2d &&
+                        _mapController == controller) {
                       _updateMapCamera();
                     }
                   });
@@ -1111,7 +1762,7 @@ class _CompassPageState extends State<CompassPage>
             left: 8,
             child: _buildMiniBuddhistCompassWidget(),
           ),
-          // Recenter / Fit Route button
+          // Recenter / Fit Route button in Bottom-Right Corner
           Positioned(
             bottom: 10,
             right: 10,
@@ -1136,6 +1787,164 @@ class _CompassPageState extends State<CompassPage>
         ],
       ),
     );
+  }
+
+  Widget _buildMainView() {
+    switch (_viewMode) {
+      case CompassViewMode.compass:
+        return _buildCompass();
+      case CompassViewMode.map2d:
+        return Listener(
+          onPointerDown: _onCardPointerDown,
+          onPointerUp: _onCardPointerUp,
+          onPointerCancel: _onCardPointerCancel,
+          child: _buildGoogleMapView(),
+        );
+      case CompassViewMode.earth:
+        return Listener(
+          onPointerDown: _onCardPointerDown,
+          onPointerUp: _onCardPointerUp,
+          onPointerCancel: _onCardPointerCancel,
+          child: _buildGlobeView(),
+        );
+    }
+  }
+
+  Widget _buildViewModeSelector(AppLocalizations t) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surface.withAlpha(200)
+            : theme.colorScheme.surfaceContainerHighest.withAlpha(120),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: theme.dividerColor.withAlpha(60),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          _buildModeTab(
+            mode: CompassViewMode.compass,
+            icon: Icons.explore_rounded,
+            label: t.compass,
+          ),
+          _buildModeTab(
+            mode: CompassViewMode.map2d,
+            icon: Icons.map_rounded,
+            label: 'Map',
+          ),
+          _buildModeTab(
+            mode: CompassViewMode.earth,
+            icon: Icons.public_rounded,
+            label: 'Globe',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeTab({
+    required CompassViewMode mode,
+    required IconData icon,
+    required String label,
+  }) {
+    final theme = Theme.of(context);
+    final isSelected = (_viewMode == mode);
+    final primary = theme.colorScheme.primary;
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => _setViewMode(mode),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: primary.withAlpha(80),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      )
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 17,
+                  color: isSelected
+                      ? theme.colorScheme.onPrimary
+                      : theme.colorScheme.onSurface.withAlpha(180),
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onSurface.withAlpha(200),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _appBarIconForMode(CompassViewMode mode) {
+    switch (mode) {
+      case CompassViewMode.compass:
+        return Icons.map_rounded;
+      case CompassViewMode.map2d:
+        return Icons.public_rounded;
+      case CompassViewMode.earth:
+        return Icons.explore_rounded;
+    }
+  }
+
+  String _appBarTooltipForMode(CompassViewMode mode, AppLocalizations t) {
+    switch (mode) {
+      case CompassViewMode.compass:
+        return 'Map';
+      case CompassViewMode.map2d:
+        return 'Globe';
+      case CompassViewMode.earth:
+        return t.compass;
+    }
+  }
+
+  CompassViewMode _getNextViewMode(CompassViewMode current) {
+    switch (current) {
+      case CompassViewMode.compass:
+        return CompassViewMode.map2d;
+      case CompassViewMode.map2d:
+        return CompassViewMode.earth;
+      case CompassViewMode.earth:
+        return CompassViewMode.compass;
+    }
   }
 
   Widget _buildLoadingIndicator() {
@@ -1191,26 +2000,9 @@ class _CompassPageState extends State<CompassPage>
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              _showMap ? Icons.explore_rounded : Icons.public_rounded,
-            ),
-            tooltip: _showMap ? t.compassView : t.mapView,
-            onPressed: () {
-              setState(() {
-                _showMap = !_showMap;
-                Prefs.compassShowMap = _showMap;
-                if (!_showMap) {
-                  _mapController = null;
-                }
-              });
-              if (_showMap) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted && _showMap) {
-                    _updateMapCamera();
-                  }
-                });
-              }
-            },
+            icon: Icon(_appBarIconForMode(_viewMode)),
+            tooltip: _appBarTooltipForMode(_viewMode, t),
+            onPressed: () => _setViewMode(_getNextViewMode(_viewMode)),
           ),
           IconButton(
             icon: const Icon(Icons.help_outline_rounded),
@@ -1220,6 +2012,9 @@ class _CompassPageState extends State<CompassPage>
         ],
       ),
       body: SingleChildScrollView(
+        physics: _isInteractingWithCard
+            ? const NeverScrollableScrollPhysics()
+            : null,
         child: SafeArea(
           child: Center(
             child: Padding(
@@ -1228,21 +2023,24 @@ class _CompassPageState extends State<CompassPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // 1. Compass Dial OR Interactive Map View
+                  // 1. Compass Dial OR 2D Google Map OR 3D Earth Globe
                   (_isLoadingLocation || _isChangingLocation)
                       ? _buildLoadingIndicator()
-                      : _showMap
-                          ? _buildMapView()
-                          : _buildCompass(),
+                      : _buildMainView(),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
 
-                  // 2. Alignment Guidance Badge
+                  // 2. Alignment & Direction Guidance Badge (Outside the card)
                   _buildAlignmentBadge(),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
 
-                  // 3. Stats Row (Heading, Target Bearing, Distance)
+                  // 3. 3-Way Mode Segmented Control: [ Compass ] [ Map ] [ Globe ]
+                  _buildViewModeSelector(t),
+
+                  const SizedBox(height: 16),
+
+                  // 4. Stats Row (Heading, Target Bearing, Distance)
                   Row(
                     children: [
                       Expanded(
@@ -1286,7 +2084,7 @@ class _CompassPageState extends State<CompassPage>
 
                   const SizedBox(height: 18),
 
-                  // 4. Sacred Pilgrimage Site Selector
+                  // 5. Sacred Pilgrimage Site Selector
                   PlaceSelector(
                     key: _placeSelectorKey,
                     onLocationChanged: () {
@@ -1296,19 +2094,16 @@ class _CompassPageState extends State<CompassPage>
                         _targetLongitude = Prefs.targetLong;
                         _bearing = _calculateBearing(_userLatitude,
                             _userLongitude, _targetLatitude, _targetLongitude);
-                      });
-                      _calculateDistance(_userLatitude, _userLongitude,
-                              _targetLatitude, _targetLongitude)
-                          .then((d) {
-                        if (mounted) setState(() => _distance = d);
+                        _distance = _calculateDistance(_userLatitude,
+                            _userLongitude, _targetLatitude, _targetLongitude);
                       });
                       _getLocation(context).then((_) {
                         if (mounted) {
                           setState(() {
                             _isChangingLocation = false;
                           });
-                          if (_showMap) {
-                            _updateMapCamera();
+                          if (_viewMode != CompassViewMode.compass) {
+                            _refreshMapView();
                           }
                         }
                       });
@@ -1317,7 +2112,7 @@ class _CompassPageState extends State<CompassPage>
 
                   const SizedBox(height: 14),
 
-                  // 5. Vibration Toggle Card
+                  // 6. Vibration Toggle Card
                   _buildVibrationCard(),
 
                   const SizedBox(height: 16),

@@ -70,6 +70,7 @@ dependencies:
   nrel_spa: ^1.0.1
   flutter_compass: ^0.8.1
   vibration: ^3.1.3
+  flutter_earth_globe: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -126,6 +127,8 @@ flutter:
     - assets/images/compass_normal.png
     - assets/images/compass_on_target.png
     - assets/images/compass_buddha.png
+    - assets/images/2k_earth-day.jpg
+    - assets/images/2k_earth-night.jpg
     - assets/images/flags/
 
 flutter_launcher_icons:

@@ -127,6 +127,8 @@ const String targetLatPref = "targetLat";
 const String targetLongPref = "targetLong";
 const String vibeOnPref = 'vibeOn';
 const String compassShowMapPref = "compassShowMap";
+const String compassViewModePref = "compassViewMode";
+const String defaultCompassViewMode = "compass";
 const String userDest1Pref = "userDest1";
 const String userDest1LatPref = "userDest1Lat";
 const String userDest1LongPref = "userDest1Long";
@@ -603,6 +605,14 @@ class Prefs {
       instance.getBool(compassShowMapPref) ?? defaultCompassShowMap;
   static set compassShowMap(bool value) =>
       instance.setBool(compassShowMapPref, value);
+
+  static String get compassViewMode =>
+      instance.getString(compassViewModePref) ??
+      (instance.getBool(compassShowMapPref) == true
+          ? "map2d"
+          : defaultCompassViewMode);
+  static set compassViewMode(String value) =>
+      instance.setString(compassViewModePref, value);
 
   static bool get mapCompassSync =>
       instance.getBool(mapCompassSyncPref) ?? defaultMapCompassSync;
