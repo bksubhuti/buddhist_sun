@@ -6,6 +6,7 @@ import 'package:buddhist_sun/src/provider/meditation_timer_provider.dart';
 import 'package:buddhist_sun/widgets/duration_picker_dialog.dart';
 import 'package:buddhist_sun/views/active_meditation_page.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 
 class MeditationTimerPage extends StatefulWidget {
   const MeditationTimerPage({Key? key}) : super(key: key);
@@ -181,9 +182,9 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
         title: Text(t.meditationTimer),
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: t.aboutTimer,
-            onPressed: () => _showInfoDialog(context),
+            icon: const Icon(Icons.help_outline_rounded),
+            tooltip: t.help,
+            onPressed: () => showMeditationTimerHelpDialog(context),
           ),
         ],
       ),
@@ -866,31 +867,6 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           ),
         ],
       ],
-    );
-  }
-
-  void _showInfoDialog(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            const Icon(Icons.self_improvement),
-            const SizedBox(width: 8),
-            Text(t.meditationTimer),
-          ],
-        ),
-        content: Text(t.timerInfoDialogContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(t.ok),
-          ),
-        ],
-      ),
     );
   }
 }

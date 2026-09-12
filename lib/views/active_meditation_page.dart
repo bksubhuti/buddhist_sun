@@ -56,49 +56,13 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
 
   Future<void> _handleStopAttempt(BuildContext context) async {
     final timerProvider = context.read<MeditationTimerProvider>();
-    final t = AppLocalizations.of(context)!;
-
-    if (timerProvider.status == MeditationTimerStatus.completed) {
-      timerProvider.resetToIdle();
-      Navigator.of(context).pop();
-      return;
-    }
-
-    if (timerProvider.isOvertime) {
-      await timerProvider.stopSession(completed: true);
-      return;
-    }
-
-    final shouldStop = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(t.endSession),
-        content: Text(
-          t.endSessionConfirm(timerProvider.formattedElapsedTime),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.cancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
-              foregroundColor: Theme.of(ctx).colorScheme.onError,
-            ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.endSession),
-          ),
-        ],
-      ),
+    await timerProvider.stopSession(
+      completed: timerProvider.isOvertime ||
+          timerProvider.status == MeditationTimerStatus.completed,
     );
-
-    if (shouldStop == true && mounted) {
-      await timerProvider.stopSession(completed: false);
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
+    timerProvider.resetToIdle();
+    if (context.mounted) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -109,82 +73,17 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     final timerProvider = context.watch<MeditationTimerProvider>();
     final t = AppLocalizations.of(context)!;
 
-    // 1. Completed View
+    // If completed, automatically return directly to meditation setup screen
     if (timerProvider.status == MeditationTimerStatus.completed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          timerProvider.resetToIdle();
+          Navigator.of(context).pop();
+        }
+      });
       return Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        body: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.self_improvement,
-                    size: 80,
-                    color: primary,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    t.sessionCompleted,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    t.meditatedFor(timerProvider.formattedElapsedTime),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  if (timerProvider.overtimeSeconds > 0) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: primary.withAlpha(25),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: primary.withAlpha(60)),
-                      ),
-                      child: Text(
-                        'Target: ${timerProvider.formattedTargetDuration}   •   Extra: ${timerProvider.formattedOvertime}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 48),
-                  FilledButton.icon(
-                    onPressed: () {
-                      timerProvider.resetToIdle();
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.check),
-                    label: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      child: Text(t.timerDone,
-                          style: const TextStyle(fontSize: 16)),
-                    ),
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        body: const SizedBox.shrink(),
       );
     }
 

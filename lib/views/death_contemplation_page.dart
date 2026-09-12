@@ -10,6 +10,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
 import 'package:buddhist_sun/utils/death_contemplation_calculator.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 
 class DeathContemplationPage extends StatefulWidget {
   const DeathContemplationPage({Key? key}) : super(key: key);
@@ -184,50 +185,6 @@ class _DeathContemplationPageState extends State<DeathContemplationPage> {
     );
   }
 
-  void _showInfoDialog(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              Icons.spa,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(l.deathContemplation)),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Maraṇānussati (Mindfulness of Death)',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'The Buddha repeatedly recommended the frequent contemplation of death as a potent spiritual tool to cut through complacency (pamāda) and arouse urgency (saṃvega).\n\n'
-                '“Mindfulness of death, monks, when developed and cultivated, is of great fruit and benefit; it culminates in the Deathless (Nibbāna).”\n— Aṅguttara Nikāya 6.19\n\n'
-                'By observing the relentless passage of years, months, days, and seconds, we remember that time is precious and unrepeatable. Let this reflection inspire diligence in virtue, mindfulness, and wisdom.',
-                style: TextStyle(fontSize: 14, height: 1.4),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.ok),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -248,9 +205,9 @@ class _DeathContemplationPageState extends State<DeathContemplationPage> {
         title: Text(l.deathContemplation),
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'About Maraṇassati',
-            onPressed: () => _showInfoDialog(context),
+            icon: const Icon(Icons.help_outline_rounded),
+            tooltip: l.help,
+            onPressed: () => showDeathContemplationHelpDialog(context),
           ),
           IconButton(
             icon: const Icon(Icons.edit_calendar),

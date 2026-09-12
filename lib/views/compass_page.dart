@@ -4,6 +4,7 @@ import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/widgets/dharmachakra_icon.dart';
 import 'package:buddhist_sun/widgets/place_selector.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemNavigator;
 import 'package:flutter_compass/flutter_compass.dart';
@@ -2007,7 +2008,7 @@ class _CompassPageState extends State<CompassPage>
           IconButton(
             icon: const Icon(Icons.help_outline_rounded),
             tooltip: t.help,
-            onPressed: () => showHelpDialog(context),
+            onPressed: () => showCompassHelpDialog(context),
           ),
         ],
       ),

@@ -8,6 +8,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/services/astronomy.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/app_route_observer.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 
 /// Celestial body mode: Sun & Gnomon Shadow vs Moon & 3D Sky Compass.
 enum CelestialBodyMode {
@@ -516,6 +517,11 @@ class _SunShadowPageState extends State<SunShadowPage>
             tooltip: t.vinayaContext,
             icon: const Icon(Icons.info_outline),
             onPressed: _showVinayaInfoDialog,
+          ),
+          IconButton(
+            tooltip: t.help,
+            icon: const Icon(Icons.help_outline_rounded),
+            onPressed: () => showSunShadowHelpDialog(context),
           ),
         ],
       ),

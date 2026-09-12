@@ -10,6 +10,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:buddhist_sun/src/provider/settings_provider.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -82,7 +83,16 @@ class _SettingsPageState extends State<SettingsPage> {
     _addDawnMethodItemsToMemberList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+        actions: [
+          IconButton(
+            tooltip: AppLocalizations.of(context)!.help,
+            icon: const Icon(Icons.help_outline_rounded),
+            onPressed: () => showSettingsHelpDialog(context),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),

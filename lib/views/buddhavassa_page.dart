@@ -5,6 +5,7 @@ import '../utils/buddhavassa_calculator.dart';
 import '../l10n/app_localizations.dart';
 import '../src/models/prefs.dart';
 import '../widgets/poya_bottom_sheet.dart';
+import '../widgets/app_help_dialog.dart';
 
 class BuddhavassaPage extends StatefulWidget {
   const BuddhavassaPage({Key? key}) : super(key: key);
@@ -150,6 +151,13 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
       backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         title: Text(l.beTitle),
+        actions: [
+          IconButton(
+            tooltip: l.help,
+            icon: const Icon(Icons.help_outline_rounded),
+            onPressed: () => showBuddhavassaHelpDialog(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),

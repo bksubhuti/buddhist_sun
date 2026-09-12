@@ -8,6 +8,7 @@ import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/death_contemplation_page.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
 import 'package:flutter/material.dart';
@@ -232,10 +233,17 @@ class Home_PageContainerState extends State<HomePageContainer> {
         title: Text(AppLocalizations.of(context)!.buddhistSun),
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.help,
             onPressed: () {
-              showHelpDialog(context);
+              if (_currentIndex == 1) {
+                showMoonHelpDialog(context);
+              } else if (_currentIndex == 2) {
+                showGpsHelpDialog(context);
+              } else {
+                showHomeHelpDialog(context);
+              }
             },
-            icon: Icon(Icons.help),
+            icon: const Icon(Icons.help_outline_rounded),
           ),
           IconButton(
             onPressed: () {
@@ -369,11 +377,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.help),
+              leading: const Icon(Icons.help_outline_rounded),
               title: ColoredText(AppLocalizations.of(context)!.help,
-                  style: TextStyle()),
+                  style: const TextStyle()),
               onTap: () {
-                showHelpDialog(context);
+                Navigator.pop(context);
+                showHomeHelpDialog(context);
               },
             ),
             ListTile(
@@ -529,41 +538,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
     );
   }
 
-  showHelpDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text(AppLocalizations.of(context)!.ok,
-          style: TextStyle(
-            color: (!Prefs.darkThemeOn)
-                ? Theme.of(context).primaryColor
-                : Colors.white,
-          )),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog help = AlertDialog(
-      title: ColoredText(AppLocalizations.of(context)!.help),
-      content: SingleChildScrollView(
-        child: ColoredText(AppLocalizations.of(context)!.help_content,
-            style: TextStyle(
-              fontSize: 16,
-            )),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return help;
-      },
-    );
+  void showHelpDialog(BuildContext context) {
+    showHomeHelpDialog(context);
   }
 
   void _showAutoStartDialog(DateTime target) {
