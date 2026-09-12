@@ -5,6 +5,7 @@
   "@buddhistSun": {
     "description": "Title for app"
   },
+  "sun": "太阳",
   "noon": "正午",
   "@noon": {
     "description": "Noon"

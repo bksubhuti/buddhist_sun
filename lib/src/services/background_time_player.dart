@@ -31,7 +31,12 @@ class BackgroundTimePlayer {
 
         if (secondsUntilTarget <= 7200 && secondsUntilTarget > 0) {
           final secondsElapsed = 7200 - secondsUntilTarget;
-          _player.seek(Duration(seconds: secondsElapsed));
+          final targetDuration = Duration(seconds: secondsElapsed);
+          // Only seek if out of sync by more than 2 seconds (e.g. after lock screen pause)
+          // to avoid audio hiccups/stutter on screen on or app resume.
+          if ((_player.position - targetDuration).abs().inSeconds > 2) {
+            _player.seek(targetDuration);
+          }
         } else if (secondsUntilTarget <= 0) {
           _player.seek(const Duration(minutes: 120));
         } else {
@@ -45,8 +50,23 @@ class BackgroundTimePlayer {
 
   static Future<void> _configureAudioSession() async {
     final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
+    await session.configure(const AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playback,
+      avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
+      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      androidAudioAttributes: AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        usage: AndroidAudioUsage.media,
+      ),
+      androidWillPauseWhenDucked: true,
+    ));
     await session.setActive(true);
+    await _player.setAndroidAudioAttributes(
+      const AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        usage: AndroidAudioUsage.media,
+      ),
+    );
   }
 
   static Future<Uri> _getLogoUri() async {

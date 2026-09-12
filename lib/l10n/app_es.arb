@@ -2,6 +2,7 @@
   "@@locale": "es",
   "appName": "Buddhist Sun",
   "buddhistSun": "Sol Budista",
+  "sun": "Sol",
   "noon": "Mediodía",
   "dawn": "Amanecer",
   "timer": "Temporizador",

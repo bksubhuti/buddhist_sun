@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/app_route_observer.dart';
 
 /// A synchronized Google Maps widget that displays the current GPS location
 /// and synchronizes its camera bearing with the device's compass.
@@ -13,6 +14,7 @@ class CurrentLocationMapWidget extends StatefulWidget {
   final double height;
   final double? width;
   final Completer<GoogleMapController>? controllerCompleter;
+  final bool isActive;
 
   const CurrentLocationMapWidget({
     Key? key,
@@ -22,6 +24,7 @@ class CurrentLocationMapWidget extends StatefulWidget {
     this.height = 350.0,
     this.width,
     this.controllerCompleter,
+    this.isActive = true,
   }) : super(key: key);
 
   @override
@@ -29,7 +32,8 @@ class CurrentLocationMapWidget extends StatefulWidget {
       _CurrentLocationMapWidgetState();
 }
 
-class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget> {
+class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget>
+    with RouteAware, WidgetsBindingObserver {
   GoogleMapController? _controller;
   StreamSubscription<CompassEvent>? _compassSub;
 
@@ -41,14 +45,37 @@ class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget> {
   double _lastUpdatedBearing = 0.0;
   DateTime _lastBearingUpdate = DateTime.now();
 
+  bool _isRouteActive = true;
+  bool _isAppActive = true;
+  bool _subscribedToRoute = false;
+
+  bool get _isScreenVisible =>
+      widget.isActive && _isRouteActive && _isAppActive;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _compassTracking = Prefs.mapCompassSync;
     _currentZoom = Prefs.mapZoomLevel;
     _mapType = (Prefs.mapType == 'normal') ? MapType.normal : MapType.satellite;
 
-    _startCompass();
+    if (_isScreenVisible) {
+      _startCompass();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_subscribedToRoute) {
+      final modalRoute = ModalRoute.of(context);
+      if (modalRoute != null) {
+        appRouteObserver.subscribe(this, modalRoute);
+        _subscribedToRoute = true;
+        _isRouteActive = modalRoute.isCurrent;
+      }
+    }
   }
 
   @override
@@ -58,13 +85,72 @@ class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget> {
         oldWidget.longitude != widget.longitude) {
       _recenter(animate: true);
     }
+    if (oldWidget.isActive != widget.isActive) {
+      _updateTrackingState();
+    }
   }
 
   @override
   void dispose() {
+    if (_subscribedToRoute) {
+      appRouteObserver.unsubscribe(this);
+    }
+    WidgetsBinding.instance.removeObserver(this);
     _compassSub?.cancel();
     _controller = null;
     super.dispose();
+  }
+
+  @override
+  void didPush() {
+    _isRouteActive = true;
+    _updateTrackingState();
+  }
+
+  @override
+  void didPushNext() {
+    // Another screen was pushed on top (e.g., Meditation)
+    _isRouteActive = false;
+    _updateTrackingState();
+  }
+
+  @override
+  void didPopNext() {
+    // Returned to this screen
+    _isRouteActive = true;
+    _updateTrackingState();
+  }
+
+  @override
+  void didPop() {
+    _isRouteActive = false;
+    _updateTrackingState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _isAppActive = true;
+      _updateTrackingState();
+    } else if (state == AppLifecycleState.paused ||
+               state == AppLifecycleState.inactive ||
+               state == AppLifecycleState.detached) {
+      _isAppActive = false;
+      _updateTrackingState();
+    }
+  }
+
+  void _updateTrackingState() {
+    if (!mounted) return;
+    if (_isScreenVisible) {
+      if (_compassTracking && _compassSub == null) {
+        _startCompass();
+      }
+    } else {
+      _compassSub?.cancel();
+      _compassSub = null;
+    }
+    setState(() {});
   }
 
   void _startCompass() {
@@ -121,7 +207,9 @@ class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget> {
     });
 
     if (_compassTracking) {
-      _startCompass();
+      if (_isScreenVisible) {
+        _startCompass();
+      }
       _controller?.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -239,13 +327,13 @@ class _CurrentLocationMapWidgetState extends State<CurrentLocationMapWidget> {
                         !widget.controllerCompleter!.isCompleted) {
                       widget.controllerCompleter!.complete(controller);
                     }
-                    if (_compassTracking) {
+                    if (_compassTracking && _isScreenVisible) {
                       _startCompass();
                     }
                   },
                   markers: markers,
                   mapType: _mapType,
-                  myLocationEnabled: true,
+                  myLocationEnabled: false,
                   myLocationButtonEnabled: false,
                   compassEnabled: false,
                   zoomControlsEnabled: false,

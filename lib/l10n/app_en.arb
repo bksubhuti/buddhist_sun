@@ -5,6 +5,7 @@
     "description": "use command flutter gen-l10n"
   },
   "buddhistSun": "Buddhist Sun",
+  "sun": "Sun",
   "noon": "Noon",
   "dawn": "Dawn",
   "timer": "Timer",

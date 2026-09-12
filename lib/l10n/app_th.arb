@@ -2,6 +2,7 @@
   "@@locale": "th",
   "appName": "Buddhist Sun",
   "buddhistSun": "Buddhist Sun",
+  "sun": "ดวงอาทิตย์",
   "noon": "เที่ยงวัน",
   "dawn": "อรุณ",
   "timer": "ตัวจับเวลา",

@@ -14,8 +14,9 @@ import 'package:buddhist_sun/widgets/current_location_map.dart';
 import 'dart:async';
 
 class GPSLocation extends StatefulWidget {
-  //GPSLocation({required this.goToHome});
-  //final VoidCallback goToHome;
+  final bool isActive;
+  const GPSLocation({Key? key, this.isActive = true}) : super(key: key);
+
   @override
   _GPSLocationState createState() => _GPSLocationState();
 }
@@ -173,6 +174,7 @@ class _GPSLocationState extends State<GPSLocation> {
           cityName: Prefs.cityName,
           height: 350,
           controllerCompleter: _controller,
+          isActive: widget.isActive,
         ),
       ]),
     ));

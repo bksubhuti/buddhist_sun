@@ -5,6 +5,7 @@
     "description": "use command flutter gen-l10n"
   },
   "buddhistSun": "ແສງຕາເວັນພຸດທະ",
+  "sun": "ຕາເວັນ",
   "noon": "ເທີງທ່ຽງ",
   "dawn": "ຮຸ່ງອາລຸນ",
   "timer": "ໂມງຈັບເວລາ",

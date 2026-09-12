@@ -20,6 +20,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'src/services/plugin.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
 import 'package:buddhist_sun/src/services/example_includes.dart';
+import 'package:buddhist_sun/src/services/app_route_observer.dart';
 
 // ----------------------------------------------------------
 //  MAIN
@@ -178,6 +179,7 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
+            navigatorObservers: [appRouteObserver],
             home: HomePageContainer(),
           );
         },

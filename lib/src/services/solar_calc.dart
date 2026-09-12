@@ -365,7 +365,7 @@ class SolarPosition {
 }
 
 /// Calculate the instantaneous solar position and shadow geometry for any [moment].
-SolarPosition getSolarPositionAt(DateTime moment) {
+SolarPosition getSolarPositionAt(DateTime moment, {double? lat, double? lng}) {
   // NREL SPA expects year, month, day, hour, min, sec passed in a DateTime
   // along with the timezone offset parameter. Construct a UTC DateTime with the local fields.
   DateTime localMoment = DateTime.utc(
@@ -377,7 +377,9 @@ SolarPosition getSolarPositionAt(DateTime moment) {
     moment.second,
   );
   double tz = moment.timeZoneOffset.inMinutes / 60.0;
-  final result = getSpa(localMoment, Prefs.lat, Prefs.lng, tz);
+  final oLat = lat ?? Prefs.lat;
+  final oLng = lng ?? Prefs.lng;
+  final result = getSpa(localMoment, oLat, oLng, tz);
 
   final double zenith = result.zenith;
   final double azimuth = result.azimuth;

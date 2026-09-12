@@ -2,9 +2,7 @@ import 'package:buddhist_sun/views/about_buddhist_sun_dialog.dart';
 import 'package:buddhist_sun/views/gps_location.dart';
 import 'package:buddhist_sun/views/moon_view.dart';
 import 'package:buddhist_sun/views/settings_page.dart';
-import 'package:buddhist_sun/views/dawn_page.dart';
 import 'package:buddhist_sun/views/home.dart';
-import 'package:buddhist_sun/views/countdown_timer_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
@@ -54,12 +52,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
       case 0:
         return 'noon';
       case 1:
-        return 'timer';
-      case 2:
-        return 'dawn';
-      case 3:
         return 'moon';
-      case 4:
+      case 2:
         return 'gps';
       default:
         return 'noon';
@@ -68,20 +62,18 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   int _calculateInitialIndex() {
     if (Prefs.lat == 1.1) {
-      return 4; // Unconfigured GPS, prioritize GPS setup
+      return 2; // Unconfigured GPS, prioritize GPS setup
     }
     final saved = Prefs.lastScreen;
     switch (saved) {
       case 'noon':
-        return 0;
+      case 'dawn': // if migrating from old 'dawn' or 'timer' key, go to noon
       case 'timer':
-        return 1;
-      case 'dawn':
-        return 2;
+        return 0;
       case 'moon':
-        return 3;
+        return 1;
       case 'gps':
-        return 4;
+        return 2;
       default:
         return 0;
     }
@@ -144,10 +136,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   late Home _page1;
-  late CountdownTimerView _page2;
-  late DawnPage _page3;
-  late MoonPage _page4;
-  late GPSLocation _page5;
+  late MoonPage _page2;
+  late GPSLocation _page3;
   //late DummyPage _dummyPage;
 
   late int _currentIndex;
@@ -206,10 +196,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
     Prefs.backgroundOn = false;
     //    _dummyPage = DummyPage();
     _page1 = Home();
-    _page2 = CountdownTimerView(goToHome: goToHome);
-    _page3 = DawnPage();
-    _page4 = MoonPage();
-    _page5 = GPSLocation();
+    _page2 = MoonPage();
+    _page3 = GPSLocation();
 //    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
 
     _restoreSubPageIfNeeded();
@@ -447,34 +435,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).primaryColor,
                 title: Text(
-                  AppLocalizations.of(context)!.noon,
+                  AppLocalizations.of(context)!.sun,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.inverseSurface),
                 ),
                 icon: Icon(
                   Icons.brightness_5_sharp,
-                  color: Theme.of(context).primaryColor,
-                )),
-            BottomNavyBarItem(
-                activeColor: Theme.of(context).primaryColor,
-                title: Text(
-                  AppLocalizations.of(context)!.timer,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inverseSurface),
-                ),
-                icon: Icon(
-                  Icons.timer,
-                  color: Theme.of(context).primaryColor,
-                )),
-            BottomNavyBarItem(
-                activeColor: Theme.of(context).primaryColor,
-                title: Text(
-                  AppLocalizations.of(context)!.dawn,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inverseSurface),
-                ),
-                icon: Icon(
-                  Icons.brightness_4,
                   color: Theme.of(context).primaryColor,
                 )),
             BottomNavyBarItem(
@@ -510,11 +476,9 @@ class Home_PageContainerState extends State<HomePageContainer> {
             Prefs.lastScreen = _tabIndexToName(index);
           },
           children: <Widget>[
-            _page1,
+            Home(isActive: _currentIndex == 0),
             _page2,
-            _page3,
-            _page4,
-            _page5,
+            GPSLocation(isActive: _currentIndex == 2),
           ],
         ),
       ),

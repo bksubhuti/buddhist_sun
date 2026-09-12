@@ -5,11 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/astronomy.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
+import 'package:buddhist_sun/src/services/app_route_observer.dart';
 
-/// Interactive 3D Solar Compass, Celestial Dome & Gnomon Shadow Simulator.
+/// Celestial body mode: Sun & Gnomon Shadow vs Moon & 3D Sky Compass.
+enum CelestialBodyMode {
+  sun,
+  moon,
+}
+
+/// Interactive 3D Solar & Lunar Compass, Celestial Dome & Gnomon Shadow Simulator.
 class SunShadowPage extends StatefulWidget {
-  const SunShadowPage({Key? key}) : super(key: key);
+  final CelestialBodyMode initialMode;
+
+  const SunShadowPage({
+    Key? key,
+    this.initialMode = CelestialBodyMode.sun,
+  }) : super(key: key);
 
   @override
   State<SunShadowPage> createState() => _SunShadowPageState();
@@ -17,6 +30,8 @@ class SunShadowPage extends StatefulWidget {
 
 class _SunShadowPageState extends State<SunShadowPage>
     with SingleTickerProviderStateMixin {
+  late CelestialBodyMode _bodyMode;
+
   // Mode: Live tracking vs Interactive Scrubber
   bool _isLive = true;
   DateTime _displayTime = DateTime.now();
@@ -44,6 +59,9 @@ class _SunShadowPageState extends State<SunShadowPage>
 
   // Diurnal sun path curve cache
   List<SolarPosition> _dayArc = [];
+  // Diurnal moon path curve cache
+  List<MoonPosition> _moonArc = [];
+  MoonMilestones? _moonMilestones;
   DateTime? _cachedArcDate;
 
   // Touch drag state
@@ -52,9 +70,14 @@ class _SunShadowPageState extends State<SunShadowPage>
   @override
   void initState() {
     super.initState();
+    _bodyMode = widget.initialMode;
     Prefs.lastScreen = 'sun_shadow';
-    final initialPos = getSolarPositionAt(_displayTime);
-    _wasBelowHorizon = initialPos.elevation <= 0.0;
+    _refreshDayArc();
+
+    final isBelow = _bodyMode == CelestialBodyMode.moon
+        ? getMoonPositionAt(_displayTime).elevation <= 0.0
+        : getSolarPositionAt(_displayTime).elevation <= 0.0;
+    _wasBelowHorizon = isBelow;
     _pitch = _wasBelowHorizon ? _nightPitch : _dayPitch;
 
     _tiltController = AnimationController(
@@ -69,7 +92,6 @@ class _SunShadowPageState extends State<SunShadowPage>
       });
     });
 
-    _refreshDayArc();
     _startLiveTimer();
     _startCompass();
   }
@@ -83,8 +105,14 @@ class _SunShadowPageState extends State<SunShadowPage>
   }
 
   void _checkHorizonTilt({bool animate = true}) {
-    final pos = getSolarPositionAt(_displayTime);
-    final isBelow = pos.elevation <= 0.0;
+    final bool isBelow;
+    if (_bodyMode == CelestialBodyMode.moon) {
+      final pos = getMoonPositionAt(_displayTime);
+      isBelow = pos.elevation <= 0.0;
+    } else {
+      final pos = getSolarPositionAt(_displayTime);
+      isBelow = pos.elevation <= 0.0;
+    }
     if (isBelow != _wasBelowHorizon) {
       _wasBelowHorizon = isBelow;
       final targetPitch = isBelow ? _nightPitch : _dayPitch;
@@ -103,6 +131,15 @@ class _SunShadowPageState extends State<SunShadowPage>
         });
       }
     }
+  }
+
+  void _setBodyMode(CelestialBodyMode mode) {
+    if (_bodyMode == mode) return;
+    setState(() {
+      _bodyMode = mode;
+      _activeMilestone = _isLive ? 'now' : null;
+      _checkHorizonTilt(animate: true);
+    });
   }
 
   void _startLiveTimer() {
@@ -125,6 +162,8 @@ class _SunShadowPageState extends State<SunShadowPage>
     final now = DateTime.now();
     _cachedArcDate = DateTime(now.year, now.month, now.day);
     _dayArc = getDaySolarArc(_cachedArcDate!, samples: 72);
+    _moonArc = getDayMoonArc(_cachedArcDate!, samples: 72);
+    _moonMilestones = getMoonMilestones(_cachedArcDate!);
   }
 
   void _startCompass() {
@@ -191,28 +230,54 @@ class _SunShadowPageState extends State<SunShadowPage>
   }
 
   void _updateActiveMilestoneFromScrubber() {
-    final aruna = getSelectedDawn();
-    final sunrise = getSunrise();
-    final noon = getSolarNoonRaw();
-    final sunset = getSunset();
-    final dusk = getCivilDusk();
-    final now = DateTime.now();
+    if (_bodyMode == CelestialBodyMode.sun) {
+      final aruna = getSelectedDawn();
+      final sunrise = getSunrise();
+      final noon = getSolarNoonRaw();
+      final sunset = getSunset();
+      final dusk = getCivilDusk();
+      final now = DateTime.now();
 
-    if (_isNearMilestone(noon, thresholdMinutes: 6)) {
-      _activeMilestone = 'noon';
-    } else if (_isNearMilestone(sunrise, thresholdMinutes: 6)) {
-      _activeMilestone = 'sunrise';
-    } else if (_isNearMilestone(aruna, thresholdMinutes: 6)) {
-      _activeMilestone = 'aruna';
-    } else if (_isNearMilestone(sunset, thresholdMinutes: 6)) {
-      _activeMilestone = 'sunset';
-    } else if (_isNearMilestone(dusk, thresholdMinutes: 6)) {
-      _activeMilestone = 'dusk';
-    } else if (_isNearMilestone(now, thresholdMinutes: 6)) {
-      _activeMilestone = 'now';
+      if (_isNearMilestone(noon, thresholdMinutes: 6)) {
+        _activeMilestone = 'noon';
+      } else if (_isNearMilestone(sunrise, thresholdMinutes: 6)) {
+        _activeMilestone = 'sunrise';
+      } else if (_isNearMilestone(aruna, thresholdMinutes: 6)) {
+        _activeMilestone = 'aruna';
+      } else if (_isNearMilestone(sunset, thresholdMinutes: 6)) {
+        _activeMilestone = 'sunset';
+      } else if (_isNearMilestone(dusk, thresholdMinutes: 6)) {
+        _activeMilestone = 'dusk';
+      } else if (_isNearMilestone(now, thresholdMinutes: 6)) {
+        _activeMilestone = 'now';
+      } else {
+        _activeMilestone = null;
+      }
     } else {
-      _activeMilestone = null;
+      final ms = _moonMilestones;
+      final now = DateTime.now();
+      if (ms != null &&
+          ms.transit != null &&
+          _isNearMilestone(ms.transit!, thresholdMinutes: 6)) {
+        _activeMilestone = 'transit';
+      } else if (ms != null &&
+          ms.moonrise != null &&
+          _isNearMilestone(ms.moonrise!, thresholdMinutes: 6)) {
+        _activeMilestone = 'moonrise';
+      } else if (ms != null &&
+          ms.moonset != null &&
+          _isNearMilestone(ms.moonset!, thresholdMinutes: 6)) {
+        _activeMilestone = 'moonset';
+      } else if (_isNearMilestone(now, thresholdMinutes: 6)) {
+        _activeMilestone = 'now';
+      } else {
+        _activeMilestone = null;
+      }
     }
+  }
+
+  String _formatTime(DateTime dt) {
+    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   void _showVinayaInfoDialog() {
@@ -267,8 +332,9 @@ class _SunShadowPageState extends State<SunShadowPage>
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
-    // Calculate instantaneous solar position for the current displayed moment
+    // Calculate instantaneous solar & lunar positions for the current displayed moment
     final pos = getSolarPositionAt(_displayTime);
+    final moonPos = getMoonPositionAt(_displayTime);
     final noonRaw = getSolarNoonRaw();
     final isBeforeNoon = _displayTime.isBefore(noonRaw);
     final diffFromNoon = _displayTime.difference(noonRaw);
@@ -302,7 +368,63 @@ class _SunShadowPageState extends State<SunShadowPage>
     late final Color bannerBorderColor;
     late final Color bannerTextColor;
 
-    if (isArunaPhase) {
+    final moonVis = getMoonVisibility(_displayTime);
+
+    if (_bodyMode == CelestialBodyMode.moon) {
+      final ms = _moonMilestones;
+      final bool isAbove = moonPos.elevation > 0;
+      if (isAbove) {
+        if (!moonVis.isVisibleToNakedEye) {
+          bannerText =
+              'Moon in Sky (Alt +${moonPos.elevation.toStringAsFixed(1)}°) • ${moonVis.statusText}';
+          bannerIcon = Icons.visibility_off_outlined;
+          bannerIconColor = isDark ? Colors.amberAccent : Colors.amber.shade800;
+          bannerBgColor = Colors.amber.withValues(alpha: isDark ? 0.20 : 0.12);
+          bannerBorderColor =
+              Colors.amber.withValues(alpha: isDark ? 0.45 : 0.35);
+          bannerTextColor =
+              isDark ? Colors.amber.shade100 : Colors.amber.shade900;
+        } else {
+          if (ms?.transit != null && _displayTime.isBefore(ms!.transit!)) {
+            final diff = ms.transit!.difference(_displayTime);
+            bannerText =
+                '${moonVis.statusText} • Transit in ${_formatDuration(diff)} (Alt: +${moonPos.elevation.toStringAsFixed(1)}°)';
+          } else if (ms?.moonset != null &&
+              _displayTime.isBefore(ms!.moonset!)) {
+            final diff = ms.moonset!.difference(_displayTime);
+            bannerText =
+                '${moonVis.statusText} • Moonset in ${_formatDuration(diff)} (Alt: +${moonPos.elevation.toStringAsFixed(1)}°)';
+          } else {
+            bannerText =
+                '${moonVis.statusText} • Altitude +${moonPos.elevation.toStringAsFixed(1)}° • ${moonPos.illumination.toStringAsFixed(0)}% Lit';
+          }
+          bannerIcon = Icons.nightlight_round;
+          bannerIconColor = isDark ? Colors.cyanAccent : Colors.indigo.shade600;
+          bannerBgColor = Colors.indigo.withValues(alpha: isDark ? 0.22 : 0.12);
+          bannerBorderColor =
+              Colors.cyanAccent.withValues(alpha: isDark ? 0.40 : 0.30);
+          bannerTextColor =
+              isDark ? Colors.cyan.shade100 : Colors.indigo.shade900;
+        }
+      } else {
+        if (ms?.moonrise != null && _displayTime.isBefore(ms!.moonrise!)) {
+          final diff = ms.moonrise!.difference(_displayTime);
+          bannerText =
+              'Moon Below Horizon • Rises in ${_formatDuration(diff)} (${_formatTime(ms.moonrise!)})';
+        } else {
+          bannerText =
+              'Moon Under Horizon • Altitude ${moonPos.elevation.toStringAsFixed(1)}°';
+        }
+        bannerIcon = Icons.brightness_3_outlined;
+        bannerIconColor =
+            isDark ? Colors.blueGrey.shade300 : Colors.blueGrey.shade700;
+        bannerBgColor = Colors.blueGrey.withValues(alpha: isDark ? 0.18 : 0.12);
+        bannerBorderColor =
+            Colors.blueGrey.withValues(alpha: isDark ? 0.40 : 0.30);
+        bannerTextColor =
+            isDark ? Colors.blueGrey.shade200 : Colors.blueGrey.shade900;
+      }
+    } else if (isArunaPhase) {
       final isBeforeAruna = _displayTime.isBefore(aruna);
       bannerText = isBeforeAruna
           ? t.bannerArunaTo(_formatDuration(diffToAruna.abs()))
@@ -360,7 +482,9 @@ class _SunShadowPageState extends State<SunShadowPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              t.sunAndShadow,
+              _bodyMode == CelestialBodyMode.moon
+                  ? 'Moon & Sky Compass'
+                  : t.sunAndShadow,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             Text(
@@ -398,10 +522,149 @@ class _SunShadowPageState extends State<SunShadowPage>
       body: SafeArea(
         child: Column(
           children: [
-            // ── Top Status Pill / Vinaya Banner ───────────────────────
+            // ── Celestial Body Mode Switch: [ ☀️ Sun & Gnomon | 🌙 Moon & Sky ] ──
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+              child: Container(
+                height: 36,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest
+                      .withValues(alpha: isDark ? 0.35 : 0.45),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.25),
+                    width: 1.0,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    // Sun Option
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _setBodyMode(CelestialBodyMode.sun),
+                        behavior: HitTestBehavior.opaque,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            color: _bodyMode == CelestialBodyMode.sun
+                                ? (isDark
+                                    ? Colors.amber.shade900
+                                        .withValues(alpha: 0.45)
+                                    : Colors.amber.shade100)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            border: _bodyMode == CelestialBodyMode.sun
+                                ? Border.all(
+                                    color: Colors.amber.shade600,
+                                    width: 1.2,
+                                  )
+                                : null,
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.wb_sunny_rounded,
+                                size: 16,
+                                color: _bodyMode == CelestialBodyMode.sun
+                                    ? Colors.amber.shade700
+                                    : theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.5),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Sun & Gnomon',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: _bodyMode == CelestialBodyMode.sun
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: _bodyMode == CelestialBodyMode.sun
+                                      ? (isDark
+                                          ? Colors.amber.shade200
+                                          : Colors.amber.shade900)
+                                      : theme.colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Moon Option
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _setBodyMode(CelestialBodyMode.moon),
+                        behavior: HitTestBehavior.opaque,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            color: _bodyMode == CelestialBodyMode.moon
+                                ? (isDark
+                                    ? Colors.indigo.shade900
+                                        .withValues(alpha: 0.55)
+                                    : Colors.indigo.shade100)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            border: _bodyMode == CelestialBodyMode.moon
+                                ? Border.all(
+                                    color: isDark
+                                        ? Colors.cyanAccent.shade400
+                                        : Colors.indigo.shade400,
+                                    width: 1.2,
+                                  )
+                                : null,
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.nightlight_round,
+                                size: 15,
+                                color: _bodyMode == CelestialBodyMode.moon
+                                    ? (isDark
+                                        ? Colors.cyanAccent
+                                        : Colors.indigo)
+                                    : theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.5),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Moon & Sky',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight:
+                                      _bodyMode == CelestialBodyMode.moon
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                  color: _bodyMode == CelestialBodyMode.moon
+                                      ? (isDark
+                                          ? Colors.cyanAccent
+                                          : Colors.indigo.shade900)
+                                      : theme.colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ── Top Status Pill / Lunar / Vinaya Banner ────────────────
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -492,8 +755,12 @@ class _SunShadowPageState extends State<SunShadowPage>
                       painter: SolarDomePainter(
                         pitch: _pitch,
                         yaw: _yaw,
+                        bodyMode: _bodyMode,
                         sunPosition: pos,
+                        moonPosition: moonPos,
+                        moonVisibility: moonVis,
                         dayArc: _dayArc,
+                        moonArc: _moonArc,
                         isDark: theme.brightness == Brightness.dark,
                         primaryColor: primaryColor,
                       ),
@@ -504,15 +771,23 @@ class _SunShadowPageState extends State<SunShadowPage>
                       left: 12,
                       bottom: 8,
                       child: Text(
-                        _compassTracking
-                            ? (pos.elevation <= 0
-                                ? t.compassLiveSunBelow(
-                                    _sensorHeading.toStringAsFixed(0))
-                                : t.compassLiveDrag(
-                                    _sensorHeading.toStringAsFixed(0)))
-                            : (pos.elevation <= 0
-                                ? t.sunBelowHorizonDrag
-                                : t.dragToRotateCompass),
+                        _bodyMode == CelestialBodyMode.moon
+                            ? (_compassTracking
+                                ? (moonPos.elevation <= 0
+                                    ? 'Compass Live: ${_sensorHeading.toStringAsFixed(0)}° • Moon under horizon'
+                                    : 'Compass Live: ${_sensorHeading.toStringAsFixed(0)}° • ${moonVis.statusText}')
+                                : (moonPos.elevation <= 0
+                                    ? 'Moon is below horizon • Drag to rotate/tilt'
+                                    : 'Moon: ${moonVis.shortBadge} • Drag to rotate'))
+                            : (_compassTracking
+                                ? (pos.elevation <= 0
+                                    ? t.compassLiveSunBelow(
+                                        _sensorHeading.toStringAsFixed(0))
+                                    : t.compassLiveDrag(
+                                        _sensorHeading.toStringAsFixed(0)))
+                                : (pos.elevation <= 0
+                                    ? t.sunBelowHorizonDrag
+                                    : t.dragToRotateCompass)),
                         style: TextStyle(
                           fontSize: 10,
                           color: theme.colorScheme.onSurface
@@ -529,49 +804,110 @@ class _SunShadowPageState extends State<SunShadowPage>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
               child: Row(
-                children: [
-                  _buildMetricCard(
-                    context,
-                    label: t.elevation,
-                    value: '${pos.elevation.toStringAsFixed(1)}°',
-                    subtext: pos.elevation > 0
-                        ? t.aboveHorizon
-                        : t.nightUnderHorizon,
-                    icon: Icons.north_east,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildMetricCard(
-                    context,
-                    label: t.azimuth,
-                    value: '${pos.azimuth.toStringAsFixed(1)}°',
-                    subtext: _azimuthToDirection(pos.azimuth),
-                    icon: Icons.explore,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildMetricCard(
-                    context,
-                    label: t.shadowLength,
-                    value: pos.shadowLength != null
-                        ? '${pos.shadowLength!.toStringAsFixed(2)} ${t.timesPin}'
-                        : t.noDirectShadow,
-                    subtext: pos.shadowLength != null
-                        ? t.minAtNoon
-                        : (pos.elevation > 0 ? t.sunAtHorizon : t.belowHorizon),
-                    icon: Icons.straighten,
-                    color: Colors.teal,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildMetricCard(
-                    context,
-                    label: t.solar_noon,
-                    value: noonStr,
-                    subtext: t.dailyMinShadow,
-                    icon: Icons.wb_sunny_outlined,
-                    color: Colors.amber,
-                  ),
-                ],
+                children: _bodyMode == CelestialBodyMode.moon
+                    ? [
+                        _buildMetricCard(
+                          context,
+                          label: 'Moon Altitude',
+                          value: '${moonPos.elevation.toStringAsFixed(1)}°',
+                          subtext: moonPos.elevation <= 0
+                              ? t.nightUnderHorizon
+                              : (moonVis.isVisibleToNakedEye
+                                  ? moonVis.shortBadge
+                                  : 'Invisible (Glare)'),
+                          icon: moonPos.elevation <= 0
+                              ? Icons.brightness_3_outlined
+                              : (moonVis.isVisibleToNakedEye
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined),
+                          color: moonPos.elevation <= 0
+                              ? Colors.blueGrey
+                              : (moonVis.isVisibleToNakedEye
+                                  ? Colors.cyan
+                                  : Colors.amber),
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: t.azimuth,
+                          value: '${moonPos.azimuth.toStringAsFixed(1)}°',
+                          subtext: _azimuthToDirection(moonPos.azimuth),
+                          icon: Icons.explore,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: 'Illumination',
+                          value: '${moonPos.illumination.toStringAsFixed(1)}%',
+                          subtext: moonPos.fraction > 0.97
+                              ? 'Full Moon'
+                              : (moonPos.fraction < 0.03
+                                  ? 'New Moon'
+                                  : (moonPos.phaseAngle < math.pi
+                                      ? 'Waxing'
+                                      : 'Waning')),
+                          icon: Icons.brightness_medium,
+                          color: Colors.indigoAccent,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: 'Distance',
+                          value:
+                              '${(moonPos.distanceKm / 1000).toStringAsFixed(0)}k km',
+                          subtext: _moonMilestones?.transit != null
+                              ? 'Transit ${_formatTime(_moonMilestones!.transit!)}'
+                              : 'Topocentric',
+                          icon: Icons.radar,
+                          color: Colors.tealAccent,
+                        ),
+                      ]
+                    : [
+                        _buildMetricCard(
+                          context,
+                          label: t.elevation,
+                          value: '${pos.elevation.toStringAsFixed(1)}°',
+                          subtext: pos.elevation > 0
+                              ? t.aboveHorizon
+                              : t.nightUnderHorizon,
+                          icon: Icons.north_east,
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: t.azimuth,
+                          value: '${pos.azimuth.toStringAsFixed(1)}°',
+                          subtext: _azimuthToDirection(pos.azimuth),
+                          icon: Icons.explore,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: t.shadowLength,
+                          value: pos.shadowLength != null
+                              ? '${pos.shadowLength!.toStringAsFixed(2)} ${t.timesPin}'
+                              : t.noDirectShadow,
+                          subtext: pos.shadowLength != null
+                              ? t.minAtNoon
+                              : (pos.elevation > 0
+                                  ? t.sunAtHorizon
+                                  : t.belowHorizon),
+                          icon: Icons.straighten,
+                          color: Colors.teal,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildMetricCard(
+                          context,
+                          label: t.solar_noon,
+                          value: noonStr,
+                          subtext: t.dailyMinShadow,
+                          icon: Icons.wb_sunny_outlined,
+                          color: Colors.amber,
+                        ),
+                      ],
               ),
             ),
 
@@ -753,57 +1089,109 @@ class _SunShadowPageState extends State<SunShadowPage>
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildJumpChip(
-                          context: context,
-                          label: _isLive
-                              ? t.realTimeClockActiveChip
-                              : t.realTimeClockChip,
-                          icon: _isLive ? Icons.check_circle : Icons.schedule,
-                          isHighlight: _isLive,
-                          onTap: _toggleRealTimeClock,
-                        ),
-                        const SizedBox(width: 6),
-                        _buildJumpChip(
-                          context: context,
-                          label: t.aruna,
-                          icon: Icons.wb_twilight,
-                          isHighlight: _activeMilestone == 'aruna',
-                          onTap: () => _jumpToTime(aruna, 'aruna'),
-                        ),
-                        const SizedBox(width: 6),
-                        _buildJumpChip(
-                          context: context,
-                          label: t.sunrise,
-                          icon: Icons.wb_sunny_outlined,
-                          isHighlight: _activeMilestone == 'sunrise',
-                          onTap: () => _jumpToTime(sunrise, 'sunrise'),
-                        ),
-                        const SizedBox(width: 6),
-                        _buildJumpChip(
-                          context: context,
-                          label: t.solarNoonMinShadow,
-                          icon: Icons.wb_sunny,
-                          isHighlight: _activeMilestone == 'noon',
-                          onTap: () => _jumpToTime(noonRaw, 'noon'),
-                        ),
-                        const SizedBox(width: 6),
-                        _buildJumpChip(
-                          context: context,
-                          label: t.sunset,
-                          icon: Icons.nights_stay_outlined,
-                          isHighlight: _activeMilestone == 'sunset',
-                          onTap: () => _jumpToTime(sunset, 'sunset'),
-                        ),
-                        const SizedBox(width: 6),
-                        _buildJumpChip(
-                          context: context,
-                          label: t.dusk,
-                          icon: Icons.nights_stay,
-                          isHighlight: _activeMilestone == 'dusk',
-                          onTap: () => _jumpToTime(dusk, 'dusk'),
-                        ),
-                      ],
+                      children: _bodyMode == CelestialBodyMode.moon
+                          ? [
+                              _buildJumpChip(
+                                context: context,
+                                label: _isLive
+                                    ? t.realTimeClockActiveChip
+                                    : t.realTimeClockChip,
+                                icon: _isLive
+                                    ? Icons.check_circle
+                                    : Icons.schedule,
+                                isHighlight: _isLive,
+                                onTap: _toggleRealTimeClock,
+                              ),
+                              if (_moonMilestones?.moonrise != null) ...[
+                                const SizedBox(width: 6),
+                                _buildJumpChip(
+                                  context: context,
+                                  label:
+                                      'Moonrise (${_formatTime(_moonMilestones!.moonrise!)})',
+                                  icon: Icons.wb_twilight,
+                                  isHighlight: _activeMilestone == 'moonrise',
+                                  onTap: () => _jumpToTime(
+                                      _moonMilestones!.moonrise!, 'moonrise'),
+                                ),
+                              ],
+                              if (_moonMilestones?.transit != null) ...[
+                                const SizedBox(width: 6),
+                                _buildJumpChip(
+                                  context: context,
+                                  label:
+                                      'Transit (${_formatTime(_moonMilestones!.transit!)})',
+                                  icon: Icons.vertical_align_top,
+                                  isHighlight: _activeMilestone == 'transit',
+                                  onTap: () => _jumpToTime(
+                                      _moonMilestones!.transit!, 'transit'),
+                                ),
+                              ],
+                              if (_moonMilestones?.moonset != null) ...[
+                                const SizedBox(width: 6),
+                                _buildJumpChip(
+                                  context: context,
+                                  label:
+                                      'Moonset (${_formatTime(_moonMilestones!.moonset!)})',
+                                  icon: Icons.nights_stay_outlined,
+                                  isHighlight: _activeMilestone == 'moonset',
+                                  onTap: () => _jumpToTime(
+                                      _moonMilestones!.moonset!, 'moonset'),
+                                ),
+                              ],
+                            ]
+                          : [
+                              _buildJumpChip(
+                                context: context,
+                                label: _isLive
+                                    ? t.realTimeClockActiveChip
+                                    : t.realTimeClockChip,
+                                icon: _isLive
+                                    ? Icons.check_circle
+                                    : Icons.schedule,
+                                isHighlight: _isLive,
+                                onTap: _toggleRealTimeClock,
+                              ),
+                              const SizedBox(width: 6),
+                              _buildJumpChip(
+                                context: context,
+                                label: t.aruna,
+                                icon: Icons.wb_twilight,
+                                isHighlight: _activeMilestone == 'aruna',
+                                onTap: () => _jumpToTime(aruna, 'aruna'),
+                              ),
+                              const SizedBox(width: 6),
+                              _buildJumpChip(
+                                context: context,
+                                label: t.sunrise,
+                                icon: Icons.wb_sunny_outlined,
+                                isHighlight: _activeMilestone == 'sunrise',
+                                onTap: () => _jumpToTime(sunrise, 'sunrise'),
+                              ),
+                              const SizedBox(width: 6),
+                              _buildJumpChip(
+                                context: context,
+                                label: t.solarNoonMinShadow,
+                                icon: Icons.wb_sunny,
+                                isHighlight: _activeMilestone == 'noon',
+                                onTap: () => _jumpToTime(noonRaw, 'noon'),
+                              ),
+                              const SizedBox(width: 6),
+                              _buildJumpChip(
+                                context: context,
+                                label: t.sunset,
+                                icon: Icons.nights_stay_outlined,
+                                isHighlight: _activeMilestone == 'sunset',
+                                onTap: () => _jumpToTime(sunset, 'sunset'),
+                              ),
+                              const SizedBox(width: 6),
+                              _buildJumpChip(
+                                context: context,
+                                label: t.dusk,
+                                icon: Icons.nights_stay,
+                                isHighlight: _activeMilestone == 'dusk',
+                                onTap: () => _jumpToTime(dusk, 'dusk'),
+                              ),
+                            ],
                     ),
                   ),
                 ],
@@ -955,8 +1343,12 @@ class _SunShadowPageState extends State<SunShadowPage>
 class SolarDomePainter extends CustomPainter {
   final double pitch;
   final double yaw;
+  final CelestialBodyMode bodyMode;
   final SolarPosition sunPosition;
+  final MoonPosition? moonPosition;
+  final MoonVisibility? moonVisibility;
   final List<SolarPosition> dayArc;
+  final List<MoonPosition>? moonArc;
   final bool isDark;
   final Color primaryColor;
 
@@ -967,8 +1359,12 @@ class SolarDomePainter extends CustomPainter {
   SolarDomePainter({
     required this.pitch,
     required this.yaw,
+    this.bodyMode = CelestialBodyMode.sun,
     required this.sunPosition,
+    this.moonPosition,
+    this.moonVisibility,
     required this.dayArc,
+    this.moonArc,
     required this.isDark,
     required this.primaryColor,
   });
@@ -1025,17 +1421,31 @@ class SolarDomePainter extends CustomPainter {
     // Celestial dome wireframe lines (horizon, elevation parallels, prime meridian)
     _drawCelestialDome(canvas, center, radius);
 
-    // Diurnal Sun Path curve for today
-    _drawDayArc(canvas, center, radius);
+    if (bodyMode == CelestialBodyMode.moon) {
+      // Diurnal Moon Path curve for today
+      _drawMoonArc(canvas, center, radius);
 
-    // Dynamic Cast Shadow on ground plane
-    _drawCastShadow(canvas, center, radius);
+      // Moonlight Cast Shadow (if bright moon above horizon)
+      _drawMoonlightCastShadow(canvas, center, radius);
 
-    // Central 3D Gnomon (brass pin standing vertical at center)
-    _drawGnomon(canvas, center, radius);
+      // Central 3D Gnomon (brass pin standing vertical at center)
+      _drawGnomon(canvas, center, radius);
 
-    // Sun Sphere & Light Rays
-    _drawSun(canvas, center, radius);
+      // Moon Sphere & Moonlight Rays
+      _drawMoon(canvas, center, radius);
+    } else {
+      // Diurnal Sun Path curve for today
+      _drawDayArc(canvas, center, radius);
+
+      // Dynamic Cast Shadow on ground plane
+      _drawCastShadow(canvas, center, radius);
+
+      // Central 3D Gnomon (brass pin standing vertical at center)
+      _drawGnomon(canvas, center, radius);
+
+      // Sun Sphere & Light Rays
+      _drawSun(canvas, center, radius);
+    }
   }
 
   void _drawSkyAtmosphere(Canvas canvas, Offset center, double radius) {
@@ -1771,39 +2181,472 @@ class SolarDomePainter extends CustomPainter {
     }
   }
 
+  void _drawMoonArc(Canvas canvas, Offset center, double radius) {
+    final arc = moonArc;
+    if (arc == null || arc.isEmpty) return;
+
+    final scale = (radius / 150.0).clamp(0.25, 2.0);
+    final visiblePath = Path();
+    final subterraneanPath = Path();
+    bool inVisible = false;
+    bool inSub = false;
+
+    for (int i = 0; i < arc.length; i++) {
+      final p = arc[i];
+      final pt = _projectSpherical(p.azimuth, p.elevation, center, radius);
+      if (p.elevation >= 0) {
+        if (!inVisible) {
+          visiblePath.moveTo(pt.dx, pt.dy);
+          inVisible = true;
+        } else {
+          visiblePath.lineTo(pt.dx, pt.dy);
+        }
+        inSub = false;
+      } else {
+        if (!inSub) {
+          subterraneanPath.moveTo(pt.dx, pt.dy);
+          inSub = true;
+        } else {
+          subterraneanPath.lineTo(pt.dx, pt.dy);
+        }
+        inVisible = false;
+      }
+    }
+
+    // Draw subterranean lunar arc
+    final subArcPaint = Paint()
+      ..color = isDark
+          ? Colors.blueGrey.withValues(alpha: 0.35)
+          : Colors.indigo.withValues(alpha: 0.25)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = (1.4 * scale).clamp(0.8, 1.6);
+    canvas.drawPath(subterraneanPath, subArcPaint);
+
+    // Draw visible lunar arc (silvery-cyan lunar glow)
+    final arcGlow = Paint()
+      ..color = (isDark ? Colors.cyanAccent : Colors.lightBlueAccent)
+          .withValues(alpha: 0.28)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = (4.0 * scale).clamp(1.8, 4.0);
+    canvas.drawPath(visiblePath, arcGlow);
+
+    final arcPaint = Paint()
+      ..color = isDark ? const Color(0xFFE0F2FE) : const Color(0xFF93C5FD)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = (1.8 * scale).clamp(0.9, 2.0);
+    canvas.drawPath(visiblePath, arcPaint);
+  }
+
+  void _drawMoonlightCastShadow(Canvas canvas, Offset center, double radius) {
+    final mPos = moonPosition;
+    if (mPos == null || mPos.elevation <= 4.0) return;
+
+    // Moonlight shadows can only be cast at NIGHT when the sun is down (sun washes out moonlight by day)
+    if (sunPosition.elevation > 0.0) return;
+
+    // Moonlight shadows require significant illumination (>= 25%)
+    if (mPos.fraction < 0.25) return;
+
+    final scale = (radius / 150.0).clamp(0.25, 2.0);
+    final gh = _getGnomonHeight(radius);
+
+    final atmosphereFade = ((mPos.elevation - 4.0) / 4.0).clamp(0.0, 1.0);
+    final illumFade = ((mPos.fraction - 0.25) / 0.75).clamp(0.15, 1.0);
+
+    final shadowAz = mPos.shadowAzimuth;
+    final shadowAzRad = shadowAz * (math.pi / 180.0);
+
+    final elRad = math.max(mPos.elevation, 1.0) * (math.pi / 180.0);
+    final rawLength = gh / math.tan(elRad);
+
+    final maxDiscShadow = radius * 0.94;
+    final displayLength = rawLength.clamp(2.0, maxDiscShadow);
+
+    final tipFade = (rawLength > maxDiscShadow)
+        ? (maxDiscShadow / rawLength).clamp(0.40, 1.0)
+        : 1.0;
+    final combinedAlpha = atmosphereFade * tipFade * illumFade;
+
+    final originPt = _project(0.0, 0.0, 0.0, center, radius);
+
+    final tipX = displayLength * math.sin(shadowAzRad);
+    final tipY = displayLength * math.cos(shadowAzRad);
+    final tipPt = _project(tipX, tipY, 0.0, center, radius);
+
+    final perpAzRad = shadowAzRad + (math.pi / 2.0);
+    final baseWidth = (3.0 * scale).clamp(1.2, 3.2);
+    final b1X = baseWidth * math.sin(perpAzRad);
+    final b1Y = baseWidth * math.cos(perpAzRad);
+    final b1 = _project(b1X, b1Y, 0.0, center, radius);
+    final b2 = _project(-b1X, -b1Y, 0.0, center, radius);
+
+    final tipWidth = (1.8 * scale).clamp(0.8, 2.0);
+    final t1X = tipX + tipWidth * math.sin(perpAzRad);
+    final t1Y = tipY + tipWidth * math.cos(perpAzRad);
+    final t1 = _project(t1X, t1Y, 0.0, center, radius);
+    final t2 = _project(tipX - tipWidth * math.sin(perpAzRad),
+        tipY - tipWidth * math.cos(perpAzRad), 0.0, center, radius);
+
+    final shadowPath = Path()
+      ..moveTo(b1.dx, b1.dy)
+      ..lineTo(t1.dx, t1.dy)
+      ..lineTo(tipPt.dx, tipPt.dy)
+      ..lineTo(t2.dx, t2.dy)
+      ..lineTo(b2.dx, b2.dy)
+      ..close();
+
+    final shadowPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: isDark
+            ? [
+                Colors.indigo.shade900.withValues(alpha: 0.75 * combinedAlpha),
+                Colors.blueGrey.shade800
+                    .withValues(alpha: 0.45 * combinedAlpha),
+              ]
+            : [
+                Colors.indigo.shade800.withValues(alpha: 0.50 * combinedAlpha),
+                Colors.blueGrey.shade700
+                    .withValues(alpha: 0.18 * combinedAlpha),
+              ],
+      ).createShader(Rect.fromPoints(originPt, tipPt))
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(shadowPath, shadowPaint);
+
+    if (isDark) {
+      final shadowOutline = Paint()
+        ..color = Colors.cyanAccent.withValues(alpha: 0.5 * combinedAlpha)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = (0.8 * scale).clamp(0.5, 0.9);
+      canvas.drawPath(shadowPath, shadowOutline);
+    }
+
+    final tipPaint = Paint()
+      ..color = Colors.cyanAccent.withValues(alpha: combinedAlpha)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(tipPt, (2.2 * scale).clamp(1.0, 2.5), tipPaint);
+  }
+
+  void _drawMoon(Canvas canvas, Offset center, double radius) {
+    final mPos = moonPosition;
+    if (mPos == null) return;
+
+    final scale = (radius / 150.0).clamp(0.25, 2.0);
+    final gh = _getGnomonHeight(radius);
+    final moonPt =
+        _projectSpherical(mPos.azimuth, mPos.elevation, center, radius);
+    final gnomonTop = _project(0.0, 0.0, gh, center, radius);
+    final originPt = _project(0.0, 0.0, 0.0, center, radius);
+
+    // Only draw volumetric moonlight beam if it's NIGHT (sun is down) and moon has light
+    final isNight = sunPosition.elevation <= 2.0;
+    if (mPos.elevation > 0.0 && isNight && mPos.fraction > 0.15) {
+      final riseFade = (mPos.elevation / 4.0).clamp(0.25, 1.0);
+      final illumFade = (mPos.fraction).clamp(0.2, 1.0);
+      final beamStrength = riseFade * illumFade;
+      final gnomonMid = Offset(
+        (gnomonTop.dx + originPt.dx) * 0.5,
+        (gnomonTop.dy + originPt.dy) * 0.5,
+      );
+
+      // Volumetric shaft of moonlight
+      final beamPath = Path()
+        ..moveTo(moonPt.dx, moonPt.dy)
+        ..lineTo(gnomonTop.dx, gnomonTop.dy)
+        ..lineTo(originPt.dx, originPt.dy)
+        ..close();
+
+      final beamPaint = Paint()
+        ..shader = ui.Gradient.linear(
+          moonPt,
+          gnomonMid,
+          isDark
+              ? [
+                  Colors.cyanAccent.withValues(alpha: 0.25 * beamStrength),
+                  Colors.lightBlue.withValues(alpha: 0.12 * beamStrength),
+                  Colors.indigo.withValues(alpha: 0.04 * beamStrength),
+                ]
+              : [
+                  Colors.lightBlue.shade200
+                      .withValues(alpha: 0.20 * beamStrength),
+                  Colors.cyan.shade100.withValues(alpha: 0.10 * beamStrength),
+                  Colors.blue.withValues(alpha: 0.02 * beamStrength),
+                ],
+          const [0.0, 0.55, 1.0],
+        )
+        ..style = PaintingStyle.fill;
+      canvas.drawPath(beamPath, beamPaint);
+
+      // Silvery ray to TOP of pole
+      final topBeamLine = Paint()
+        ..shader = ui.Gradient.linear(
+          moonPt,
+          gnomonTop,
+          isDark
+              ? [
+                  Colors.white.withValues(alpha: 0.85 * beamStrength),
+                  Colors.cyanAccent.withValues(alpha: 0.40 * beamStrength),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.85 * beamStrength),
+                  Colors.lightBlue.shade400
+                      .withValues(alpha: 0.40 * beamStrength),
+                ],
+        )
+        ..strokeWidth = (1.4 * scale).clamp(0.7, 1.6)
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+      canvas.drawLine(moonPt, gnomonTop, topBeamLine);
+
+      // Silvery ray to BASE of pole
+      final baseBeamLine = Paint()
+        ..shader = ui.Gradient.linear(
+          moonPt,
+          originPt,
+          isDark
+              ? [
+                  Colors.white.withValues(alpha: 0.85 * beamStrength),
+                  Colors.cyanAccent.withValues(alpha: 0.40 * beamStrength),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.85 * beamStrength),
+                  Colors.lightBlue.shade400
+                      .withValues(alpha: 0.40 * beamStrength),
+                ],
+        )
+        ..strokeWidth = (1.4 * scale).clamp(0.7, 1.6)
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+      canvas.drawLine(moonPt, originPt, baseBeamLine);
+
+      // Apex glint
+      final haloRadius = (7.0 * scale).clamp(3.0, 7.0);
+      final tipHalo = Paint()
+        ..shader = RadialGradient(
+          colors: [
+            (isDark ? Colors.cyanAccent : Colors.lightBlueAccent)
+                .withValues(alpha: 0.75 * beamStrength),
+            Colors.cyan.withValues(alpha: 0.0),
+          ],
+        ).createShader(Rect.fromCircle(center: gnomonTop, radius: haloRadius));
+      canvas.drawCircle(gnomonTop, haloRadius, tipHalo);
+
+      final tipCore = Paint()
+        ..color = Colors.white.withValues(alpha: beamStrength)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(gnomonTop, (2.2 * scale).clamp(1.0, 2.4), tipCore);
+    } else {
+      // Moon below horizon
+      final nightRayPaint = Paint()
+        ..color = Colors.indigo.withValues(alpha: 0.25)
+        ..strokeWidth = (0.9 * scale).clamp(0.5, 1.0)
+        ..style = PaintingStyle.stroke;
+      canvas.drawLine(originPt, moonPt, nightRayPaint);
+    }
+
+    // ── Lunar Aura & Corona ──
+    final vis = moonVisibility ?? getMoonVisibility(mPos.time);
+    final isNakedEye = vis.isVisibleToNakedEye;
+    final isDay = sunPosition.elevation > 0.0;
+
+    if (mPos.elevation > 0.0) {
+      if (isNakedEye) {
+        final auraRadius = (28.0 * scale).clamp(10.0, 28.0);
+        final auraPaint = Paint()
+          ..shader = RadialGradient(
+            colors: [
+              (isDark ? Colors.cyanAccent : Colors.lightBlueAccent)
+                  .withValues(alpha: 0.35 * mPos.fraction.clamp(0.2, 1.0)),
+              Colors.indigo.shade300
+                  .withValues(alpha: 0.12 * mPos.fraction.clamp(0.2, 1.0)),
+              Colors.indigo.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.45, 1.0],
+          ).createShader(Rect.fromCircle(center: moonPt, radius: auraRadius));
+        canvas.drawCircle(moonPt, auraRadius, auraPaint);
+      }
+    } else {
+      final nightHaloR = (16.0 * scale).clamp(6.0, 16.0);
+      final nightGlow = Paint()
+        ..shader = RadialGradient(
+          colors: [
+            Colors.indigo.shade400.withValues(alpha: 0.35),
+            Colors.deepPurple.shade900.withValues(alpha: 0.10),
+            Colors.transparent,
+          ],
+        ).createShader(Rect.fromCircle(center: moonPt, radius: nightHaloR));
+      canvas.drawCircle(moonPt, nightHaloR, nightGlow);
+    }
+
+    // ── Moon Sphere Disc with Phase & Mare ──
+    final moonRadius = (mPos.elevation > 0.0 ? 10.0 : 8.0) * scale;
+
+    // 1. Dark side / base disc of the moon
+    final darkSideAlpha = (isDay && !isNakedEye) ? 0.38 : 1.0;
+    final darkSidePaint = Paint()
+      ..color = (isDark ? const Color(0xFF1E2638) : const Color(0xFF334155))
+          .withValues(alpha: darkSideAlpha)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(moonPt, moonRadius, darkSidePaint);
+
+    // 2. Illuminated portion of moon disc
+    canvas.save();
+    canvas.clipPath(
+        Path()..addOval(Rect.fromCircle(center: moonPt, radius: moonRadius)));
+
+    final litAlpha = (isDay && !isNakedEye) ? 0.45 : 1.0;
+    final litPaint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          Colors.white.withValues(alpha: litAlpha),
+          const Color(0xFFF1F5F9).withValues(alpha: litAlpha),
+          const Color(0xFFCBD5E1).withValues(alpha: litAlpha),
+        ],
+        stops: const [0.0, 0.6, 1.0],
+      ).createShader(Rect.fromCircle(center: moonPt, radius: moonRadius))
+      ..style = PaintingStyle.fill;
+
+    if (mPos.fraction > 0.95) {
+      canvas.drawCircle(moonPt, moonRadius, litPaint);
+    } else if (mPos.fraction > 0.05) {
+      final isWaxing = mPos.phaseAngle < math.pi;
+      final k = (mPos.fraction - 0.5) * 2.0;
+
+      final litPath = Path();
+      litPath.addArc(Rect.fromCircle(center: moonPt, radius: moonRadius),
+          isWaxing ? -math.pi / 2 : math.pi / 2, math.pi);
+
+      final terminatorRect = Rect.fromCenter(
+        center: moonPt,
+        width: (moonRadius * k.abs() * 2.0).clamp(0.5, moonRadius * 2.0),
+        height: moonRadius * 2.0,
+      );
+      if (k >= 0) {
+        litPath.arcTo(terminatorRect, isWaxing ? math.pi / 2 : -math.pi / 2,
+            math.pi, false);
+      } else {
+        litPath.arcTo(terminatorRect, isWaxing ? -math.pi / 2 : math.pi / 2,
+            -math.pi, false);
+      }
+      litPath.close();
+      canvas.drawPath(litPath, litPaint);
+    }
+
+    // 3. Subtle lunar mare (craters / sea patches) for realism
+    final marePaint = Paint()
+      ..color = const Color(0xFF64748B)
+          .withValues(alpha: (isDay && !isNakedEye) ? 0.12 : 0.22)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(
+        Offset(moonPt.dx - moonRadius * 0.25, moonPt.dy - moonRadius * 0.2),
+        moonRadius * 0.28,
+        marePaint);
+    canvas.drawCircle(
+        Offset(moonPt.dx + moonRadius * 0.15, moonPt.dy + moonRadius * 0.15),
+        moonRadius * 0.22,
+        marePaint);
+    canvas.drawCircle(
+        Offset(moonPt.dx - moonRadius * 0.1, moonPt.dy + moonRadius * 0.35),
+        moonRadius * 0.18,
+        marePaint);
+
+    canvas.restore();
+
+    // Subtle moon rim outline
+    final rimPaint = Paint()
+      ..color = (isDay && !isNakedEye)
+          ? (isDark ? Colors.amberAccent : Colors.amber.shade800)
+              .withValues(alpha: 0.65)
+          : (isDark ? Colors.white70 : Colors.black26).withValues(alpha: 0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = (0.7 * scale).clamp(0.4, 0.9);
+    canvas.drawCircle(moonPt, moonRadius, rimPaint);
+
+    // If moon is above horizon but washed out by daylight glare, draw crisp status tag
+    if (mPos.elevation > 0.0 && isDay && !isNakedEye) {
+      final fontSize = (9.5 * scale).clamp(6.5, 9.5);
+      final tp = TextPainter(
+        text: TextSpan(
+          text: '☀️ In Glare',
+          style: TextStyle(
+            color: isDark ? Colors.amberAccent : Colors.amber.shade900,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      tp.layout();
+      tp.paint(canvas, Offset(moonPt.dx + 13.0, moonPt.dy - tp.height / 2.0));
+    }
+
+    // If moon is below horizon, draw degree text next to it
+    if (mPos.elevation <= 0.0) {
+      final fontSize = (10.0 * scale).clamp(6.5, 10.0);
+      final tp = TextPainter(
+        text: TextSpan(
+          text: '${mPos.elevation.toStringAsFixed(1)}°',
+          style: TextStyle(
+            color: isDark ? Colors.cyanAccent : Colors.indigo,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      tp.layout();
+      tp.paint(canvas, Offset(moonPt.dx + 14.0, moonPt.dy - tp.height / 2.0));
+    }
+  }
+
   @override
   bool shouldRepaint(covariant SolarDomePainter oldDelegate) {
     return oldDelegate.pitch != pitch ||
         oldDelegate.yaw != yaw ||
+        oldDelegate.bodyMode != bodyMode ||
         oldDelegate.sunPosition.time != sunPosition.time ||
+        oldDelegate.moonPosition?.time != moonPosition?.time ||
+        oldDelegate.moonVisibility?.category != moonVisibility?.category ||
         oldDelegate.isDark != isDark;
   }
 }
 
-/// Compact, live-ticking 3D Sun & Shadow preview widget for the Home screen.
+/// Compact, live-ticking 3D Sun & Moon preview widget for the Home screen and Moon page.
 class MiniSunShadowWidget extends StatefulWidget {
   final double size;
   final double? pitch;
   final double? yaw;
+  final CelestialBodyMode mode;
 
   const MiniSunShadowWidget({
     Key? key,
     this.size = 185.0,
     this.pitch,
     this.yaw,
+    this.mode = CelestialBodyMode.sun,
   }) : super(key: key);
 
   @override
   State<MiniSunShadowWidget> createState() => _MiniSunShadowWidgetState();
 }
 
-class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
+class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget>
+    with RouteAware, WidgetsBindingObserver {
   Timer? _ticker;
   DateTime _currentTime = DateTime.now();
   List<SolarPosition> _dayArc = [];
+  List<MoonPosition> _moonArc = [];
   DateTime? _cachedArcDate;
   StreamSubscription<CompassEvent>? _compassSub;
   double _compassYaw = 0.0;
+
+  bool _isRouteActive = true;
+  bool _isAppActive = true;
+  bool _subscribedToRoute = false;
+
+  bool get _shouldRun => _isRouteActive && _isAppActive;
 
   // 3D Perspective constants (8° point down from horizon, matching big screen)
   static const double _dayPitch =
@@ -1814,9 +2657,88 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _refreshDayArc();
-    _startCompass();
-    // 1-second interval keeps shadow direction, length, and solar position live in real time
+    if (_shouldRun) {
+      _startCompass();
+      _startTicker();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_subscribedToRoute) {
+      final modalRoute = ModalRoute.of(context);
+      if (modalRoute != null) {
+        appRouteObserver.subscribe(this, modalRoute);
+        _subscribedToRoute = true;
+        _isRouteActive = modalRoute.isCurrent;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_subscribedToRoute) {
+      appRouteObserver.unsubscribe(this);
+    }
+    WidgetsBinding.instance.removeObserver(this);
+    _stopCompass();
+    _stopTicker();
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    _isRouteActive = true;
+    _updateActiveState();
+  }
+
+  @override
+  void didPushNext() {
+    _isRouteActive = false;
+    _updateActiveState();
+  }
+
+  @override
+  void didPopNext() {
+    _isRouteActive = true;
+    _updateActiveState();
+  }
+
+  @override
+  void didPop() {
+    _isRouteActive = false;
+    _updateActiveState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _isAppActive = true;
+      _updateActiveState();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _isAppActive = false;
+      _updateActiveState();
+    }
+  }
+
+  void _updateActiveState() {
+    if (!mounted) return;
+    if (_shouldRun) {
+      _startCompass();
+      _startTicker();
+    } else {
+      _stopCompass();
+      _stopTicker();
+    }
+  }
+
+  void _startTicker() {
+    _stopTicker();
     _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       final now = DateTime.now();
@@ -1831,7 +2753,13 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
     });
   }
 
+  void _stopTicker() {
+    _ticker?.cancel();
+    _ticker = null;
+  }
+
   void _startCompass() {
+    if (_compassSub != null) return;
     _compassSub = FlutterCompass.events?.listen((event) {
       if (!mounted) return;
       final raw = event.heading ?? 0.0;
@@ -1842,17 +2770,16 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
     });
   }
 
+  void _stopCompass() {
+    _compassSub?.cancel();
+    _compassSub = null;
+  }
+
   void _refreshDayArc() {
     final now = DateTime.now();
     _cachedArcDate = DateTime(now.year, now.month, now.day);
     _dayArc = getDaySolarArc(_cachedArcDate!, samples: 48);
-  }
-
-  @override
-  void dispose() {
-    _compassSub?.cancel();
-    _ticker?.cancel();
-    super.dispose();
+    _moonArc = getDayMoonArc(_cachedArcDate!, samples: 48);
   }
 
   @override
@@ -1860,20 +2787,24 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final sunPos = getSolarPositionAt(_currentTime);
+    final moonPos = getMoonPositionAt(_currentTime);
 
-    // 3D Perspective angle matching SunShadowPage screenshot:
-    // Daytime: 0.72 rad (~41° overhead perspective)
-    // Nighttime: 1.38 rad (~79° side view)
-    final defaultPitch = sunPos.elevation <= 0.0 ? _nightPitch : _dayPitch;
+    final bool isBelow = widget.mode == CelestialBodyMode.moon
+        ? moonPos.elevation <= 0.0
+        : sunPos.elevation <= 0.0;
+    final defaultPitch = isBelow ? _nightPitch : _dayPitch;
     final pitch = widget.pitch ?? defaultPitch;
 
     // Yaw tracks phone compass heading in real-time (matching screenshot), or uses override if passed
     final yaw = widget.yaw ?? _compassYaw;
 
     final loc = AppLocalizations.of(context);
-    final liveLabel = loc?.liveSunShadow ?? 'Live Sun and Shadow';
-    final tooltipMsg =
-        loc?.sunShadowTooltip ?? 'Sun & Shadow (Live) - Tap to expand';
+    final liveLabel = widget.mode == CelestialBodyMode.moon
+        ? 'Live Moon Sky & Compass'
+        : (loc?.liveSunShadow ?? 'Live Sun and Shadow');
+    final tooltipMsg = widget.mode == CelestialBodyMode.moon
+        ? 'Moon Sky (Live) - Tap to expand'
+        : (loc?.sunShadowTooltip ?? 'Sun & Shadow (Live) - Tap to expand');
 
     return Semantics(
       label: liveLabel,
@@ -1887,10 +2818,14 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SunShadowPage(),
+                  builder: (context) => SunShadowPage(
+                    initialMode: widget.mode,
+                  ),
                 ),
               );
-              Prefs.lastScreen = 'noon';
+              if (widget.mode == CelestialBodyMode.sun) {
+                Prefs.lastScreen = 'noon';
+              }
             },
             borderRadius: BorderRadius.circular(widget.size / 2.0),
             child: Container(
@@ -1901,7 +2836,10 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
                 color:
                     isDark ? const Color(0xFF141923) : const Color(0xFFF3F6FA),
                 border: Border.all(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                  color: (widget.mode == CelestialBodyMode.moon
+                          ? (isDark ? Colors.cyanAccent : Colors.indigo)
+                          : theme.colorScheme.primary)
+                      .withValues(alpha: 0.5),
                   width: 1.6,
                 ),
                 boxShadow: [
@@ -1920,8 +2858,14 @@ class _MiniSunShadowWidgetState extends State<MiniSunShadowWidget> {
                   painter: SolarDomePainter(
                     pitch: pitch,
                     yaw: yaw,
+                    bodyMode: widget.mode,
                     sunPosition: sunPos,
+                    moonPosition: moonPos,
+                    moonVisibility: widget.mode == CelestialBodyMode.moon
+                        ? getMoonVisibility(_currentTime)
+                        : null,
                     dayArc: _dayArc,
+                    moonArc: _moonArc,
                     isDark: isDark,
                     primaryColor: theme.colorScheme.primary,
                   ),

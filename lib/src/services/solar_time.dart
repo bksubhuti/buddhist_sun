@@ -100,6 +100,24 @@ class SolarTimerService {
     }
   }
 
+  /// Speaks the current remaining time via TTS when voice is first toggled ON.
+  Future<void> speakInitialCountdown(DateTime target) async {
+    initTts();
+    final now = DateTime.now();
+    final diff = target.difference(now);
+    if (diff.isNegative) return;
+    final min = diff.inMinutes;
+    final seconds = diff.inSeconds % 60;
+    if (min == 0) {
+      _voiceMessage = "$seconds seconds remaining";
+    } else if (seconds == 0) {
+      _voiceMessage = "$min minutes remaining";
+    } else {
+      _voiceMessage = "$min minutes and $seconds seconds remaining";
+    }
+    await _speak();
+  }
+
   timerCallback() {
     // cannot debug without putting code outside of timer
 
@@ -328,8 +346,7 @@ class SolarTimerService {
           break;
       }
 
-      return DateTime(
-          now.year, now.month, now.day, dawnDT.hour, dawnDT.minute);
+      return DateTime(now.year, now.month, now.day, dawnDT.hour, dawnDT.minute);
     }
 
     // Else → solar noon

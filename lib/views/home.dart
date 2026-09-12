@@ -24,16 +24,22 @@ import 'package:buddhist_sun/views/compass_page.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/widgets/current_location_map.dart';
+import 'package:buddhist_sun/widgets/home_noon_timer_widget.dart';
 // import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final bool isActive;
+  const Home({Key? key, this.isActive = true}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> with WidgetsBindingObserver {
+class _HomeState extends State<Home>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   static bool _initPerformed = false;
 
   Map data = {};
@@ -79,8 +85,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   @override
+  void didUpdateWidget(covariant Home oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isActive != widget.isActive) {
+      setState(() {});
+    }
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed &&
+        widget.isActive &&
+        (ModalRoute.of(context)?.isCurrent ?? false) &&
+        Prefs.autoGpsEnabled) {
       _refreshGps();
     }
   }
@@ -165,6 +182,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<SettingsProvider>(
         builder: (context, settingsProvider, child) {
       // make sure there are no lingering keyboards when this page is shown
@@ -248,25 +266,25 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: Prefs.showShadowOnHome
                       ? const Center(
                           key: ValueKey('shadow_view'),
-                          child: MiniSunShadowWidget(size: 185.0),
+                          child: MiniSunShadowWidget(size: 148.0),
                         )
                       : Center(
                           key: const ValueKey('logo_view'),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 25.0),
+                            padding: const EdgeInsets.symmetric(vertical: 20.0),
                             child: ClipOval(
                               child: Image.asset(
                                 "assets/buddhist_sun_app_logo.png",
                                 fit: BoxFit.cover,
-                                width: 135.0,
-                                height: 135.0,
+                                width: 108.0,
+                                height: 108.0,
                               ),
                             ),
                           ),
                         ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 12,
                 ),
                 if (Prefs.autoGpsEnabled && !_initPerformed) ...[
                   SpinKitPulse(
@@ -297,7 +315,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   children: [
                     ColoredText(getSolarNoonTimeString(),
                         style: TextStyle(
-                            fontSize: 60, fontWeight: FontWeight.bold)),
+                            fontSize: 54, fontWeight: FontWeight.bold)),
                     (Prefs.safety > 0)
                         ? //Text('\ud83d\udee1')
                         Icon(Icons.health_and_safety_outlined,
@@ -306,8 +324,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   ],
                 ),
                 ColoredText(AppLocalizations.of(context)!.solar_noon,
-                    style: TextStyle(fontSize: 30, letterSpacing: 2)),
-                const SizedBox(height: 24),
+                    style: TextStyle(fontSize: 27, letterSpacing: 2)),
+                const SizedBox(height: 10),
+                const HomeNoonTimerWidget(),
+                const SizedBox(height: 18),
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 14,
@@ -622,6 +642,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   longitude: Prefs.lng,
                   cityName: Prefs.cityName,
                   height: 350,
+                  isActive: widget.isActive,
                 ),
 
                 const SizedBox(height: 40), // Bottom padding for scrolling
@@ -769,6 +790,9 @@ class _LiveHomeClockState extends State<LiveHomeClock>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _startTimer();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _timer?.cancel();
     }
   }
 

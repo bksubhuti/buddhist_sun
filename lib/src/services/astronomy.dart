@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:timezone/timezone.dart';
+import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/solar_calc.dart';
 
 /// Converts a [TZDateTime] in UTC to the corresponding Julian Date.
 double datetimeToJD(TZDateTime datetime) {
@@ -173,4 +175,399 @@ double calculateLunarPhase(double julianDate) {
       (daysSinceNewMoon / 29.53058867) * 360.0; // Convert to degrees
   lunarPhase = lunarPhase % 360.0; // Ensure the result is in [0, 360)
   return lunarPhase;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// REAL-TIME MOON POSITION & 3D CELESTIAL DOME MODELING
+// ══════════════════════════════════════════════════════════════════════════
+
+class MoonPosition {
+  final DateTime time;
+  final double
+      azimuth; // Degrees clockwise from North (0°=N, 90°=E, 180°=S, 270°=W)
+  final double elevation; // Degrees above horizon (-90° to +90°)
+  final double zenith; // Degrees from zenith (90° - elevation)
+  final double?
+      shadowLength; // Gnomon shadow length ratio (null if below horizon)
+  final double shadowAzimuth; // Azimuth pointing away from the moon
+  final double illumination; // 0% to 100%
+  final double phase; // 0.0 to 1.0 (0=New, 0.5=Full, 1.0=New)
+  final double distance; // Distance in kilometers
+  final double parallacticAngle;
+
+  const MoonPosition({
+    required this.time,
+    required this.azimuth,
+    required this.elevation,
+    required this.zenith,
+    this.shadowLength,
+    required this.shadowAzimuth,
+    required this.illumination,
+    required this.phase,
+    required this.distance,
+    required this.parallacticAngle,
+  });
+
+  bool get isAboveHorizon => elevation > 0.0;
+  double get distanceKm => distance;
+  double get fraction => illumination / 100.0;
+  double get phaseAngle => phase * 2 * pi;
+}
+
+class MoonMilestones {
+  final DateTime? moonrise;
+  final DateTime? transit; // Culmination / Zenith point
+  final DateTime? moonset;
+  final double maxElevation;
+
+  const MoonMilestones({
+    this.moonrise,
+    this.transit,
+    this.moonset,
+    required this.maxElevation,
+  });
+}
+
+/// Categories of naked-eye lunar visibility.
+enum MoonVisibilityCategory {
+  belowHorizon,
+  lostInSolarGlare,
+  newMoonInvisible,
+  faintInDaylight,
+  visibleDaytime,
+  visibleTwilight,
+  visibleNight,
+}
+
+/// Information describing whether the Moon can be discerned by the naked human eye.
+class MoonVisibility {
+  final MoonVisibilityCategory category;
+  final bool isVisibleToNakedEye;
+  final double angularSeparationDeg;
+  final String statusText;
+  final String shortBadge;
+  final String detailExplanation;
+
+  const MoonVisibility({
+    required this.category,
+    required this.isVisibleToNakedEye,
+    required this.angularSeparationDeg,
+    required this.statusText,
+    required this.shortBadge,
+    required this.detailExplanation,
+  });
+}
+
+const double _degToRad = pi / 180.0;
+const double _msInDay = 1000.0 * 60 * 60 * 24;
+const double _epochJ1970 = 2440588.0;
+const double _epochJ2000 = 2451545.0;
+const double _earthObliquity = _degToRad * 23.4397;
+
+double _calcDaysSinceJ2000(DateTime date) {
+  final jd = date.toUtc().millisecondsSinceEpoch / _msInDay - 0.5 + _epochJ1970;
+  return jd - _epochJ2000;
+}
+
+double _calcRightAscension(double l, double b) {
+  return atan2(
+    sin(l) * cos(_earthObliquity) - tan(b) * sin(_earthObliquity),
+    cos(l),
+  );
+}
+
+double _calcDeclination(double l, double b) {
+  return asin(
+    sin(b) * cos(_earthObliquity) + cos(b) * sin(_earthObliquity) * sin(l),
+  );
+}
+
+double _calcAzimuth(double H, double phi, double dec) {
+  return atan2(
+    sin(H),
+    cos(H) * sin(phi) - tan(dec) * cos(phi),
+  );
+}
+
+double _calcAltitude(double H, double phi, double dec) {
+  return asin(
+    sin(phi) * sin(dec) + cos(phi) * cos(dec) * cos(H),
+  );
+}
+
+double _calcSiderealTime(double d, double lw) {
+  return _degToRad * (280.16 + 360.9856235 * d) - lw;
+}
+
+double _calcAstroRefraction(double h) {
+  if (h < 0) h = 0;
+  return 0.0002967 / tan(h + 0.00312536 / (h + 0.08901179));
+}
+
+Map<String, double> _calcMoonCoords(double d) {
+  final L = _degToRad * (218.316 + 13.176396 * d);
+  final M = _degToRad * (134.963 + 13.064993 * d);
+  final F = _degToRad * (93.272 + 13.229350 * d);
+
+  final l = L + _degToRad * 6.289 * sin(M);
+  final b = _degToRad * 5.128 * sin(F);
+  final dt = 385001.0 - 20905.0 * cos(M);
+
+  return {
+    'ra': _calcRightAscension(l, b),
+    'dec': _calcDeclination(l, b),
+    'dist': dt,
+  };
+}
+
+/// Calculate instantaneous lunar coordinates and shadow for any [time] and location.
+MoonPosition getMoonPositionAt(DateTime time, {double? lat, double? lng}) {
+  final observerLat = lat ?? ((Prefs.lat != 1.1) ? Prefs.lat : 0.0);
+  final observerLng = lng ?? ((Prefs.lng != 1.1) ? Prefs.lng : 0.0);
+
+  final lw = _degToRad * -observerLng;
+  final phi = _degToRad * observerLat;
+  final d = _calcDaysSinceJ2000(time);
+
+  final c = _calcMoonCoords(d);
+  final H = _calcSiderealTime(d, lw) - c['ra']!;
+  var h = _calcAltitude(H, phi, c['dec']!);
+  final pa = atan2(
+    sin(H),
+    tan(phi) * cos(c['dec']!) - sin(c['dec']!) * cos(H),
+  );
+
+  h = h + _calcAstroRefraction(h);
+
+  final azRad = _calcAzimuth(H, phi, c['dec']!);
+  var compassAz = (azRad * 180.0 / pi + 180.0) % 360.0;
+  if (compassAz < 0) compassAz += 360.0;
+
+  final elevationDeg = h * 180.0 / pi;
+  final zenithDeg = 90.0 - elevationDeg;
+  final double? shadowLen = elevationDeg > 0.5 ? 1.0 / tan(h) : null;
+  final shadowAz = (compassAz + 180.0) % 360.0;
+
+  // Illumination calculation
+  final mSun = _degToRad * (357.5291 + 0.98560028 * d);
+  final lSun = mSun +
+      _degToRad *
+          (1.9148 * sin(mSun) + 0.02 * sin(2 * mSun) + 0.0003 * sin(3 * mSun)) +
+      _degToRad * 102.9372 +
+      pi;
+  final sunDec = _calcDeclination(lSun, 0);
+  final sunRa = _calcRightAscension(lSun, 0);
+
+  const double sdist = 149598000.0;
+  final moonDec = c['dec']!;
+  final moonRa = c['ra']!;
+  final moonDist = c['dist']!;
+
+  final phiMoon = acos(
+    (sin(sunDec) * sin(moonDec) +
+            cos(sunDec) * cos(moonDec) * cos(sunRa - moonRa))
+        .clamp(-1.0, 1.0),
+  );
+  final inc = atan2(sdist * sin(phiMoon), moonDist - sdist * cos(phiMoon));
+  final angle = atan2(
+    cos(sunDec) * sin(sunRa - moonRa),
+    sin(sunDec) * cos(moonDec) -
+        cos(sunDec) * sin(moonDec) * cos(sunRa - moonRa),
+  );
+  final fraction = (1.0 + cos(inc)) / 2.0;
+  final phase = 0.5 + 0.5 * inc * (angle < 0 ? -1 : 1) / pi;
+
+  return MoonPosition(
+    time: time,
+    azimuth: compassAz,
+    elevation: elevationDeg,
+    zenith: zenithDeg,
+    shadowLength: shadowLen,
+    shadowAzimuth: shadowAz,
+    illumination: fraction * 100.0,
+    phase: phase,
+    distance: c['dist']!,
+    parallacticAngle: pa * 180.0 / pi,
+  );
+}
+
+/// Computes the 24-hour diurnal lunar path curve sampled every [samples] times across [date].
+List<MoonPosition> getDayMoonArc(DateTime date,
+    {int samples = 48, double? lat, double? lng}) {
+  final startOfDay = DateTime(date.year, date.month, date.day);
+  final stepMinutes = (24.0 * 60.0 / samples).round();
+  final List<MoonPosition> arc = [];
+
+  for (int i = 0; i <= samples; i++) {
+    final t = startOfDay.add(Duration(minutes: i * stepMinutes));
+    arc.add(getMoonPositionAt(t, lat: lat, lng: lng));
+  }
+  return arc;
+}
+
+/// Calculates approximate moonrise, moon transit (highest culmination), and moonset for [date].
+MoonMilestones getMoonMilestones(DateTime date, {double? lat, double? lng}) {
+  DateTime? rise;
+  DateTime? set;
+  DateTime? maxTransit;
+  double maxEl = -999.0;
+
+  final startOfDay = DateTime(date.year, date.month, date.day);
+  MoonPosition? prevPos;
+
+  // Sample every 5 minutes across the 24-hour day
+  for (int m = 0; m <= 24 * 60; m += 5) {
+    final t = startOfDay.add(Duration(minutes: m));
+    final pos = getMoonPositionAt(t, lat: lat, lng: lng);
+
+    if (pos.elevation > maxEl) {
+      maxEl = pos.elevation;
+      maxTransit = t;
+    }
+
+    if (prevPos != null) {
+      if (prevPos.elevation <= 0.0 && pos.elevation > 0.0 && rise == null) {
+        rise = t;
+      } else if (prevPos.elevation > 0.0 &&
+          pos.elevation <= 0.0 &&
+          set == null) {
+        set = t;
+      }
+    }
+    prevPos = pos;
+  }
+
+  return MoonMilestones(
+    moonrise: rise,
+    transit: maxTransit,
+    moonset: set,
+    maxElevation: maxEl,
+  );
+}
+
+/// Computes whether the Moon can be observed by the naked human eye at [time].
+///
+/// Accounts for:
+/// 1. Topocentric Moon elevation relative to the horizon.
+/// 2. Solar elevation (daylight, twilight, or night sky background).
+/// 3. Angular separation between Sun and Moon (solar glare / forward aureole).
+/// 4. Illuminated fraction (crescent, quarter, gibbous, full, or new moon).
+MoonVisibility getMoonVisibility(DateTime time, {double? lat, double? lng}) {
+  final mPos = getMoonPositionAt(time, lat: lat, lng: lng);
+  final sPos = getSolarPositionAt(time, lat: lat, lng: lng);
+
+  final elMRad = mPos.elevation * (pi / 180.0);
+  final elSRad = sPos.elevation * (pi / 180.0);
+  final azDiffRad = (sPos.azimuth - mPos.azimuth) * (pi / 180.0);
+  final cosSep =
+      (sin(elSRad) * sin(elMRad) + cos(elSRad) * cos(elMRad) * cos(azDiffRad))
+          .clamp(-1.0, 1.0);
+  final sepDeg = acos(cosSep) * (180.0 / pi);
+
+  final f = mPos.fraction; // 0.0 to 1.0
+
+  if (mPos.elevation <= 0.0) {
+    return MoonVisibility(
+      category: MoonVisibilityCategory.belowHorizon,
+      isVisibleToNakedEye: false,
+      angularSeparationDeg: sepDeg,
+      statusText: 'Below Horizon (Not Visible)',
+      shortBadge: 'Under Horizon',
+      detailExplanation: 'The Moon is beneath the horizon and not in the sky.',
+    );
+  }
+
+  // Moon is above horizon: check sky lighting conditions
+  final isDaytime = sPos.elevation > 0.0;
+  final isCivilTwilight = sPos.elevation <= 0.0 && sPos.elevation > -6.0;
+
+  if (isDaytime) {
+    // Under daylight, human eye can only discern the Moon if illuminated enough
+    // and far enough from the Sun's forward glare disk.
+    if (f < 0.05 || sepDeg < 15.0) {
+      final reason = f < 0.05 && sepDeg < 15.0
+          ? 'Near New Moon (${(f * 100).toStringAsFixed(1)}% lit) and within ${sepDeg.toStringAsFixed(0)}° of the Sun.'
+          : (sepDeg < 15.0
+              ? 'Washed out by intense solar glare (${sepDeg.toStringAsFixed(0)}° from Sun).'
+              : 'Thin crescent (${(f * 100).toStringAsFixed(1)}% lit) washed out by daylight sky brightness.');
+      return MoonVisibility(
+        category: MoonVisibilityCategory.lostInSolarGlare,
+        isVisibleToNakedEye: false,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Not Visible (Lost in Solar Glare)',
+        shortBadge: 'Invisible to Eye',
+        detailExplanation: reason,
+      );
+    } else if (f < 0.15 || sepDeg < 25.0) {
+      final isMorning = time.hour < 12;
+      final timeOfDay = isMorning ? 'Morning' : 'Afternoon';
+      return MoonVisibility(
+        category: MoonVisibilityCategory.faintInDaylight,
+        isVisibleToNakedEye: true,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Faint in $timeOfDay Sky',
+        shortBadge: 'Faint in Daylight',
+        detailExplanation:
+            'Can be spotted in clear skies away from glare ($timeOfDay sky, ${(f * 100).toStringAsFixed(0)}% lit).',
+      );
+    } else {
+      // Clear daytime visibility!
+      final isMorning = time.hour < 12;
+      final period = isMorning ? 'Morning' : 'Afternoon';
+      return MoonVisibility(
+        category: MoonVisibilityCategory.visibleDaytime,
+        isVisibleToNakedEye: true,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Visible in $period Sky',
+        shortBadge: 'Visible in $period',
+        detailExplanation:
+            'Sufficiently illuminated (${(f * 100).toStringAsFixed(0)}%) and separated from Sun (${sepDeg.toStringAsFixed(0)}°) to be seen by naked eye in daylight.',
+      );
+    }
+  } else if (isCivilTwilight) {
+    if (f < 0.02 || sepDeg < 8.0) {
+      return MoonVisibility(
+        category: MoonVisibilityCategory.newMoonInvisible,
+        isVisibleToNakedEye: false,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Not Visible (New Moon in Twilight)',
+        shortBadge: 'Invisible to Eye',
+        detailExplanation:
+            'Too close to New Moon phase to be discerned against the twilight glow.',
+      );
+    } else {
+      return MoonVisibility(
+        category: MoonVisibilityCategory.visibleTwilight,
+        isVisibleToNakedEye: true,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Visible in Twilight Sky',
+        shortBadge: 'Visible to Eye',
+        detailExplanation:
+            'Visible in the twilight sky before sunrise / after sunset.',
+      );
+    }
+  } else {
+    // Night sky (Sun <= -6°)
+    if (f < 0.015) {
+      return MoonVisibility(
+        category: MoonVisibilityCategory.newMoonInvisible,
+        isVisibleToNakedEye: false,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Not Visible (New Moon)',
+        shortBadge: 'Invisible (New Moon)',
+        detailExplanation:
+            'Moon is in New Moon phase (unlit disk facing Earth).',
+      );
+    } else {
+      return MoonVisibility(
+        category: MoonVisibilityCategory.visibleNight,
+        isVisibleToNakedEye: true,
+        angularSeparationDeg: sepDeg,
+        statusText: 'Visible in Night Sky',
+        shortBadge: 'Visible to Eye',
+        detailExplanation:
+            'Clearly visible in the dark night sky (${(f * 100).toStringAsFixed(0)}% lit).',
+      );
+    }
+  }
 }

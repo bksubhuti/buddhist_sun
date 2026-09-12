@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/astronomy.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 
 void main() {
@@ -135,6 +136,93 @@ void main() {
       y1 = x * math.sin(yaw) + y * math.cos(yaw);
       expect(x1, closeTo(1.0, 1e-6));
       expect(y1.abs(), lessThan(1e-6));
+    });
+  });
+
+  group('Moon Position & Arc Calculation Tests', () {
+    test('getMoonPositionAt returns valid astronomical topocentric coordinates',
+        () {
+      final now = DateTime(2026, 9, 11, 20, 0, 0);
+      final mPos = getMoonPositionAt(now, lat: 24.6951, lng: 84.9913);
+
+      expect(mPos.azimuth, greaterThanOrEqualTo(0.0));
+      expect(mPos.azimuth, lessThan(360.0));
+      expect(mPos.elevation, greaterThanOrEqualTo(-90.0));
+      expect(mPos.elevation, lessThanOrEqualTo(90.0));
+      expect(mPos.distanceKm, greaterThan(350000.0));
+      expect(mPos.distanceKm, lessThan(410000.0));
+      expect(mPos.illumination, greaterThanOrEqualTo(0.0));
+      expect(mPos.illumination, lessThanOrEqualTo(100.0));
+      expect(mPos.fraction, greaterThanOrEqualTo(0.0));
+      expect(mPos.fraction, lessThanOrEqualTo(1.0));
+      expect(mPos.isAboveHorizon, equals(mPos.elevation > 0));
+
+      final diff = (mPos.shadowAzimuth - mPos.azimuth).abs();
+      expect((diff - 180.0).abs(), lessThan(0.01));
+    });
+
+    test('getDayMoonArc returns correct sample count across 24 hours', () {
+      final date = DateTime(2026, 9, 11);
+      final arc = getDayMoonArc(date, samples: 48, lat: 24.6951, lng: 84.9913);
+
+      expect(arc.length, equals(49)); // 0..48 inclusive
+      for (final p in arc) {
+        expect(p.azimuth, greaterThanOrEqualTo(0.0));
+        expect(p.azimuth, lessThan(360.0));
+      }
+    });
+
+    test('getMoonMilestones calculates lunar transit & culminates properly',
+        () {
+      final date = DateTime(2026, 9, 11);
+      final ms = getMoonMilestones(date, lat: 24.6951, lng: 84.9913);
+
+      expect(ms.transit, isNotNull);
+      expect(ms.maxElevation, greaterThan(-90.0));
+    });
+
+    test(
+        'getMoonVisibility accurately identifies midday solar glare for New Moon',
+        () {
+      // Sep 11, 2026 at 13:50 in Sri Lanka (New Moon ~0.1% lit, ~7.5° from Sun)
+      final middayNewMoon = DateTime(2026, 9, 11, 13, 50);
+      final vis = getMoonVisibility(middayNewMoon, lat: 6.9271, lng: 79.8612);
+
+      expect(vis.isVisibleToNakedEye, isFalse);
+      expect(vis.category, equals(MoonVisibilityCategory.lostInSolarGlare));
+      expect(vis.angularSeparationDeg, lessThan(15.0));
+      expect(vis.shortBadge, equals('Invisible to Eye'));
+    });
+
+    test('getMoonVisibility identifies visible morning moon for waning moon',
+        () {
+      // Sep 1, 2026 at 8:00 AM (Waning Gibbous in morning daylight)
+      final morningMoon = DateTime(2026, 9, 1, 8, 0);
+      final vis = getMoonVisibility(morningMoon, lat: 6.9271, lng: 79.8612);
+
+      expect(vis.isVisibleToNakedEye, isTrue);
+      expect(vis.category, equals(MoonVisibilityCategory.visibleDaytime));
+      expect(vis.statusText, contains('Morning'));
+    });
+
+    test('getMoonVisibility identifies visible night moon for full moon', () {
+      // Sep 26, 2026 at 22:00 (Full Moon in dark night)
+      final nightFullMoon = DateTime(2026, 9, 26, 22, 0);
+      final vis = getMoonVisibility(nightFullMoon, lat: 6.9271, lng: 79.8612);
+
+      expect(vis.isVisibleToNakedEye, isTrue);
+      expect(vis.category, equals(MoonVisibilityCategory.visibleNight));
+      expect(vis.statusText, equals('Visible in Night Sky'));
+    });
+
+    test('getMoonVisibility identifies moon below horizon', () {
+      // Moon below horizon
+      final setMoon = DateTime(2026, 9, 11, 23, 0);
+      final vis = getMoonVisibility(setMoon, lat: 6.9271, lng: 79.8612);
+
+      expect(vis.isVisibleToNakedEye, isFalse);
+      expect(vis.category, equals(MoonVisibilityCategory.belowHorizon));
+      expect(vis.shortBadge, equals('Under Horizon'));
     });
   });
 }

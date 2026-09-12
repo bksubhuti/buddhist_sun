@@ -74,6 +74,15 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name="com.baseflow.geolocator.GeolocatorLocationService"
             tools:node="remove" />
