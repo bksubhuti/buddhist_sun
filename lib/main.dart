@@ -39,7 +39,7 @@ https://github.com/vpnry/ekatimer''',
   await JustAudioBackground.init(
     androidNotificationChannelId: 'dawn_audio_channel',
     androidNotificationChannelName: 'Dawn Audio',
-    androidNotificationOngoing: true,
+    androidNotificationOngoing: false,
     preloadArtwork: true,
   );
 

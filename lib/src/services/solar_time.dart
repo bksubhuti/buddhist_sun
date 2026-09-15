@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/background_time_player.dart';
 
 //import 'package:logging/logging.dart';
 //import 'package:intl/intl.dart' show DateFormat;
@@ -94,15 +95,19 @@ class SolarTimerService {
 
   Future _speak() async {
     if (!_bLate) {
-      await flutterTts.setSpeechRate(rate);
-      await flutterTts.awaitSpeakCompletion(true);
-      await flutterTts.speak(_voiceMessage);
+      try {
+        await initTts();
+        await flutterTts.setSpeechRate(rate);
+        await flutterTts.speak(_voiceMessage);
+      } catch (e) {
+        print("TTS speak error: $e");
+      }
     }
   }
 
   /// Speaks the current remaining time via TTS when voice is first toggled ON.
   Future<void> speakInitialCountdown(DateTime target) async {
-    initTts();
+    await initTts();
     final now = DateTime.now();
     final diff = target.difference(now);
     if (diff.isNegative) return;
@@ -134,84 +139,57 @@ class SolarTimerService {
     // tell the window to show the new now time
     delegate?.setNowString(_nowString);
 
-    // setup the countdown time remaining..
-    int min = _dtSolar.difference(_now).inMinutes;
-    int seconds = (_dtSolar.difference(_now).inSeconds) % 60;
+    final diff = _dtSolar.difference(_now);
 
-    // this section prepares the message to speak and display
-    // for the view.. if the view is alive it will refresh the build.
-    // if it is not alive , it will ignore.
+    if (diff.isNegative) {
+      doLateTime();
+    } else {
+      int min = diff.inMinutes;
+      int seconds = diff.inSeconds % 60;
 
-    // minutes at zero can also mean 59 seconds left..
-    if (min >= 0) {
       // countdown string prep and send
       _countdownString =
           "${min.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-      // send countdown string for display
-      if (!_bLate) {
-        delegate?.setCountdownString(_countdownString);
-        delegate?.update(); // full set state if possible
-      } else {
-        _countdownString = LATE;
-        delegate?.setCountdownString(_countdownString);
-        delegate?.update(); // full set state if possible
-      }
-    }
-    if (min < 0) {
-      doLateTime();
-      /*Prefs.speakIsOn = false;
-      _countdownString = "Late";
-      delegate!.setCountdownString(_countdownString);
-      delegate!.setSpeakIsOn(_speakIsOn);
+      delegate?.setCountdownString(_countdownString);
+      delegate?.update(); // full set state if possible
 
-      delegate!.update(); // full set state if possible
-      */
-    }
-    // print(min);
-    // print("countdown is:  $_countdownString");
-    // print(_countdownString);
-
-    // if the speech toggle is on..
-    if (_speakIsOn) {
-      // starting message
-      if (initialVoicing == false) {
+      // if the speech toggle is on, starting message
+      if (_speakIsOn && !initialVoicing) {
         initialVoicing = true;
         _voiceMessage =
             "${min.toString()} minutes and ${seconds.toString()} seconds remaining";
         _speak();
       }
-
-      if (min == 0 && seconds == 0 && !_bLate) {
-        doLateTime();
-      }
     }
   }
 
   doLateTime() {
-    if (Prefs.speakIsOn) {
-      _speakIsOn = false;
-      Prefs.speakIsOn = false;
-      delegate?.setSpeakIsOn(_speakIsOn);
-
-      /////////////////////////////
-      // DUPLICATED IN M4a file.
-      /////////////////////////////
-      // set final tts message and speak
-      //_voiceMessage = "Your time has passed";
-      //_speak(); // speaking has finished.
-    }
     _countdownString = LATE;
     delegate?.setCountdownString(_countdownString);
     delegate?.update(); // full set state if possible
     _bLate = true;
+
+    _speakIsOn = false;
+    Prefs.speakIsOn = false;
+    delegate?.setSpeakIsOn(_speakIsOn);
+    unawaited(BackgroundTimePlayer.stop());
   }
 
-  initTts() {
-    flutterTts = FlutterTts();
+  bool _ttsInitialized = false;
 
-    if (isAndroid) {
-      _getDefaultEngine();
-    }
+  Future<void> initTts() async {
+    if (_ttsInitialized) return;
+    flutterTts = FlutterTts();
+    _ttsInitialized = true;
+
+    try {
+      if (isAndroid) {
+        await _getDefaultEngine();
+      }
+      await flutterTts.setLanguage("en-US");
+      await flutterTts.setSpeechRate(rate);
+      await flutterTts.setPitch(pitch);
+    } catch (_) {}
 
     flutterTts.setStartHandler(() {
       print("Playing");

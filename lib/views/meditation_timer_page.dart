@@ -152,8 +152,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   }
 
   void _startMeditation(BuildContext context) {
-    // Prevent starting if countdown timer audio is active
-    if (BackgroundTimePlayer.isPlaying) {
+    // Prevent starting if countdown timer audio / speech notify is active
+    if (BackgroundTimePlayer.isPlaying || Prefs.speakIsOn) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(

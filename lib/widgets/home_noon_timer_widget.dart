@@ -6,7 +6,6 @@ import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
-import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 /// Compact, space-efficient Noon Countdown Timer pill widget for the Home screen.
 /// Displays the live countdown to Solar Noon and a quick toggle for Voice Announcements.
@@ -90,6 +89,9 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
       // Finished: cancel timer completely
       _timer?.cancel();
       _timer = null;
+      if (_speakIsOn || Prefs.speakIsOn || BackgroundTimePlayer.isPlaying) {
+        unawaited(BackgroundTimePlayer.stop());
+      }
     }
 
     setState(() {
@@ -105,29 +107,6 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
     final difference = target.difference(now);
 
     if (bValue) {
-      // Check for meditation session conflict
-      if (MeditationAudioService().isSessionActive) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            icon: const Icon(Icons.volume_off_rounded, size: 36),
-            title: const Text('Audio Conflict'),
-            content: const Text(
-              'A meditation session is currently active. '
-              'Please stop the meditation timer first before enabling the countdown audio, '
-              'otherwise the audio will not work properly.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-
       if (difference.inMinutes > 120) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
