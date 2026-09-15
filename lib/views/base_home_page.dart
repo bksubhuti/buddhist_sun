@@ -19,6 +19,7 @@ import 'package:buddhist_sun/src/models/colored_text.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
+import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 // #docregion LocalizationDelegatesImport
 //import 'package:flutter_localizations/flutter_localizations.dart';
@@ -543,6 +544,29 @@ class Home_PageContainerState extends State<HomePageContainer> {
   }
 
   void _showAutoStartDialog(DateTime target) {
+    // Check for meditation session conflict before showing the dialog
+    if (MeditationAudioService().isSessionActive) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: const Icon(Icons.volume_off_rounded, size: 36),
+          title: const Text('Audio Conflict'),
+          content: const Text(
+            'A meditation session is currently active. '
+            'Please stop the meditation timer first before enabling the countdown audio, '
+            'otherwise the audio will not work properly.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false, // Forces them to make a choice

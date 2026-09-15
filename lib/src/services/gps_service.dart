@@ -27,13 +27,23 @@ class GpsService {
       return ("Location permissions are permanently denied.", null, "");
     }
 
-    final locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-    );
+    Position? position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 8),
+        ),
+      );
+    } catch (_) {
+      try {
+        position = await Geolocator.getLastKnownPosition();
+      } catch (_) {}
+    }
 
-    Position position = await Geolocator.getCurrentPosition(
-      locationSettings: locationSettings,
-    );
+    if (position == null) {
+      return ("Could not acquire GPS position.", null, "");
+    }
 
     String city = "";
     if (updateCity && Prefs.retrieveCityName) {

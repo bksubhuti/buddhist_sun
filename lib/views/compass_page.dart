@@ -5,6 +5,7 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/widgets/dharmachakra_icon.dart';
 import 'package:buddhist_sun/widgets/place_selector.dart';
 import 'package:buddhist_sun/widgets/app_help_dialog.dart';
+import 'package:buddhist_sun/src/services/app_route_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemNavigator;
 import 'package:flutter_compass/flutter_compass.dart';
@@ -28,7 +29,7 @@ class CompassPage extends StatefulWidget {
 }
 
 class _CompassPageState extends State<CompassPage>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
   double _direction = 0.0;
   final ValueNotifier<double> _directionNotifier = ValueNotifier<double>(0.0);
   final ValueNotifier<bool> _onTargetNotifier = ValueNotifier<bool>(false);
@@ -48,7 +49,6 @@ class _CompassPageState extends State<CompassPage>
   GoogleMapController? _mapController;
   late FlutterEarthGlobeController _globeController;
   StreamSubscription<CompassEvent>? _compassSub;
-  StreamSubscription<Position>? _posSub;
   bool _wasOnTarget = false;
   Timer? _pulseTimer;
   DateTime? _lastVibeAt;
@@ -58,6 +58,7 @@ class _CompassPageState extends State<CompassPage>
   Key _placeSelectorKey = UniqueKey();
   int _cardPointerCount = 0;
   bool _isInteractingWithCard = false;
+  bool _subscribedToRoute = false;
 
   void _onCardPointerDown(PointerDownEvent event) {
     _cardPointerCount++;
@@ -130,6 +131,13 @@ class _CompassPageState extends State<CompassPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (!_subscribedToRoute) {
+      final modalRoute = ModalRoute.of(context);
+      if (modalRoute != null) {
+        appRouteObserver.subscribe(this, modalRoute);
+        _subscribedToRoute = true;
+      }
+    }
     precacheImage(
         const AssetImage('assets/images/compass_normal.png'), context);
     precacheImage(
@@ -160,14 +168,22 @@ class _CompassPageState extends State<CompassPage>
     }
 
     try {
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high, distanceFilter: 0),
-      );
-      if (mounted) {
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 8),
+          ),
+        );
+      } catch (_) {
+        position = await Geolocator.getLastKnownPosition();
+      }
+      final pos = position;
+      if (pos != null && mounted) {
         setState(() {
-          _userLatitude = position.latitude;
-          _userLongitude = position.longitude;
+          _userLatitude = pos.latitude;
+          _userLongitude = pos.longitude;
           _bearing = _calculateBearing(
               _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
           _distance = _calculateDistance(
@@ -520,7 +536,6 @@ class _CompassPageState extends State<CompassPage>
       if (ok) {
         final servicesOn = await Geolocator.isLocationServiceEnabled();
         if (servicesOn) {
-          _startLocationStream();
           _getLocation(context);
         }
       }
@@ -530,14 +545,28 @@ class _CompassPageState extends State<CompassPage>
     });
   }
 
+  @override
+  void didPushNext() {
+    // Navigated to another page (e.g. Meditation Timer) - stop all sensors immediately
+    _stopAllSensors();
+  }
+
+  @override
+  void didPopNext() {
+    // Returned back to CompassPage
+    if (mounted) {
+      _vibrationEnabled = Prefs.vibeOn;
+      _startCompass();
+      _getLocation(context);
+    }
+  }
+
   void _stopAllSensors() {
     _pulseTimer?.cancel();
     _pulseTimer = null;
     Vibration.cancel();
     _compassSub?.cancel();
     _compassSub = null;
-    _posSub?.cancel();
-    _posSub = null;
   }
 
   @override
@@ -548,10 +577,10 @@ class _CompassPageState extends State<CompassPage>
         state == AppLifecycleState.detached) {
       _stopAllSensors();
     } else if (state == AppLifecycleState.resumed) {
-      if (mounted) {
+      if (mounted && (ModalRoute.of(context)?.isCurrent ?? false)) {
         _vibrationEnabled = Prefs.vibeOn;
         _startCompass();
-        _startLocationStream();
+        _getLocation(context);
         if (_viewMode != CompassViewMode.compass) {
           _refreshMapView();
         }
@@ -561,6 +590,9 @@ class _CompassPageState extends State<CompassPage>
 
   @override
   void dispose() {
+    if (_subscribedToRoute) {
+      appRouteObserver.unsubscribe(this);
+    }
     WidgetsBinding.instance.removeObserver(this);
     _stopAllSensors();
     _controller.dispose();
@@ -571,30 +603,6 @@ class _CompassPageState extends State<CompassPage>
     _globeController.onPointConnectionAdded = null;
     _globeController.onResetGlobeRotation = null;
     super.dispose();
-  }
-
-  void _startLocationStream() {
-    _posSub?.cancel();
-    _posSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 3,
-      ),
-    ).listen((pos) {
-      if (!mounted) return;
-      setState(() {
-        _userLatitude = pos.latitude;
-        _userLongitude = pos.longitude;
-        _bearing = _calculateBearing(
-            _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
-        _distance = _calculateDistance(
-            _userLatitude, _userLongitude, _targetLatitude, _targetLongitude);
-        _isLoadingLocation = false;
-      });
-      if (_viewMode == CompassViewMode.earth) {
-        _updateGlobePointsAndCamera(animateCamera: false);
-      }
-    });
   }
 
   String _cardinalDirection(double deg) {
@@ -1740,7 +1748,7 @@ class _CompassPageState extends State<CompassPage>
                 ),
                 markers: markers,
                 polylines: polylines,
-                myLocationEnabled: true,
+                myLocationEnabled: false,
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
                 mapToolbarEnabled: false,

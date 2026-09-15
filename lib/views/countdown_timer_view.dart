@@ -14,6 +14,7 @@ import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 class CountdownTimerView extends StatefulWidget {
   const CountdownTimerView({Key? key, required this.goToHome})
@@ -187,6 +188,30 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                             value: _speakIsOn,
                             onChanged: (bValue) async {
                               if (bValue) {
+                                // Check for meditation session conflict
+                                if (MeditationAudioService().isSessionActive) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      icon: const Icon(Icons.volume_off_rounded,
+                                          size: 36),
+                                      title: const Text('Audio Conflict'),
+                                      content: const Text(
+                                        'A meditation session is currently active. '
+                                        'Please stop the meditation timer first before enabling the countdown audio, '
+                                        'otherwise the audio will not work properly.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  return;
+                                }
+
                                 final now = DateTime.now();
                                 final target = service.countdownTarget;
                                 final difference = target.difference(now);

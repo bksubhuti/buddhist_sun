@@ -25,6 +25,7 @@ import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/widgets/current_location_map.dart';
 import 'package:buddhist_sun/widgets/home_noon_timer_widget.dart';
+import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 // import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
 class Home extends StatefulWidget {
@@ -97,7 +98,8 @@ class _HomeState extends State<Home>
     if (state == AppLifecycleState.resumed &&
         widget.isActive &&
         (ModalRoute.of(context)?.isCurrent ?? false) &&
-        Prefs.autoGpsEnabled) {
+        Prefs.autoGpsEnabled &&
+        !MeditationAudioService().isSessionActive) {
       _refreshGps();
     }
   }
@@ -746,6 +748,7 @@ class _HomeState extends State<Home>
   }
 
   Future<void> _refreshGps() async {
+    if (MeditationAudioService().isSessionActive) return;
     if (mounted) {
       setState(() => _initPerformed = false);
     }

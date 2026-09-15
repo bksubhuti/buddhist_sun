@@ -5,8 +5,23 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Meditation timer feature and bell sounds adapted and inspired by ekaTimer (GPLv3)
+Meditation timer feature adapted and inspired by ekaTimer (GPLv3)
 https://github.com/vpnry/ekatimer
+
+Meditation audio sounds (from ekaTimer):
+- Bowl, Strong Bowl, Bell, GardenBird, Watch:
+  Recorded by Joseph Sardin - https://BigSoundBank.com
+  License: Creative Commons CC0 1.0 Universal (Public Domain Dedication)
+- Gong (Gong.wav):
+  Author: reinsamba - https://freesound.org/s/46062/
+  License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- Three Bowl (ThreeBowl.wav):
+  Author: naturenotesuk - https://freesound.org/s/667491/
+  License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- Sadhu (Sadhu.wav):
+  Author: Most Ven. Pa-Auk Tawya Sayadaw
+  Pa-Auk Forest Monastery Chanting Audio - Free Dhamma Gift
+
 
 sun picture derived by creativecommons cc-sa-attrib
 Own self; User:Bruno_Vallette, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
@@ -16,3 +31,8 @@ https://simplemaps.com/data/world-cities
 
 <a href="https://iconscout.com/icons/moon" target="_blank">Moon Icon</a> by <a href="https://iconscout.com/contributors/daniel-bruce">Daniel Bruce</a> on <a href="https://iconscout.com">Iconscout</a>
 sun by Alexandra Hawkhead from the Noun Project
+
+Earth 3D globe textures (2k_earth-day, 2k_earth-night) by Solar System Scope
+Distributed under Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://www.solarsystemscope.com/textures/
+https://creativecommons.org/licenses/by/4.0/

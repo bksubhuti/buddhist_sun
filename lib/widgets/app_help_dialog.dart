@@ -394,7 +394,7 @@ void showCompassHelpDialog(BuildContext context) {
         bulletPoints: [
           '🧭 Buddhist Compass Dial: Traditional rotating dial with Buddha center, sacred pointer, heading degree, and haptic lock when facing the destination.',
           '🗺️ 2D Map: Google Map displaying your current location, target pilgrimage site, and geodesic path.',
-          '🌍 3D Earth Globe: 3D spherical Earth displaying the true Great-Circle curve across continents with day/night atmospheric glow.',
+          '🌍 3D Earth Globe: 3D spherical Earth displaying the true Great-Circle curve across continents with day/night atmospheric glow (textures courtesy of Solar System Scope, CC BY 4.0).',
         ],
       ),
       const HelpSection(

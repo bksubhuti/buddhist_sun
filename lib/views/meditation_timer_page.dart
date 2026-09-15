@@ -7,6 +7,7 @@ import 'package:buddhist_sun/widgets/duration_picker_dialog.dart';
 import 'package:buddhist_sun/views/active_meditation_page.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/widgets/app_help_dialog.dart';
+import 'package:buddhist_sun/src/services/background_time_player.dart';
 
 class MeditationTimerPage extends StatefulWidget {
   const MeditationTimerPage({Key? key}) : super(key: key);
@@ -151,6 +152,29 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
   }
 
   void _startMeditation(BuildContext context) {
+    // Prevent starting if countdown timer audio is active
+    if (BackgroundTimePlayer.isPlaying) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: const Icon(Icons.volume_off_rounded, size: 36),
+          title: const Text('Audio Conflict'),
+          content: const Text(
+            'The countdown timer audio is currently active. '
+            'Please stop the countdown timer first before starting a meditation session, '
+            'otherwise the meditation bells will not sound.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     final timerProvider = context.read<MeditationTimerProvider>();
     timerProvider.startSession();
     Navigator.of(context).push(

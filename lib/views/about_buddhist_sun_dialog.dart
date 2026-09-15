@@ -11,8 +11,10 @@ showAboutBuddhistSunDialog(BuildContext context) async {
     context: context,
     applicationName: AppLocalizations.of(context)!.buddhistSun,
     applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
-    applicationLegalese:
-        'GNU General Public License v3\nMeditation timer adapted from ekaTimer (GPLv3)\nAudio samples from Freesound.org, Pixabay.com, and Suno.com',
+    applicationLegalese: 'GNU General Public License v3\n'
+        'Meditation timer adapted from ekaTimer (GPLv3)\n'
+        'Audio samples from BigSoundBank.com, Freesound.org, Pixabay.com, and Suno.com\n'
+        'Earth 3D textures by Solar System Scope (CC BY 4.0)',
     children: [ColoredText(AppLocalizations.of(context)!.about_content)],
   );
 }

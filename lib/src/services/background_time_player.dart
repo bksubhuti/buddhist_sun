@@ -17,6 +17,9 @@ class BackgroundTimePlayer {
   static Uri? _logoUri;
   static StreamSubscription<bool>? _playingSub;
 
+  /// Whether the countdown timer audio is currently playing.
+  static bool get isPlaying => _player.playing;
+
   static Future<void> init() async {
     if (_initialized) return;
 
