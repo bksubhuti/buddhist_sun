@@ -56,6 +56,13 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
 
   Future<void> _handleStopAttempt(BuildContext context) async {
     final timerProvider = context.read<MeditationTimerProvider>();
+    if (timerProvider.mode == MeditationTimerMode.unlimited) {
+      // Stopping infinite meditation goes to the summary screen and plays the ending bell
+      await timerProvider.stopSession(completed: true);
+      return;
+    }
+
+    // For timed and endAt modes: exit directly
     await timerProvider.stopSession(
       completed: timerProvider.isOvertime ||
           timerProvider.status == MeditationTimerStatus.completed,
@@ -73,8 +80,80 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     final timerProvider = context.watch<MeditationTimerProvider>();
     final t = AppLocalizations.of(context)!;
 
-    // If completed, automatically return directly to meditation setup screen
+    // Completed View: Only infinite mode shows the summary screen
     if (timerProvider.status == MeditationTimerStatus.completed) {
+      if (_pulseController.isAnimating) {
+        _pulseController.stop();
+      }
+      if (timerProvider.mode == MeditationTimerMode.unlimited) {
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            // Exiting quicker than the bell finishes closes the player
+            timerProvider.resetToIdle();
+            Navigator.of(context).pop();
+          },
+          child: Scaffold(
+            backgroundColor: theme.colorScheme.surface,
+            body: SafeArea(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.self_improvement_rounded,
+                        size: 80,
+                        color: primary,
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        t.sessionCompleted,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        t.meditatedFor(timerProvider.formattedElapsedTime),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 48),
+                      FilledButton.icon(
+                        onPressed: () {
+                          // Exiting stops the bell audio and returns to setup screen
+                          timerProvider.resetToIdle();
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.check_rounded),
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          child: Text(t.timerDone,
+                              style: const TextStyle(fontSize: 16)),
+                        ),
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
+      // For timed and endAt modes: auto-return directly to meditation setup
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           timerProvider.resetToIdle();

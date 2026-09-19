@@ -2,8 +2,35 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:nrel_spa/nrel_spa.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 
 // ── helpers ──────────────────────────────────────────────────────────
+
+String formatHM(DateTime dt) => _formatHM(dt);
+String formatHMS(DateTime dt) => _formatHMS(dt);
+
+String getSelectedDawnMethodString(BuildContext context) {
+  switch (Prefs.dawnVal) {
+    case 0:
+      return AppLocalizations.of(context)!.nautical_twilight;
+    case 1:
+      return AppLocalizations.of(context)!.pa_auk;
+    case 2:
+      return AppLocalizations.of(context)!.na_uyana;
+    case 3:
+      return AppLocalizations.of(context)!.pa_auk_angle;
+    case 4:
+      return AppLocalizations.of(context)!.na_uyana_angle;
+    case 5:
+      return '${AppLocalizations.of(context)!.custom_dawn} (${Prefs.customDawnAngle}°)';
+    case 6:
+      return AppLocalizations.of(context)!.civil_twilight;
+    case 7:
+      return AppLocalizations.of(context)!.sunrise;
+    default:
+      return AppLocalizations.of(context)!.nautical_twilight;
+  }
+}
 
 String getNowString() {
   // added fix for Daylight Savings (DLS).. let the offset work out by the TimeDate object itself.
@@ -49,10 +76,10 @@ int getSafetyOffset() {
 ///   angles[3] → 108° (astronomical / -18°)
 ///   angles[4] → 99.8° (Pa-Auk angle / -9.8°)
 ///   angles[5] → 97.7° (Na-Uyana angle / -7.7°)
-SpaResult _getNrelResult() {
-  DateTime now = DateTime.now();
-  double tz = now.timeZoneOffset.inMinutes / 60.0;
-  DateTime utcNoon = DateTime.utc(now.year, now.month, now.day, 12, 0, 0);
+SpaResult _getNrelResult([DateTime? date]) {
+  DateTime d = date ?? DateTime.now();
+  double tz = d.timeZoneOffset.inMinutes / 60.0;
+  DateTime utcNoon = DateTime.utc(d.year, d.month, d.day, 12, 0, 0);
 
   double customZenith = 90.0 - Prefs.customDawnAngle;
 
@@ -65,14 +92,14 @@ SpaResult _getNrelResult() {
   );
 }
 
-/// Convert NREL SPA fractional local-hours to a DateTime today.
-DateTime _fractionalHoursToDateTime(double hours) {
-  DateTime now = DateTime.now();
+/// Convert NREL SPA fractional local-hours to a DateTime.
+DateTime _fractionalHoursToDateTime(double hours, [DateTime? date]) {
+  DateTime d = date ?? DateTime.now();
   int totalSeconds = (hours * 3600.0).round();
   int h = totalSeconds ~/ 3600;
   int m = (totalSeconds % 3600) ~/ 60;
   int s = totalSeconds % 60;
-  return DateTime(now.year, now.month, now.day, h, m, s);
+  return DateTime(d.year, d.month, d.day, h, m, s);
 }
 
 String _formatHM(DateTime dt) {
@@ -95,141 +122,221 @@ DateTime _subtractSafety(DateTime dt) {
 
 // ── Astronomical Twilight (-18°, zenith 108°) ────────────────────────
 
-DateTime getAstronomicalTwilight() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[3].sunrise));
+DateTime getAstronomicalTwilight([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[3].sunrise, date));
 }
 
-String getAstronomicalTwilightString() => _formatHM(getAstronomicalTwilight());
+String getAstronomicalTwilightString([DateTime? date]) =>
+    _formatHM(getAstronomicalTwilight(date));
 
 // ── Nautical Twilight (-12°, zenith 102°) ────────────────────────────
 
-DateTime getNauticalTwilight() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[2].sunrise));
+DateTime getNauticalTwilight([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[2].sunrise, date));
 }
 
-String getNauticalTwilightString() => _formatHM(getNauticalTwilight());
+String getNauticalTwilightString([DateTime? date]) =>
+    _formatHM(getNauticalTwilight(date));
 
 // ── Custom Dawn ─────────────────────────────────────────
 
-DateTime getCustomDawn() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[1].sunrise));
+DateTime getCustomDawn([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[1].sunrise, date));
 }
 
-String getCustomDawnString() => _formatHM(getCustomDawn());
+String getCustomDawnString([DateTime? date]) => _formatHM(getCustomDawn(date));
 
 // ── Pa-Auk Angle Dawn (-9.8°, zenith 99.8°) ─────────────────────
 
-DateTime getPaAukAngleDawn() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[4].sunrise));
+DateTime getPaAukAngleDawn([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[4].sunrise, date));
 }
 
-String getPaAukAngleDawnString() => _formatHM(getPaAukAngleDawn());
+String getPaAukAngleDawnString([DateTime? date]) =>
+    _formatHM(getPaAukAngleDawn(date));
 
 // ── Na-Uyana Angle Dawn (-7.7°, zenith 97.7°) ─────────────────
 
-DateTime getNaUyanaAngleDawn() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[5].sunrise));
+DateTime getNaUyanaAngleDawn([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[5].sunrise, date));
 }
 
-String getNaUyanaAngleDawnString() => _formatHM(getNaUyanaAngleDawn());
+String getNaUyanaAngleDawnString([DateTime? date]) =>
+    _formatHM(getNaUyanaAngleDawn(date));
 
 // ── Civil Twilight (-6°, zenith 96°) ────────────────────────────────
 
-DateTime getCivilTwilight() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.angles[0].sunrise));
+DateTime getCivilTwilight([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.angles[0].sunrise, date));
 }
 
-String getCivilTwilightString() => _formatHM(getCivilTwilight());
+String getCivilTwilightString([DateTime? date]) =>
+    _formatHM(getCivilTwilight(date));
 
 // ── Sunrise ──────────────────────────────────────────────────────────
 
-DateTime getSunrise() {
-  final result = _getNrelResult();
-  return _addSafety(_fractionalHoursToDateTime(result.sunrise));
+DateTime getSunrise([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _addSafety(_fractionalHoursToDateTime(result.sunrise, date));
 }
 
-String getSunriseString() => _formatHM(getSunrise());
+String getSunriseString([DateTime? date]) => _formatHM(getSunrise(date));
 
 // ── Pa-Auk: Sunrise − 40 min ────────────────────────────────────────
 
-DateTime getSunrise40() {
-  final result = _getNrelResult();
-  DateTime sr = _fractionalHoursToDateTime(result.sunrise);
-  return _addSafety(sr.subtract(Duration(minutes: 40)));
+DateTime getSunrise40([DateTime? date]) {
+  final result = _getNrelResult(date);
+  DateTime sr = _fractionalHoursToDateTime(result.sunrise, date);
+  return _addSafety(sr.subtract(const Duration(minutes: 40)));
 }
 
-String getSunrise40String() => _formatHM(getSunrise40());
+String getSunrise40String([DateTime? date]) => _formatHM(getSunrise40(date));
 
 // ── Na-Uyana: Sunrise − 30 min ──────────────────────────────────────
 
-DateTime getSunrise30() {
-  final result = _getNrelResult();
-  DateTime sr = _fractionalHoursToDateTime(result.sunrise);
-  return _addSafety(sr.subtract(Duration(minutes: 30)));
+DateTime getSunrise30([DateTime? date]) {
+  final result = _getNrelResult(date);
+  DateTime sr = _fractionalHoursToDateTime(result.sunrise, date);
+  return _addSafety(sr.subtract(const Duration(minutes: 30)));
 }
 
-String getSunrise30String() => _formatHM(getSunrise30());
+String getSunrise30String([DateTime? date]) => _formatHM(getSunrise30(date));
 
 // ── Selected Aruṇa (Dawn based on Settings) ─────────────────────────
 
 /// Returns the Aruṇa (Dawn) DateTime corresponding to the user-selected
 /// method in Settings (Prefs.dawnVal).
-DateTime getSelectedDawn() {
+DateTime getSelectedDawn([DateTime? date]) {
   switch (Prefs.dawnVal) {
     case 0:
-      return getNauticalTwilight();
+      return getNauticalTwilight(date);
     case 1:
-      return getSunrise40();
+      return getSunrise40(date);
     case 2:
-      return getSunrise30();
+      return getSunrise30(date);
     case 3:
-      return getPaAukAngleDawn();
+      return getPaAukAngleDawn(date);
     case 4:
-      return getNaUyanaAngleDawn();
+      return getNaUyanaAngleDawn(date);
     case 5:
-      return getCustomDawn();
+      return getCustomDawn(date);
     case 6:
-      return getCivilTwilight();
+      return getCivilTwilight(date);
     case 7:
-      return getSunrise();
+      return getSunrise(date);
     default:
-      return getNauticalTwilight();
+      return getNauticalTwilight(date);
   }
 }
 
 /// Formatted Aruṇa string based on user's dawn setting.
-String getSelectedDawnString() => _formatHM(getSelectedDawn());
+String getSelectedDawnString([DateTime? date]) =>
+    _formatHM(getSelectedDawn(date));
 
 // ── Solar Noon ───────────────────────────────────────────────────────
 
 /// Raw solar noon (no safety) — used by countdown timer internally.
-DateTime getSolarNoonRaw() {
-  final result = _getNrelResult();
-  return _fractionalHoursToDateTime(result.solarNoon);
+DateTime getSolarNoonRaw([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _fractionalHoursToDateTime(result.solarNoon, date);
 }
 
 /// Solar noon with safety subtracted.
-DateTime getSolarNoonDateTime() {
-  return _subtractSafety(getSolarNoonRaw());
+DateTime getSolarNoonDateTime([DateTime? date]) {
+  return _subtractSafety(getSolarNoonRaw(date));
 }
 
 /// Formatted solar noon string with seconds precision.
-String getSolarNoonTimeString() => _formatHMS(getSolarNoonDateTime());
+String getSolarNoonTimeString([DateTime? date]) =>
+    _formatHMS(getSolarNoonDateTime(date));
+
+// ── Countdown Target Mode & Information ──────────────────────────────
+
+enum CountdownTargetMode {
+  dawn,
+  noon,
+}
+
+class CountdownTargetInfo {
+  final CountdownTargetMode mode;
+  final DateTime targetDateTime;
+  final bool isLate;
+  final DateTime solarNoon;
+  final DateTime upcomingDawn;
+
+  const CountdownTargetInfo({
+    required this.mode,
+    required this.targetDateTime,
+    required this.isLate,
+    required this.solarNoon,
+    required this.upcomingDawn,
+  });
+
+  bool get isDawnMode => mode == CountdownTargetMode.dawn;
+}
+
+/// Evaluates whether the current time is in Dawn Mode (within 6 hours before dawn
+/// until 2 hours after dawn) or Noon Mode (switches 2 hours after dawn until 6 hours
+/// before next dawn).
+CountdownTargetInfo getCountdownTargetInfo([DateTime? currentTime]) {
+  final now = currentTime ?? DateTime.now();
+  final todayDawn = getSelectedDawn(now);
+  final tomorrowDawn = getSelectedDawn(now.add(const Duration(days: 1)));
+  final todayNoon = getSolarNoonDateTime(now);
+
+  // 1) Window for today's dawn: [todayDawn - 6h, todayDawn + 2h]
+  final todayDawnStart = todayDawn.subtract(const Duration(hours: 6));
+  final todayDawnEnd = todayDawn.add(const Duration(hours: 2));
+
+  if (!now.isBefore(todayDawnStart) && now.isBefore(todayDawnEnd)) {
+    return CountdownTargetInfo(
+      mode: CountdownTargetMode.dawn,
+      targetDateTime: todayDawn,
+      isLate: todayDawn.difference(now).isNegative,
+      solarNoon: todayNoon,
+      upcomingDawn: todayDawn,
+    );
+  }
+
+  // 2) Window for tomorrow's dawn: [tomorrowDawn - 6h, tomorrowDawn + 2h]
+  final tomorrowDawnStart = tomorrowDawn.subtract(const Duration(hours: 6));
+  final tomorrowDawnEnd = tomorrowDawn.add(const Duration(hours: 2));
+
+  if (!now.isBefore(tomorrowDawnStart) && now.isBefore(tomorrowDawnEnd)) {
+    final tomorrowNoon = getSolarNoonDateTime(now.add(const Duration(days: 1)));
+    return CountdownTargetInfo(
+      mode: CountdownTargetMode.dawn,
+      targetDateTime: tomorrowDawn,
+      isLate: tomorrowDawn.difference(now).isNegative,
+      solarNoon: tomorrowNoon,
+      upcomingDawn: tomorrowDawn,
+    );
+  }
+
+  // 3) Otherwise: Noon Mode
+  return CountdownTargetInfo(
+    mode: CountdownTargetMode.noon,
+    targetDateTime: todayNoon,
+    isLate: todayNoon.difference(now).isNegative,
+    solarNoon: todayNoon,
+    upcomingDawn: tomorrowDawn,
+  );
+}
 
 // ── Sunset ───────────────────────────────────────────────────────────
 
-DateTime getSunset() {
-  final result = _getNrelResult();
-  return _subtractSafety(_fractionalHoursToDateTime(result.sunset));
+DateTime getSunset([DateTime? date]) {
+  final result = _getNrelResult(date);
+  return _subtractSafety(_fractionalHoursToDateTime(result.sunset, date));
 }
 
-String getSunsetString() => _formatHM(getSunset());
+String getSunsetString([DateTime? date]) => _formatHM(getSunset(date));
 
 // ── Civil Dusk (zenith 96°) ──────────────────────────────────────────
 

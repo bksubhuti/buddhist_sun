@@ -28,6 +28,17 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
     }
   }
 
+  String get _selectedCountryName {
+    switch (Prefs.selectedUposatha) {
+      case UposathaCountry.Sinhala:
+        return 'Sri Lanka';
+      case UposathaCountry.Thailand:
+        return 'Thailand';
+      case UposathaCountry.Myanmar:
+        return 'Myanmar';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -177,7 +188,7 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              l.bePoyaMenu,
+                              '$_selectedCountryName ${l.bePoyaMenu}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

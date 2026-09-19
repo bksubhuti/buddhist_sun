@@ -9,23 +9,23 @@ import 'package:audio_session/audio_session.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
+import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 
 class BackgroundTimePlayer {
-  static AudioPlayer? _player;
+  // Single persistent player – never disposed/recreated.
+  // This matches the pattern used by MeditationAudioService which works on iOS.
+  // Destroying and recreating AudioPlayer breaks just_audio_background on iOS.
+  static final AudioPlayer _player = AudioPlayer();
   static DateTime? _target;
   static bool _initialized = false;
   static Uri? _logoUri;
   static StreamSubscription<bool>? _playingSub;
-  static StreamSubscription<PlayerState>? _playerStateSub;
-  static StreamSubscription<Duration>? _positionSub;
   static bool _isStopping = false;
 
   /// Whether the countdown timer audio is currently playing.
   static bool get isPlaying {
-    final p = _player;
-    if (p == null) return false;
     try {
-      return p.playing;
+      return _player.playing;
     } catch (_) {
       return false;
     }
@@ -35,14 +35,10 @@ class BackgroundTimePlayer {
     if (_initialized) return;
     await _configureAudioSession();
     await _getLogoUri();
-    _initialized = true;
-  }
 
-  static void _setupPlayerListeners(AudioPlayer player) {
-    _playingSub?.cancel();
     // Enforce time synchronization when the user resumes playback from the lock screen.
     // just_audio_background handles the play/pause natively, so we just react to it.
-    _playingSub = player.playingStream.listen((playing) {
+    _playingSub = _player.playingStream.listen((playing) {
       if (playing && _target != null) {
         final now = DateTime.now();
         final secondsUntilTarget = _target!.difference(now).inSeconds;
@@ -52,39 +48,27 @@ class BackgroundTimePlayer {
           final targetDuration = Duration(seconds: secondsElapsed);
           // Only seek if out of sync by more than 2 seconds (e.g. after lock screen pause)
           // to avoid audio hiccups/stutter on screen on or app resume.
-          if ((player.position - targetDuration).abs().inSeconds > 2) {
-            player.seek(targetDuration);
+          if ((_player.position - targetDuration).abs().inSeconds > 2) {
+            _player.seek(targetDuration);
           }
         } else if (secondsUntilTarget <= 0) {
-          stop();
+          _player.seek(const Duration(minutes: 120));
         } else {
-          player.seek(Duration.zero);
+          _player.seek(Duration.zero);
         }
       }
     });
 
-    _playerStateSub?.cancel();
-    _playerStateSub = player.playerStateStream.listen((state) {
-      if (state.processingState == ProcessingState.completed) {
-        stop();
-      }
-    });
-
-    _positionSub?.cancel();
-    _positionSub = player.positionStream.listen((pos) {
-      final dur = player.duration;
-      if (dur != null && pos >= dur) {
-        stop();
-      }
-    });
+    _initialized = true;
   }
 
   static Future<void> _configureAudioSession() async {
     final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration(
+    await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playback,
-      avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
-      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers |
+          AVAudioSessionCategoryOptions.mixWithOthers,
+      avAudioSessionMode: AVAudioSessionMode.defaultMode,
       androidAudioAttributes: AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
         usage: AndroidAudioUsage.media,
@@ -92,6 +76,12 @@ class BackgroundTimePlayer {
       androidWillPauseWhenDucked: true,
     ));
     await session.setActive(true);
+    await _player.setAndroidAudioAttributes(
+      const AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        usage: AndroidAudioUsage.media,
+      ),
+    );
   }
 
   static Future<Uri> _getLogoUri() async {
@@ -136,47 +126,15 @@ class BackgroundTimePlayer {
     }
   }
 
-  static Future<String> _getPhysicalAudioFile(String assetPath) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final fileName = assetPath.split('/').last;
-    final file = File('${dir.path}/$fileName');
-
-    final byteData = await rootBundle.load(assetPath);
-    if (!await file.exists() ||
-        (await file.length()) != byteData.lengthInBytes) {
-      await file.writeAsBytes(
-        byteData.buffer
-            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
-        flush: true,
-      );
-    }
-    return file.path;
-  }
-
-  static Future<void> _destroyPlayer() async {
-    await _playingSub?.cancel();
-    _playingSub = null;
-
-    await _playerStateSub?.cancel();
-    _playerStateSub = null;
-
-    await _positionSub?.cancel();
-    _positionSub = null;
-
-    final playerToDispose = _player;
-    _player = null;
-
-    if (playerToDispose != null) {
-      try {
-        unawaited(playerToDispose.stop());
-      } catch (_) {}
-      try {
-        await playerToDispose.dispose().timeout(
-              const Duration(milliseconds: 500),
-              onTimeout: () {},
-            );
-      } catch (_) {}
-    }
+  /// Safely stops the player with a timeout to avoid deadlocking
+  /// on Android when the player is in ProcessingState.completed.
+  static Future<void> _safeStop() async {
+    try {
+      await _player.stop().timeout(
+            const Duration(milliseconds: 500),
+            onTimeout: () {},
+          );
+    } catch (_) {}
   }
 
   static Future<void> startForTarget({
@@ -185,21 +143,20 @@ class BackgroundTimePlayer {
     required String artist,
     required String album,
   }) async {
-    // Tear down any existing player instance cleanly
-    await _destroyPlayer();
-
+    print('BTP: startForTarget called, target=$target');
     _target = target;
     await init();
+    print('BTP: init done');
     await _configureAudioSession();
+    print('BTP: audio session configured');
 
     final logoUri = await _getLogoUri();
     final audioAsset = _getAudioAssetPath();
-
-    // --> EXTRACT THE PHYSICAL FILE <--
-    final physicalPath = await _getPhysicalAudioFile(audioAsset);
+    print('BTP: audioAsset=$audioAsset');
 
     final now = DateTime.now();
     final secondsUntilTarget = target.difference(now).inSeconds;
+    print('BTP: secondsUntilTarget=$secondsUntilTarget');
 
     final mediaItem = MediaItem(
       id: 'timer_countdown_m4av2',
@@ -210,36 +167,50 @@ class BackgroundTimePlayer {
       duration: const Duration(minutes: 120),
     );
 
-    final player = AudioPlayer();
-    _player = player;
-    _setupPlayerListeners(player);
+    // Stop any current playback safely (timeout protects against Android deadlock)
+    await _safeStop();
+    print('BTP: player stopped, processingState=${_player.processingState}');
 
-    await player.setAndroidAudioAttributes(
-      const AndroidAudioAttributes(
-        contentType: AndroidAudioContentType.speech,
-        usage: AndroidAudioUsage.media,
-      ),
-    );
-
-    // --> USE AudioSource.uri INSTEAD OF AudioSource.asset <--
-    await player.setAudioSource(
-      AudioSource.uri(
-        Uri.file(physicalPath),
+    // Use AudioSource.asset (same approach that works in MeditationAudioService)
+    try {
+      final source = AudioSource.asset(
+        audioAsset,
         tag: mediaItem,
-      ),
-    );
-
-    if (secondsUntilTarget <= 7200 && secondsUntilTarget > 0) {
-      final secondsElapsed = 7200 - secondsUntilTarget;
-      await player.seek(Duration(seconds: secondsElapsed));
-    } else if (secondsUntilTarget <= 0) {
-      await stop();
+      );
+      print('BTP: setting audio source...');
+      await _player.setAudioSource(source);
+      print('BTP: audio source set, duration=${_player.duration}');
+    } catch (e, st) {
+      print('BTP: ERROR setting audio source: $e');
+      print('BTP: stacktrace: $st');
       return;
-    } else {
-      await player.seek(Duration.zero);
     }
 
-    await player.play();
+    try {
+      if (secondsUntilTarget <= 7200 && secondsUntilTarget > 0) {
+        final secondsElapsed = 7200 - secondsUntilTarget;
+        print('BTP: seeking to ${secondsElapsed}s');
+        await _player.seek(Duration(seconds: secondsElapsed));
+      } else if (secondsUntilTarget <= 0) {
+        print('BTP: seeking to end (120min)');
+        await _player.seek(const Duration(minutes: 120));
+      } else {
+        print('BTP: seeking to start');
+        await _player.seek(Duration.zero);
+      }
+      print('BTP: seek done, position=${_player.position}');
+    } catch (e) {
+      print('BTP: ERROR seeking: $e');
+    }
+
+    try {
+      print('BTP: calling play...');
+      await _player.play();
+      print(
+          'BTP: play returned, playing=${_player.playing}, state=${_player.processingState}');
+    } catch (e) {
+      print('BTP: ERROR playing: $e');
+    }
   }
 
   static Future<void> stop() async {
@@ -247,12 +218,16 @@ class BackgroundTimePlayer {
     _isStopping = true;
     try {
       _target = null;
-      await _destroyPlayer();
+      await _safeStop();
 
-      try {
-        final session = await AudioSession.instance;
-        await session.setActive(false);
-      } catch (_) {}
+      // Only deactivate audio session if meditation is not using it
+      if (!MeditationAudioService().isSessionActive &&
+          !MeditationAudioService().isPlaying) {
+        try {
+          final session = await AudioSession.instance;
+          await session.setActive(false);
+        } catch (_) {}
+      }
 
       // Cleanup notifications
       await cancelAllTimerNotifications();

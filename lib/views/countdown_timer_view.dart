@@ -53,10 +53,7 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
         // this needs localization done with a context.
         if (countdownString == SolarTimerService.LATE) {
           this._countdownString = AppLocalizations.of(context)!.late;
-          if (_speakIsOn) {
-            _speakIsOn = false;
-            unawaited(BackgroundTimePlayer.stop());
-          }
+          _speakIsOn = false;
         } else {
           this._countdownString = countdownString;
         }
@@ -201,6 +198,16 @@ class _CountdownTimerViewState extends State<CountdownTimerView>
                                           AppLocalizations.of(context)!
                                               .speech_only_within_2_hours),
                                       backgroundColor: Colors.redAccent,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                if (difference.isNegative) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!.late),
+                                      backgroundColor: Colors.orangeAccent,
                                     ),
                                   );
                                   return;

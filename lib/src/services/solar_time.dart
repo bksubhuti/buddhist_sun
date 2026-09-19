@@ -142,8 +142,11 @@ class SolarTimerService {
     final diff = _dtSolar.difference(_now);
 
     if (diff.isNegative) {
-      doLateTime();
+      if (!_bLate) {
+        doLateTime();
+      }
     } else {
+      _bLate = false;
       int min = diff.inMinutes;
       int seconds = diff.inSeconds % 60;
 
@@ -172,7 +175,14 @@ class SolarTimerService {
     _speakIsOn = false;
     Prefs.speakIsOn = false;
     delegate?.setSpeakIsOn(_speakIsOn);
-    unawaited(BackgroundTimePlayer.stop());
+    if (BackgroundTimePlayer.isPlaying) {
+      // Delay 5 seconds to allow the final sentence ("The time has passed") to finish playing
+      Future.delayed(const Duration(seconds: 5), () {
+        if (_bLate && !Prefs.speakIsOn) {
+          unawaited(BackgroundTimePlayer.stop());
+        }
+      });
+    }
   }
 
   bool _ttsInitialized = false;
@@ -185,6 +195,18 @@ class SolarTimerService {
     try {
       if (isAndroid) {
         await _getDefaultEngine();
+      }
+      if (isIOS) {
+        await flutterTts.setSharedInstance(true);
+        await flutterTts.autoStopSharedSession(false);
+        await flutterTts.setIosAudioCategory(
+          IosTextToSpeechAudioCategory.playback,
+          [
+            IosTextToSpeechAudioCategoryOptions.duckOthers,
+            IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+          ],
+          IosTextToSpeechAudioMode.defaultMode,
+        );
       }
       await flutterTts.setLanguage("en-US");
       await flutterTts.setSpeechRate(rate);
@@ -231,103 +253,16 @@ class SolarTimerService {
   }
 
   // ------------------------------------------------------------
-// Determine whether dawn mode should be used
-// ------------------------------------------------------------
+  // Determine whether dawn mode should be used
+  // ------------------------------------------------------------
   bool _isDawnMode() {
-    final now = DateTime.now();
-
-    // 2 AM boundary
-    final twoAm = DateTime(now.year, now.month, now.day, 2, 0);
-
-    // Get selected dawn DateTime
-    late final DateTime dawnDT;
-    switch (Prefs.dawnVal) {
-      case 0:
-        dawnDT = getNauticalTwilight();
-        break;
-      case 1:
-        dawnDT = getSunrise40();
-        break;
-      case 2:
-        dawnDT = getSunrise30();
-        break;
-      case 3:
-        dawnDT = getPaAukAngleDawn();
-        break;
-      case 4:
-        dawnDT = getNaUyanaAngleDawn();
-        break;
-      case 5:
-        dawnDT = getCustomDawn();
-        break;
-      case 6:
-        dawnDT = getCivilTwilight();
-        break;
-      case 7:
-        dawnDT = getSunrise();
-        break;
-      default:
-        dawnDT = getNauticalTwilight();
-        break;
-    }
-
-    // Dawn + 1 hour
-    final dawnPlus1h = dawnDT.add(const Duration(hours: 1));
-
-    // Dawn must be before solar noon (normal case)
-    final solarNoon = getSolarNoonDateTime();
-
-    return now.isAfter(twoAm) &&
-        now.isBefore(dawnPlus1h) &&
-        dawnDT.isBefore(solarNoon);
+    return getCountdownTargetInfo().isDawnMode;
   }
 
-// ------------------------------------------------------------
-// Get the correct countdown target (dawn or solar noon)
-// ------------------------------------------------------------
+  // ------------------------------------------------------------
+  // Get the correct countdown target (dawn or solar noon)
+  // ------------------------------------------------------------
   DateTime _getCountdownTarget() {
-    final now = DateTime.now();
-
-    // Compute solar noon with safety
-    final solarNoon = getSolarNoonDateTime();
-
-    // If dawn mode → countdown to dawn
-    if (_isDawnMode()) {
-      late final DateTime dawnDT;
-      switch (Prefs.dawnVal) {
-        case 0:
-          dawnDT = getNauticalTwilight();
-          break;
-        case 1:
-          dawnDT = getSunrise40();
-          break;
-        case 2:
-          dawnDT = getSunrise30();
-          break;
-        case 3:
-          dawnDT = getPaAukAngleDawn();
-          break;
-        case 4:
-          dawnDT = getNaUyanaAngleDawn();
-          break;
-        case 5:
-          dawnDT = getCustomDawn();
-          break;
-        case 6:
-          dawnDT = getCivilTwilight();
-          break;
-        case 7:
-          dawnDT = getSunrise();
-          break;
-        default:
-          dawnDT = getNauticalTwilight();
-          break;
-      }
-
-      return DateTime(now.year, now.month, now.day, dawnDT.hour, dawnDT.minute);
-    }
-
-    // Else → solar noon
-    return solarNoon;
+    return getCountdownTargetInfo().targetDateTime;
   }
 }

@@ -25,6 +25,7 @@ import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
 import 'package:buddhist_sun/widgets/current_location_map.dart';
 import 'package:buddhist_sun/widgets/home_noon_timer_widget.dart';
+import 'package:buddhist_sun/widgets/home_target_display_widget.dart';
 import 'package:buddhist_sun/src/services/meditation_audio_service.dart';
 // import 'package:buddhist_sun/views/death_contemplation_page.dart';
 
@@ -312,21 +313,7 @@ class _HomeState extends State<Home>
                 Divider(
                   height: 15.0,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ColoredText(getSolarNoonTimeString(),
-                        style: TextStyle(
-                            fontSize: 54, fontWeight: FontWeight.bold)),
-                    (Prefs.safety > 0)
-                        ? //Text('\ud83d\udee1')
-                        Icon(Icons.health_and_safety_outlined,
-                            color: Theme.of(context).colorScheme.primary)
-                        : Text(""),
-                  ],
-                ),
-                ColoredText(AppLocalizations.of(context)!.solar_noon,
-                    style: TextStyle(fontSize: 27, letterSpacing: 2)),
+                const HomeTargetDisplayWidget(),
                 const SizedBox(height: 10),
                 const HomeNoonTimerWidget(),
                 const SizedBox(height: 18),

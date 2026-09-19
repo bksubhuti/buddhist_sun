@@ -10,7 +10,8 @@ import 'package:buddhist_sun/src/services/notification_service.dart';
 /// Compact, space-efficient Noon Countdown Timer pill widget for the Home screen.
 /// Displays the live countdown to Solar Noon and a quick toggle for Voice Announcements.
 class HomeNoonTimerWidget extends StatefulWidget {
-  const HomeNoonTimerWidget({Key? key}) : super(key: key);
+  final DateTime? currentTime;
+  const HomeNoonTimerWidget({Key? key, this.currentTime}) : super(key: key);
 
   @override
   State<HomeNoonTimerWidget> createState() => _HomeNoonTimerWidgetState();
@@ -22,15 +23,18 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
   bool get wantKeepAlive => true;
 
   Timer? _timer;
-  DateTime _now = DateTime.now();
+  late DateTime _now;
   bool _speakIsOn = false;
 
   @override
   void initState() {
     super.initState();
+    _now = widget.currentTime ?? DateTime.now();
     WidgetsBinding.instance.addObserver(this);
     _speakIsOn = Prefs.speakIsOn;
-    _startTimer();
+    if (widget.currentTime == null) {
+      _startTimer();
+    }
   }
 
   @override
@@ -42,15 +46,24 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (widget.currentTime != null) return;
     if (state == AppLifecycleState.resumed) {
       _startTimer();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _timer?.cancel();
     }
   }
 
   @override
   void didUpdateWidget(covariant HomeNoonTimerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _startTimer();
+    if (widget.currentTime != null) {
+      _timer?.cancel();
+      _now = widget.currentTime!;
+    } else if (oldWidget.currentTime != null) {
+      _startTimer();
+    }
   }
 
   void _startTimer() {
@@ -58,22 +71,12 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
     _now = DateTime.now();
     _speakIsOn = Prefs.speakIsOn;
 
-    final target = getSolarNoonDateTime();
-    if (target.difference(_now).isNegative) {
-      // Finished: stop counting, do not start periodic timer
-      if (mounted) setState(() {});
-      return;
-    }
-
     if (mounted) setState(() {});
 
     final int delayMs = 1000 - _now.millisecond;
     _timer = Timer(Duration(milliseconds: delayMs), () {
       if (!mounted) return;
       _tick();
-      if (getSolarNoonDateTime().difference(DateTime.now()).isNegative) {
-        return;
-      }
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
         if (mounted) _tick();
       });
@@ -82,16 +85,16 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
 
   void _tick() {
     final now = DateTime.now();
-    final target = getSolarNoonDateTime();
-    final isFinished = target.difference(now).isNegative;
+    final targetInfo = getCountdownTargetInfo(now);
+    final isFinished = targetInfo.isLate;
 
-    if (isFinished) {
-      // Finished: cancel timer completely
-      _timer?.cancel();
-      _timer = null;
-      if (_speakIsOn || Prefs.speakIsOn || BackgroundTimePlayer.isPlaying) {
-        unawaited(BackgroundTimePlayer.stop());
-      }
+    if (isFinished &&
+        (_speakIsOn || Prefs.speakIsOn || BackgroundTimePlayer.isPlaying)) {
+      Future.delayed(const Duration(seconds: 5), () {
+        if (!Prefs.speakIsOn) {
+          unawaited(BackgroundTimePlayer.stop());
+        }
+      });
     }
 
     setState(() {
@@ -103,7 +106,8 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
   Future<void> _toggleVoice() async {
     final bValue = !_speakIsOn;
     final now = DateTime.now();
-    final target = getSolarNoonDateTime();
+    final targetInfo = getCountdownTargetInfo(now);
+    final target = targetInfo.targetDateTime;
     final difference = target.difference(now);
 
     if (bValue) {
@@ -143,10 +147,13 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
       service.initialVoicing = true;
       unawaited(service.speakInitialCountdown(target));
 
+      final targetTitle = targetInfo.isDawnMode
+          ? "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${AppLocalizations.of(context)!.dawn}"
+          : "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${AppLocalizations.of(context)!.solar_noon}";
+
       await BackgroundTimePlayer.startForTarget(
         target: target,
-        title:
-            "${AppLocalizations.of(context)!.buddhistSunCountdown} - ${AppLocalizations.of(context)!.solar_noon}",
+        title: targetTitle,
         artist: AppLocalizations.of(context)!.buddhistSun,
         album: AppLocalizations.of(context)!.timer,
       );
@@ -179,9 +186,10 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
     super.build(context);
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
-    final target = getSolarNoonDateTime();
+    final targetInfo = getCountdownTargetInfo(_now);
+    final target = targetInfo.targetDateTime;
     final difference = target.difference(_now);
-    final bool isPassed = difference.isNegative;
+    final bool isPassed = targetInfo.isLate;
     final Color lateColor = theme.brightness == Brightness.dark
         ? Colors.amber
         : Colors.orange.shade800;

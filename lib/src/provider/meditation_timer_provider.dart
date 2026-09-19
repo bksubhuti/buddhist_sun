@@ -35,6 +35,7 @@ class MeditationTimerProvider extends ChangeNotifier
   int _intervalMinutes = 0;
   bool _keepScreenOn = true;
   int _volume = 80;
+  int _systemVolume = 80;
 
   bool _hasCompletedTarget = false;
   int _lastIntervalMinute = -1;
@@ -112,6 +113,8 @@ class MeditationTimerProvider extends ChangeNotifier
   bool get keepScreenOn => _keepScreenOn;
   int get volume => _volume;
   double get volumeNormalized => (_volume / 100.0).clamp(0.0, 1.0);
+  int get systemVolume => _systemVolume;
+  double get systemVolumeNormalized => (_systemVolume / 100.0).clamp(0.0, 1.0);
   List<int> get recentTimes => Prefs.meditationRecentTimes;
 
   List<int> get alternateRecentTimes {
@@ -261,20 +264,16 @@ class MeditationTimerProvider extends ChangeNotifier
   Future<void> _loadSystemVolume() async {
     if (kIsWeb) return;
     try {
-      await FlutterVolumeController.updateShowSystemUI(false)
-          .catchError((_) {});
-      final sysVol =
+      final vol =
           await FlutterVolumeController.getVolume().catchError((_) => null);
-      if (sysVol != null) {
-        _volume = (sysVol * 100).round().clamp(0, 100);
-        Prefs.meditationVolume = _volume;
+      if (vol != null) {
+        _systemVolume = (vol * 100).round().clamp(0, 100);
         notifyListeners();
       }
       FlutterVolumeController.addListener((newVol) {
         final newVolInt = (newVol * 100).round().clamp(0, 100);
-        if (_volume != newVolInt) {
-          _volume = newVolInt;
-          Prefs.meditationVolume = _volume;
+        if (_systemVolume != newVolInt) {
+          _systemVolume = newVolInt;
           notifyListeners();
         }
       });
@@ -325,11 +324,64 @@ class MeditationTimerProvider extends ChangeNotifier
     notifyListeners();
   }
 
+  static const List<int> bellVolumeSteps = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50,
+    55,
+    60,
+    65,
+    70,
+    75,
+    80,
+    85,
+    90,
+    95,
+    100,
+  ];
+
+  int get bellVolumeStepIndex {
+    int bestIdx = 0;
+    int minDiff = 1000;
+    for (int i = 0; i < bellVolumeSteps.length; i++) {
+      final diff = (bellVolumeSteps[i] - _volume).abs();
+      if (diff < minDiff) {
+        minDiff = diff;
+        bestIdx = i;
+      }
+    }
+    return bestIdx;
+  }
+
+  void setVolumeByStepIndex(int index) {
+    final clampedIndex = index.clamp(0, bellVolumeSteps.length - 1);
+    setVolume(bellVolumeSteps[clampedIndex]);
+  }
+
   void setVolume(int value) {
     _volume = value.clamp(0, 100);
     Prefs.meditationVolume = _volume;
+    notifyListeners();
+  }
+
+  void setSystemVolume(int value) {
+    _systemVolume = value.clamp(0, 100);
     if (!kIsWeb) {
-      FlutterVolumeController.setVolume(_volume / 100.0).catchError((_) {});
+      FlutterVolumeController.updateShowSystemUI(false).catchError((_) {});
+      FlutterVolumeController.setVolume((_systemVolume / 100.0).clamp(0.0, 1.0))
+          .catchError((_) {});
     }
     notifyListeners();
   }
@@ -355,7 +407,15 @@ class MeditationTimerProvider extends ChangeNotifier
     if (sound.id == 'vibration') {
       await _vibrate(duration: 400, pattern: [0, 200, 150, 200]);
     } else {
-      await _audioService.playSound(sound, volume: 1.0);
+      await _audioService.playSound(sound, volume: volumeNormalized);
+    }
+  }
+
+  void previewCurrentSound() {
+    if (_endSound.id != 'none' && _endSound.id != 'vibration') {
+      previewSound(_endSound);
+    } else {
+      previewSound(MeditationSoundItem.fromId('SingleBell'));
     }
   }
 
@@ -439,12 +499,12 @@ class MeditationTimerProvider extends ChangeNotifier
       _vibrate(duration: 500);
       _audioService.startSession(
         startSound: MeditationSoundItem.none,
-        volume: 1.0,
+        volume: volumeNormalized,
       );
     } else {
       _audioService.startSession(
         startSound: _startSound,
-        volume: 1.0,
+        volume: volumeNormalized,
       );
     }
 
@@ -493,7 +553,8 @@ class MeditationTimerProvider extends ChangeNotifier
         if (_intervalSound.id == 'vibration') {
           _vibrate(duration: 400, pattern: [0, 250, 200, 250]);
         } else {
-          _audioService.playIntervalSound(_intervalSound, volume: 1.0);
+          _audioService.playIntervalSound(_intervalSound,
+              volume: volumeNormalized);
         }
       }
     }
@@ -510,7 +571,7 @@ class MeditationTimerProvider extends ChangeNotifier
           if (_endSound.id == 'vibration') {
             _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
           } else {
-            _audioService.playEndSound(_endSound, volume: 1.0);
+            _audioService.playEndSound(_endSound, volume: volumeNormalized);
           }
         }
       }
@@ -551,6 +612,11 @@ class MeditationTimerProvider extends ChangeNotifier
 
   Future<void> stopSession({bool completed = false}) async {
     _stopTick();
+    if (_startTime != null && _status == MeditationTimerStatus.running) {
+      final total = DateTime.now().difference(_startTime!).inSeconds -
+          _totalPauseDurationSeconds;
+      _elapsedSeconds = total >= 0 ? total : 0;
+    }
     await cancelMeditationNotifications();
     try {
       await WakelockPlus.disable();
@@ -563,7 +629,7 @@ class MeditationTimerProvider extends ChangeNotifier
           await _audioService.endSession();
           await _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
         } else {
-          await _audioService.playEndSound(_endSound, volume: 1.0);
+          await _audioService.playEndSound(_endSound, volume: volumeNormalized);
         }
       } else {
         await _audioService.endSession();

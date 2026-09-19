@@ -240,14 +240,16 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // 1. Verify Volume is visible directly on the main screen below Start Meditation
-      expect(find.text('Bell Volume', skipOffstage: false), findsOneWidget);
-      expect(find.byType(Slider), findsOneWidget);
+      // 1. Verify Phone Volume and Bell Volume are visible directly on the main screen below Start Meditation
+      expect(find.text('Phone Volume', skipOffstage: false), findsOneWidget);
+      expect(find.text('Bell Volume Percentage', skipOffstage: false),
+          findsOneWidget);
+      expect(find.byType(Slider), findsNWidgets(2));
 
       // Verify relative positions: Start Meditation is above Bell Volume, which is above Bells & Settings
       final startMeditationTop =
           tester.getTopLeft(find.text('Start Meditation')).dy;
-      final volumeTop = tester.getTopLeft(find.text('Bell Volume')).dy;
+      final volumeTop = tester.getTopLeft(find.text('Phone Volume')).dy;
       final settingsTop = tester.getTopLeft(find.text('Bells & Settings')).dy;
       expect(startMeditationTop < volumeTop, isTrue);
       expect(volumeTop < settingsTop, isTrue);
@@ -633,6 +635,129 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+
+      provider.dispose();
+    });
+
+    test(
+        'Infinite mode stopSession with completed: true transitions to completed and retains elapsedSeconds',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setMode(MeditationTimerMode.unlimited);
+      await provider.startSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      await provider.stopSession(completed: true);
+      expect(provider.status, equals(MeditationTimerStatus.completed));
+      expect(provider.elapsedSeconds, greaterThanOrEqualTo(0));
+
+      provider.resetToIdle();
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+      expect(provider.elapsedSeconds, equals(0));
+      provider.dispose();
+    });
+
+    test(
+        'Two volume sliders: App Bell Volume percentage and Phone System Volume',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setVolume(75);
+      expect(provider.volume, equals(75));
+      expect(provider.volumeNormalized, equals(0.75));
+      expect(Prefs.meditationVolume, equals(75));
+
+      provider.setSystemVolume(60);
+      expect(provider.systemVolume, equals(60));
+      expect(provider.systemVolumeNormalized, equals(0.6));
+
+      await provider.startSession();
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      provider.resetToIdle();
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+
+      provider.dispose();
+    });
+
+    test(
+        'Fine-tuned bell volume steps include 1%, 2%, 3%, 4%, 5% for quiet settings',
+        () {
+      final provider = MeditationTimerProvider();
+
+      expect(
+        MeditationTimerProvider.bellVolumeSteps,
+        equals([
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100,
+        ]),
+      );
+
+      // Verify fine-tuning step indices 0 through 5
+      provider.setVolumeByStepIndex(0);
+      expect(provider.volume, equals(0));
+      expect(provider.volumeNormalized, equals(0.0));
+      expect(provider.bellVolumeStepIndex, equals(0));
+
+      provider.setVolumeByStepIndex(1);
+      expect(provider.volume, equals(1));
+      expect(provider.volumeNormalized, closeTo(0.01, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(1));
+
+      provider.setVolumeByStepIndex(2);
+      expect(provider.volume, equals(2));
+      expect(provider.volumeNormalized, closeTo(0.02, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(2));
+
+      provider.setVolumeByStepIndex(3);
+      expect(provider.volume, equals(3));
+      expect(provider.volumeNormalized, closeTo(0.03, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(3));
+
+      provider.setVolumeByStepIndex(4);
+      expect(provider.volume, equals(4));
+      expect(provider.volumeNormalized, closeTo(0.04, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(4));
+
+      provider.setVolumeByStepIndex(5);
+      expect(provider.volume, equals(5));
+      expect(provider.volumeNormalized, closeTo(0.05, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(5));
+
+      // Verify 5% step transitions beyond 5%
+      provider.setVolumeByStepIndex(6);
+      expect(provider.volume, equals(10));
+      expect(provider.volumeNormalized, closeTo(0.10, 0.0001));
+      expect(provider.bellVolumeStepIndex, equals(6));
+
+      // Verify closest step matching
+      provider.setVolume(2);
+      expect(provider.bellVolumeStepIndex, equals(2));
+
+      provider.setVolume(80);
+      expect(provider.bellVolumeStepIndex, equals(20));
 
       provider.dispose();
     });

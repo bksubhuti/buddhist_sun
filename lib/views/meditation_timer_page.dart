@@ -64,6 +64,54 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 1. Phone Master Volume Slider
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    timerProvider.systemVolume == 0
+                        ? Icons.volume_off_outlined
+                        : (timerProvider.systemVolume < 50
+                            ? Icons.volume_down_outlined
+                            : Icons.volume_up_outlined),
+                    size: 20,
+                    color: primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    t.phoneVolume,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '${timerProvider.systemVolume}%',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: primary,
+                ),
+              ),
+            ],
+          ),
+          Slider(
+            value: timerProvider.systemVolume.toDouble(),
+            min: 0,
+            max: 100,
+            divisions: 20,
+            label: '${timerProvider.systemVolume}%',
+            onChanged: (val) {
+              timerProvider.setSystemVolume(val.round());
+            },
+            onChangeEnd: (val) {
+              timerProvider.previewCurrentSound();
+            },
+          ),
+          const Divider(height: 12),
+          // 2. App Bell Volume (Percentage) Slider
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -71,10 +119,8 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
                 children: [
                   Icon(
                     timerProvider.volume == 0
-                        ? Icons.volume_off_outlined
-                        : (timerProvider.volume < 50
-                            ? Icons.volume_down_outlined
-                            : Icons.volume_up_outlined),
+                        ? Icons.notifications_off_outlined
+                        : Icons.notifications_active_outlined,
                     size: 20,
                     color: primary,
                   ),
@@ -97,22 +143,17 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             ],
           ),
           Slider(
-            value: timerProvider.volume.toDouble(),
+            value: timerProvider.bellVolumeStepIndex.toDouble(),
             min: 0,
-            max: 100,
-            divisions: 20,
+            max:
+                (MeditationTimerProvider.bellVolumeSteps.length - 1).toDouble(),
+            divisions: MeditationTimerProvider.bellVolumeSteps.length - 1,
             label: '${timerProvider.volume}%',
             onChanged: (val) {
-              timerProvider.setVolume(val.round());
+              timerProvider.setVolumeByStepIndex(val.round());
             },
             onChangeEnd: (val) {
-              if (timerProvider.endSound.id != 'none' &&
-                  timerProvider.endSound.id != 'vibration') {
-                timerProvider.previewSound(timerProvider.endSound);
-              } else {
-                timerProvider
-                    .previewSound(MeditationSoundItem.fromId('SingleBell'));
-              }
+              timerProvider.previewCurrentSound();
             },
           ),
         ],

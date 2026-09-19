@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:audio_session/audio_session.dart';
@@ -19,6 +16,14 @@ class MeditationAudioService {
   bool _isLoopingSilence = false;
 
   bool get isSessionActive => _isSessionActive;
+
+  bool get isPlaying {
+    try {
+      return _player.playing;
+    } catch (_) {
+      return false;
+    }
+  }
 
   bool get _requiresSilenceKeepAlive =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
@@ -61,24 +66,7 @@ class MeditationAudioService {
     }
   }
 
-  Future<AudioSource> _getAudioSource(String assetPath,
-      {required MediaItem tag}) async {
-    if (!kIsWeb) {
-      try {
-        final dir = await getApplicationDocumentsDirectory();
-        final fileName = assetPath.split('/').last;
-        final file = File('${dir.path}/$fileName');
-        final byteData = await rootBundle.load(assetPath);
-        if (!await file.exists() ||
-            (await file.length()) != byteData.lengthInBytes) {
-          await file.writeAsBytes(byteData.buffer
-              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-        }
-        return AudioSource.uri(Uri.file(file.path), tag: tag);
-      } catch (e) {
-        debugPrint("Error writing physical audio file for $assetPath: $e");
-      }
-    }
+  AudioSource _getAudioSource(String assetPath, {required MediaItem tag}) {
     return AudioSource.asset(assetPath, tag: tag);
   }
 
@@ -90,7 +78,7 @@ class MeditationAudioService {
       await _player.setLoopMode(LoopMode.one);
       // When just_audio_background is active, tag MUST be a valid MediaItem
       // otherwise just_audio_background throws a cast error.
-      final source = await _getAudioSource(
+      final source = _getAudioSource(
         'assets/audio/silence.m4a',
         tag: const MediaItem(
           id: 'meditation_silence',
@@ -118,7 +106,7 @@ class MeditationAudioService {
 
       await _player.stop();
       await _player.setLoopMode(LoopMode.off);
-      final source = await _getAudioSource(
+      final source = _getAudioSource(
         sound.assetPath!,
         tag: MediaItem(
           id: sound.id,
