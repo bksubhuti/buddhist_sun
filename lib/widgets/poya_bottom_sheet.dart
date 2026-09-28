@@ -5,6 +5,22 @@ import '../utils/buddhavassa_data.dart';
 import '../src/services/solar_calc.dart';
 import '../src/models/prefs.dart';
 
+class PoyaSeasonProgress {
+  final String seasonName;
+  final int pakkhaToday;
+  final int pakkhaPast;
+  final int pakkhaRemaining;
+  final int pakkhaTotal;
+
+  const PoyaSeasonProgress({
+    required this.seasonName,
+    required this.pakkhaToday,
+    required this.pakkhaPast,
+    required this.pakkhaRemaining,
+    required this.pakkhaTotal,
+  });
+}
+
 class PoyaBottomSheet {
   static String _translateSeason(
       String rawSeason, AppLocalizations localizations) {
@@ -86,6 +102,61 @@ class PoyaBottomSheet {
     );
   }
 
+  static PoyaSeasonProgress? calculateSeasonProgress({
+    required PoyaDay highlightedPoya,
+    required List<PoyaDay> canonicalList,
+  }) {
+    // In canonicalList, find the major pakkha (FullMoon or NewMoon) at or after highlightedPoya.date
+    int targetIndex = canonicalList.indexWhere((p) =>
+        p.date.compareTo(highlightedPoya.date) >= 0 &&
+        (p.moonPhase == "FullMoon" || p.moonPhase == "NewMoon"));
+    if (targetIndex < 0) {
+      targetIndex = canonicalList.lastIndexWhere(
+          (p) => p.moonPhase == "FullMoon" || p.moonPhase == "NewMoon");
+    }
+
+    if (targetIndex < 0) return null;
+
+    final currentSeason = canonicalList[targetIndex].season;
+    int seasonStart = targetIndex;
+    while (seasonStart > 0 &&
+        canonicalList[seasonStart - 1].season == currentSeason) {
+      seasonStart--;
+    }
+    int seasonEnd = targetIndex;
+    while (seasonEnd < canonicalList.length - 1 &&
+        canonicalList[seasonEnd + 1].season == currentSeason) {
+      seasonEnd++;
+    }
+
+    int pakkhaTotal = 0;
+    int pakkhaPast = 0;
+    int pakkhaToday = 0;
+
+    for (int j = seasonStart; j <= seasonEnd; j++) {
+      final mp = canonicalList[j].moonPhase.toString().trim();
+      final isMajorPakkha = (mp == "FullMoon" || mp == "NewMoon");
+      if (isMajorPakkha) {
+        pakkhaTotal++;
+        if (j < targetIndex) {
+          pakkhaPast++;
+        } else if (j == targetIndex) {
+          pakkhaToday = pakkhaTotal;
+        }
+      }
+    }
+
+    final pakkhaRemaining = pakkhaTotal - pakkhaToday;
+
+    return PoyaSeasonProgress(
+      seasonName: currentSeason,
+      pakkhaToday: pakkhaToday,
+      pakkhaPast: pakkhaPast,
+      pakkhaRemaining: pakkhaRemaining,
+      pakkhaTotal: pakkhaTotal,
+    );
+  }
+
   static Widget _seasonStatColumn(
       BuildContext context, String label, String value) {
     return Column(
@@ -140,54 +211,16 @@ class PoyaBottomSheet {
                   (poyaDay) => poyaDay.date.compareTo(selectedDateString) > 0);
             }
 
-            // Compute pakkha season progress for the highlighted entry based on major Pakkhas
-            String? seasonName;
-            int pakkhaToday = 0;
-            int pakkhaPast = 0;
-            int pakkhaRemaining = 0;
-            int pakkhaTotal = 0;
-
+            // Compute canonical pakkha season progress for the highlighted entry
+            PoyaSeasonProgress? progress;
             if (highlightIndex >= 0) {
               final highlightedPoya = poyasForSelectedYear[highlightIndex];
-              final currentSeason = highlightedPoya.season;
-              seasonName = currentSeason;
-
-              // Find the contiguous block of the same season around the highlighted entry.
-              int seasonStart = highlightIndex;
-              while (seasonStart > 0 &&
-                  poyasForSelectedYear[seasonStart - 1].season ==
-                      currentSeason) {
-                seasonStart--;
-              }
-              int seasonEnd = highlightIndex;
-              while (seasonEnd < poyasForSelectedYear.length - 1 &&
-                  poyasForSelectedYear[seasonEnd + 1].season == currentSeason) {
-                seasonEnd++;
-              }
-
-              // Count canonical major pakkhas (Full/New Moon) for the season stats
-              int pakkhaPosition = 0;
-              for (int j = seasonStart; j <= seasonEnd; j++) {
-                final mp = poyasForSelectedYear[j].moonPhase.toString().trim();
-                final isMajorPakkha = (mp == "FullMoon" || mp == "NewMoon");
-                if (isMajorPakkha) {
-                  pakkhaTotal++;
-                  if (j < highlightIndex) {
-                    pakkhaPast++;
-                  } else if (j == highlightIndex) {
-                    pakkhaPosition = pakkhaTotal;
-                  }
-                }
-              }
-
-              final highlightMp = highlightedPoya.moonPhase.toString().trim();
-              if (highlightMp == "FullMoon" || highlightMp == "NewMoon") {
-                pakkhaToday = pakkhaPosition;
-                pakkhaRemaining = pakkhaTotal - pakkhaToday;
-              } else {
-                pakkhaToday = pakkhaPast;
-                pakkhaRemaining = pakkhaTotal - pakkhaPast;
-              }
+              final canonicalList = BuddhavassaData.getPoyaList(tradition,
+                  includeEighthDays: false);
+              progress = calculateSeasonProgress(
+                highlightedPoya: highlightedPoya,
+                canonicalList: canonicalList,
+              );
             }
 
             return DraggableScrollableSheet(
@@ -276,9 +309,7 @@ class PoyaBottomSheet {
                       ),
                     ),
                     // Season pakkha progress header
-                    if (highlightIndex >= 0 &&
-                        seasonName != null &&
-                        pakkhaTotal > 0)
+                    if (progress != null && progress.pakkhaTotal > 0)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
@@ -294,18 +325,23 @@ class PoyaBottomSheet {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              _seasonStatColumn(context,
-                                  localizations.beSeason_Today, '$pakkhaToday'),
-                              _seasonStatColumn(context,
-                                  localizations.beSeason_Past, '$pakkhaPast'),
+                              _seasonStatColumn(
+                                  context,
+                                  localizations.beSeason_Today,
+                                  '${progress.pakkhaToday}'),
+                              _seasonStatColumn(
+                                  context,
+                                  localizations.beSeason_Past,
+                                  '${progress.pakkhaPast}'),
                               _seasonStatColumn(
                                   context,
                                   localizations.beSeason_Remaining,
-                                  '$pakkhaRemaining'),
+                                  '${progress.pakkhaRemaining}'),
                               _seasonStatColumn(
                                   context,
-                                  _translateSeason(seasonName, localizations),
-                                  '$pakkhaTotal'),
+                                  _translateSeason(
+                                      progress.seasonName, localizations),
+                                  '${progress.pakkhaTotal}'),
                             ],
                           ),
                         ),
