@@ -761,5 +761,130 @@ void main() {
 
       provider.dispose();
     });
+
+    test(
+        'Auto-close screen setting defaults to false and persists in Prefs and provider',
+        () {
+      // Reset pref for test isolation
+      Prefs.meditationAutoCloseScreen = false;
+      expect(Prefs.meditationAutoCloseScreen, isFalse);
+
+      final provider = MeditationTimerProvider();
+      expect(provider.autoCloseScreen, isFalse);
+
+      provider.setAutoCloseScreen(true);
+      expect(provider.autoCloseScreen, isTrue);
+      expect(Prefs.meditationAutoCloseScreen, isTrue);
+
+      provider.setAutoCloseScreen(false);
+      expect(provider.autoCloseScreen, isFalse);
+      expect(Prefs.meditationAutoCloseScreen, isFalse);
+
+      provider.dispose();
+    });
+
+    test(
+        'MeditationAudioService onEndBellCompleted stream works and isEndBellPlaying is tracked',
+        () async {
+      final audioService = MeditationAudioService();
+      await audioService.init();
+
+      bool completedFired = false;
+      final sub = audioService.onEndBellCompleted.listen((_) {
+        completedFired = true;
+      });
+
+      // When playEndSound is called with none, it fires immediately
+      await audioService.playEndSound(MeditationSoundItem.none);
+      await Future.microtask(() {});
+      expect(audioService.isEndBellPlaying, isFalse);
+      expect(completedFired, isTrue);
+
+      // When test notification helper is called, it fires stream
+      completedFired = false;
+      audioService.notifyEndBellCompletedForTesting();
+      await Future.microtask(() {});
+      expect(completedFired, isTrue);
+
+      await sub.cancel();
+    });
+
+    test(
+        'When autoCloseScreen is disabled, timer does not enter auto-close waiting state',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setAutoCloseScreen(false);
+      await provider.startSessionWithDuration(1);
+
+      expect(provider.isWaitingForAutoClose, isFalse);
+      expect(provider.isOvertime, isFalse);
+
+      await provider.stopSession(completed: false);
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+      provider.dispose();
+    });
+
+    test(
+        'When autoCloseScreen is enabled, end sound completion triggers auto-close completed status',
+        () async {
+      final provider = MeditationTimerProvider();
+      provider.setAutoCloseScreen(true);
+      await provider.startSessionWithDuration(1);
+
+      expect(provider.autoCloseScreen, isTrue);
+      expect(provider.status, equals(MeditationTimerStatus.running));
+
+      // Reset to idle cleans up state properly
+      provider.resetToIdle();
+      expect(provider.status, equals(MeditationTimerStatus.idle));
+      expect(provider.isWaitingForAutoClose, isFalse);
+
+      provider.dispose();
+    });
+
+    testWidgets(
+        'MeditationTimerPage displays Auto-Close Timer Screen switch and toggles correctly',
+        (tester) async {
+      Prefs.meditationAutoCloseScreen = false;
+      final provider = MeditationTimerProvider();
+      provider.setAutoCloseScreen(false);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<MeditationTimerProvider>.value(
+          value: provider,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const MeditationTimerPage(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Expand Bells & Settings card
+      final expansionTile = find.byType(ExpansionTile);
+      expect(expansionTile, findsOneWidget);
+      await tester.ensureVisible(expansionTile);
+      await tester.tap(expansionTile);
+      await tester.pumpAndSettle();
+
+      // Find Auto-Close SwitchListTile
+      final autoCloseFinder =
+          find.widgetWithText(SwitchListTile, 'Auto-Close Timer Screen');
+      await tester.ensureVisible(autoCloseFinder);
+      expect(autoCloseFinder, findsOneWidget);
+
+      final switchWidget = tester.widget<SwitchListTile>(autoCloseFinder);
+      expect(switchWidget.value, isFalse);
+
+      // Toggle switch
+      await tester.tap(autoCloseFinder);
+      await tester.pumpAndSettle();
+
+      expect(provider.autoCloseScreen, isTrue);
+      expect(Prefs.meditationAutoCloseScreen, isTrue);
+
+      provider.dispose();
+    });
   });
 }

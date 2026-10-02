@@ -454,6 +454,8 @@
   "off": "关闭",
   "keepScreenAwake": "保持屏幕常亮",
   "keepScreenAwakeDesc": "禅修期间防止手机屏幕休眠",
+  "autoCloseTimer": "自动关闭计时器屏幕",
+  "autoCloseTimerDesc": "结束钟声响完后自动关闭计时器屏幕",
   "timerRingStyle": "计时环样式",
   "timerRingStyleDesc": "递减模式随时间逐渐消除圆环，递增模式逐渐填满。",
   "styleSubtractive": "递减（默认）",

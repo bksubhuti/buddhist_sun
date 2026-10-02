@@ -250,6 +250,8 @@
   "off": "बंद",
   "keepScreenAwake": "स्क्रीन चालू रखें",
   "keepScreenAwakeDesc": "ध्यान के दौरान स्क्रीन को बंद होने से रोकें",
+  "autoCloseTimer": "टाइमर स्क्रीन स्वतः बंद करें",
+  "autoCloseTimerDesc": "अंतिम घंटी बजने के बाद टाइमर स्क्रीन को स्वतः बंद करें",
   "timerRingStyle": "टाइमर रिंग शैली",
   "timerRingStyleDesc": "घटने वाली शैली समय बीतने के साथ वृत्त हटाती है।",
   "styleSubtractive": "घटने वाला (डिफ़ॉल्ट)",

@@ -829,6 +829,23 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
             ),
             const Divider(height: 24),
 
+            // Auto-Close Timer Screen Switch
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                t.autoCloseTimer,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                t.autoCloseTimerDesc,
+                style: const TextStyle(fontSize: 12),
+              ),
+              value: timerProvider.autoCloseScreen,
+              onChanged: (val) => timerProvider.setAutoCloseScreen(val),
+            ),
+            const Divider(height: 24),
+
             // Countdown Graphic Style (Subtractive vs Additive)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

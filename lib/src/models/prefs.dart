@@ -86,6 +86,8 @@ const String MEDITATION_PREP_DELAY_SECONDS = "meditationPrepDelaySeconds";
 const int DEFAULT_MEDITATION_PREP_DELAY_SECONDS = 5;
 const String MEDITATION_KEEP_SCREEN_ON = "meditationKeepScreenOn";
 const bool DEFAULT_MEDITATION_KEEP_SCREEN_ON = true;
+const String MEDITATION_AUTO_CLOSE_SCREEN = "meditationAutoCloseScreen";
+const bool DEFAULT_MEDITATION_AUTO_CLOSE_SCREEN = false;
 const String MEDITATION_VOLUME = "meditationVolume";
 const int DEFAULT_MEDITATION_VOLUME = 80;
 const String MEDITATION_PRESETS = "meditationPresets";
@@ -440,6 +442,12 @@ class Prefs {
       DEFAULT_MEDITATION_KEEP_SCREEN_ON;
   static set meditationKeepScreenOn(bool value) =>
       instance.setBool(MEDITATION_KEEP_SCREEN_ON, value);
+
+  static bool get meditationAutoCloseScreen =>
+      instance.getBool(MEDITATION_AUTO_CLOSE_SCREEN) ??
+      DEFAULT_MEDITATION_AUTO_CLOSE_SCREEN;
+  static set meditationAutoCloseScreen(bool value) =>
+      instance.setBool(MEDITATION_AUTO_CLOSE_SCREEN, value);
 
   static int get meditationVolume =>
       instance.getInt(MEDITATION_VOLUME) ?? DEFAULT_MEDITATION_VOLUME;

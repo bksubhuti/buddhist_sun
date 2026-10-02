@@ -250,6 +250,8 @@
   "off": "Desactivado",
   "keepScreenAwake": "Mantener pantalla encendida",
   "keepScreenAwakeDesc": "Evita que la pantalla se apague mientras meditas",
+  "autoCloseTimer": "Cerrar pantalla del temporizador automáticamente",
+  "autoCloseTimerDesc": "Cierra automáticamente la pantalla del temporizador después de que termine la campana final",
   "timerRingStyle": "Estilo del anillo",
   "timerRingStyleDesc": "El modo sustractivo vacía el círculo con el tiempo.",
   "styleSubtractive": "Sustractivo (Por defecto)",

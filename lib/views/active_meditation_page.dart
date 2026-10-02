@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+  StreamSubscription<void>? _unlimitedEndBellSub;
 
   @override
   void initState() {
@@ -33,11 +35,29 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
 
     // Hide status bar / immersive feel
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final audioService = context.read<MeditationTimerProvider>().audioService;
+      _unlimitedEndBellSub = audioService.onEndBellCompleted.listen((_) {
+        if (!mounted) return;
+        final timerProvider = context.read<MeditationTimerProvider>();
+        if (timerProvider.autoCloseScreen &&
+            timerProvider.mode == MeditationTimerMode.unlimited &&
+            timerProvider.status == MeditationTimerStatus.completed) {
+          timerProvider.resetToIdle();
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _unlimitedEndBellSub?.cancel();
     _pulseController.dispose();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
@@ -157,7 +177,9 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           timerProvider.resetToIdle();
-          Navigator.of(context).pop();
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
         }
       });
       return Scaffold(
@@ -169,6 +191,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
     // 3. Active Running / Paused Timer View
     final isPaused = timerProvider.status == MeditationTimerStatus.paused;
     final isOvertime = timerProvider.isOvertime;
+    final isWaitingForAutoClose = timerProvider.isWaitingForAutoClose;
 
     return PopScope(
       canPop: false,
@@ -190,27 +213,33 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close_rounded, size: 28),
-                      tooltip: isOvertime ? t.finishSession : t.endSession,
+                      tooltip: (isOvertime || isWaitingForAutoClose)
+                          ? t.finishSession
+                          : t.endSession,
                       onPressed: () => _handleStopAttempt(context),
                     ),
                     Row(
                       children: [
                         Icon(
-                          isOvertime
-                              ? Icons.alarm_on_rounded
-                              : (isPaused
-                                  ? Icons.pause_circle_outline
-                                  : Icons.play_circle_outline),
+                          isWaitingForAutoClose
+                              ? Icons.check_circle_outline
+                              : (isOvertime
+                                  ? Icons.alarm_on_rounded
+                                  : (isPaused
+                                      ? Icons.pause_circle_outline
+                                      : Icons.play_circle_outline)),
                           size: 16,
                           color: primary,
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          isOvertime
-                              ? t.timerOvertime.toUpperCase()
-                              : (isPaused
-                                  ? t.meditationPaused
-                                  : t.meditationActive),
+                          isWaitingForAutoClose
+                              ? t.sessionCompleted.toUpperCase()
+                              : (isOvertime
+                                  ? t.timerOvertime.toUpperCase()
+                                  : (isPaused
+                                      ? t.meditationPaused
+                                      : t.meditationActive)),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -230,6 +259,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
+                    if (isWaitingForAutoClose) return;
                     if (isPaused) {
                       timerProvider.resumeSession();
                     } else {
@@ -244,12 +274,14 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                           animation: _pulseAnimation,
                           builder: (context, _) {
                             final currentIsOvertime = timerProvider.isOvertime;
-                            final currentSubtitle = currentIsOvertime
-                                ? t.timerOvertime
-                                : (timerProvider.mode ==
-                                        MeditationTimerMode.unlimited
-                                    ? t.timerElapsed
-                                    : t.timerRemaining);
+                            final currentSubtitle = isWaitingForAutoClose
+                                ? t.sessionCompleted
+                                : (currentIsOvertime
+                                    ? t.timerOvertime
+                                    : (timerProvider.mode ==
+                                            MeditationTimerMode.unlimited
+                                        ? t.timerElapsed
+                                        : t.timerRemaining));
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -266,17 +298,21 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
                                 ),
                                 const SizedBox(height: 32),
                                 Text(
-                                  currentIsOvertime
-                                      ? 'Target: ${timerProvider.formattedTargetDuration}  •  Total: ${timerProvider.formattedElapsedTime}'
-                                      : (isPaused
-                                          ? t.tapScreenToResume
-                                          : t.tapScreenToPause),
+                                  isWaitingForAutoClose
+                                      ? t.sessionCompleted
+                                      : (currentIsOvertime
+                                          ? 'Target: ${timerProvider.formattedTargetDuration}  •  Total: ${timerProvider.formattedElapsedTime}'
+                                          : (isPaused
+                                              ? t.tapScreenToResume
+                                              : t.tapScreenToPause)),
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: currentIsOvertime
+                                    color: (currentIsOvertime ||
+                                            isWaitingForAutoClose)
                                         ? primary
                                         : theme.colorScheme.onSurface
                                             .withAlpha(120),
-                                    fontWeight: currentIsOvertime
+                                    fontWeight: (currentIsOvertime ||
+                                            isWaitingForAutoClose)
                                         ? FontWeight.w600
                                         : FontWeight.normal,
                                     letterSpacing: 1.2,
@@ -295,7 +331,7 @@ class _ActiveMeditationPageState extends State<ActiveMeditationPage>
               // Bottom End / Finish Button
               Padding(
                 padding: const EdgeInsets.only(bottom: 24.0),
-                child: isOvertime
+                child: (isOvertime || isWaitingForAutoClose)
                     ? FilledButton.icon(
                         onPressed: () => _handleStopAttempt(context),
                         icon: const Icon(Icons.check_circle_rounded, size: 22),

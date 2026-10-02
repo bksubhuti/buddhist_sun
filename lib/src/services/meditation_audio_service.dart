@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -14,8 +15,28 @@ class MeditationAudioService {
   bool _isInitialized = false;
   bool _isSessionActive = false;
   bool _isLoopingSilence = false;
+  bool _isEndBellPlaying = false;
+
+  StreamController<void> _endBellCompletedController =
+      StreamController<void>.broadcast();
+
+  Stream<void> get onEndBellCompleted {
+    if (_endBellCompletedController.isClosed) {
+      _endBellCompletedController = StreamController<void>.broadcast();
+    }
+    return _endBellCompletedController.stream;
+  }
 
   bool get isSessionActive => _isSessionActive;
+  bool get isEndBellPlaying => _isEndBellPlaying;
+
+  @visibleForTesting
+  void notifyEndBellCompletedForTesting() {
+    _isEndBellPlaying = false;
+    if (!_endBellCompletedController.isClosed) {
+      _endBellCompletedController.add(null);
+    }
+  }
 
   bool get isPlaying {
     try {
@@ -47,6 +68,12 @@ class MeditationAudioService {
       _isInitialized = true;
       _player.playerStateStream.listen((state) {
         if (state.processingState == ProcessingState.completed) {
+          if (_isEndBellPlaying) {
+            _isEndBellPlaying = false;
+            if (!_endBellCompletedController.isClosed) {
+              _endBellCompletedController.add(null);
+            }
+          }
           if (_isSessionActive && !_isLoopingSilence) {
             if (_requiresSilenceKeepAlive) {
               // Bell finished while meditation session is active on iOS:
@@ -119,6 +146,12 @@ class MeditationAudioService {
       _player.play();
     } catch (e) {
       debugPrint("MeditationAudioService _playBell error: $e");
+      if (_isEndBellPlaying) {
+        _isEndBellPlaying = false;
+        if (!_endBellCompletedController.isClosed) {
+          _endBellCompletedController.add(null);
+        }
+      }
     }
   }
 
@@ -130,6 +163,7 @@ class MeditationAudioService {
   }) async {
     try {
       _isSessionActive = true;
+      _isEndBellPlaying = false;
       await init();
       final session = await AudioSession.instance;
       await session.setActive(true);
@@ -163,9 +197,14 @@ class MeditationAudioService {
     _isSessionActive = false;
     _isLoopingSilence = false;
     if (sound.assetPath != null && sound.id != 'none') {
+      _isEndBellPlaying = true;
       await _playBell(sound, volume: volume, title: 'Meditation Complete');
     } else {
+      _isEndBellPlaying = false;
       await stop();
+      if (!_endBellCompletedController.isClosed) {
+        _endBellCompletedController.add(null);
+      }
     }
   }
 
@@ -173,6 +212,7 @@ class MeditationAudioService {
   Future<void> pauseSession() async {
     _isSessionActive = false;
     _isLoopingSilence = false;
+    _isEndBellPlaying = false;
     try {
       await _player.stop();
       final session = await AudioSession.instance;
@@ -201,6 +241,7 @@ class MeditationAudioService {
   Future<void> endSession() async {
     _isSessionActive = false;
     _isLoopingSilence = false;
+    _isEndBellPlaying = false;
     await stop();
   }
 
@@ -210,6 +251,7 @@ class MeditationAudioService {
     double volume = 1.0,
   }) async {
     _isSessionActive = false;
+    _isEndBellPlaying = false;
     await _playBell(sound, volume: volume, title: 'Preview Bell');
   }
 
@@ -224,6 +266,7 @@ class MeditationAudioService {
   Future<void> stop() async {
     try {
       _isLoopingSilence = false;
+      _isEndBellPlaying = false;
       await _player.stop();
       final session = await AudioSession.instance;
       await session.setActive(false);
@@ -236,6 +279,7 @@ class MeditationAudioService {
     try {
       _isSessionActive = false;
       _isLoopingSilence = false;
+      _isEndBellPlaying = false;
       await _player.dispose();
       _isInitialized = false;
     } catch (e) {

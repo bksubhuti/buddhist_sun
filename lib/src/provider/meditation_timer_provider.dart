@@ -36,6 +36,10 @@ class MeditationTimerProvider extends ChangeNotifier
   bool _keepScreenOn = true;
   int _volume = 80;
   int _systemVolume = 80;
+  bool _autoCloseScreen = false;
+  bool _isWaitingForAutoClose = false;
+  StreamSubscription<void>? _endSoundSub;
+  Timer? _autoCloseTimer;
 
   bool _hasCompletedTarget = false;
   int _lastIntervalMinute = -1;
@@ -45,7 +49,12 @@ class MeditationTimerProvider extends ChangeNotifier
   MeditationTimerMode get mode => _mode;
   MeditationTimerStatus get status => _status;
   bool get hasCompletedTarget => _hasCompletedTarget;
+  bool get autoCloseScreen => _autoCloseScreen;
+  bool get isWaitingForAutoClose => _isWaitingForAutoClose;
+  MeditationAudioService get audioService => _audioService;
+
   bool get isOvertime =>
+      !_isWaitingForAutoClose &&
       (_mode == MeditationTimerMode.timed ||
           _mode == MeditationTimerMode.endAt) &&
       (_hasCompletedTarget ||
@@ -143,15 +152,18 @@ class MeditationTimerProvider extends ChangeNotifier
     if (_status == MeditationTimerStatus.idle) {
       return _ringStyle == 'subtractive' ? 1.0 : 0.0;
     }
+    if (_isWaitingForAutoClose ||
+        _status == MeditationTimerStatus.completed ||
+        isOvertime) {
+      return _ringStyle == 'subtractive' ? 0.0 : 1.0;
+    }
     if (_totalDurationSeconds <= 0) return 0.0;
 
     final ratio = (remainingSeconds / _totalDurationSeconds).clamp(0.0, 1.0);
 
     if (_ringStyle == 'subtractive') {
-      if (_status == MeditationTimerStatus.completed || isOvertime) return 0.0;
       return ratio;
     } else {
-      if (_status == MeditationTimerStatus.completed || isOvertime) return 1.0;
       return 1.0 - ratio;
     }
   }
@@ -172,6 +184,10 @@ class MeditationTimerProvider extends ChangeNotifier
         final amPm = _endAtHour >= 12 ? 'PM' : 'AM';
         return '$h:${_endAtMinute.toString().padLeft(2, '0')} $amPm';
       }
+      return '00:00';
+    }
+
+    if (_isWaitingForAutoClose) {
       return '00:00';
     }
 
@@ -253,6 +269,7 @@ class MeditationTimerProvider extends ChangeNotifier
     _keepScreenOn = Prefs.meditationKeepScreenOn;
     _volume = Prefs.meditationVolume;
     _ringStyle = Prefs.meditationRingStyle;
+    _autoCloseScreen = Prefs.meditationAutoCloseScreen;
 
     final now = DateTime.now().add(Duration(minutes: _durationMinutes));
     _endAtHour = now.hour;
@@ -432,7 +449,14 @@ class MeditationTimerProvider extends ChangeNotifier
     notifyListeners();
   }
 
+  void setAutoCloseScreen(bool value) {
+    _autoCloseScreen = value;
+    Prefs.meditationAutoCloseScreen = value;
+    notifyListeners();
+  }
+
   Future<void> startSession() async {
+    _cancelAutoClose();
     if (_mode == MeditationTimerMode.timed) {
       Prefs.addMeditationRecentTime(_durationMinutes);
     }
@@ -570,8 +594,18 @@ class MeditationTimerProvider extends ChangeNotifier
           cancelMeditationNotifications();
           if (_endSound.id == 'vibration') {
             _vibrate(duration: 800, pattern: [0, 400, 200, 400, 200, 400]);
+            if (_autoCloseScreen) {
+              _startAutoCloseTimer(const Duration(milliseconds: 1800));
+            }
+          } else if (_endSound.id == 'none') {
+            if (_autoCloseScreen) {
+              _startAutoCloseTimer(const Duration(milliseconds: 500));
+            }
           } else {
             _audioService.playEndSound(_endSound, volume: volumeNormalized);
+            if (_autoCloseScreen) {
+              _listenForEndSoundAndAutoClose();
+            }
           }
         }
       }
@@ -580,8 +614,60 @@ class MeditationTimerProvider extends ChangeNotifier
     notifyListeners();
   }
 
+  void _cancelAutoClose() {
+    _isWaitingForAutoClose = false;
+    _endSoundSub?.cancel();
+    _endSoundSub = null;
+    _autoCloseTimer?.cancel();
+    _autoCloseTimer = null;
+  }
+
+  void _listenForEndSoundAndAutoClose() {
+    _cancelAutoClose();
+    _isWaitingForAutoClose = true;
+
+    // Safety timeout (45s) in case audio completion is delayed or dropped
+    _autoCloseTimer = Timer(const Duration(seconds: 45), () {
+      _triggerAutoClose();
+    });
+
+    _endSoundSub = _audioService.onEndBellCompleted.listen((_) {
+      _triggerAutoClose();
+    });
+  }
+
+  void _startAutoCloseTimer(Duration delay) {
+    _cancelAutoClose();
+    _isWaitingForAutoClose = true;
+    _autoCloseTimer = Timer(delay, () {
+      _triggerAutoClose();
+    });
+  }
+
+  void _triggerAutoClose() {
+    _cancelAutoClose();
+    if (_status != MeditationTimerStatus.running &&
+        _status != MeditationTimerStatus.completed) {
+      return;
+    }
+    _stopTick();
+    if (_startTime != null && _status == MeditationTimerStatus.running) {
+      final total = DateTime.now().difference(_startTime!).inSeconds -
+          _totalPauseDurationSeconds;
+      _elapsedSeconds = total >= 0 ? total : 0;
+    }
+    cancelMeditationNotifications();
+    try {
+      WakelockPlus.disable();
+    } catch (_) {}
+
+    _status = MeditationTimerStatus.completed;
+    notifyListeners();
+  }
+
   Future<void> pauseSession() async {
     if (_status != MeditationTimerStatus.running) return;
+    _cancelAutoClose();
     _status = MeditationTimerStatus.paused;
     _pauseStartTime = DateTime.now();
     _stopTick();
@@ -611,6 +697,7 @@ class MeditationTimerProvider extends ChangeNotifier
   }
 
   Future<void> stopSession({bool completed = false}) async {
+    _cancelAutoClose();
     _stopTick();
     if (_startTime != null && _status == MeditationTimerStatus.running) {
       final total = DateTime.now().difference(_startTime!).inSeconds -
@@ -642,6 +729,7 @@ class MeditationTimerProvider extends ChangeNotifier
   }
 
   void resetToIdle() {
+    _cancelAutoClose();
     _stopTick();
     cancelMeditationNotifications();
     _status = MeditationTimerStatus.idle;
@@ -654,6 +742,7 @@ class MeditationTimerProvider extends ChangeNotifier
 
   @override
   void dispose() {
+    _cancelAutoClose();
     WidgetsBinding.instance.removeObserver(this);
     _tickTimer?.cancel();
     if (!kIsWeb) {

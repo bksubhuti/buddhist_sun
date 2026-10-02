@@ -454,6 +454,8 @@
   "off": "Tắt",
   "keepScreenAwake": "Giữ màn hình sáng",
   "keepScreenAwakeDesc": "Tránh màn hình tắt khi đang hành thiền",
+  "autoCloseTimer": "Tự động đóng màn hình hẹn giờ",
+  "autoCloseTimerDesc": "Tự động đóng màn hình hẹn giờ sau khi chuông kết thúc reo xong",
   "timerRingStyle": "Kiểu vòng đếm thời gian",
   "timerRingStyleDesc": "Kiểu giảm dần xóa vòng tròn khi thời gian trôi qua. Kiểu tăng dần lấp đầy vòng tròn.",
   "styleSubtractive": "Giảm dần (Mặc định)",

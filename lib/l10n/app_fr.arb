@@ -250,6 +250,8 @@
   "off": "Désactivé",
   "keepScreenAwake": "Garder l'écran allumé",
   "keepScreenAwakeDesc": "Empêche l'écran de se mettre en veille pendant la méditation",
+  "autoCloseTimer": "Fermeture automatique du minuteur",
+  "autoCloseTimerDesc": "Ferme automatiquement l'écran du minuteur une fois la cloche de fin terminée",
   "timerRingStyle": "Style de l'anneau",
   "timerRingStyleDesc": "Le mode soustractif vide le cercle au fil du temps.",
   "styleSubtractive": "Soustractif (Par défaut)",

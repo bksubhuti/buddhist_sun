@@ -275,6 +275,8 @@
   "off": "ປິດ",
   "keepScreenAwake": "ເປີດໜ້າຈໍຕະຫຼອດ",
   "keepScreenAwakeDesc": "ປ້ອງກັນໜ້າຈໍດັບຂະນະນັ່ງສະມາທິ",
+  "autoCloseTimer": "ປິດໜ້າຈໍຈັບເວລາອັດຕະໂນມັດ",
+  "autoCloseTimerDesc": "ປິດໜ້າຈໍຈັບເວລາໂດຍອັດຕະໂນມັດຫຼັງຈາກສຽງກະດິ່ງສິ້ນສຸດລົງ",
   "timerRingStyle": "ຮູບແບບວົງແຫວນເວລາ",
   "timerRingStyleDesc": "ແບບຫຼຸດລົງຈະຄ່ອຍໆຫາຍໄປຕາມເວລາ.",
   "styleSubtractive": "ແບບຫຼຸດລົງ (ຄ່າເລີ່ມຕົ້ນ)",

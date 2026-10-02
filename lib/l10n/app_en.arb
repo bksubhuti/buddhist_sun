@@ -323,6 +323,8 @@
   "off": "Off",
   "keepScreenAwake": "Keep Screen Awake",
   "keepScreenAwakeDesc": "Prevent phone display from sleeping while meditating",
+  "autoCloseTimer": "Auto-Close Timer Screen",
+  "autoCloseTimerDesc": "Automatically close the timer screen after the ending bell finishes ringing",
   "timerRingStyle": "Timer Ring Style",
   "timerRingStyleDesc": "Subtractive removes the solid circle as time elapses. Additive fills it up.",
   "styleSubtractive": "Subtractive (Default)",
