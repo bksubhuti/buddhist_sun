@@ -5,19 +5,19 @@
   "sun": "ព្រះអាទិត្យ",
   "noon": "ថ្ងៃត្រង់",
   "dawn": "ពេលអរុណរះ",
-  "timer": "ពេលវេលា",
-  "gps": "ប្រព័ន្ធកំណត់ទីតាំងសកល",
+  "timer": "ឧបករណ៍កំណត់ពេល",
+  "gps": "GPS",
   "settings": "ការកំណត់",
   "help": "ជំនួយ",
   "about": "អំពី",
   "licenses": "អាជ្ញាប័ណ្ណ",
   "not_set": "មិនបានកំណត់",
-  "solar_noon": "ព្រះអាទិត្យរះត្រង់",
+  "solar_noon": "ថ្ងៃត្រង់ព្រះអាទិត្យ",
   "gmt_offset": "GMT អុហ្វសិត",
   "hours": "ម៉ោង",
-  "astronomical_twilight": "ថ្ងៃលិចនៃ Astronomical",
-  "nautical_twilight": "ថ្ងៃលិចនៃ Nautical",
-  "civil_twilight": "ថ្ងៃលិចនៃ Civil",
+  "astronomical_twilight": "ព្រលឹមតារាសាស្ត្រ",
+  "nautical_twilight": "ព្រលឹមជើងទឹក",
+  "civil_twilight": "ព្រលឹមស៊ីវិល",
   "sunrise": "ព្រះអាទិត្យរះ",
   "custom_dawn": "កំណត់ផ្ទាល់ខ្លួន",
   "date": "កាលបរិច្ឆេទ",
@@ -29,8 +29,8 @@
   "speech_in_background": "ជូនដំណឹងនៅផ្ទៃខាងក្រោយ",
   "volume": "កំរិតសំលេង",
   "press_wait": "ចុច​នឹងរង់ចាំសម្រាប់កំណត់ទីតាំងថ្មី",
-  "get_gps": "ទទួលការកំណត់ទីតាំងថ្មី",
-  "save_gps": "រក្សាទុកការកំណត់ទីតាំងថ្មី",
+  "get_gps": "ទទួល GPS",
+  "save_gps": "រក្សាទុក GPS",
   "set_gps_city": "កំណត់ទីតាំង ឈ្មោះទីក្រុង ដោយអ៊ីនធើណិត",
   "previous_gps_is": "ទីតាំងពីមុនគឺ",
   "decimal_number": "ចំនួនលេខទសភាគ",
@@ -48,11 +48,11 @@
   "pa_auk_angle": "Pa_Auk (-9.8°)",
   "na_uyana_angle": "Na_uyana (-7.7°)",
   "search_for_city": "ស្វែងរកឈ្មោះទីក្រុង",
-  "gps_permission": "ការអនុញ្ញាតពីការកំណត់ទីតាំងសកល",
+  "gps_permission": "ការអនុញ្ញាត GPS",
   "background_permission": "ការអនុញ្ញាតពីផ្ទៃខាងក្រោយ",
   "error": "មានកំហុស",
   "notification": "សារជូនដំណឹង",
-  "running_in_background": "Buddhist Sun Running In Background",
+  "running_in_background": "Buddhist Sun កំពុងដំណើរការនៅផ្ទៃខាងក្រោយ",
   "background_initialized": "រៀបចំផ្ទៃខាងក្រោយ",
   "background_enabled": "បានអនុញ្ញាតិផ្ទៃខាងក្រោយ",
   "background_not_set": "មិនបានកំណត់ផ្ទៃខាងក្រោយ",
@@ -67,24 +67,24 @@
   "gps_internet_message": "ប្រសិនបើអ៊ីនធើណិតត្រូវបានបើក, ឈ្មោះទីក្រុងអាចយោងដោយការកំណត់ទីតាំងសកល",
   "language": "ភាសា",
   "theme": "គំរូរចនា",
-  "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNa-uyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way.  This was not tested with \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Na-Uyana uses Sunrise -30 minutes, and Pa-Auk uses Sunrise -40 minutes.  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  Speech means \"Text to Speech\".  The volume is controlled by the slider.  Under normal conditions the speech notifications only work while the screen is on.  To fix this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones may not allow it. We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The speech announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information.",
-  "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time specific to Buddhist monastic needs. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. The timer with voice notifications turned on helps me know the time left for eating.  I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://TimeandDate.com to verify this app's accuracy.This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
-  "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
-  "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
-  "dstSavingsNotice": "Warning, this app does not calculate for Daylight Savings Time (DST).  Please be aware of the changes.  When DST happens you need to reset the GPS or the offset found in the Settings Tab.",
+  "help_content": "ការគណនា និងក្បួនដោះស្រាយ៖\nការគណនានៅក្នុង Buddhist Sun ដំណើរការដោយក្បួនដោះស្រាយទីតាំងព្រះអាទិត្យ (Solar Position Algorithm – NREL SPA) របស់មន្ទីរពិសោធន៍ជាតិថាមពលកកើតឡើងវិញ (National Renewable Energy Laboratory)។ ខុសពីក្បួនដោះស្រាយចាស់ៗ (ដូចជា Meeus) ដែលមានកម្រិតលម្អៀងរហូតដល់ ១ នាទី NREL SPA គឺជាស្តង់ដារមាសអន្តរជាតិ ហើយមានភាពត្រឹមត្រូវក្នុងរង្វង់ពីរបីវិនាទី សម្រាប់ថ្ងៃត្រង់ព្រះអាទិត្យ ពេលព្រះអាទិត្យរះ និងពេលព្រលឹម/ព្រលប់។\n\nការប្រុងប្រយ័ត្នសំខាន់តាមព្រះវិន័យ៖\nទោះបីការគណនាតារាសាស្ត្រមានភាពត្រឹមត្រូវក្នុងរង្វង់ពីរបីវិនាទីក៏ដោយ ព្រះសង្ឃ និងអ្នកកាន់សីល ៨ ឬសីល ១០ គួរប្រាកដថាមិនលេបអាហារណាមួយទៀត ហើយខ្ពុរមាត់ឲ្យរួចមុនពេលផុតកំណត់ពី ១ នាទី ដល់ ៣០ វិនាទី ដើម្បីកុំឲ្យមានកំទេចអាហារនៅសល់ក្នុងមាត់ ឬបំពង់ក នៅពេលដល់ថ្ងៃត្រង់ព្រះអាទិត្យ។\n\nមុខងាររបស់កម្មវិធី៖\n• ថ្ងៃត្រង់ និងអរុណ៖ ថ្ងៃត្រង់ព្រះអាទិត្យដែលមានភាពជាក់លាក់ខ្ពស់ និងរូបមន្តអរុណដែលអាចកំណត់តាមចិត្តបាន (Pa-Auk -40m, Na-Uyana -30m, ពេលព្រលឹមតារាសាស្ត្រ និងមុំកំណត់ដោយខ្លួនឯង)។\n• ការរាប់ថយក្រោយដោយសំឡេង មិនបាច់ប្រើដៃ៖ ការជូនដំណឹងជាសំឡេងនិយាយ (TTS) ដែលដំណើរការនៅផ្ទៃខាងក្រោយ ទោះបិទអេក្រង់ក៏ដោយ ព្រមានតាមចន្លោះពេលសំខាន់ៗរហូតដល់សូន្យ។\n• ត្រីវិស័យវិន័យ៖ ផែនដីបីវិមាត្រ (3D) តាមខ្សែរង្វង់ធំ (Great-Circle) ផែនទីពីរវិមាត្រ (2D) និងផ្ទាំងបង្វិលបែបពុទ្ធសាសនា ដែលតម្រង់ទៅពុទ្ធគយា និងទីសក្ការបូជាដ៏ពិសិដ្ឋផ្សេងៗទៀត។\n• ដំណាក់កាលព្រះច័ន្ទ និងប្រតិទិនថ្ងៃសីល៖ ភាគរយដំណាក់កាលព្រះច័ន្ទប្រចាំថ្ងៃ និងថ្ងៃឧបោសថ / Poya តាមប្រពៃណីថៃ មីយ៉ាន់ម៉ា និងស្រីលង្កា។\n• ព្រះអាទិត្យ និងស្រមោល (សមាមាត្រតាមវិន័យ)៖ មុំស្រមោលបង្គោល និងការវាស់ជាធ្នាប់ម្រាមដៃ (អង្គុល) ក្នុងពេលជាក់ស្តែង សម្រាប់ផ្ទៀងផ្ទាត់ថ្ងៃត្រង់តាមការសង្កេតផ្ទាល់។\n• ពុទ្ធវស្សា (ប្រតិទិនពុទ្ធសករាជ)៖ ការគណនាឆ្នាំពុទ្ធសករាជ ចំនួនវស្សា និងថ្ងៃតាមប្រតិទិនបក្ខ។\n• ឧបករណ៍កំណត់ពេលសមាធិ៖ ឧបករណ៍កំណត់ពេលប្រកបដោយសតិ ជាមួយសំឡេងចានរោទ៍ (singing bowl) កណ្ដឹងចន្លោះពេល និងរយៈពេលត្រៀមខ្លួន។\n• មរណស្សតិ (ការពិចារណាសេចក្តីស្លាប់)៖ ការរលឹកដល់សេចក្តីស្លាប់ ជាមួយការវិភាគអាយុសង្ឃឹមរស់ និងការរំលឹកឲ្យពិចារណា។\n• GPS និងមូលដ្ឋានទិន្នន័យទីក្រុងជាង ៤០ ០០០៖ ការកំណត់ទីតាំងតាម GPS ដែលមានភាពត្រឹមត្រូវខ្ពស់ ឬការស្វែងរកទីក្រុងក្រៅបណ្តាញទូទាំងពិភពលោក។\n• រយៈពេលសុវត្ថិភាព៖ រយៈពេលបម្រុងសុវត្ថិភាពដែលអាចកំណត់បាន (១–១០ នាទី) ដកចេញពីថ្ងៃត្រង់ ឬបូកបន្ថែមលើអរុណ ដើម្បីភាពស្ងប់ចិត្ត។\n\nឯកជនភាព៖\nBuddhist Sun មិនប្រមូលព័ត៌មានផ្ទាល់ខ្លួនទេ។\nសេចក្តីថ្លែងការណ៍ពេញលេញ៖ https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
+  "about_content": "Buddhist Sun គឺជាកម្មវិធីតូចមួយសម្រាប់ព្រះភិក្ខុ និងភិក្ខុនី ដើម្បីបង្ហាញពេលថ្ងៃត្រង់ព្រះអាទិត្យ ស្របតាមតម្រូវការជាក់លាក់នៃជីវិតបព្វជិតក្នុងព្រះពុទ្ធសាសនា។ ដោយសារអាត្មាតែងតែឆាន់ដោយដៃ អាត្មាត្រូវការមធ្យោបាយមួយដែល \"មិនបាច់ប្រើដៃ\" ដើម្បីដឹងថាពេលថ្ងៃត្រង់កំពុងខិតជិតមកដល់។ ឧបករណ៍កំណត់ពេលដែលបើកការជូនដំណឹងជាសំឡេង ជួយឲ្យអាត្មាដឹងពីពេលវេលាដែលនៅសល់សម្រាប់ឆាន់។  អាត្មាពេញចិត្តនឹងការប្រើកម្មវិធីនេះ ហើយសង្ឃឹមថាអ្នកក៏ពេញចិត្តដូចគ្នាដែរ។\n\nហេតុអ្វីបានជារឿងនេះសំខាន់?\nអ្នកដែលកាន់តាមវិន័យបព្វជិតក្នុងព្រះពុទ្ធសាសនា មិនត្រូវបានអនុញ្ញាតឲ្យបរិភោគអាហារក្រោយថ្ងៃត្រង់ទេ។  វិន័យនេះផ្អែកលើព្រះអាទិត្យនៅចំណុចកំពូលលើមេឃ មិនមែនផ្អែកលើនាឡិកាទេ។ នៅសម័យព្រះពុទ្ធ គេមិនទាន់មាននាឡិកាទេ។  អ្នកដែលកាន់សីល ៨ ឬសីល ១០ ក៏អាចរកឃើញថាកម្មវិធីនេះមានប្រយោជន៍ដែរ។\n\nអាត្មាសូមណែនាំ https://www.kso.ac.at/beobachtungen/ephemeris_en.php  ដើម្បីផ្ទៀងផ្ទាត់ភាពត្រឹមត្រូវរបស់កម្មវិធីនេះ។  ទំព័រពុទ្ធសករាជ ត្រូវបានបង្កើតឡើងដោយ Bhante Amarawali នៃ Yogashrama។ អាសយដ្ឋានអ៊ីមែលសម្រាប់ទំនាក់ទំនងគឺ bhamarawali@gmail.com ។  កម្មវិធីនេះត្រូវបានរៀបចំឡើងសម្រាប់ការប្រើប្រាស់ \"ពេលបច្ចុប្បន្ន/ទីតាំងបច្ចុប្បន្ន\"។\n\nសូមឲ្យកម្មវិធីនេះជួយអ្នកឲ្យបានសម្រេចព្រះនិព្វានយ៉ាងឆាប់រហ័ស និងដោយសុវត្ថិភាព!",
+  "gps_permission_content": "កម្មវិធីនឹងស្នើសុំការអនុញ្ញាតដើម្បីប្រើ GPS។ ការនេះអនុញ្ញាតឲ្យ Buddhist Sun ដឹងពីទិន្នន័យទីតាំង GPS ដើម្បីគណនាទីតាំងរបស់ព្រះអាទិត្យ។ ទីតាំង GPS ត្រូវបានប្រមូលតែម្តងប៉ុណ្ណោះ រាល់ពេលដែលប៊ូតុង GPS ត្រូវបានចុច។  ទិន្នន័យមិនត្រូវបានផ្ញើចេញក្រៅកម្មវិធីនេះទេ។",
+  "background_permission_content": "កម្មវិធីនឹងស្នើសុំការអនុញ្ញាតសម្រាប់ការប្រើប្រាស់នៅផ្ទៃខាងក្រោយ។  ការអនុញ្ញាតនេះចាំបាច់ ដើម្បីឲ្យការជូនដំណឹងជាសំឡេងនិយាយដំណើរការបានត្រឹមត្រូវ ទោះបីអេក្រង់បិទក៏ដោយ។  Buddhist Sun នឹងបិទដំណើរការផ្ទៃខាងក្រោយនេះ នៅពេលកុងតាក់ត្រូវបានបិទ ឬនៅពេលកម្មវិធីត្រូវបានបិទ។  ប្រសិនបើអ្នកយល់ព្រម ការអនុញ្ញាតនឹងត្រូវបានស្នើសុំតែម្តងប៉ុណ្ណោះ។",
+  "dstSavingsNotice": "ការព្រមាន៖ កម្មវិធីនេះមិនគណនាម៉ោងសន្សំពន្លឺថ្ងៃ (DST) ទេ។  សូមប្រុងប្រយ័ត្នចំពោះការផ្លាស់ប្តូរនេះ។  នៅពេលមានការប្តូរម៉ោង DST អ្នកត្រូវកំណត់ GPS ឡើងវិញ ឬកំណត់គម្លាតម៉ោង (offset) នៅក្នុងផ្ទាំងការកំណត់ឡើងវិញ។",
   "dstNoticeTitle": "សេចក្តីជូនដំណឹងអំពីដំណើរនៃពន្លឺថ្ងៃ",
   "verify": "ផ្ទៀងផ្ទាត់ថ្ងៃត្រង់",
   "rateThisApp": "វាយតំលៃកម្មវិធីនេះ",
   "prev": "មុន",
   "next": "បន្ទាប់",
-  "moonPhase": "ដំណាកកាលព្រះច័ន្ទ",
+  "moonPhase": "ដំណាក់កាលព្រះច័ន្ទ",
   "selectDate": "ជ្រើសរើសកាលបរិច្ឆេទ",
   "selectedDate": "បានជ្រើសរើសកាលបរិច្ឆេទ",
   "moon": "ព្រះច័ន្ទ",
   "darkMode": "ទំរង់ងងឹត",
   "color": "ពណ៌",
   "material3": "Material 3",
-  "uposathaCountry": "ប្រទេសអុុបោសថ",
+  "uposathaCountry": "ប្រទេសអុបោសថ",
   "autoUpdateGps": "បច្ចុប្បន្នភាព GPS ដោយស្វ័យប្រវត្តិ",
   "refreshingGps": "កំពុងធ្វើបច្ចុប្បន្នភាព GPS",
   "uposathaNotifications": "ការជូនដំណឹងអំពីអុបោសថ៖",
@@ -142,7 +142,7 @@
   "beWeek_6": "សោរវារំ",
   "beFullMoon": "ថ្ងៃសីលពេញបូណ៌មី",
   "beNewMoon": "ថ្ងៃសីលដាច់",
-  "bePaliTemplate": "អយំ\n{animal} សំវច្ឆរេ\n{season} ឧតុ អស្មឹ ឧតុមហិ\n{month} មាសស្ស\n{paksha}\n{tithi}\n{weekday}\nឥទន្តិ ទដ្ឋព្វំ。",
+  "bePaliTemplate": "អយំ\n{animal} សំវច្ឆរេ\n{season} ឧតុ អស្មឹ ឧតុមហិ\n{month} មាសស្ស\n{paksha}\n{tithi}\n{weekday}\nឥទន្តិ ទដ្ឋព្វំ។",
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
   "beMonth_Citta": "Citta",
@@ -176,8 +176,8 @@
   "beSeason_Past": "កន្លងផុត",
   "beSeason_Remaining": "នៅសល់",
   "showEighthDayUposatha": "បង្ហាញថ្ងៃសីល ៨ កើត/រោច",
-  "beWaxing8th": "កើត ៨ កើត",
-  "beWaning8th": "រោច ៨ រោច",
+  "beWaxing8th": "៨ កើត",
+  "beWaning8th": "៨ រោច",
   "meditationTimer": "ឧបករណ៍កំណត់ពេលសមាធិ",
   "startMeditation": "ចាប់ផ្តើមសមាធិ",
   "deathContemplation": "មរណានុស្សតិ",
@@ -194,11 +194,11 @@
   "deathContemplationPrompt": "សូមកំណត់ថ្ងៃកំណើត និងអាយុសង្ឃឹមរស់នៅក្នុងការកំណត់។",
   "lifeElapsed": "ជីវិតដែលបានកន្លងផុត",
   "lifeRemaining": "ជីវិតដែលនៅសល់",
-  "lifeExceeded": "អ្នកបានរស់លើសពីអាយុសង្ឃឹមរស់ហើយ។ រាល់ខណៈពេលគឺជាអំណោយដ៏ថ្លៃថ្លា។",
+  "lifeExceeded": "អ្នកបានរស់លើសពីអាយុសង្ឃឹមរស់ហើយ។ រាល់ខណៈនីមួយៗគឺជាអំណោយសម្រាប់ការប្រតិបត្តិធម៌។",
   "editDeathSettings": "កែសម្រួលថ្ងៃកំណើត និងអាយុ",
   "maranasatiQuote": "ជីវិតមិនទៀង សេចក្តីស្លាប់ទើបទៀង។ ចូរញ៉ាំងសេចក្តីមិនធ្វេសប្រហែសឱ្យបរិបូរណ៍ចុះ។",
-  "compass": "កំពែង",
-  "buddhistCompass": "កំពែងព្រះពុទ្ធ",
+  "compass": "ត្រីវិស័យ",
+  "buddhistCompass": "ត្រីវិស័យព្រះពុទ្ធ",
   "currentDirection": "ទិសបច្ចុប្បន្ន:",
   "bearingTo": "ទិសទៅ {targetName}:",
   "distanceTo": "ចម្ងាយទៅ {targetName}:",
@@ -213,18 +213,18 @@
   "place_toothRelicPagoda": "វត្តធ្មេញ",
   "compassHelpContent": "១. សូមអនុញ្ញាតសិទ្ធិចូលប្រើទីតាំង ដើម្បីឱ្យត្រីវិស័យអាចគណនាទិសដៅ និងចម្ងាយជាក់លាក់ទៅកាន់ទីសក្ការបូជាព្រះពុទ្ធសាសនា។\n\n២. ជ្រើសរើសទីសក្ការបូជាព្រះពុទ្ធសាសនាដែលអ្នកចង់បែរមុខទៅ ឬកំណត់ទីតាំងផ្ទាល់ខ្លួន។\n\n៣. កាន់ទូរស័ព្ទឱ្យរាបស្មើស្របនឹងដី ហើយបង្វិលខ្លួនយឺតៗរហូតដល់ទ្រនិចចង្អុលចំទិសដៅ។\n\n៤. នៅពេលតម្រង់ចំគោលដៅ ត្រីវិស័យនឹងភ្លឺឡើងពណ៌មាស ហើយផ្ទាំងជូនដំណឹងនឹងបញ្ជាក់ថាអ្នកកំពុងបែរមុខចំទិសដៅ។\n\n៥. ចុចលើរូបផែនដី នៅរបារខាងលើដើម្បីមើលផែនទីផ្លូវហោះហើរ។ ចុចលើត្រីវិស័យតូចលើផែនទីដើម្បីប្តូរមកវិញ។\n\n៦. បើកមុខងារញ័រដើម្បីឱ្យមានការដាស់តឿននៅពេលអ្នកតម្រង់ចំទិសដៅ។\n\n៧. ថ្វាយបង្គំ សូត្រធម៌ ឬចម្រើនសមាធិដោយបែរមុខទៅកាន់ដើមពោធិ៍ ឬទីសក្ការបូជាដ៏វិសុទ្ធ។",
   "locationPermissionRationaleTitle": "អនុញ្ញាតទីតាំង?",
-  "locationPermissionRationaleMessage": "កំពែងព្រះពុទ្ធត្រូវការទីតាំងរបស់អ្នក ដើម្បីបង្ហាញទៅកាន់កន្លែងដែលបានជ្រើស។",
+  "locationPermissionRationaleMessage": "ត្រីវិស័យព្រះពុទ្ធត្រូវការទីតាំងរបស់អ្នក ដើម្បីបង្ហាញទៅកាន់កន្លែងដែលបានជ្រើស។",
   "locationPermissionRationaleNotNow": "មិនមែនឥឡូវនេះ",
   "locationPermissionRationaleContinue": "បន្ត",
   "locationRequiredTitle": "ត្រូវការទីតាំង",
   "locationRequiredCancel": "បោះបង់",
   "locationRequiredOpenSettings": "បើកការកំណត់",
   "locationRequiredExit": "ចាកចេញ",
-  "locationRequiredMessage1": "ត្រូវការទីតាំងសម្រាប់កំពែងដំណើរការ។",
+  "locationRequiredMessage1": "ត្រូវការទីតាំងសម្រាប់ត្រីវិស័យដំណើរការ។",
   "locationRequiredMessage2": "ការអនុញ្ញាតទីតាំងត្រូវបានបដិសេធជាអចិន្ត្រៃយ៍។ សូមបើកនៅក្នុងការកំណត់។",
   "locationServicesTitle": "បើកសេវាទីតាំង",
-  "locationServicesContent": "សេវាទីតាំងត្រូវបានបិទ។ សូមបើកនៅក្នុងការកំណត់ដើម្បីប្រើកំពែង។",
-  "locationError": "មិនអាចយកទីតាំងបានទេ។ សូមព្យាយាមម្តងទៀត।",
+  "locationServicesContent": "សេវាទីតាំងត្រូវបានបិទ។ សូមបើកនៅក្នុងការកំណត់ដើម្បីប្រើត្រីវិស័យ។",
+  "locationError": "មិនអាចយកទីតាំងបានទេ។ សូមព្យាយាមម្តងទៀត។",
   "compassHeading": "ទិសដៅ",
   "compassTarget": "គោលដៅ",
   "compassDistance": "ចម្ងាយ",
@@ -235,10 +235,10 @@
   "timerModeTimed": "កំណត់ពេល",
   "timerModeEndAt": "ពេលបញ្ចប់",
   "timerModeOpen": "សេរី",
-  "tapToChangeDuration": "ចុចដើម្បីប្តូរថិរវេលា",
+  "tapToChangeDuration": "ចុចដើម្បីប្តូររយៈពេល និងការកំណត់ជាមុន",
   "tapToChangeEndTime": "ចុចដើម្បីប្តូរម៉ោងបញ្ចប់",
   "openUnlimitedMode": "របៀបសេរី / ឥតកំណត់",
-  "openUnlimitedModeDesc": "រាប់ម៉ោងរហូតដល់អ្នកបញ្ចប់។ កណ្ដឹងចន្លោះពេលនឹងបន្លឺឡើង។",
+  "openUnlimitedModeDesc": "រាប់ឡើងជាបន្តបន្ទាប់រហូតដល់អ្នកបញ្ចប់។ កណ្ដឹងចន្លោះពេលនឹងរោទ៍តាមការកំណត់ខាងក្រោម។",
   "bellsAndSettings": "កណ្ដឹង និងការកំណត់",
   "bellVolume": "ភាគរយកម្រិតសំឡេងកណ្ដឹង",
   "phoneVolume": "កម្រិតសំឡេងទូរស័ព្ទ",
@@ -253,7 +253,7 @@
   "autoCloseTimer": "បិទអេក្រង់កំណត់ម៉ោងដោយស្វ័យប្រវត្តិ",
   "autoCloseTimerDesc": "បិទអេក្រង់កំណត់ម៉ោងដោយស្វ័យប្រវត្តបន្ទាប់ពីសំឡេងកណ្ដឹងបញ្ចប់",
   "timerRingStyle": "រចនាប័ទ្មរង្វង់ម៉ោង",
-  "timerRingStyleDesc": "ដករង្វង់បន្តិចម្តងៗពេលវេលាកន្លងផុតទៅ។",
+  "timerRingStyleDesc": "របៀបដកថយ លុបរង្វង់ពេញបន្តិចម្តងៗ នៅពេលពេលវេលាកន្លងផុតទៅ។ របៀបបន្ថែមឡើង បំពេញរង្វង់នោះឲ្យពេញ។",
   "styleSubtractive": "ដកថយ (លំនាំដើម)",
   "styleAdditive": "បន្ថែមឡើង",
   "endSession": "បញ្ចប់សមាធិ",
@@ -266,7 +266,7 @@
   "timerRemaining": "ពេលនៅសល់",
   "timerDone": "រួចរាល់",
   "aboutTimer": "អំពីឧបករណ៍កំណត់ពេល",
-  "timerInfoDialogContent": "ឧបករណ៍កំណត់ពេលស្ងប់ស្ងាត់សម្រាប់សមាធិ។",
+  "timerInfoDialogContent": "ឧបករណ៍កំណត់ពេលដ៏ស្ងប់ស្ងាត់ ដែលរៀបចំឡើងសម្រាប់ការប្រតិបត្តិសមាធិរបស់អ្នក។\n\n• កំណត់ពេល៖ ធ្វើសមាធិក្នុងរយៈពេលកំណត់មួយ។\n• ពេលបញ្ចប់៖ ធ្វើសមាធិរហូតដល់ម៉ោងជាក់លាក់មួយនៃថ្ងៃ។\n• សេរី៖ ធ្វើសមាធិដោយសេរី ដោយអាចមានសំឡេងរោទ៍ចន្លោះពេលតាមជម្រើស។\n\nចុចលើរង្វង់ឧបករណ៍កំណត់ពេល ក្នុងអំឡុងពេលសមាធិ ដើម្បីផ្អាក ឬបន្ត។\n\nសំឡេងរោទ៍ ដោយការអនុគ្រោះពី Freesound.org, Pixabay.com និង Suno.com។",
   "tapScreenToResume": "ចុចលើអេក្រង់ដើម្បីបន្ត",
   "tapScreenToPause": "ចុចលើអេក្រង់ដើម្បីផ្អាក",
   "setDuration": "កំណត់ថិរវេលា",
@@ -342,7 +342,289 @@
   "clear": "សម្អាត",
   "setLocale": "កំណត់ភាសា",
   "noData": "គ្មានទិន្នន័យ",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "សម្រាប់រយៈពេលលើសពី ៣ ម៉ោង សូមបើកអេក្រង់ទុក។ ប្រព័ន្ធអាចបញ្ឈប់កម្មវិធីកំណត់ម៉ោងប្រសិនបើអេក្រង់បិទ។"
+  "timerOvertime": "លើសម៉ោង",
+  "finishSession": "បញ្ចប់វគ្គ",
+  "screenOffWarningOver3Hours": "សម្រាប់រយៈពេលលើសពី ៣ ម៉ោង សូមបើកអេក្រង់ទុក។ ប្រព័ន្ធអាចបញ្ឈប់កម្មវិធីកំណត់ម៉ោងប្រសិនបើអេក្រង់បិទ។",
+  "vitaminD": "វីតាមីន D",
+  "vitDTitle": "កម្មវិធីកំណត់ពេលហាលថ្ងៃវីតាមីន D",
+  "vitDNoLocation": "កំណត់ទីតាំងរបស់អ្នក (ផ្ទាំង GPS) ដើម្បីទទួលបានមុំព្រះអាទិត្យ និងការប៉ាន់ស្មានវីតាមីន D ឱ្យបានត្រឹមត្រូវ។",
+  "vitDStatusGood": "ពន្លឺថ្ងៃល្អសម្រាប់វីតាមីន D — ព្រះអាទិត្យខ្ពស់ជាង 45°",
+  "vitDStatusLow": "ព្រះអាទិត្យទាបជាង 45° — វីតាមីន D ថយចុះ",
+  "vitDStatusNone": "ព្រះអាទិត្យទាបពេក — ស្ទើរតែគ្មានវីតាមីន D",
+  "vitDStatusNight": "ព្រះអាទិត្យលិចហើយ — គ្មានវីតាមីន D",
+  "vitDSunAngle": "មុំព្រះអាទិត្យ",
+  "vitDUvIndex": "សន្ទស្សន៍ UV (ប៉ាន់ស្មាន)",
+  "vitDRate": "អត្រាវីតាមីន D",
+  "vitDIuPerMin": "≈ {iu} IU/នាទី",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "ប្រសិទ្ធភាពវីតាមីន D",
+  "vitDBurnTime": "រលាកស្បែកក្រោយ",
+  "vitDMinutes": "{min} នាទី",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "ពេលល្អបំផុតសម្រាប់វីតាមីន D ថ្ងៃនេះ (ខ្ពស់ជាង 45°)៖ {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "ថ្ងៃនេះព្រះអាទិត្យមិនឡើងដល់ 45° ទេ (ខ្ពស់បំផុត {deg}° នៅម៉ោង {time})។ វីតាមីន D នឹងទាប។",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "ច្បាប់ស្រមោល៖ ពេលស្រមោលរបស់អ្នកខ្លីជាងកម្ពស់ខ្លួន ព្រះអាទិត្យខ្ពស់ជាង 45°។",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "ប៉ាន់ស្មានក្នុងវគ្គនេះ",
+  "vitDStart": "ចាប់ផ្តើមហាលថ្ងៃ",
+  "vitDStop": "បញ្ឈប់ និងរក្សាទុក",
+  "vitDGoalReached": "បានគ្រប់តម្រូវការប្រចាំថ្ងៃហើយ។ សូមសម្រាកនៅកន្លែងម្លប់។",
+  "vitDEnoughSun": "ហាលថ្ងៃគ្រប់គ្រាន់សម្រាប់ថ្ងៃនេះហើយ — ចាប់ពីពេលនេះហានិភ័យរលាកស្បែកកើនឡើង។",
+  "vitDToday": "ថ្ងៃនេះ",
+  "vitDOfDailyNeed": "នៃតម្រូវការប្រចាំថ្ងៃប្រហែល {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "កម្រិតរលាកស្បែកថ្ងៃនេះ",
+  "vitDBurnHint": "គួររក្សាឱ្យក្រោម 50% — ហាលថ្ងៃខ្លីៗគឺគ្រប់គ្រាន់។",
+  "vitDBurnWarnMid": "លើសពាក់កណ្តាលកម្រិតរលាកស្បែកហើយ។ គួរគ្របដណ្តប់ខ្លួន ឬផ្លាស់ទៅកន្លែងម្លប់។",
+  "vitDBurnWarnHigh": "ជិតរលាកស្បែកហើយ។ សូមគ្របដណ្តប់ខ្លួន ហើយចូលទៅកន្លែងម្លប់។",
+  "vitDTodaySessions": "វគ្គហាលថ្ងៃថ្ងៃនេះ",
+  "vitDNoSessions": "ថ្ងៃនេះមិនទាន់មានវគ្គទេ។ ចុចចាប់ផ្តើមពេលចេញទៅហាលថ្ងៃ។",
+  "vitDDeleteSession": "លុបវគ្គ",
+  "vitDDeleteConfirm": "ដកវគ្គនេះចេញពីសរុបថ្ងៃនេះឬ?",
+  "vitDSettings": "ការកំណត់ពន្លឺថ្ងៃ",
+  "vitDSkinTitle": "ពណ៌ស្បែក",
+  "vitDSkinSubtitle": "កត្តាធំបំផុតសម្រាប់រយៈពេលរលាកស្បែក។",
+  "vitDSkinType": "ប្រភេទ {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "សខ្លាំង",
+  "vitDSkin2": "ស",
+  "vitDSkin3": "មធ្យម",
+  "vitDSkin4": "ស្រអែម / ត្នោតស្រាល",
+  "vitDSkin5": "ត្នោត",
+  "vitDSkin6": "ត្នោតចាស់",
+  "vitDCoverageTitle": "ស្បែកដែលប៉ះពន្លឺ",
+  "vitDCoverageSubtitle": "ស្បែកប៉ុន្មានត្រូវពន្លឺថ្ងៃ។ ផ្លាស់ប្តូរសម្រាប់វគ្គនីមួយៗ។",
+  "vitDCoverFullRobe": "គ្របស្មាទាំងពីរ",
+  "vitDCoverFullRobeDesc": "ក្បាល ដៃ ជើង",
+  "vitDCoverOneShoulder": "ចំហស្មាម្ខាង",
+  "vitDCoverOneShoulderDesc": "បូកដៃ និងស្មាស្តាំ",
+  "vitDCoverUpperBare": "ចំហខ្លួនផ្នែកខាងលើ",
+  "vitDCoverUpperBareDesc": "ស្បង់តែប៉ុណ្ណោះ",
+  "vitDCoverBathing": "សំពត់ងូតទឹក",
+  "vitDCoverBathingDesc": "ពីចង្កេះដល់ជង្គង់",
+  "vitDSkyTitle": "មេឃ",
+  "vitDSkyClear": "ស្រឡះ",
+  "vitDSkyPartly": "មានពពកខ្លះ",
+  "vitDSkyMostly": "ពពកច្រើន",
+  "vitDSkyOvercast": "ពពកក្រាស់",
+  "vitDWeightTitle": "ទម្ងន់ខ្លួន",
+  "vitDWeightSubtitle": "ប្រើសម្រាប់ផ្ទៃស្បែក និងតម្រូវការប្រចាំថ្ងៃ។",
+  "vitDGoalFromWeight": "តម្រូវការប្រចាំថ្ងៃប្រហែល៖ {iu} IU (ប្រហែល 20 IU ក្នុងមួយគីឡូក្រាម, 600–4,000 IU)។",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "មគ្គុទ្ទេសក៍ពន្លឺថ្ងៃ និងវីតាមីន D",
+  "vitDGuideBenefitsTitle": "អត្ថប្រយោជន៍",
+  "vitDGuideBenefits": "វីតាមីន D ជួយឱ្យឆ្អឹង និងធ្មេញរឹងមាំ កម្លាំងសាច់ដុំ និងប្រព័ន្ធភាពស៊ាំ។ កង្វះវីតាមីន D ជារឿងធម្មតាក្នុងចំណោមបព្វជិតដែលស្នាក់នៅក្នុងអគារ គ្រងចីវរគ្របជានិច្ច ឬគង់នៅក្នុងវត្តដែលមានម្លប់ក្រាស់។ ការហាលថ្ងៃបន្តិចបន្តួចជាប្រចាំ គឺជាវិធីធម្មជាតិ និងឥតគិតថ្លៃដើម្បីបង្កើតវីតាមីន D។",
+  "vitDGuideNoonTitle": "ហាលថ្ងៃខ្លីពេលថ្ងៃត្រង់ ធៀបនឹងហាលថ្ងៃយូរពេលរសៀល",
+  "vitDGuideNoon": "ការហាលថ្ងៃខ្លីៗជិតថ្ងៃត្រង់ ល្អជាងការហាលថ្ងៃយូរពេលរសៀលល្ងាច។ ពេលព្រះអាទិត្យខ្ពស់ (ខ្ពស់ជាង 45°) ពន្លឺមាន UVB ច្រើនជាង ដែលជាកាំរស្មីបង្កើតវីតាមីន D ដូច្នេះអ្នកទទួលបានវីតាមីន D ច្រើនបំផុតសម្រាប់ហានិភ័យរលាកស្បែកនីមួយៗ។ នៅម៉ោង 3 រសៀល ព្រះអាទិត្យទាបជាង៖ UVB ធ្លាក់ចុះលឿនជាង UVA ច្រើន។ ស្បែករលាកយឺតជាង ប៉ុន្តែដើម្បីទទួលបានវីតាមីន D ដូចគ្នា អ្នកត្រូវនៅយូរជាងច្រើន ហើយទទួល UVA ច្រើនជាង ដែលធ្វើឱ្យស្បែកចាស់ និងបង្កើនហានិភ័យមហារីកស្បែក។ ដូច្នេះការហាលថ្ងៃយូរនៅម៉ោង 3 រសៀល មិនមែនមានសុវត្ថិភាពជាងទេ — គ្រាន់តែមានប្រសិទ្ធភាពតិចជាង។ ឧទាហរណ៍៖ 10–15 នាទីពេលថ្ងៃត្រង់ អាចស្មើនឹងមួយម៉ោង ឬច្រើនជាងនៅម៉ោង 3 រសៀល។",
+  "vitDGuideShortTitle": "ហាលថ្ងៃខ្លីៗជាប្រចាំ",
+  "vitDGuideShort": "ការផលិតវីតាមីន D របស់ស្បែកឈានដល់កម្រិតថេរ៖ ក្រោយពីទទួលបានប្រហែលពាក់កណ្តាលទៅមួយកម្រិតរលាកស្បែក ការនៅយូរបន្ថែមស្ទើរតែមិនបន្ថែមវីតាមីន D ទេ ប៉ុន្តែនៅតែបន្ថែមការខូចខាតស្បែក។ ការហាលថ្ងៃខ្លីៗច្រើនដងក្នុងមួយសប្តាហ៍ ល្អជាងការហាលថ្ងៃយូរតែម្តង។ ការឈប់មុនពេលស្បែកចាប់ផ្តើមឡើងពណ៌ផ្កាឈូក គឺគ្រប់គ្រាន់។ វីតាមីន D ត្រូវបានស្តុកទុកក្នុងរាងកាយ ដូច្នេះការខកខានមួយថ្ងៃមិនមែនជាបញ្ហាទេ។",
+  "vitDGuideDangersTitle": "គ្រោះថ្នាក់",
+  "vitDGuideDangers": "ពន្លឺថ្ងៃច្រើនពេកបង្កឱ្យរលាកស្បែក ខូចភ្នែក អស់កម្លាំងដោយកម្តៅ និងខ្វះជាតិទឹក ស្បែកចាស់មុនវ័យ និងមហារីកស្បែក។ ស្បែកសរលាកលឿន។ កញ្ចក់បង្អួចរាំង UVB ដូច្នេះការអង្គុយនៅក្រោយកញ្ចក់មិនបង្កើតវីតាមីន D ទេ។ ទឹក ខ្សាច់ និងថ្មពណ៌ស្រាល ចាំងត្រឡប់ UV និងបង្កើនការប៉ះពាល់។ ថ្នាំខ្លះធ្វើឱ្យស្បែកងាយប្រតិកម្មនឹងពន្លឺ។ សូមផឹកទឹក និងការពារភ្នែក — កុំសម្លឹងមើលព្រះអាទិត្យដាច់ខាត។",
+  "vitDGuideMonksTitle": "ដំបូន្មានសម្រាប់ព្រះសង្ឃ",
+  "vitDGuideMonks": "ការចំហស្មាស្តាំ ឬដៃ ពេលគង់ ឬដើរក្នុងវត្តមួយរយៈខ្លីជិតថ្ងៃត្រង់ ជាធម្មតាគ្រប់គ្រាន់សម្រាប់ស្បែកខ្មៅស្រអែមនៅតំបន់ត្រូពិច។ ក្បាលកោរក៏ត្រូវពន្លឺថ្ងៃដែរ ដូច្នេះគួរការពារស្បែកក្បាលពេលនិមន្តបិណ្ឌបាតឆ្ងាយ។ ស្បែកខ្មៅត្រូវការពេលយូរជាងដើម្បីទទួលបានវីតាមីន D ដូចគ្នា ប៉ុន្តែមិនងាយរលាក។ នៅតំបន់ត្រជាក់ ឬរដូវដែលព្រះអាទិត្យនៅទាបជាង 45° រាងកាយមិនអាចបង្កើតវីតាមីន D បានច្រើនទេ — សូមពិគ្រោះវេជ្ជបណ្ឌិតអំពីអាហារ ឬអាហារបំប៉ន។",
+  "vitDGuideMethodTitle": "របៀបប៉ាន់ស្មាន",
+  "vitDGuideMethod": "មុំព្រះអាទិត្យគណនាពីទីតាំង GPS និងពេលវេលា។ សន្ទស្សន៍ UV ប៉ាន់ស្មានសម្រាប់មេឃស្រឡះ (UVI ≈ 12.5 × sin(angle)^2.42) ហើយកាត់បន្ថយតាមពពក។ កម្រិតរលាកស្បែក (MED) អាស្រ័យលើប្រភេទស្បែក។ វីតាមីន D ប្រហែល 10,000 IU ត្រូវបានបង្កើត ពេលរាងកាយទាំងមូលទទួលបានមួយកម្រិតរលាកស្បែក; តម្លៃនេះត្រូវបានកែតាមផ្ទៃស្បែកដែលមិនបានគ្រប និងទំហំរាងកាយ (ពីទម្ងន់)។ ប្រសិទ្ធភាពវីតាមីន D ថយចុះពេលព្រះអាទិត្យទាបជាង 45° ហើយស្មើសូន្យពេលទាបជាង 15°។ ការផលិតឈប់ពេលកម្រិតប្រចាំថ្ងៃឈានដល់មួយកម្រិតរលាកស្បែក។ តម្លៃពិតប្រែប្រួលតាមអូហ្សូន កម្ពស់ ការបំពុលខ្យល់ អាយុ និងសុខភាព — សូមចាត់ទុកលេខទាំងនេះជាការណែនាំប្រហាក់ប្រហែលប៉ុណ្ណោះ។",
+  "vitDDisclaimer": "ការបដិសេធផ្នែកវេជ្ជសាស្ត្រ៖ ម៉ាស៊ីនគណនានេះផ្តល់តែការប៉ាន់ស្មានប្រហាក់ប្រហែលសម្រាប់ការអប់រំប៉ុណ្ណោះ។ វាមិនមែនជាដំបូន្មានវេជ្ជសាស្ត្រទេ ហើយមិនអាចវាស់កម្រិតវីតាមីន D របស់អ្នកបានទេ។ ការហាលថ្ងៃមានហានិភ័យ រួមទាំងការរលាកស្បែក និងមហារីកស្បែក។ សូមពិគ្រោះជាមួយវេជ្ជបណ្ឌិតដែលមានគុណវុឌ្ឍិ អំពីការធ្វើតេស្តវីតាមីន D អាហារបំប៉ន ឬបញ្ហាស្បែក ជាពិសេសប្រសិនបើអ្នកមានស្បែកស មានប្រវត្តិមហារីកស្បែក ឬប្រើថ្នាំដែលធ្វើឱ្យស្បែកងាយប្រតិកម្មនឹងពន្លឺ។",
+  "vitDTabMonk": "ព្រះសង្ឃ",
+  "vitDTabLay": "ប្រុស",
+  "vitDCoverFaceHands": "មុខ និងដៃ",
+  "vitDCoverFaceHandsDesc": "អាវដៃវែង ខោជើងវែង",
+  "vitDCoverShortSleeves": "ដៃខ្លី",
+  "vitDCoverShortSleevesDesc": "អាវយឺត ខោជើងវែង",
+  "vitDCoverShorts": "ខោខ្លី និងអាវយឺត",
+  "vitDCoverShortsDesc": "ដៃ និងជើងផ្នែកក្រោម",
+  "vitDCoverSwimwear": "សម្លៀកបំពាក់ហែលទឹក",
+  "vitDCoverSwimwearDesc": "ខោហែលទឹកខ្លីប៉ុណ្ណោះ",
+  "vitDDailyTarget": "គោលដៅប្រចាំថ្ងៃ",
+  "vitDRemaining": "នៅត្រូវការ {iu} IU ទៀត",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "ពេលវេលាគោលដៅ",
+  "vitDTargetTimeLeft": "ពេលវេលាគោលដៅនៅសល់",
+  "vitDTargetTimeFull": "សម្រាប់គោលដៅទាំងមូល ចាប់ពីឥឡូវ",
+  "vitDTargetTimeRest": "ដើម្បីបំពេញគោលដៅថ្ងៃនេះ",
+  "vitDTargetUnreachable": "មិនអាចសម្រេចបានថ្ងៃនេះក្នុងលក្ខខណ្ឌនេះ",
+  "vitDTargetOverBurn": "យូរជាងពាក់កណ្ដាលនៃពេលរលាកស្បែក ({min} នាទី)។ បើកស្បែកច្រើនជាងនេះ ដេកចុះ ឬបែងចែកជាច្រើនថ្ងៃ។",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "គោលដៅប្រចាំថ្ងៃ",
+  "vitDTargetAuto": "គោលដៅស្វ័យប្រវត្តិតាមទម្ងន់",
+  "vitDPostureTitle": "ឥរិយាបថ",
+  "vitDPostureSubtitle": "ការដេកនៅពេលថ្ងៃត្រង់ធ្វើឱ្យស្បែកច្រើនបែរទៅរកព្រះអាទិត្យ។",
+  "vitDPostureStanding": "ឈរ",
+  "vitDPostureWalking": "ដើរ",
+  "vitDPostureSitting": "អង្គុយ",
+  "vitDPostureLying": "ដេក",
+  "vitDPostureFactor": "វីតាមីន D ×{f} ឥឡូវនេះ បើធៀបនឹងការឈរ",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "ការដុះសក់",
+  "vitDHairSubtitle": "ចំនួនថ្ងៃចាប់តាំងពីកោរសក់។ ស្បែកក្បាលទទេក៏បង្កើតវីតាមីន D ដែរ។",
+  "vitDHairToday": "កោរថ្ងៃនេះ • ស្បែកក្បាលប៉ះពន្លឺពេញលេញ",
+  "vitDHairValue": "កោររួច {days} ថ្ងៃ • ស្បែកក្បាលប៉ះពន្លឺ {pct}%",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "ឥរិយាបថ និងស្បែកក្បាល៖ ការប៉ាន់ស្មាននេះត្រូវបានកំណត់សម្រាប់មនុស្សឈរត្រង់។ ការដេកផ្ងារធ្វើឱ្យផ្នែកដែលបើកបែរទៅមេឃ ដូច្នេះនៅថ្ងៃត្រង់វាបង្កើតវីតាមីន D ច្រើនជាងរហូតដល់ប្រហែល 1.6× ប៉ុន្តែតិចជាងការឈរនៅពេលព្រះអាទិត្យទាប។ ពេលរលាកស្បែកមិនផ្លាស់ប្ដូរទេ ព្រោះស្បែកដែលប៉ះពន្លឺច្រើនបំផុតតែងតែបែរទៅមេឃ។ សម្រាប់ព្រះសង្ឃ ស្បែកក្បាលដែលកោរ (ប្រហែល 3.5% នៃរាងកាយ) ត្រូវបានរាប់បញ្ចូល ហើយសក់ដុះឡើងវិញនឹងបាំងវាបន្តិចម្ដងៗក្នុងរយៈពេលពីរសប្ដាហ៍។ ពេលវេលាគោលដៅតាមដានគន្លងព្រះអាទិត្យចាប់ពីឥឡូវ ហើយរួមបញ្ចូលវគ្គមុនៗនៃថ្ងៃនេះ។",
+  "vitDTaperNote": "ការផលិតវីតាមីន D យឺតជាងមុន នៅពេលកម្រិតពន្លឺលើស្បែកកើនឡើង ដូច្នេះនាទីបន្ថែមនីមួយៗផ្ដល់តិចជាងបន្តិច។",
+  "vitDGuideBestTitle": "វិធីល្អបំផុត៖ ស្បែកច្រើន ពេលខ្លី",
+  "vitDGuideBest": "ការរលាកពីពន្លឺថ្ងៃអាស្រ័យលើរយៈពេលដែលផ្នែកស្បែកនីមួយៗនៅក្រោមថ្ងៃ ចំណែកវីតាមីន D អាស្រ័យលើបរិមាណស្បែកដែលបើក។ ដូច្នេះ ចូរបើកស្បែកឱ្យបានច្រើនបំផុតក្នុងរយៈពេលខ្លីនៅជិតថ្ងៃត្រង់។ ការដេកធ្វើឱ្យស្បែកច្រើនបែរទៅរកព្រះអាទិត្យខ្ពស់។ ចំណាយពេលពាក់កណ្ដាលដេកផ្ងារ និងពាក់កណ្ដាលដេកផ្កាប់៖ ផ្នែកនីមួយៗទទួលបានតែពាក់កណ្ដាលកម្រិតរលាក ខណៈវីតាមីន D ប្រហែលដដែល។ គ្របមុខ និងក្បាលដោយក្រណាត់ បិទភ្នែក ហើយកុំដេកលក់ក្រោមថ្ងៃ។ សម្រាប់ស្បែកស នៅថ្ងៃត្រង់តំបន់ត្រូពិច ៣–៥ នាទីបែបនេះជាញឹកញាប់គ្រប់គ្រាន់ ស្បែកខ្មៅអាចត្រូវការ ៥–១០ នាទី។",
+  "vitDGuideBurnTitle": "អំពីការរលាកពីពន្លឺថ្ងៃ",
+  "vitDGuideBurn": "ការរលាកពីពន្លឺថ្ងៃគឺជាប្រតិកម្មរបស់ស្បែកចំពោះការខូចខាតកោសិកាដោយ UVB។ ក្រហមលេចឡើងក្រោយ ២–៦ ម៉ោង ហើយធ្ងន់បំផុតក្រោយ ១២–២៤ ម៉ោង ដូច្នេះអ្នកមិនអាចដឹងខ្លួនពេលនៅក្រោមថ្ងៃទេ។ វគ្គនៅថ្ងៃតែមួយបូកបញ្ចូលគ្នា៖ វគ្គ ៥ នាទីបួនដង រលាកប្រហែលស្មើនឹងវគ្គ ២០ នាទីមួយដង ព្រោះស្បែកជួសជុលយឺតៗក្នុងរយៈពេលច្រើនម៉ោង។ ម៉ែត្រក្នុងកម្មវិធីនេះបូកវគ្គទាំងអស់នៃថ្ងៃនេះ ហើយកំណត់ឡើងវិញនៅពាក់កណ្ដាលអធ្រាត្រ។ ការនៅក្រោមពាក់កណ្ដាលកម្រិតរលាក (50%) ជៀសវាងស្បែកឡើងពណ៌ផ្កាឈូក។ ហានិភ័យរលាកភាគច្រើនកំណត់ឡើងវិញរៀងរាល់ថ្ងៃ ប៉ុន្តែភាពចាស់នៃស្បែក និងហានិភ័យមហារីកស្បែកកកកុញពេញមួយជីវិត ដូច្នេះវគ្គខ្លីៗទៀងទាត់ល្អជាងវគ្គវែង។",
+  "vitDTabLayFemale": "ស្រី",
+  "vitDCoverSwimwearFemaleDesc": "អាវហែលទឹក និងខោខ្លី",
+  "vitDCoverAngsa": "អង្សក់",
+  "vitDCoverAngsaDesc": "ដៃស្ដាំ កំភួនដៃឆ្វេង និងទ្រូងស្ដាំទទេ",
+  "vitDSessionRunning": "កំពុងហាលថ្ងៃ",
+  "vitDSessionIdle": "រួចរាល់",
+  "vitDBurnInfoTitle": "អំពីកម្រិតរលាកពីពន្លឺថ្ងៃ",
+  "vitDBurnInfo": "កម្រិតរលាកពីពន្លឺថ្ងៃគឺបូកបញ្ចូលគ្នា៖ វាបូកវគ្គទាំងអស់នៃថ្ងៃនេះ។ វគ្គ ៥ នាទីបួនដង ស្មើនឹងវគ្គ ២០ នាទីមួយដង ព្រោះស្បែកជួសជុលយឺតៗក្នុងរយៈពេលច្រើនម៉ោង។ វាកំណត់ឡើងវិញនៅពាក់កណ្ដាលអធ្រាត្រ។\n\n100% មានន័យថាស្បែករបស់អ្នកទំនងជាឡើងពណ៌ផ្កាឈូកពីរបីម៉ោងក្រោយ។ ការនៅក្រោម 50% ជៀសវាងបញ្ហានេះ។\n\nសម្រាប់វីតាមីន D វិធីល្អបំផុតគឺបើកស្បែកច្រើនក្នុងពេលខ្លី។ បើកស្បែកឱ្យបានច្រើនបំផុតនៅជិតថ្ងៃត្រង់ ហើយធ្វើវគ្គឱ្យខ្លី។\n\nដេកចុះ៖ ចំណាយពេលពាក់កណ្ដាលដេកផ្ងារ ដោយគ្របមុខ និងក្បាលដោយក្រណាត់ និងពាក់កណ្ដាលដេកផ្កាប់។ ផ្នែកនីមួយៗទទួលបានតែពាក់កណ្ដាលកម្រិតរលាក ខណៈវីតាមីន D ប្រហែលដដែល។",
+  "vitDStartTooEarly": "នៅព្រឹកពេក ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "យឺតហើយ — ថ្ងៃទាបជាង 45°",
+  "vitDStartNo45": "ថ្ងៃនេះព្រះអាទិត្យមិនដល់ 45°",
+  "vitDTodayInfoTitle": "អំពីការប៉ាន់ស្មានថ្ងៃនេះ",
+  "vitDTodayInfo": "សរុបថ្ងៃនេះបូកវីតាមីន D ដែលប៉ាន់ស្មានពីវគ្គទាំងអស់នៃថ្ងៃនេះ រួមទាំងវគ្គដែលកំពុងដំណើរការ។ វាកំណត់ឡើងវិញនៅពាក់កណ្ដាលអធ្រាត្រ។\n\nភាគរយប្រៀបធៀបវាជាមួយគោលដៅប្រចាំថ្ងៃរបស់អ្នក {iu} IU។ ការឈានដល់ 100% គឺគ្រប់គ្រាន់សម្រាប់ថ្ងៃនោះ ការហាលថ្ងៃបន្ថែមផ្ដល់តិចតួច ហើយបង្កើនកម្រិតរលាក។\n\nទាំងនេះជាការប៉ាន់ស្មានប្រហាក់ប្រហែលក្នុងឯកតាដូចថ្នាំបំប៉ន៖ ប្រហែល 1,000 IU ពីពន្លឺថ្ងៃមានឥទ្ធិពលលើកម្រិតក្នុងឈាមប្រហាក់ប្រហែលនឹងថ្នាំគ្រាប់ 1,000 IU។ បរិមាណពិតប្រែប្រួលតាមអ័ព្ទ អូហ្សូន អាយុ និងបរិមាណស្បែកដែលបែរទៅរកពន្លឺថ្ងៃ។\n\nដំបូន្មានផ្លូវការគឺ 600 IU ក្នុងមួយថ្ងៃ (800 IU សម្រាប់អាយុលើស 70)។ គោលដៅស្វ័យប្រវត្តិនៅទីនេះប្រើប្រហែល 20 IU ក្នុងមួយគីឡូក្រាមនៃទម្ងន់ខ្លួន អ្នកអាចកំណត់គោលដៅផ្ទាល់ខ្លួនក្នុងការកំណត់ពន្លឺថ្ងៃ។\n\nវីតាមីន D ត្រូវបានរក្សាទុកក្នុងខ្លួនច្រើនសប្ដាហ៍ ដូច្នេះសរុបប្រចាំសប្ដាហ៍សំខាន់ជាងថ្ងៃណាមួយ។",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "សប្ដាហ៍នេះ",
+  "vitDWeekAvg": "មធ្យម ≈ {iu} IU/ថ្ងៃ",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "ខ្វះ {iu} IU",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "លើស {iu} IU",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "អំពីសរុបប្រចាំសប្ដាហ៍",
+  "vitDWeekInfo": "វីតាមីន D ត្រូវបានរក្សាទុកក្នុងខ្លួនច្រើនសប្ដាហ៍ ដូច្នេះថ្ងៃមានពន្លឺអាចបំពេញថ្ងៃមានពពក។ កាតនេះបូក 7 ថ្ងៃចុងក្រោយ (តិចជាងនេះ បើអ្នកទើបចាប់ផ្ដើម) ហើយប្រៀបធៀបនឹងគោលដៅប្រចាំថ្ងៃរយៈពេល 7 ថ្ងៃ។\n\nថ្ងៃនីមួយៗរាប់បានច្រើនបំផុត 3 ថ្ងៃ ដូច្នេះវគ្គធំមួយមិនអាចបំពេញពេញមួយសប្ដាហ៍បានទេ។\n\nកុំនៅក្រោមថ្ងៃយូរជាងមុនដើម្បីបំពេញ។ ដែនកំណត់រលាកតែងតែប្រចាំថ្ងៃ។ ដើម្បីបំពេញថ្ងៃដែលខកខាន ចូរបើកស្បែកច្រើនជាងមុន ឬដេកចុះនៅថ្ងៃមានពន្លឺបន្ទាប់។\n\nបើសប្ដាហ៍នៅតែទាប សូមពិចារណាអាហារសម្បូរវីតាមីន D ឬថ្នាំបំប៉ន។",
+  "vitDCatchUpTitle": "ការបំពេញប្រចាំសប្ដាហ៍",
+  "vitDCatchUpDesc": "គោលដៅថ្ងៃនេះបំពេញកង្វះនៃសប្ដាហ៍នេះ (រហូតដល់ 3 ថ្ងៃ) ឬថយចុះពេលអ្នកលើស។ កុំនៅយូរជាងមុនដើម្បីបំពេញ — ចូរបើកស្បែកច្រើនជាងមុន។",
+  "vitDTodayTargetWeekly": "គោលដៅថ្ងៃនេះ (ប្រចាំសប្ដាហ៍)",
+  "vitDCoveredByWeek": "បានគ្របដណ្ដប់ដោយសប្ដាហ៍នេះ",
+  "vitDOfTodayTarget": "នៃគោលដៅថ្ងៃនេះ {iu} IU",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "ចំណែកដែលនៅសល់នឹងបែងចែកទៅថ្ងៃមានពន្លឺបន្ទាប់។",
+  "vitDLowWeek": "សប្ដាហ៍នេះពន្លឺថ្ងៃតិច — សូមពិចារណាអាហារសម្បូរវីតាមីន D ឬថ្នាំបំប៉ន។",
+  "vitDTab": "D3",
+  "meditationTab": "សមាធិ",
+  "pasteFromMaps": "បិទភ្ជាប់ពី Google Maps",
+  "readingLocation": "កំពុងអានទីតាំង...",
+  "clipboardEmpty": "ក្ដារតម្បៀតខ្ទាស់ទទេ",
+  "noCoordinatesFound": "រកមិនឃើញកូអរដោនេ ឬតំណផែនទីត្រឹមត្រូវទេ",
+  "locationLoaded": "បានផ្ទុកកូអរដោនេ!",
+  "uposathaEveShaving": "មុនថ្ងៃសីល (ថ្ងៃកោរសក់) • ស្អែកជាថ្ងៃសីល",
+  "moonSkyCompass3d": "ត្រីវិស័យមេឃព្រះច័ន្ទ 3D"
 }

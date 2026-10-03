@@ -19,7 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'dart:async';
 import 'package:buddhist_sun/widgets/poya_bottom_sheet.dart';
-import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/buddhavassa_page.dart';
@@ -322,20 +321,6 @@ class _HomeState extends State<Home>
                   spacing: 14,
                   runSpacing: 10,
                   children: [
-                    IconButton.outlined(
-                      tooltip: AppLocalizations.of(context)!.meditationTimer,
-                      icon: const Icon(Icons.self_improvement),
-                      iconSize: 31.2,
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.all(14.5),
-                      ),
-                      onPressed: () {
-                        _navigateAndRemember(
-                          const MeditationTimerPage(),
-                          'meditation_timer',
-                        );
-                      },
-                    ),
                     IconButton.outlined(
                       tooltip: AppLocalizations.of(context)!.compass,
                       icon: const Icon(Icons.explore),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:buddhist_sun/l10n/app_localizations.dart';
 
 /// Represents a distinct section in a help dialog.
 class HelpSection {
@@ -523,6 +524,21 @@ void showSettingsHelpDialog(BuildContext context) {
         content:
             'Enables spoken voice warnings as noon approaches. To ensure reliable audio when the screen is off, enable "TTS with screen off" and allow battery optimization exemptions if prompted by Android.',
       ),
+    ],
+  );
+}
+
+/// Vitamin D sun timer help (localized from the page's guide strings).
+void showVitaminDHelpDialog(BuildContext context) {
+  final t = AppLocalizations.of(context)!;
+  showAppHelpDialog(
+    context,
+    title: t.vitDTitle,
+    sections: [
+      HelpSection(title: t.vitDGuideBestTitle, content: t.vitDGuideBest),
+      HelpSection(title: t.vitDGuideBurnTitle, content: t.vitDGuideBurn),
+      HelpSection(title: t.vitDGuideNoonTitle, content: t.vitDGuideNoon),
+      HelpSection(content: t.vitDDisclaimer, isAlert: true),
     ],
   );
 }

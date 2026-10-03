@@ -219,7 +219,7 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
                 color: lateColor,
               ),
               const SizedBox(width: 10),
-              Text(
+              Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(
                 countdownStr,
                 style: TextStyle(
                   fontSize: 28,
@@ -227,7 +227,7 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
                   letterSpacing: 1.0,
                   color: lateColor,
                 ),
-              ),
+              ))),
             ],
           ),
         ),
@@ -259,7 +259,7 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
               color: primaryColor,
             ),
             const SizedBox(width: 8),
-            Text(
+            Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(
               countdownStr,
               style: TextStyle(
                 fontSize: 32,
@@ -267,7 +267,7 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
                 letterSpacing: 0.8,
                 color: theme.textTheme.bodyLarge?.color,
               ),
-            ),
+            ))),
 
             const SizedBox(width: 14),
             // Vertical Divider

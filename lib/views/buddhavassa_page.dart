@@ -212,13 +212,13 @@ class _BuddhavassaPageState extends State<BuddhavassaPage> with RouteAware {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    Expanded(child: Text(
                       l.showEighthDayUposatha,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
+                    )),
                     Switch(
                       value: Prefs.showEighthDayUposatha,
                       onChanged: (bool value) {

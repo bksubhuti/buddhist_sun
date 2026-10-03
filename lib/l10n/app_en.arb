@@ -73,7 +73,7 @@
   "help_content": "Calculations & Algorithm:\nCalculations in Buddhist Sun are powered by the National Renewable Energy Laboratory's Solar Position Algorithm (NREL SPA). Unlike older algorithms (such as Meeus) which had up to a 1-minute margin of error, NREL SPA is the international gold standard and is accurate to within a few seconds for solar noon, sunrise, and twilights.\n\nImportant Vinaya Precaution:\nWhile the astronomical calculation is accurate within a few seconds, monks and 8/10-precept practitioners should be sure not to swallow any food and rinse the mouth one minute to 30 seconds before the time expires so that no food particles remain in the mouth or throat when solar noon arrives.\n\nApplication Features:\n• Solar Noon & Dawn: High-precision solar noon and customizable dawn formulas (Pa-Auk -40m, Na-Uyana -30m, astronomical twilights, and custom angles).\n• Hands-Free Voice Countdown: Spoken voice notifications (TTS) with screen-off background support warning at critical intervals down to zero.\n• Vinaya Compass: 3D Great-Circle Earth globe, 2D map, and Buddhist rotating dial aligned toward Bodh Gaya and other holy pilgrimage destinations.\n• Moon Phase & Uposatha Calendar: Daily lunar phase percentage and traditional Uposatha / Poya days across Thai, Myanmar, and Sri Lanka traditions.\n• Sun & Shadow (Vinaya Ratio): Real-time stick shadow angle and finger-breadth (angula) measurement for physical noon verification.\n• Buddhavassa (BE Calendar): Buddhist Era year calculations, vassa counts, and Pakkha calendar days.\n• Meditation Timer: Mindful timer with singing bowl chimes, interval bells, and warm-up periods.\n• Maraṇassati (Death Contemplation): Mindfulness of mortality with life expectancy analytics and contemplation alerts.\n• GPS & 40,000+ City Database: High-accuracy GPS detection or offline city lookup worldwide.\n• Safety Offsets: Configurable safety buffer (1–10 minutes) subtracting from noon or adding to dawn for peace of mind.\n\nPrivacy:\nBuddhist Sun does not collect personal information.\nFull statement: https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
   "about_content": "Buddhist Sun is a small app for Buddhist monks and nuns to display the Solar Noon time specific to Buddhist monastic needs. Because I usually eat with my hands, I needed to have a \"hands free\" way to know when the Noon was approaching. The timer with voice notifications turned on helps me know the time left for eating.  I enjoy using the app, and I hope that you do too.\n\nWhy is this important?\nThose who follow Buddhist monastic rules are not allowed to eat after Noon.  The rule is according to the sun at its zenith in the sky rather than a clock. They did not have clocks in the Buddha's time.  Others who follow 8 or 10 precepts may find this app useful too.\n\nI recommend https://www.kso.ac.at/beobachtungen/ephemeris_en.php  to verify this app's accuracy.  The Buddhist Era page was made by Bhante Amarawali of Yogashrama. The contact email address is bhamarawali@gmail.com.  This application is meant for \"present moment/location\" use.  \n\nMay this help you to reach Nibbāna quickly and safely!",
   "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
-  "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
+  "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly even when the screen is off.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
   "dstSavingsNotice": "Warning, this app does not calculate for Daylight Savings Time (DST).  Please be aware of the changes.  When DST happens you need to reset the GPS or the offset found in the Settings Tab.",
   "dstNoticeTitle": "Daylight Savings Notice",
   "verify": "Verify Noon",
@@ -83,7 +83,7 @@
   "moonPhase": "Moon Phase:",
   "selectDate": "Select Date",
   "selectedDate": "Selected Date:",
-  "moon": "moon",
+  "moon": "Moon",
   "darkMode": "Dark Mode",
   "color": "Color",
   "material3": "Material 3",
@@ -534,5 +534,282 @@
   "noData": "No Data",
   "timerOvertime": "Overtime",
   "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "For sessions over 3 hours, please keep screen on. The system may stop background timers if the screen turns off."
+  "screenOffWarningOver3Hours": "For sessions over 3 hours, please keep screen on. The system may stop background timers if the screen turns off.",
+  "vitaminD": "Vitamin D",
+  "vitDTitle": "Vitamin D Sun Timer",
+  "vitDNoLocation": "Set your location (GPS tab) for accurate sun angle and vitamin D estimates.",
+  "vitDStatusGood": "Good vitamin D sun — sun is above 45°",
+  "vitDStatusLow": "Sun below 45° — vitamin D is reduced",
+  "vitDStatusNone": "Sun too low — almost no vitamin D",
+  "vitDStatusNight": "Sun is down — no vitamin D",
+  "vitDSunAngle": "Sun angle",
+  "vitDUvIndex": "UV index (est.)",
+  "vitDRate": "Vitamin D rate",
+  "vitDIuPerMin": "≈ {iu} IU/min",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "Vitamin D efficiency",
+  "vitDBurnTime": "Sunburn after",
+  "vitDMinutes": "{min} min",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "Best vitamin D window today (above 45°): {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "Sun does not reach 45° today (peak {deg}° at {time}). Vitamin D will be low.",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "Shadow rule: when your shadow is shorter than you are, the sun is above 45°.",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "estimated this session",
+  "vitDStart": "Start Sun Session",
+  "vitDStop": "Stop & Save Session",
+  "vitDGoalReached": "Daily need reached. Rest in the shade.",
+  "vitDEnoughSun": "Enough sun for today — risk of burning rises from here.",
+  "vitDToday": "Today",
+  "vitDOfDailyNeed": "of an estimated daily need of {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "Sunburn dose today",
+  "vitDBurnHint": "Keep below 50% — short sessions are enough.",
+  "vitDBurnWarnMid": "Over half a burn dose. Consider covering up or moving to shade.",
+  "vitDBurnWarnHigh": "Close to sunburn. Please cover up and go into the shade.",
+  "vitDTodaySessions": "Today's sessions",
+  "vitDNoSessions": "No sessions yet today. Press start when you go into the sun.",
+  "vitDDeleteSession": "Delete session",
+  "vitDDeleteConfirm": "Remove this session from today's total?",
+  "vitDSettings": "Sun Settings",
+  "vitDSkinTitle": "Skin tone",
+  "vitDSkinSubtitle": "The biggest factor for burn time.",
+  "vitDSkinType": "Type {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "Very fair",
+  "vitDSkin2": "Fair",
+  "vitDSkin3": "Medium",
+  "vitDSkin4": "Olive / light brown",
+  "vitDSkin5": "Brown",
+  "vitDSkin6": "Dark brown",
+  "vitDCoverageTitle": "Skin coverage",
+  "vitDCoverageSubtitle": "How much skin is in the sun. Change it for each session.",
+  "vitDCoverFullRobe": "Both shoulders covered",
+  "vitDCoverFullRobeDesc": "Head, hands, feet",
+  "vitDCoverOneShoulder": "One shoulder bare",
+  "vitDCoverOneShoulderDesc": "Plus right arm and shoulder",
+  "vitDCoverUpperBare": "Upper body bare",
+  "vitDCoverUpperBareDesc": "Lower robe only",
+  "vitDCoverBathing": "Bathing cloth",
+  "vitDCoverBathingDesc": "Waist to knee",
+  "vitDSkyTitle": "Sky",
+  "vitDSkyClear": "Clear",
+  "vitDSkyPartly": "Partly cloudy",
+  "vitDSkyMostly": "Mostly cloudy",
+  "vitDSkyOvercast": "Overcast",
+  "vitDWeightTitle": "Body weight",
+  "vitDWeightSubtitle": "Used for skin area and daily need.",
+  "vitDGoalFromWeight": "Estimated daily need: {iu} IU (about 20 IU per kg, 600–4,000 IU).",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "Sun & vitamin D guide",
+  "vitDGuideBenefitsTitle": "Benefits",
+  "vitDGuideBenefits": "Vitamin D supports strong bones and teeth, muscle strength, and the immune system. Low vitamin D is common among monastics who stay indoors, keep the robe covered, or live in temples with deep shade. A little regular sun is a natural and free way to make it.",
+  "vitDGuideNoonTitle": "Short noon session vs. long afternoon session",
+  "vitDGuideNoon": "A short session near midday is better than a long one in the late afternoon. When the sun is high (above 45°) the light contains more UVB, the rays that make vitamin D, so you make the most vitamin D for each unit of sunburn risk. At 3 pm the sun is lower: UVB drops much faster than UVA. You burn more slowly, but to get the same vitamin D you must stay far longer, and you receive more UVA, which ages the skin and adds to skin cancer risk. So a longer 3 pm session is not safer — it is less efficient. Example: 10–15 minutes at noon can equal an hour or more at 3 pm.",
+  "vitDGuideShortTitle": "Short, regular sessions",
+  "vitDGuideShort": "The skin's vitamin D production levels off: after roughly half to one burn dose, more time adds little vitamin D but keeps adding skin damage. Several short sessions during the week are better than one long session. Stopping well before your skin turns pink is enough. Vitamin D is stored in the body, so a missed day is not a problem.",
+  "vitDGuideDangersTitle": "Dangers",
+  "vitDGuideDangers": "Too much sun causes sunburn, eye damage, heat exhaustion and dehydration, skin ageing, and skin cancer. Fair skin burns quickly. Glass windows block UVB, so sitting behind glass makes no vitamin D. Water, sand and pale stone reflect UV and raise exposure. Some medicines make the skin sensitive to light. Drink water, and protect your eyes — never look at the sun.",
+  "vitDGuideMonksTitle": "Tips for the Sangha",
+  "vitDGuideMonks": "Uncovering the right shoulder or the arms while sitting or walking in the monastery for a short time around midday is usually enough for darker skin types in the tropics. A shaved head is also exposed, so protect the scalp on long alms rounds. Darker skin needs longer for the same vitamin D but burns less easily. In cold climates or seasons when the sun stays below 45°, the body cannot make much vitamin D — ask a doctor about food or supplements.",
+  "vitDGuideMethodTitle": "How this is estimated",
+  "vitDGuideMethod": "Sun angle comes from your GPS location and the time. UV index is estimated for a clear sky (UVI ≈ 12.5 × sin(angle)^2.42) and reduced for clouds. Burn dose (MED) depends on skin type. About 10,000 IU is made when the whole body receives one burn dose; this is scaled by the uncovered skin area and your body size (from weight). Vitamin D efficiency falls when the sun is below 45° and is zero below 15°. Production stops as the day's dose reaches one burn dose. Real values vary with ozone, altitude, air pollution, age and health — treat these numbers as rough guides.",
+  "vitDDisclaimer": "Medical disclaimer: this calculator gives rough educational estimates only. It is not medical advice and cannot measure your vitamin D level. Sun exposure carries risks, including sunburn and skin cancer. Consult a qualified doctor about vitamin D testing, supplements, or skin concerns, especially if you have fair skin, a history of skin cancer, or take light-sensitising medicine.",
+  "vitDTabMonk": "Monk",
+  "vitDTabLay": "Man",
+  "vitDCoverFaceHands": "Face & hands",
+  "vitDCoverFaceHandsDesc": "Long sleeves, long trousers",
+  "vitDCoverShortSleeves": "Short sleeves",
+  "vitDCoverShortSleevesDesc": "T-shirt, long trousers",
+  "vitDCoverShorts": "Shorts & T-shirt",
+  "vitDCoverShortsDesc": "Arms and lower legs",
+  "vitDCoverSwimwear": "Swimwear",
+  "vitDCoverSwimwearDesc": "Swim shorts only",
+  "vitDDailyTarget": "Daily target",
+  "vitDRemaining": "{iu} IU still needed",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "Target time",
+  "vitDTargetTimeLeft": "Target time left",
+  "vitDTargetTimeFull": "for the whole target, from now",
+  "vitDTargetTimeRest": "to finish today's target",
+  "vitDTargetUnreachable": "Not reachable today in these conditions",
+  "vitDTargetOverBurn": "Longer than half your burn time ({min} min). Uncover more skin, lie down, or split it over days.",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "Daily target",
+  "vitDTargetAuto": "Automatic target from weight",
+  "vitDPostureTitle": "Posture",
+  "vitDPostureSubtitle": "Lying down at midday turns more skin toward the sun.",
+  "vitDPostureStanding": "Standing",
+  "vitDPostureWalking": "Walking",
+  "vitDPostureSitting": "Sitting",
+  "vitDPostureLying": "Lying down",
+  "vitDPostureFactor": "×{f} vitamin D now compared with standing",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "Hair growth",
+  "vitDHairSubtitle": "Days since the head was shaved. A bare scalp also makes vitamin D.",
+  "vitDHairToday": "Shaved today • scalp fully exposed",
+  "vitDHairValue": "{days} days since shave • scalp {pct}% exposed",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "Posture and scalp: the estimate is calibrated for an upright person. Lying flat turns the exposed side to the sky, so at midday it makes up to about 1.6× more vitamin D, but less than standing when the sun is low. Sunburn time does not change, because the most exposed skin always faces the sky. For monastics a shaved scalp (about 3.5% of the body) is counted, and regrowth shades it gradually over two weeks. Target time follows the sun's path from now and includes earlier sessions today.",
+  "vitDTaperNote": "Vitamin D production slows as your skin's sun dose builds up, so each extra minute gives a little less.",
+  "vitDGuideBestTitle": "Best method: more skin, short time",
+  "vitDGuideBest": "Burning depends on how long each patch of skin is in the sun; vitamin D depends on how much skin is out. So uncover as much skin as you can for a short time near midday. Lying down turns more skin toward the high sun. Spend half the time on your back and half on your front: each side gets only half the burn dose while the vitamin D is about the same. Cover the face and head with a cloth, close your eyes, and never fall asleep in the sun. For fair skin at tropical noon, 3–5 minutes like this is often enough; darker skin may need 5–10 minutes.",
+  "vitDGuideBurnTitle": "About sunburn",
+  "vitDGuideBurn": "A sunburn is the skin's reaction to UVB damage to its cells. Redness appears 2–6 hours later and is worst after 12–24 hours, so you cannot feel it while you are in the sun. Sessions on the same day add up: four 5-minute sessions burn about as much as one 20-minute session, because the skin repairs slowly over many hours. The meter in this app adds all of today's sessions and resets at midnight. Staying below half a burn dose (50%) avoids pinkness. The burn risk mostly resets each day, but skin ageing and skin cancer risk build up over a lifetime, so short regular sessions are better than long ones.",
+  "vitDTabLayFemale": "Woman",
+  "vitDCoverSwimwearFemaleDesc": "Swim top and shorts",
+  "vitDCoverAngsa": "Shoulder cloth (aṅsa)",
+  "vitDCoverAngsaDesc": "Right arm, left forearm, right chest bare",
+  "vitDSessionRunning": "IN THE SUN",
+  "vitDSessionIdle": "READY",
+  "vitDBurnInfoTitle": "About the sunburn dose",
+  "vitDBurnInfo": "The sunburn dose is cumulative: it adds up all of today's sessions. Four 5-minute sessions count the same as one 20-minute session, because the skin repairs slowly over many hours. It resets at midnight.\n\n100% means your skin will probably turn pink a few hours later. Staying under 50% avoids this.\n\nFor vitamin D, the best way is more skin for less time. Uncover as much skin as you can near midday and keep the session short.\n\nLie down: spend half the time face up, with your face and head covered by a cloth, and half face down. Each side gets only half the burn dose, while the vitamin D stays about the same.",
+  "vitDStartTooEarly": "Too early ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "Too late — sun below 45°",
+  "vitDStartNo45": "No 45° sun today",
+  "vitDTodayInfoTitle": "About today's estimate",
+  "vitDTodayInfo": "Today's total adds up the vitamin D estimated from all of today's sessions, including one that is running. It resets at midnight.\n\nThe percentage compares it with your daily target of {iu} IU. Reaching 100% is enough for the day; more sun adds little and raises the burn dose.\n\nThese are rough estimates in the same units as supplements: about 1,000 IU from the sun has roughly the same effect on blood levels as a 1,000 IU tablet. Real amounts vary with haze, ozone, age and how much skin faces the sun.\n\nOfficial advice is 600 IU a day (800 IU over age 70). The automatic target here uses about 20 IU per kg of body weight; you can set your own in Sun Settings.\n\nVitamin D is stored in the body for weeks, so the weekly total matters more than any single day.",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "This week",
+  "vitDWeekAvg": "Average ≈ {iu} IU/day",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "{iu} IU behind",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "{iu} IU ahead",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "About the weekly total",
+  "vitDWeekInfo": "Vitamin D is stored in the body for weeks, so a sunny day can cover a cloudy one. This card adds up the last 7 days (fewer if you started recently) and compares it with 7 days of your daily target.\n\nEach day can count for at most 3 days' worth, so one big session cannot cover the whole week.\n\nNever stay out longer to catch up. The sunburn limit is always per day. To make up for missed days, uncover more skin or lie down on the next sunny day instead.\n\nIf the week stays low, consider vitamin D–rich food or a supplement.",
+  "vitDCatchUpTitle": "Weekly catch-up",
+  "vitDCatchUpDesc": "Today's target makes up this week's shortfall (up to 3 days' worth) or drops when you are ahead. Never stay longer to catch up — uncover more skin.",
+  "vitDTodayTargetWeekly": "Today's target (weekly)",
+  "vitDCoveredByWeek": "Covered by this week",
+  "vitDOfTodayTarget": "of today's target of {iu} IU",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "The rest will spread over the next sunny days.",
+  "vitDLowWeek": "Low sun this week — consider vitamin D–rich food or a supplement.",
+  "vitDTab": "D3",
+  "meditationTab": "Meditate",
+  "uposathaEveShaving": "Uposatha Eve (Shaving Day) • Tomorrow is Uposatha",
+  "moonSkyCompass3d": "3D Moon Sky Compass"
 }

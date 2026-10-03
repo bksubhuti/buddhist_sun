@@ -4,7 +4,7 @@
   "buddhistSun": "Sol Budista",
   "sun": "Sol",
   "noon": "Mediodía",
-  "dawn": "Amanecer",
+  "dawn": "Alba",
   "timer": "Temporizador",
   "gps": "GPS",
   "settings": "Ajustes",
@@ -12,18 +12,18 @@
   "about": "Acerca de",
   "licenses": "Licencias",
   "not_set": "No configurado",
-  "solar_noon": "Mediodía Solar",
+  "solar_noon": "Mediodía solar",
   "gmt_offset": "Huso horario GMT",
   "hours": "horas",
-  "astronomical_twilight": "Crepúsculo Astronómico",
-  "nautical_twilight": "Crepúsculo Náutico",
-  "civil_twilight": "Crepúsculo Civil",
+  "astronomical_twilight": "Crepúsculo astronómico",
+  "nautical_twilight": "Crepúsculo náutico",
+  "civil_twilight": "Crepúsculo civil",
   "sunrise": "Amanecer",
   "custom_dawn": "Personalizado",
   "date": "Fecha",
-  "current_time": "Hora Actual",
+  "current_time": "Hora actual",
   "late": "Tarde",
-  "time_left": "Tiempo Restante",
+  "time_left": "Tiempo restante",
   "speech_notify": "Notificación de voz",
   "screen_always_on": "Pantalla siempre encendida",
   "speech_in_background": "Voz en segundo plano",
@@ -67,21 +67,21 @@
   "gps_internet_message": "Si Internet está activado, el nombre de la ciudad se puede referenciar por GPS",
   "language": "Idioma",
   "theme": "Tema",
-  "help_content": "Cálculos:\n Los cálculos se basan en ecuaciones de Algoritmos Astronómicos, por Jean Meeus. Los resultados de amanecer y atardecer son teóricamente precisos dentro de un minuto para ubicaciones entre +/- 72° de latitud. Por favor considere detenerse bien antes de la hora establecida.\n\nMEDIODÍA:\nLa pantalla de Mediodía muestra el Mediodía Solar para el día actual seleccionado por GPS o Ciudad de manera fácil de ver. Todos los tiempos reflejan la seguridad establecida en ajustes.\n\nAMANECER:\nLa pantalla de Amanecer muestra la fórmula de amanecer seleccionada en los ajustes y varios cálculos solares. Todos los tiempos reflejan la seguridad de los ajustes.\nPa-Auk = (Amanecer - 40 Minutos).\nNa-Uyana = (Amanecer - 30 Minutos).\n\nGPS:\nEl GPS configurará automáticamente la ciudad si Internet está activado y la casilla está marcada. Se recomienda utilizar los ajustes de GPS para su ubicación, ya que el Mediodía Solar será más preciso de esta manera.\n\nAJUSTES:\nMargen de diferencia:\nSe configura automáticamente al usar GPS. Si usa Búsqueda de Ciudad en ajustes, debe seleccionar una diferencia (GMT +- su hora local).\nSeguridad:\nResta minutos al Mediodía para hacerlo más temprano y suma al Amanecer para hacerlo más tarde. La fórmula es precisa dentro de un minuto, por lo que la seguridad predeterminada es de 1 minuto.\nTemporizador:\nLa pantalla de Temporizador permite notificaciones de audio sin manos. Las notificaciones de voz se emiten en los siguientes intervalos de minutos: 50,40,30,20,15,10,8,6,5,4,3,2,1,0.\n\nPrivacidad:\nDeclaración completa de privacidad en:\nhttps://americanmonk.org/privacy-policy-for-buddhist-sun-app/\nNo recopilamos información.",
+  "help_content": "Cálculos y algoritmo:\nLos cálculos de Buddhist Sun se basan en el Algoritmo de Posición Solar del Laboratorio Nacional de Energías Renovables de EE. UU. (NREL SPA). A diferencia de algoritmos más antiguos (como el de Meeus), que tenían un margen de error de hasta 1 minuto, NREL SPA es el estándar de referencia internacional y tiene una precisión de pocos segundos para el mediodía solar, el amanecer y los crepúsculos.\n\nPrecaución importante del Vinaya:\nAunque el cálculo astronómico es preciso en pocos segundos, los monjes y los practicantes de los 8/10 preceptos deben asegurarse de no tragar ningún alimento y de enjuagarse la boca entre un minuto y 30 segundos antes de que se cumpla la hora, de modo que no queden restos de comida en la boca ni en la garganta cuando llegue el mediodía solar.\n\nFunciones de la aplicación:\n• Mediodía solar y alba: mediodía solar de alta precisión y fórmulas de alba personalizables (Pa-Auk -40 min, Na-Uyana -30 min, crepúsculos astronómicos y ángulos personalizados).\n• Cuenta regresiva por voz manos libres: notificaciones habladas (TTS) con funcionamiento en segundo plano con la pantalla apagada, que avisan en intervalos críticos hasta llegar a cero.\n• Brújula del Vinaya: globo terráqueo 3D de círculo máximo, mapa 2D y dial budista giratorio orientados hacia Bodh Gaya y otros lugares sagrados de peregrinación.\n• Fase lunar y calendario Uposatha: porcentaje diario de la fase lunar y días tradicionales de Uposatha / Poya según las tradiciones de Tailandia, Myanmar y Sri Lanka.\n• Sol y sombra (proporción del Vinaya): ángulo de la sombra de un palo en tiempo real y medida en anchos de dedo (angula) para verificar físicamente el mediodía.\n• Buddhavassa (calendario EB): cálculo del año de la Era Budista, cómputo de vassas y días del calendario Pakkha.\n• Temporizador de meditación: temporizador consciente con sonidos de cuenco cantor, campanas de intervalo y periodos de preparación.\n• Maraṇassati (contemplación de la muerte): atención plena a la mortalidad con análisis de la esperanza de vida y avisos de contemplación.\n• GPS y base de datos de más de 40 000 ciudades: detección GPS de alta precisión o búsqueda de ciudades sin conexión en todo el mundo.\n• Márgenes de seguridad: margen de seguridad configurable (1–10 minutos) que se resta al mediodía o se suma al alba para mayor tranquilidad.\n\nPrivacidad:\nBuddhist Sun no recopila información personal.\nDeclaración completa: https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
   "about_content": "Buddhist Sun es una pequeña aplicación para monjes y monjas budistas para mostrar la hora del mediodía solar específica para las necesidades monásticas budistas. Como suelo comer con las manos, necesitaba una forma \"manos libres\" de saber cuándo se acercaba el mediodía. El temporizador con notificaciones de voz activadas me ayuda a saber el tiempo que me queda para comer. Disfruto usando la aplicación y espero que usted también.\n\n¿Por qué es importante esto?\nQuienes siguen las reglas monásticas budistas no pueden comer después del mediodía. La regla es según el sol en su cenit en el cielo y no según un reloj. No tenían relojes en la época del Buda. Otros que siguen 8 o 10 preceptos también pueden encontrar útil esta aplicación.\n\nRecomiendo https://www.kso.ac.at/beobachtungen/ephemeris_en.php para verificar la precisión de esta aplicación. La página de la Era Budista fue realizada por Bhante Amarawali de Yogashrama. La dirección de correo de contacto es bhamarawali@gmail.com. Esta aplicación está destinada para uso en el \"momento/ubicación actual\".\n\n¡Que esto le ayude a alcanzar Nibbāna rápida y seguramente!",
   "gps_permission_content": "Se solicitará permiso para el uso del GPS. Esto permite que Buddhist Sun conozca los datos de ubicación GPS para calcular la posición del sol. El GPS solo se recopila una vez cada vez que se presiona el botón GPS. Los datos no se envían fuera de esta aplicación.",
-  "background_permission_content": "Se solicitará permiso para el uso en segundo plano. Este permiso es necesario para permitir que las notificaciones de voz funcionen correctamente con la pantalla encendida o apagada. Buddhist Sun desactivará este proceso en segundo plano cuando el interruptor se apague o se cierre la aplicación.",
+  "background_permission_content": "Se solicitará permiso para el uso en segundo plano. Este permiso es necesario para que las notificaciones de voz funcionen correctamente incluso con la pantalla apagada. Buddhist Sun desactivará este proceso en segundo plano cuando se apague el interruptor o se cierre la aplicación. El permiso se solicitará una sola vez si se acepta.",
   "dstSavingsNotice": "Advertencia: esta aplicación no calcula el Horario de Verano (DST). Tenga en cuenta los cambios. Cuando ocurra el DST, debe restablecer el GPS o la diferencia horaria que se encuentra en la pestaña Ajustes.",
   "dstNoticeTitle": "Aviso sobre Horario de Verano",
-  "verify": "Verificar Mediodía",
+  "verify": "Verificar mediodía",
   "rateThisApp": "Calificar esta aplicación",
   "prev": "Anterior",
   "next": "Siguiente",
   "moonPhase": "Fase lunar:",
-  "selectDate": "Seleccionar Fecha",
-  "selectedDate": "Fecha Seleccionada:",
-  "moon": "luna",
-  "darkMode": "Modo Oscuro",
+  "selectDate": "Seleccionar fecha",
+  "selectedDate": "Fecha seleccionada:",
+  "moon": "Luna",
+  "darkMode": "Modo oscuro",
   "color": "Color",
   "material3": "Material 3",
   "uposathaCountry": "País de Uposatha",
@@ -89,12 +89,12 @@
   "refreshingGps": "Actualizando GPS",
   "uposathaNotifications": "Notificaciones de Uposatha:",
   "daysBefore": "Días antes:",
-  "notificationTime": "Hora de Notificación:",
+  "notificationTime": "Hora de notificación:",
   "buddhistSunCountdown": "Cuenta regresiva del Sol Budista",
-  "autoStartDawnTimer": "Iniciar temporizador de alba automáticamente",
+  "autoStartDawnTimer": "Inicio automático del alba",
   "autoStartNoonTimer": "Iniciar temporizador de mediodía automáticamente",
   "speech_only_within_2_hours": "La notificación por voz solo se puede activar dentro de las 2 horas previas a la hora objetivo.",
-  "safetyWarning": "Advertencia de Seguridad",
+  "safetyWarning": "Advertencia de seguridad",
   "safetyWarningMessage": "La seguridad está ACTIVADA. Las horas de la aplicación varían de las horas del observatorio por {minutes} minutos.",
   "proceed": "Continuar",
   "beTitle": "Era Budista",
@@ -194,7 +194,7 @@
   "deathContemplationPrompt": "Por favor configure su fecha de nacimiento y esperanza de vida en Ajustes.",
   "lifeElapsed": "Vida transcurrida",
   "lifeRemaining": "Vida restante",
-  "lifeExceeded": "Ha superado su esperanza de vida prevista. Cada momento es un regalo invaluable.",
+  "lifeExceeded": "Ha superado su esperanza de vida prevista. Cada momento es un regalo para la práctica del Dhamma.",
   "editDeathSettings": "Editar fecha y edad",
   "maranasatiQuote": "La vida es incierta, la muerte es segura. Esfuércense con diligencia.",
   "compass": "Brújula",
@@ -235,10 +235,10 @@
   "timerModeTimed": "Con tiempo",
   "timerModeEndAt": "Fin a",
   "timerModeOpen": "Libre",
-  "tapToChangeDuration": "Toca para cambiar la duración",
+  "tapToChangeDuration": "Toca para cambiar la duración y los preajustes",
   "tapToChangeEndTime": "Toca para cambiar la hora de finalización",
   "openUnlimitedMode": "Modo libre / ilimitado",
-  "openUnlimitedModeDesc": "Cuenta hacia adelante continuamente hasta que finalices.",
+  "openUnlimitedModeDesc": "Cuenta hacia adelante de forma continua hasta que finalices. Las campanas de intervalo sonarán según la configuración de abajo.",
   "bellsAndSettings": "Campanas y ajustes",
   "bellVolume": "Porcentaje de volumen de campana",
   "phoneVolume": "Volumen del teléfono",
@@ -250,10 +250,10 @@
   "off": "Desactivado",
   "keepScreenAwake": "Mantener pantalla encendida",
   "keepScreenAwakeDesc": "Evita que la pantalla se apague mientras meditas",
-  "autoCloseTimer": "Cerrar pantalla del temporizador automáticamente",
+  "autoCloseTimer": "Cierre automático del temporizador",
   "autoCloseTimerDesc": "Cierra automáticamente la pantalla del temporizador después de que termine la campana final",
   "timerRingStyle": "Estilo del anillo",
-  "timerRingStyleDesc": "El modo sustractivo vacía el círculo con el tiempo.",
+  "timerRingStyleDesc": "El modo sustractivo va eliminando el círculo sólido a medida que pasa el tiempo. El aditivo lo va llenando.",
   "styleSubtractive": "Sustractivo (Por defecto)",
   "styleAdditive": "Aditivo",
   "endSession": "Finalizar sesión",
@@ -266,7 +266,7 @@
   "timerRemaining": "Restante",
   "timerDone": "Listo",
   "aboutTimer": "Acerca del temporizador",
-  "timerInfoDialogContent": "Un temporizador sereno para tu práctica de meditación.",
+  "timerInfoDialogContent": "Un temporizador sereno y dedicado a tu práctica de meditación.\n\n• Con tiempo: medita durante una duración fija.\n• Fin a: medita hasta una hora específica del día.\n• Libre: medita libremente con campanas de intervalo opcionales.\n\nToca el círculo del temporizador durante una sesión para pausar o reanudar.\n\nSonidos de campanas por cortesía de Freesound.org, Pixabay.com y Suno.com.",
   "tapScreenToResume": "Toca la pantalla para reanudar",
   "tapScreenToPause": "Toca la pantalla para pausar",
   "setDuration": "Establecer duración",
@@ -283,14 +283,14 @@
   "delete": "Eliminar",
   "edit": "Editar",
   "timeUntilEndAt": "en {time}",
-  "mapView": "Vista de Mapa",
-  "compassView": "Vista de Brújula",
-  "yourLocation": "Tu Ubicación",
+  "mapView": "Vista de mapa",
+  "compassView": "Vista de brújula",
+  "yourLocation": "Tu ubicación",
   "otherApps": "Otras aplicaciones",
   "place_mahamuni": "Pagoda Mahamuni",
   "place_watPhraKaew": "Wat Phra Kaew",
   "enterCustom": "ingresar personalizado",
-  "sunAndShadow": "Sol y Sombra",
+  "sunAndShadow": "Sol y sombra",
   "alignCompass": "Alinear con brújula del dispositivo",
   "reset3DPerspective": "Restablecer perspectiva 3D",
   "vinayaContext": "Contexto del Vinaya Monástico",
@@ -342,7 +342,289 @@
   "clear": "Borrar",
   "setLocale": "Establecer idioma",
   "noData": "Sin datos",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "Para sesiones de más de 3 horas, mantenga la pantalla encendida. El sistema puede detener el temporizador si se apaga la pantalla."
+  "timerOvertime": "Tiempo extra",
+  "finishSession": "Finalizar sesión",
+  "screenOffWarningOver3Hours": "Para sesiones de más de 3 horas, mantenga la pantalla encendida. El sistema puede detener el temporizador si se apaga la pantalla.",
+  "vitaminD": "Vitamina D",
+  "vitDTitle": "Temporizador solar de vitamina D",
+  "vitDNoLocation": "Configure su ubicación (pestaña GPS) para obtener un ángulo solar y estimaciones de vitamina D precisos.",
+  "vitDStatusGood": "Buen sol para la vitamina D — el sol está por encima de 45°",
+  "vitDStatusLow": "Sol por debajo de 45° — la vitamina D se reduce",
+  "vitDStatusNone": "Sol demasiado bajo — casi nada de vitamina D",
+  "vitDStatusNight": "El sol se ha puesto — sin vitamina D",
+  "vitDSunAngle": "Ángulo solar",
+  "vitDUvIndex": "Índice UV (estim.)",
+  "vitDRate": "Tasa de vitamina D",
+  "vitDIuPerMin": "≈ {iu} IU/min",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "Eficiencia de vitamina D",
+  "vitDBurnTime": "Quemadura tras",
+  "vitDMinutes": "{min} min",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "Mejor horario para la vitamina D hoy (por encima de 45°): {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "Hoy el sol no alcanza los 45° (máximo {deg}° a las {time}). La vitamina D será baja.",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "Regla de la sombra: cuando su sombra es más corta que usted, el sol está por encima de 45°.",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "estimado en esta sesión",
+  "vitDStart": "Iniciar sesión al sol",
+  "vitDStop": "Detener y guardar sesión",
+  "vitDGoalReached": "Necesidad diaria alcanzada. Descanse a la sombra.",
+  "vitDEnoughSun": "Suficiente sol por hoy — a partir de ahora aumenta el riesgo de quemadura.",
+  "vitDToday": "Hoy",
+  "vitDOfDailyNeed": "de una necesidad diaria estimada de {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "Dosis de quemadura hoy",
+  "vitDBurnHint": "Manténgase por debajo del 50 % — las sesiones cortas son suficientes.",
+  "vitDBurnWarnMid": "Más de media dosis de quemadura. Considere cubrirse o pasar a la sombra.",
+  "vitDBurnWarnHigh": "Cerca de quemarse. Por favor, cúbrase y vaya a la sombra.",
+  "vitDTodaySessions": "Sesiones de hoy",
+  "vitDNoSessions": "Aún no hay sesiones hoy. Pulse iniciar cuando salga al sol.",
+  "vitDDeleteSession": "Eliminar sesión",
+  "vitDDeleteConfirm": "¿Quitar esta sesión del total de hoy?",
+  "vitDSettings": "Ajustes solares",
+  "vitDSkinTitle": "Tono de piel",
+  "vitDSkinSubtitle": "El factor más importante para el tiempo de quemadura.",
+  "vitDSkinType": "Tipo {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "Muy clara",
+  "vitDSkin2": "Clara",
+  "vitDSkin3": "Media",
+  "vitDSkin4": "Oliva / morena clara",
+  "vitDSkin5": "Morena",
+  "vitDSkin6": "Morena oscura",
+  "vitDCoverageTitle": "Piel expuesta",
+  "vitDCoverageSubtitle": "Cuánta piel está al sol. Cámbielo en cada sesión.",
+  "vitDCoverFullRobe": "Ambos hombros cubiertos",
+  "vitDCoverFullRobeDesc": "Cabeza, manos, pies",
+  "vitDCoverOneShoulder": "Un hombro descubierto",
+  "vitDCoverOneShoulderDesc": "Además brazo y hombro derechos",
+  "vitDCoverUpperBare": "Torso descubierto",
+  "vitDCoverUpperBareDesc": "Solo el hábito inferior",
+  "vitDCoverBathing": "Paño de baño",
+  "vitDCoverBathingDesc": "De la cintura a la rodilla",
+  "vitDSkyTitle": "Cielo",
+  "vitDSkyClear": "Despejado",
+  "vitDSkyPartly": "Parcialmente nublado",
+  "vitDSkyMostly": "Mayormente nublado",
+  "vitDSkyOvercast": "Cubierto",
+  "vitDWeightTitle": "Peso corporal",
+  "vitDWeightSubtitle": "Se usa para el área de piel y la necesidad diaria.",
+  "vitDGoalFromWeight": "Necesidad diaria estimada: {iu} IU (unas 20 IU por kg, 600–4.000 IU).",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "Guía del sol y la vitamina D",
+  "vitDGuideBenefitsTitle": "Beneficios",
+  "vitDGuideBenefits": "La vitamina D favorece unos huesos y dientes fuertes, la fuerza muscular y el sistema inmunitario. La falta de vitamina D es común entre los monásticos que permanecen en interiores, mantienen el hábito cubierto o viven en monasterios con mucha sombra. Un poco de sol con regularidad es una forma natural y gratuita de producirla.",
+  "vitDGuideNoonTitle": "Sesión corta al mediodía frente a sesión larga por la tarde",
+  "vitDGuideNoon": "Una sesión corta cerca del mediodía es mejor que una larga a última hora de la tarde. Cuando el sol está alto (por encima de 45°), la luz contiene más UVB, los rayos que producen vitamina D, así que obtiene la mayor cantidad de vitamina D por cada unidad de riesgo de quemadura. A las 3 de la tarde el sol está más bajo: la UVB disminuye mucho más rápido que la UVA. Se quema más despacio, pero para obtener la misma vitamina D debe permanecer mucho más tiempo, y recibe más UVA, que envejece la piel y aumenta el riesgo de cáncer de piel. Por eso una sesión más larga a las 3 de la tarde no es más segura — es menos eficiente. Ejemplo: 10–15 minutos al mediodía pueden equivaler a una hora o más a las 3 de la tarde.",
+  "vitDGuideShortTitle": "Sesiones cortas y regulares",
+  "vitDGuideShort": "La producción de vitamina D en la piel se estabiliza: tras aproximadamente media a una dosis de quemadura, más tiempo añade poca vitamina D pero sigue sumando daño a la piel. Varias sesiones cortas durante la semana son mejores que una sola sesión larga. Basta con parar mucho antes de que la piel se ponga rosada. La vitamina D se almacena en el cuerpo, así que perder un día no es un problema.",
+  "vitDGuideDangersTitle": "Peligros",
+  "vitDGuideDangers": "Demasiado sol causa quemaduras, daño ocular, agotamiento por calor y deshidratación, envejecimiento de la piel y cáncer de piel. La piel clara se quema rápidamente. Los cristales de las ventanas bloquean la UVB, así que sentarse detrás de un cristal no produce vitamina D. El agua, la arena y la piedra clara reflejan la radiación UV y aumentan la exposición. Algunos medicamentos hacen que la piel sea sensible a la luz. Beba agua y proteja sus ojos — nunca mire al sol.",
+  "vitDGuideMonksTitle": "Consejos para la Sangha",
+  "vitDGuideMonks": "Descubrir el hombro derecho o los brazos mientras se está sentado o caminando en el monasterio durante un rato cerca del mediodía suele ser suficiente para los tipos de piel más oscuros en los trópicos. La cabeza rapada también queda expuesta, así que proteja el cuero cabelludo en las rondas largas de limosna. La piel más oscura necesita más tiempo para obtener la misma vitamina D, pero se quema con menos facilidad. En climas o estaciones frías en que el sol se mantiene por debajo de 45°, el cuerpo no puede producir mucha vitamina D — consulte a un médico sobre alimentos o suplementos.",
+  "vitDGuideMethodTitle": "Cómo se calcula",
+  "vitDGuideMethod": "El ángulo solar se obtiene de su ubicación GPS y de la hora. El índice UV se estima para un cielo despejado (UVI ≈ 12.5 × sin(angle)^2.42) y se reduce según las nubes. La dosis de quemadura (MED) depende del tipo de piel. Se producen unas 10.000 IU cuando todo el cuerpo recibe una dosis de quemadura; esto se ajusta según el área de piel descubierta y su tamaño corporal (a partir del peso). La eficiencia de la vitamina D disminuye cuando el sol está por debajo de 45° y es cero por debajo de 15°. La producción se detiene cuando la dosis del día alcanza una dosis de quemadura. Los valores reales varían con el ozono, la altitud, la contaminación del aire, la edad y la salud — tome estas cifras como guías aproximadas.",
+  "vitDDisclaimer": "Aviso médico: esta calculadora ofrece solo estimaciones educativas aproximadas. No es un consejo médico y no puede medir su nivel de vitamina D. La exposición al sol conlleva riesgos, como quemaduras solares y cáncer de piel. Consulte a un médico cualificado sobre análisis de vitamina D, suplementos o problemas de la piel, especialmente si tiene la piel clara, antecedentes de cáncer de piel o toma medicamentos fotosensibilizantes.",
+  "vitDTabMonk": "Monje",
+  "vitDTabLay": "Hombre",
+  "vitDCoverFaceHands": "Cara y manos",
+  "vitDCoverFaceHandsDesc": "Manga larga, pantalón largo",
+  "vitDCoverShortSleeves": "Manga corta",
+  "vitDCoverShortSleevesDesc": "Camiseta, pantalón largo",
+  "vitDCoverShorts": "Pantalón corto y camiseta",
+  "vitDCoverShortsDesc": "Brazos y piernas",
+  "vitDCoverSwimwear": "Bañador",
+  "vitDCoverSwimwearDesc": "Solo bañador",
+  "vitDDailyTarget": "Objetivo diario",
+  "vitDRemaining": "Faltan {iu} IU",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "Tiempo objetivo",
+  "vitDTargetTimeLeft": "Tiempo objetivo restante",
+  "vitDTargetTimeFull": "para todo el objetivo, desde ahora",
+  "vitDTargetTimeRest": "para completar el objetivo de hoy",
+  "vitDTargetUnreachable": "No alcanzable hoy en estas condiciones",
+  "vitDTargetOverBurn": "Más de la mitad de tu tiempo de quemadura ({min} min). Descubre más piel, acuéstate o repártelo en varios días.",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "Objetivo diario",
+  "vitDTargetAuto": "Objetivo automático según el peso",
+  "vitDPostureTitle": "Postura",
+  "vitDPostureSubtitle": "Acostarse al mediodía orienta más piel hacia el sol.",
+  "vitDPostureStanding": "De pie",
+  "vitDPostureWalking": "Caminando",
+  "vitDPostureSitting": "Sentado",
+  "vitDPostureLying": "Acostado",
+  "vitDPostureFactor": "×{f} vitamina D ahora frente a estar de pie",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "Crecimiento del cabello",
+  "vitDHairSubtitle": "Días desde que se rasuró la cabeza. El cuero cabelludo descubierto también produce vitamina D.",
+  "vitDHairToday": "Rasurado hoy • cuero cabelludo totalmente expuesto",
+  "vitDHairValue": "{days} días desde el rasurado • cuero cabelludo {pct}% expuesto",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "Postura y cuero cabelludo: la estimación está calibrada para una persona de pie. Acostado, el lado expuesto mira al cielo, así que al mediodía produce hasta unas 1.6× más vitamina D, pero menos que de pie cuando el sol está bajo. El tiempo de quemadura no cambia, porque la piel más expuesta siempre mira al cielo. Para monásticos se cuenta el cuero cabelludo rasurado (cerca del 3.5% del cuerpo), y el cabello que vuelve a crecer lo sombrea poco a poco en dos semanas. El tiempo objetivo sigue la trayectoria del sol desde ahora e incluye las sesiones anteriores de hoy.",
+  "vitDTaperNote": "La producción de vitamina D se ralentiza a medida que aumenta la dosis de sol en la piel, así que cada minuto extra aporta un poco menos.",
+  "vitDGuideBestTitle": "Mejor método: más piel, poco tiempo",
+  "vitDGuideBest": "La quemadura depende de cuánto tiempo está al sol cada zona de piel; la vitamina D depende de cuánta piel está descubierta. Así que descubre toda la piel que puedas durante poco tiempo cerca del mediodía. Acostarse orienta más piel hacia el sol alto. Pasa la mitad del tiempo boca arriba y la otra mitad boca abajo: cada lado recibe solo la mitad de la dosis de quemadura y la vitamina D es casi la misma. Cubre la cara y la cabeza con un paño, cierra los ojos y nunca te duermas al sol. Para piel clara al mediodía tropical, 3–5 minutos así suelen bastar; la piel oscura puede necesitar 5–10 minutos.",
+  "vitDGuideBurnTitle": "Sobre las quemaduras solares",
+  "vitDGuideBurn": "Una quemadura solar es la reacción de la piel al daño que el UVB causa en sus células. El enrojecimiento aparece 2–6 horas después y es peor a las 12–24 horas, así que no lo notas mientras estás al sol. Las sesiones del mismo día se suman: cuatro sesiones de 5 minutos queman casi lo mismo que una de 20, porque la piel se repara lentamente durante muchas horas. El medidor de esta app suma todas las sesiones de hoy y se reinicia a medianoche. Mantenerse por debajo de la mitad de la dosis de quemadura (50%) evita el enrojecimiento. El riesgo de quemadura se reinicia casi cada día, pero el envejecimiento de la piel y el riesgo de cáncer de piel se acumulan toda la vida, así que las sesiones cortas y regulares son mejores que las largas.",
+  "vitDTabLayFemale": "Mujer",
+  "vitDCoverSwimwearFemaleDesc": "Top de baño y pantalón corto",
+  "vitDCoverAngsa": "Paño de hombro (aṅsa)",
+  "vitDCoverAngsaDesc": "Brazo derecho, antebrazo izquierdo y pecho derecho al descubierto",
+  "vitDSessionRunning": "AL SOL",
+  "vitDSessionIdle": "LISTO",
+  "vitDBurnInfoTitle": "Sobre la dosis de quemadura",
+  "vitDBurnInfo": "La dosis de quemadura es acumulativa: suma todas las sesiones de hoy. Cuatro sesiones de 5 minutos cuentan igual que una de 20, porque la piel se repara lentamente durante muchas horas. Se reinicia a medianoche.\n\n100% significa que tu piel probablemente se enrojecerá unas horas después. Mantenerte por debajo del 50% lo evita.\n\nPara la vitamina D, lo mejor es más piel durante menos tiempo. Descubre toda la piel que puedas cerca del mediodía y mantén la sesión corta.\n\nAcuéstate: pasa la mitad del tiempo boca arriba, con la cara y la cabeza cubiertas con un paño, y la otra mitad boca abajo. Cada lado recibe solo la mitad de la dosis de quemadura y la vitamina D es casi la misma.",
+  "vitDStartTooEarly": "Demasiado pronto ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "Demasiado tarde — sol bajo 45°",
+  "vitDStartNo45": "Hoy el sol no llega a 45°",
+  "vitDTodayInfoTitle": "Sobre la estimación de hoy",
+  "vitDTodayInfo": "El total de hoy suma la vitamina D estimada de todas las sesiones de hoy, incluida la que está en curso. Se reinicia a medianoche.\n\nEl porcentaje lo compara con tu objetivo diario de {iu} IU. Llegar al 100% basta para el día; más sol aporta poco y aumenta la dosis de quemadura.\n\nSon estimaciones aproximadas en las mismas unidades que los suplementos: unas 1.000 IU de sol tienen aproximadamente el mismo efecto en sangre que una pastilla de 1.000 IU. Las cantidades reales varían con la bruma, el ozono, la edad y cuánta piel mira al sol.\n\nLa recomendación oficial es 600 IU al día (800 IU a partir de los 70 años). El objetivo automático usa unas 20 IU por kg de peso; puedes fijar el tuyo en Ajustes de sol.\n\nLa vitamina D se almacena en el cuerpo durante semanas, así que el total semanal importa más que cualquier día concreto.",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "Esta semana",
+  "vitDWeekAvg": "Media ≈ {iu} IU/día",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "Faltan {iu} IU",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "{iu} IU de ventaja",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "Sobre el total semanal",
+  "vitDWeekInfo": "La vitamina D se almacena en el cuerpo durante semanas, así que un día soleado puede cubrir uno nublado. Esta tarjeta suma los últimos 7 días (menos si empezaste hace poco) y los compara con 7 días de tu objetivo diario.\n\nCada día cuenta como máximo por 3 días, así que una sesión grande no cubre toda la semana.\n\nNunca te quedes más tiempo para recuperar. El límite de quemadura es siempre diario. Para compensar días perdidos, descubre más piel o acuéstate el próximo día soleado.\n\nSi la semana sigue baja, considera alimentos ricos en vitamina D o un suplemento.",
+  "vitDCatchUpTitle": "Recuperación semanal",
+  "vitDCatchUpDesc": "El objetivo de hoy compensa lo que falta en la semana (hasta 3 días) o baja si vas adelantado. Nunca te quedes más tiempo para recuperar: descubre más piel.",
+  "vitDTodayTargetWeekly": "Objetivo de hoy (semanal)",
+  "vitDCoveredByWeek": "Cubierto por esta semana",
+  "vitDOfTodayTarget": "del objetivo de hoy de {iu} IU",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "El resto se repartirá en los próximos días soleados.",
+  "vitDLowWeek": "Poco sol esta semana: considera alimentos ricos en vitamina D o un suplemento.",
+  "vitDTab": "D3",
+  "meditationTab": "Meditar",
+  "pasteFromMaps": "Pegar desde Google Maps",
+  "readingLocation": "Leyendo ubicación...",
+  "clipboardEmpty": "El portapapeles está vacío",
+  "noCoordinatesFound": "No se encontraron coordenadas ni enlace de mapa válidos",
+  "locationLoaded": "¡Coordenadas cargadas!",
+  "uposathaEveShaving": "Víspera de Uposatha (día de rasurado) • Mañana es Uposatha",
+  "moonSkyCompass3d": "Brújula celeste lunar 3D"
 }

@@ -12,7 +12,7 @@
   "about": "À propos",
   "licenses": "Licences",
   "not_set": "Non défini",
-  "solar_noon": "Midi Solaire",
+  "solar_noon": "Midi solaire",
   "gmt_offset": "Décalage GMT",
   "hours": "heures",
   "astronomical_twilight": "Crépuscule astronomique",
@@ -67,10 +67,10 @@
   "gps_internet_message": "Si Internet est activé, le nom de la ville peut être référencé par le GPS",
   "language": "Langue",
   "theme": "Thème",
-  "help_content": "Calculs :\n Les calculs sont basés sur les équations d'Astronomical Algorithms de Jean Meeus. Les résultats du lever et du coucher du soleil sont théoriquement précis à une minute près pour les emplacements situés entre +/- 72° de latitude. Veuillez envisager de vous arrêter bien avant l'heure indiquée.\n\nMIDI :\nL'écran Midi affiche le Midi Solaire pour le jour actuel sélectionné par GPS ou par Ville de manière facile à lire.\n\nAUBE :\nL'écran Aube affiche la formule d'aube sélectionnée dans les paramètres.\nPa-Auk = (Lever du soleil - 40 Minutes).\nNa-Uyana = (Lever du soleil - 30 Minutes).\n\nGPS :\nLe GPS définira automatiquement la ville si Internet est activé.\n\nPARAMÈTRES :\nSécurité :\nSoustrait des minutes de l'heure de Midi pour la rendre plus précoce et en ajoute à l'Aube pour la rendre plus tardive.\nMinuteur :\nPermet les notifications vocales mains libres.",
+  "help_content": "Calculs et algorithme :\nLes calculs de Buddhist Sun reposent sur l'algorithme de position solaire du National Renewable Energy Laboratory (NREL SPA). Contrairement aux algorithmes plus anciens (comme celui de Meeus), qui avaient une marge d'erreur allant jusqu'à 1 minute, NREL SPA est la référence internationale et offre une précision de quelques secondes pour le midi solaire, le lever du soleil et les crépuscules.\n\nPrécaution importante du Vinaya :\nBien que le calcul astronomique soit précis à quelques secondes près, les moines et les pratiquants des 8/10 préceptes doivent veiller à ne plus avaler de nourriture et à se rincer la bouche entre une minute et 30 secondes avant l'échéance, afin qu'aucune particule de nourriture ne reste dans la bouche ou la gorge à l'arrivée du midi solaire.\n\nFonctionnalités de l'application :\n• Midi solaire et aube : midi solaire de haute précision et formules d'aube personnalisables (Pa-Auk -40 min, Na-Uyana -30 min, crépuscules astronomiques et angles personnalisés).\n• Compte à rebours vocal mains libres : notifications vocales (TTS) fonctionnant en arrière-plan écran éteint, avec avertissements à des intervalles critiques jusqu'à zéro.\n• Boussole du Vinaya : globe terrestre 3D par orthodromie (grand cercle), carte 2D et cadran bouddhiste rotatif orientés vers Bodh-Gaya et d'autres lieux saints de pèlerinage.\n• Phase lunaire et calendrier Uposatha : pourcentage quotidien de la phase lunaire et jours traditionnels d'Uposatha / Poya selon les traditions thaïlandaise, birmane et sri-lankaise.\n• Soleil et ombre (ratio du Vinaya) : angle de l'ombre d'un bâton en temps réel et mesure en largeurs de doigt (angula) pour vérifier physiquement le midi.\n• Buddhavassa (calendrier EB) : calcul des années de l'ère bouddhique, décompte des vassa et jours du calendrier Pakkha.\n• Minuteur de méditation : minuteur de pleine conscience avec sons de bol chantant, cloches d'intervalle et périodes de préparation.\n• Maraṇassati (contemplation de la mort) : attention à la mortalité avec analyse de l'espérance de vie et rappels de contemplation.\n• GPS et base de plus de 40 000 villes : détection GPS de haute précision ou recherche de ville hors ligne dans le monde entier.\n• Marges de sécurité : marge de sécurité configurable (1 à 10 minutes) soustraite du midi ou ajoutée à l'aube pour plus de sérénité.\n\nConfidentialité :\nBuddhist Sun ne collecte aucune information personnelle.\nDéclaration complète : https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
   "about_content": "Buddhist Sun est une petite application destinée aux moines et moniales bouddhistes pour afficher l'heure du midi solaire spécifique aux besoins monastiques bouddhistes. Comme je mange habituellement avec mes mains, j'avais besoin d'un moyen \"mains libres\" de savoir quand le midi approchait. Le minuteur avec notifications vocales m'aide à connaître le temps restant pour manger.\n\nPourquoi est-ce important ?\nCeux qui suivent les règles monastiques bouddhistes ne sont pas autorisés à manger après midi. La règle dépend du soleil à son zénith dans le ciel plutôt que d'une horloge. Ils n'avaient pas d'horloges à l'époque du Bouddha.\n\nQue cela vous aide à atteindre le Nibbāna rapidement et en toute sécurité !",
-  "gps_permission_content": "Une autorisation sera demandée pour l'utilisation du GPS. Cela permet à Buddhist Sun de connaître les données de localisation GPS pour calculer la position du soleil. Les données ne sont pas envoyées en dehors de cette application.",
-  "background_permission_content": "Une autorisation sera demandée pour l'utilisation en arrière-plan. Cette autorisation est nécessaire pour activer le fonctionnement correct des notifications vocales.",
+  "gps_permission_content": "Une autorisation sera demandée pour l'utilisation du GPS. Cela permet à Buddhist Sun de connaître les données de localisation GPS afin de calculer la position du soleil. Le GPS n'est relevé qu'une seule fois à chaque pression sur le bouton GPS. Les données ne sont pas envoyées en dehors de cette application.",
+  "background_permission_content": "Une autorisation sera demandée pour l'utilisation en arrière-plan. Cette autorisation est nécessaire pour que les notifications vocales fonctionnent correctement même lorsque l'écran est éteint. Buddhist Sun arrêtera ce processus en arrière-plan lorsque l'interrupteur sera désactivé ou que l'application sera fermée. L'autorisation ne sera demandée qu'une seule fois si elle est acceptée.",
   "dstSavingsNotice": "Avertissement : cette application ne calcule pas l'heure d'été (DST). Veuillez être attentif aux changements. Lorsque l'heure d'été survient, réinitialisez le GPS ou le décalage dans l'onglet Paramètres.",
   "dstNoticeTitle": "Avis concernant l'heure d'été",
   "verify": "Vérifier le midi",
@@ -80,7 +80,7 @@
   "moonPhase": "Phase de la lune :",
   "selectDate": "Sélectionner la date",
   "selectedDate": "Date sélectionnée :",
-  "moon": "lune",
+  "moon": "Lune",
   "darkMode": "Mode sombre",
   "color": "Couleur",
   "material3": "Material 3",
@@ -97,7 +97,7 @@
   "safetyWarning": "Avertissement de sécurité",
   "safetyWarningMessage": "La sécurité est ACTIVÉE. Les heures de l'application diffèrent de celles de l'observatoire de {minutes} minutes.",
   "proceed": "Poursuivre",
-  "beTitle": "Ère Bouddhiste",
+  "beTitle": "Ère bouddhiste",
   "beDateLabel": "Sélectionner la date (E.C.)",
   "beAtikkanta": "Atikkanta (Écoulé)",
   "beAvasittha": "Avasiṭṭha (Restant)",
@@ -194,11 +194,11 @@
   "deathContemplationPrompt": "Veuillez définir votre date de naissance et votre espérance de vie dans les Paramètres.",
   "lifeElapsed": "Vie écoulée",
   "lifeRemaining": "Vie restante",
-  "lifeExceeded": "Vous avez dépassé votre espérance de vie prévue. Chaque instant est un cadeau précieux.",
+  "lifeExceeded": "Vous avez dépassé votre espérance de vie prévue. Chaque instant est un don pour la pratique du Dhamma.",
   "editDeathSettings": "Modifier date et âge",
   "maranasatiQuote": "La vie est incertaine, la mort est certaine. Efforcez-vous avec diligence.",
   "compass": "Boussole",
-  "buddhistCompass": "Boussole Bouddhiste",
+  "buddhistCompass": "Boussole bouddhiste",
   "currentDirection": "Direction actuelle :",
   "bearingTo": "Cap vers {targetName} :",
   "distanceTo": "Distance jusqu'à {targetName} :",
@@ -235,10 +235,10 @@
   "timerModeTimed": "Minuté",
   "timerModeEndAt": "Fin à",
   "timerModeOpen": "Libre",
-  "tapToChangeDuration": "Touchez pour modifier la durée",
+  "tapToChangeDuration": "Touchez pour modifier la durée et les préréglages",
   "tapToChangeEndTime": "Touchez pour modifier l'heure de fin",
   "openUnlimitedMode": "Mode libre / illimité",
-  "openUnlimitedModeDesc": "Compte continuellement jusqu'à ce que vous terminiez.",
+  "openUnlimitedModeDesc": "Compte en continu jusqu'à ce que vous terminiez. Les cloches d'intervalle sonneront selon les réglages ci-dessous.",
   "bellsAndSettings": "Cloches et paramètres",
   "bellVolume": "Pourcentage du volume de la cloche",
   "phoneVolume": "Volume du téléphone",
@@ -253,7 +253,7 @@
   "autoCloseTimer": "Fermeture automatique du minuteur",
   "autoCloseTimerDesc": "Ferme automatiquement l'écran du minuteur une fois la cloche de fin terminée",
   "timerRingStyle": "Style de l'anneau",
-  "timerRingStyleDesc": "Le mode soustractif vide le cercle au fil du temps.",
+  "timerRingStyleDesc": "Le mode soustractif efface progressivement le cercle plein à mesure que le temps s'écoule. Le mode additif le remplit.",
   "styleSubtractive": "Soustractif (Par défaut)",
   "styleAdditive": "Additif",
   "endSession": "Terminer la session",
@@ -266,7 +266,7 @@
   "timerRemaining": "Restant",
   "timerDone": "Terminé",
   "aboutTimer": "À propos du minuteur",
-  "timerInfoDialogContent": "Un minuteur paisible dédié à votre pratique de méditation.",
+  "timerInfoDialogContent": "Un minuteur paisible dédié à votre pratique de méditation.\n\n• Minuté : méditez pendant une durée fixe.\n• Fin à : méditez jusqu'à une heure précise de la journée.\n• Libre : méditez librement avec des cloches d'intervalle facultatives.\n\nTouchez le cercle du minuteur pendant une séance pour mettre en pause ou reprendre.\n\nSons de cloches offerts par Freesound.org, Pixabay.com et Suno.com.",
   "tapScreenToResume": "Touchez l'écran pour reprendre",
   "tapScreenToPause": "Touchez l'écran pour mettre en pause",
   "setDuration": "Définir la durée",
@@ -283,9 +283,9 @@
   "delete": "Supprimer",
   "edit": "Modifier",
   "timeUntilEndAt": "dans {time}",
-  "mapView": "Vue Carte",
-  "compassView": "Vue Boussole",
-  "yourLocation": "Votre Emplacement",
+  "mapView": "Vue carte",
+  "compassView": "Vue boussole",
+  "yourLocation": "Votre emplacement",
   "otherApps": "Autres applications",
   "place_mahamuni": "Pagode Mahamuni",
   "place_watPhraKaew": "Wat Phra Kaew",
@@ -342,7 +342,289 @@
   "clear": "Effacer",
   "setLocale": "Changer de langue",
   "noData": "Aucune donnée",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "Pour les sessions de plus de 3 heures, veuillez garder l'écran allumé. Le système peut interrompre le minuteur si l'écran s'éteint."
+  "timerOvertime": "Temps supplémentaire",
+  "finishSession": "Terminer la séance",
+  "screenOffWarningOver3Hours": "Pour les sessions de plus de 3 heures, veuillez garder l'écran allumé. Le système peut interrompre le minuteur si l'écran s'éteint.",
+  "vitaminD": "Vitamine D",
+  "vitDTitle": "Minuteur solaire vitamine D",
+  "vitDNoLocation": "Définissez votre position (onglet GPS) pour un angle solaire et des estimations de vitamine D précis.",
+  "vitDStatusGood": "Bon soleil pour la vitamine D — le soleil est au-dessus de 45°",
+  "vitDStatusLow": "Soleil sous 45° — la vitamine D est réduite",
+  "vitDStatusNone": "Soleil trop bas — presque pas de vitamine D",
+  "vitDStatusNight": "Le soleil est couché — pas de vitamine D",
+  "vitDSunAngle": "Angle solaire",
+  "vitDUvIndex": "Indice UV (estim.)",
+  "vitDRate": "Taux de vitamine D",
+  "vitDIuPerMin": "≈ {iu} IU/min",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "Efficacité vitamine D",
+  "vitDBurnTime": "Coup de soleil après",
+  "vitDMinutes": "{min} min",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "Meilleure période pour la vitamine D aujourd'hui (au-dessus de 45°) : {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "Le soleil n'atteint pas 45° aujourd'hui (maximum {deg}° à {time}). La vitamine D sera faible.",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "Règle de l'ombre : quand votre ombre est plus courte que votre taille, le soleil est au-dessus de 45°.",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "estimé pour cette séance",
+  "vitDStart": "Démarrer une séance au soleil",
+  "vitDStop": "Arrêter et enregistrer",
+  "vitDGoalReached": "Besoin quotidien atteint. Reposez-vous à l'ombre.",
+  "vitDEnoughSun": "Assez de soleil pour aujourd'hui — le risque de coup de soleil augmente désormais.",
+  "vitDToday": "Aujourd'hui",
+  "vitDOfDailyNeed": "d'un besoin quotidien estimé de {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "Dose de coup de soleil aujourd'hui",
+  "vitDBurnHint": "Restez sous 50 % — de courtes séances suffisent.",
+  "vitDBurnWarnMid": "Plus d'une demi-dose de coup de soleil. Pensez à vous couvrir ou à vous mettre à l'ombre.",
+  "vitDBurnWarnHigh": "Proche du coup de soleil. Veuillez vous couvrir et aller à l'ombre.",
+  "vitDTodaySessions": "Séances d'aujourd'hui",
+  "vitDNoSessions": "Aucune séance aujourd'hui. Appuyez sur démarrer lorsque vous allez au soleil.",
+  "vitDDeleteSession": "Supprimer la séance",
+  "vitDDeleteConfirm": "Retirer cette séance du total d'aujourd'hui ?",
+  "vitDSettings": "Réglages solaires",
+  "vitDSkinTitle": "Teint de peau",
+  "vitDSkinSubtitle": "Le facteur le plus important pour le temps avant coup de soleil.",
+  "vitDSkinType": "Type {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "Très claire",
+  "vitDSkin2": "Claire",
+  "vitDSkin3": "Moyenne",
+  "vitDSkin4": "Olive / brun clair",
+  "vitDSkin5": "Brune",
+  "vitDSkin6": "Brun foncé",
+  "vitDCoverageTitle": "Peau exposée",
+  "vitDCoverageSubtitle": "Quelle surface de peau est au soleil. Modifiez-la à chaque séance.",
+  "vitDCoverFullRobe": "Deux épaules couvertes",
+  "vitDCoverFullRobeDesc": "Tête, mains, pieds",
+  "vitDCoverOneShoulder": "Une épaule découverte",
+  "vitDCoverOneShoulderDesc": "Plus le bras et l'épaule droits",
+  "vitDCoverUpperBare": "Haut du corps découvert",
+  "vitDCoverUpperBareDesc": "Robe inférieure seulement",
+  "vitDCoverBathing": "Pagne de bain",
+  "vitDCoverBathingDesc": "De la taille au genou",
+  "vitDSkyTitle": "Ciel",
+  "vitDSkyClear": "Dégagé",
+  "vitDSkyPartly": "Partiellement nuageux",
+  "vitDSkyMostly": "Très nuageux",
+  "vitDSkyOvercast": "Couvert",
+  "vitDWeightTitle": "Poids corporel",
+  "vitDWeightSubtitle": "Utilisé pour la surface de peau et le besoin quotidien.",
+  "vitDGoalFromWeight": "Besoin quotidien estimé : {iu} IU (environ 20 IU par kg, 600–4 000 IU).",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "Guide soleil et vitamine D",
+  "vitDGuideBenefitsTitle": "Bienfaits",
+  "vitDGuideBenefits": "La vitamine D contribue à des os et des dents solides, à la force musculaire et au système immunitaire. Le manque de vitamine D est fréquent chez les moines et moniales qui restent à l'intérieur, gardent la robe couverte ou vivent dans des monastères très ombragés. Un peu de soleil régulier est un moyen naturel et gratuit d'en produire.",
+  "vitDGuideNoonTitle": "Courte séance à midi ou longue séance l'après-midi",
+  "vitDGuideNoon": "Une courte séance vers midi vaut mieux qu'une longue en fin d'après-midi. Quand le soleil est haut (au-dessus de 45°), la lumière contient davantage d'UVB, les rayons qui produisent la vitamine D, vous produisez donc le plus de vitamine D pour chaque unité de risque de coup de soleil. À 15 h le soleil est plus bas : les UVB diminuent beaucoup plus vite que les UVA. Vous brûlez plus lentement, mais pour obtenir la même vitamine D vous devez rester bien plus longtemps, et vous recevez plus d'UVA, qui font vieillir la peau et augmentent le risque de cancer de la peau. Une séance plus longue à 15 h n'est donc pas plus sûre — elle est moins efficace. Exemple : 10–15 minutes à midi peuvent équivaloir à une heure ou plus à 15 h.",
+  "vitDGuideShortTitle": "Séances courtes et régulières",
+  "vitDGuideShort": "La production de vitamine D par la peau plafonne : après environ une demi à une dose de coup de soleil, rester plus longtemps n'apporte guère plus de vitamine D mais continue d'abîmer la peau. Plusieurs courtes séances dans la semaine valent mieux qu'une seule longue séance. Il suffit de s'arrêter bien avant que la peau ne rosisse. La vitamine D est stockée dans l'organisme, un jour manqué n'est donc pas un problème.",
+  "vitDGuideDangersTitle": "Dangers",
+  "vitDGuideDangers": "Trop de soleil provoque coups de soleil, lésions oculaires, épuisement dû à la chaleur et déshydratation, vieillissement de la peau et cancer de la peau. Les peaux claires brûlent vite. Les vitres bloquent les UVB : s'asseoir derrière une vitre ne produit pas de vitamine D. L'eau, le sable et la pierre claire réfléchissent les UV et augmentent l'exposition. Certains médicaments rendent la peau sensible à la lumière. Buvez de l'eau et protégez vos yeux — ne regardez jamais le soleil.",
+  "vitDGuideMonksTitle": "Conseils pour la Sangha",
+  "vitDGuideMonks": "Découvrir l'épaule droite ou les bras en étant assis ou en marchant dans le monastère pendant un court moment vers midi suffit généralement pour les peaux plus foncées sous les tropiques. La tête rasée est aussi exposée : protégez le cuir chevelu lors des longues tournées d'aumônes. Une peau plus foncée a besoin de plus de temps pour la même vitamine D mais brûle moins facilement. Dans les climats ou saisons froids où le soleil reste sous 45°, le corps ne peut pas produire beaucoup de vitamine D — demandez conseil à un médecin sur l'alimentation ou les compléments.",
+  "vitDGuideMethodTitle": "Méthode d'estimation",
+  "vitDGuideMethod": "L'angle solaire est calculé à partir de votre position GPS et de l'heure. L'indice UV est estimé pour un ciel dégagé (UVI ≈ 12.5 × sin(angle)^2.42) puis réduit selon les nuages. La dose de coup de soleil (MED) dépend du type de peau. Environ 10 000 IU sont produites lorsque tout le corps reçoit une dose de coup de soleil ; ce chiffre est ajusté selon la surface de peau découverte et votre corpulence (d'après le poids). L'efficacité de la vitamine D diminue quand le soleil est sous 45° et devient nulle sous 15°. La production s'arrête lorsque la dose du jour atteint une dose de coup de soleil. Les valeurs réelles varient selon l'ozone, l'altitude, la pollution de l'air, l'âge et la santé — considérez ces chiffres comme des repères approximatifs.",
+  "vitDDisclaimer": "Avertissement médical : ce calculateur ne fournit que des estimations éducatives approximatives. Il ne s'agit pas d'un avis médical et il ne peut pas mesurer votre taux de vitamine D. L'exposition au soleil comporte des risques, notamment coups de soleil et cancer de la peau. Consultez un médecin qualifié au sujet du dosage de la vitamine D, des compléments ou de problèmes de peau, surtout si vous avez la peau claire, des antécédents de cancer de la peau ou prenez des médicaments photosensibilisants.",
+  "vitDTabMonk": "Moine",
+  "vitDTabLay": "Homme",
+  "vitDCoverFaceHands": "Visage et mains",
+  "vitDCoverFaceHandsDesc": "Manches longues, pantalon long",
+  "vitDCoverShortSleeves": "Manches courtes",
+  "vitDCoverShortSleevesDesc": "T-shirt, pantalon long",
+  "vitDCoverShorts": "Short et T-shirt",
+  "vitDCoverShortsDesc": "Bras et bas des jambes",
+  "vitDCoverSwimwear": "Maillot de bain",
+  "vitDCoverSwimwearDesc": "Short de bain seul",
+  "vitDDailyTarget": "Objectif quotidien",
+  "vitDRemaining": "Encore {iu} IU nécessaires",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "Temps objectif",
+  "vitDTargetTimeLeft": "Temps objectif restant",
+  "vitDTargetTimeFull": "pour tout l'objectif, à partir de maintenant",
+  "vitDTargetTimeRest": "pour terminer l'objectif du jour",
+  "vitDTargetUnreachable": "Inatteignable aujourd'hui dans ces conditions",
+  "vitDTargetOverBurn": "Plus de la moitié de votre temps de coup de soleil ({min} min). Découvrez plus de peau, allongez-vous ou répartissez sur plusieurs jours.",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "Objectif quotidien",
+  "vitDTargetAuto": "Objectif automatique selon le poids",
+  "vitDPostureTitle": "Posture",
+  "vitDPostureSubtitle": "S'allonger à midi oriente plus de peau vers le soleil.",
+  "vitDPostureStanding": "Debout",
+  "vitDPostureWalking": "Marche",
+  "vitDPostureSitting": "Assis",
+  "vitDPostureLying": "Allongé",
+  "vitDPostureFactor": "×{f} vitamine D maintenant par rapport à debout",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "Repousse des cheveux",
+  "vitDHairSubtitle": "Jours depuis le rasage de la tête. Le cuir chevelu nu produit aussi de la vitamine D.",
+  "vitDHairToday": "Rasé aujourd'hui • cuir chevelu entièrement exposé",
+  "vitDHairValue": "{days} jours depuis le rasage • cuir chevelu exposé à {pct}%",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "Posture et cuir chevelu : l'estimation est calibrée pour une personne debout. Allongé, le côté exposé fait face au ciel ; à midi cela produit jusqu'à environ 1.6× plus de vitamine D, mais moins que debout quand le soleil est bas. Le temps de coup de soleil ne change pas, car la peau la plus exposée fait toujours face au ciel. Pour les monastiques, le cuir chevelu rasé (environ 3.5 % du corps) est compté, et la repousse l'ombrage progressivement sur deux semaines. Le temps objectif suit la course du soleil à partir de maintenant et inclut les séances précédentes du jour.",
+  "vitDTaperNote": "La production de vitamine D ralentit à mesure que la dose de soleil sur la peau augmente : chaque minute supplémentaire apporte un peu moins.",
+  "vitDGuideBestTitle": "Meilleure méthode : plus de peau, peu de temps",
+  "vitDGuideBest": "Le coup de soleil dépend du temps que chaque zone de peau passe au soleil ; la vitamine D dépend de la quantité de peau découverte. Découvrez donc le plus de peau possible pendant peu de temps vers midi. S'allonger oriente plus de peau vers le soleil haut. Passez la moitié du temps sur le dos et l'autre moitié sur le ventre : chaque côté ne reçoit que la moitié de la dose de coup de soleil, pour à peu près autant de vitamine D. Couvrez le visage et la tête d'un tissu, fermez les yeux et ne vous endormez jamais au soleil. Pour une peau claire à midi sous les tropiques, 3 à 5 minutes ainsi suffisent souvent ; une peau foncée peut demander 5 à 10 minutes.",
+  "vitDGuideBurnTitle": "À propos des coups de soleil",
+  "vitDGuideBurn": "Un coup de soleil est la réaction de la peau aux dommages causés à ses cellules par les UVB. La rougeur apparaît 2 à 6 heures plus tard et culmine après 12 à 24 heures : on ne la sent donc pas au soleil. Les séances d'une même journée s'additionnent : quatre séances de 5 minutes brûlent à peu près autant qu'une séance de 20 minutes, car la peau se répare lentement pendant de nombreuses heures. Le compteur de l'application additionne toutes les séances du jour et se remet à zéro à minuit. Rester sous la moitié d'une dose de coup de soleil (50 %) évite la rougeur. Le risque de coup de soleil repart presque à zéro chaque jour, mais le vieillissement de la peau et le risque de cancer cutané s'accumulent toute la vie : des séances courtes et régulières valent mieux que des longues.",
+  "vitDTabLayFemale": "Femme",
+  "vitDCoverSwimwearFemaleDesc": "Haut de maillot et short",
+  "vitDCoverAngsa": "Étoffe d'épaule (aṅsa)",
+  "vitDCoverAngsaDesc": "Bras droit, avant-bras gauche et côté droit de la poitrine nus",
+  "vitDSessionRunning": "AU SOLEIL",
+  "vitDSessionIdle": "PRÊT",
+  "vitDBurnInfoTitle": "À propos de la dose de coup de soleil",
+  "vitDBurnInfo": "La dose de coup de soleil est cumulative : elle additionne toutes les séances du jour. Quatre séances de 5 minutes comptent autant qu'une séance de 20 minutes, car la peau se répare lentement pendant de nombreuses heures. Elle se remet à zéro à minuit.\n\n100 % signifie que votre peau rougira probablement quelques heures plus tard. Rester sous 50 % l'évite.\n\nPour la vitamine D, le mieux est plus de peau pendant moins de temps. Découvrez le plus de peau possible vers midi et gardez la séance courte.\n\nAllongez-vous : passez la moitié du temps sur le dos, le visage et la tête couverts d'un tissu, et l'autre moitié sur le ventre. Chaque côté ne reçoit que la moitié de la dose de coup de soleil, pour à peu près autant de vitamine D.",
+  "vitDStartTooEarly": "Trop tôt ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "Trop tard — soleil sous 45°",
+  "vitDStartNo45": "Pas de soleil à 45° aujourd'hui",
+  "vitDTodayInfoTitle": "À propos de l'estimation du jour",
+  "vitDTodayInfo": "Le total du jour additionne la vitamine D estimée de toutes les séances d'aujourd'hui, y compris celle en cours. Il se remet à zéro à minuit.\n\nLe pourcentage le compare à votre objectif quotidien de {iu} IU. Atteindre 100 % suffit pour la journée ; plus de soleil apporte peu et augmente la dose de coup de soleil.\n\nCe sont des estimations approximatives dans les mêmes unités que les compléments : environ 1 000 IU de soleil ont à peu près le même effet sur le taux sanguin qu'un comprimé de 1 000 IU. Les quantités réelles varient avec la brume, l'ozone, l'âge et la surface de peau tournée vers le soleil.\n\nLa recommandation officielle est de 600 IU par jour (800 IU après 70 ans). L'objectif automatique utilise environ 20 IU par kg de poids ; vous pouvez fixer le vôtre dans les réglages du soleil.\n\nLa vitamine D est stockée dans le corps pendant des semaines : le total de la semaine compte plus qu'un seul jour.",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "Cette semaine",
+  "vitDWeekAvg": "Moyenne ≈ {iu} IU/jour",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "{iu} IU de retard",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "{iu} IU d'avance",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "À propos du total hebdomadaire",
+  "vitDWeekInfo": "La vitamine D est stockée dans le corps pendant des semaines : une journée ensoleillée peut compenser une journée nuageuse. Cette carte additionne les 7 derniers jours (moins si vous venez de commencer) et les compare à 7 jours de votre objectif quotidien.\n\nChaque jour compte au maximum pour 3 jours, donc une grosse séance ne peut pas couvrir toute la semaine.\n\nNe restez jamais plus longtemps pour rattraper. La limite de coup de soleil est toujours quotidienne. Pour compenser des jours manqués, découvrez plus de peau ou allongez-vous lors de la prochaine journée ensoleillée.\n\nSi la semaine reste basse, pensez aux aliments riches en vitamine D ou à un complément.",
+  "vitDCatchUpTitle": "Rattrapage hebdomadaire",
+  "vitDCatchUpDesc": "L'objectif du jour compense le manque de la semaine (jusqu'à 3 jours) ou baisse si vous êtes en avance. Ne restez jamais plus longtemps pour rattraper : découvrez plus de peau.",
+  "vitDTodayTargetWeekly": "Objectif du jour (hebdo)",
+  "vitDCoveredByWeek": "Couvert par cette semaine",
+  "vitDOfTodayTarget": "de l'objectif du jour de {iu} IU",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "Le reste sera réparti sur les prochains jours ensoleillés.",
+  "vitDLowWeek": "Peu de soleil cette semaine : pensez aux aliments riches en vitamine D ou à un complément.",
+  "vitDTab": "D3",
+  "meditationTab": "Méditer",
+  "pasteFromMaps": "Coller depuis Google Maps",
+  "readingLocation": "Lecture de la position...",
+  "clipboardEmpty": "Le presse-papiers est vide",
+  "noCoordinatesFound": "Aucune coordonnée ou lien de carte valide trouvé",
+  "locationLoaded": "Coordonnées chargées !",
+  "uposathaEveShaving": "Veille d'Uposatha (jour de rasage) • Demain c'est Uposatha",
+  "moonSkyCompass3d": "Boussole céleste lunaire 3D"
 }

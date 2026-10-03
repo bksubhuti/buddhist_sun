@@ -1,7 +1,7 @@
 {
   "@@locale": "vi",
   "appName": "Buddhist Sun",
-  "buddhistSun": "Giờ Mặt Trời Dành Cho Đạo Phật",
+  "buddhistSun": "Mặt Trời Phật Giáo",
   "@buddhistSun": {
     "description": "Title for app"
   },
@@ -10,7 +10,7 @@
   "@noon": {
     "description": "Noon"
   },
-  "dawn": "Bình Minh",
+  "dawn": "Rạng đông",
   "@dawn": {
     "description": "Dawn"
   },
@@ -54,19 +54,19 @@
   "@hours": {
     "description": "hours on home screen"
   },
-  "astronomical_twilight": "Hoàng hôn thiên văn",
+  "astronomical_twilight": "Chạng vạng thiên văn",
   "@astronomical_twilight": {
     "description": "Astronomical Twilight"
   },
-  "nautical_twilight": "Hoàng hôn hàng hải",
+  "nautical_twilight": "Chạng vạng hàng hải",
   "@nautical_twilight": {
     "description": "Nautical Twilight"
   },
-  "civil_twilight": "Hoàng hôn dân sự",
+  "civil_twilight": "Chạng vạng dân sự",
   "@civil_twilight": {
     "description": "Civil Twilight"
   },
-  "sunrise": "Bình minh",
+  "sunrise": "Mặt trời mọc",
   "custom_dawn": "Tùy chỉnh",
   "@sunrise": {
     "description": "Sunrise"
@@ -259,7 +259,7 @@
   "@theme": {
     "description": "For selecting the colors."
   },
-  "help_content": "Cách tính:\n Việc tính toán được dựa trên các phương trình từ các Thuật toán Thiên văn, bởi tác giả Jean Meeus. Kết quả mặt trời mọc và lặn chính xác theo lý thuyết trong phạm vi một phút cho những nơi nằm giữa +/-72° vĩ tuyến. Xin xem xét dừng trước thời gian được nêu. \n\nTRƯA:\nMàn hình buổi TRƯA hiển thị Mặt Trời Đứng Bóng cho ngày hiện tại như được chọn bởi GPS hoặc Thành Phố theo cách dễ nhìn. Tất cả thời gian theo mức an toàn từ phần cài đặt. (xem bên dưới)\n\nBÌNH MINH:\n Màn hình Bình Minh hiển thị công thức Bình minh đã được chọn từ phần cài đặt và cũng từ các tính toán mặt trời khác. Tất cả thời gian phản ánh theo mức an toàn từ phần cài đặt. \nPa-Auk = (Mặt trời mọc - 40 phút).  \nNa-uyana = ( Mặt trời mọc - 30 phút)  (xem bên dưới) \n\nGPS:\nGPS sẽ tự động thiết lập thành phố nếu Internet được bật và hộp đánh dấu được bật. Xin khuyến cáo sử dụng cài đặt GPS để xác định vị trí của bạn vì Mặt Trời Đứng Bóng sẽ chính xác nhất theo cách này. Điều này chưa được kiểm tra theo vị trí \"Tiết kiệm Ánh sáng Ban ngày\".\n\n Cài đặt:\nĐộ lệch:\n Được thiết lập tự động khi dùng GPS. Nếu bạn dùng Tìm kiếm Thành phố trong cài đặt, bạn phải chọn một độ lệch (GMT +- giờ địa phương của bạn). \nMức an toàn:\n Điều này sẽ trừ số phút từ thời gian Giữa Trưa để cho sớm hơn và cộng số phút vào giờ Bình minh để làm cho trễ hơn.  Vì công thức chính xác trong vòng một phút nên mặc định mức an toàn là một phút.  \n Bình minh:\nChọn bình minh ưa thích của bạn. Na-Uyana dùng Mặt trời mọc-30 minutes, và Pa-Auk dùng Mặt trời mọc - 40 phút. Mức an toàn sẽ cộng x-phút vào thời gian này. \n Bộ báo giờ:\nMàn hình báo giờ cho phép thông báo bằng âm thanh để rảnh tay.  Lời nói có nghĩa là \"Văn bản thành Lời nói\". Âm lượng được kiểm soát bằng thanh trượt. Dưới điều kiện bình thường thông báo bằng lời nói chỉ hoạt động khi màn hình sáng. Để sửa đổi điều này, bạn có thể làm màn hình luôn sáng với nút chuyển \"Màn hình luôn bật\", hoặc bạn bật chức năng \"TTS với màn hình tắt\".  Điều này sẽ bật hoạt động \"nền\" trong khi màn hình tắt và ngăn thiết bị đi vào chế độ ngủ. Bạn nên kiểm tra chức năng nền vài lần trước khi tín nhiệm nó. Một vài điện thoại có thể không cho phép điều này. Chúng tôi sẽ không chịu bất cứ trách nhiệm nào. Khi bạn đóng ứng dụng, có một lệnh được gọi để dừng các công việc dưới nền.  Bạn sẽ biết ứng dụng đang chạy dưới nền bởi biểu tượng mặt trời được hiển thị trên đầu khu vực thông báo của điện thoại (chỗ thanh thời gian và tín hiệu).  Nếu Buddhist Sun không ở trong \"chế độ nền\", bạn sẽ không thấy biểu tượng mặt trời. Chức năng này không có sẵn đối với người dùng iOS.\n Thông báo bằng lời nói thì ở trong các khoảng lặp theo số phút sau: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nRiêng tư:\n Thông tin đầy đủ về sự riêng tư được đặt ở:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n Chúng tôi không thu thập thông tin.",
+  "help_content": "Cách tính & Thuật toán:\nCác phép tính trong Buddhist Sun được thực hiện bằng Thuật toán Vị trí Mặt trời (Solar Position Algorithm – NREL SPA) của Phòng thí nghiệm Quốc gia về Năng lượng Tái tạo Hoa Kỳ (NREL). Khác với các thuật toán cũ hơn (như Meeus) có sai số lên đến 1 phút, NREL SPA là tiêu chuẩn vàng quốc tế và chính xác trong vòng vài giây đối với giờ chính ngọ, mặt trời mọc và các thời điểm chạng vạng.\n\nLưu ý quan trọng về Giới luật (Vinaya):\nMặc dù phép tính thiên văn chính xác trong vòng vài giây, chư Tỳ-khưu và người hành trì 8/10 giới nên bảo đảm không nuốt bất kỳ thức ăn nào và súc miệng khoảng một phút đến 30 giây trước khi hết giờ, để không còn mảnh thức ăn nào trong miệng hoặc cổ họng khi đến giờ chính ngọ.\n\nTính năng của ứng dụng:\n• Chính ngọ & Rạng đông: Giờ chính ngọ độ chính xác cao và các công thức rạng đông tùy chỉnh (Pa-Auk -40 phút, Na-Uyana -30 phút, chạng vạng thiên văn và góc tùy chỉnh).\n• Đếm ngược bằng giọng nói rảnh tay: Thông báo bằng giọng nói (TTS), hỗ trợ chạy nền khi tắt màn hình, cảnh báo tại các mốc quan trọng cho đến số không.\n• La bàn Vinaya: Quả địa cầu 3D theo đường vòng lớn (Great-Circle), bản đồ 2D và mặt la bàn Phật giáo xoay hướng về Bồ-đề Đạo Tràng (Bodh Gaya) và các thánh tích hành hương khác.\n• Tuần trăng & Lịch Uposatha: Phần trăm tuần trăng hằng ngày và các ngày Uposatha / Poya theo truyền thống Thái Lan, Myanmar và Sri Lanka.\n• Mặt trời & Bóng nắng (Tỷ lệ Vinaya): Góc bóng của cây que theo thời gian thực và đo bằng bề ngang ngón tay (aṅgula) để xác minh giờ chính ngọ trên thực tế.\n• Buddhavassa (Lịch Phật lịch): Tính năm Phật lịch (PL), số hạ lạp (vassa) và các ngày theo lịch Pakkha.\n• Đồng hồ thiền: Đồng hồ chánh niệm với tiếng chuông bát hát (singing bowl), chuông định kỳ và thời gian khởi động.\n• Maraṇassati (Niệm chết): Chánh niệm về sự chết với phân tích tuổi thọ kỳ vọng và nhắc nhở quán niệm.\n• GPS & Cơ sở dữ liệu hơn 40.000 thành phố: Định vị GPS độ chính xác cao hoặc tra cứu thành phố ngoại tuyến trên toàn thế giới.\n• Mức an toàn: Khoảng đệm an toàn có thể cấu hình (1–10 phút), trừ vào giờ chính ngọ hoặc cộng vào giờ rạng đông để được an tâm.\n\nQuyền riêng tư:\nBuddhist Sun không thu thập thông tin cá nhân.\nToàn văn: https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
   "@help_content": {
     "description": "instructions to use app."
   },
@@ -267,11 +267,11 @@
   "@about_content": {
     "description": "about content for menu item."
   },
-  "gps_permission_content": "GPS yêu cầu được dùng quyền này. Quyền này giúp Buddhist Sun biết dữ liệu vị trí GPS để tính vị trí mặt trời. GPS chỉ thu thập 1 lần mỗi khi nút GPS được bấm. Dữ liệu không được gởi ra ngoài app.",
+  "gps_permission_content": "Ứng dụng sẽ yêu cầu quyền sử dụng GPS. Quyền này cho phép Buddhist Sun biết dữ liệu vị trí GPS để tính vị trí của mặt trời. GPS chỉ được thu thập một lần cho mỗi lần nhấn nút GPS. Dữ liệu không được gửi ra ngoài ứng dụng này.",
   "@gps_permission_content": {
     "description": "Notification to request gps permission."
   },
-  "background_permission_content": "Việc chạy nền yêu cầu được dùng quyền này. Thông báo bằng lời cần quyền này để chạy mở màn hình. Buddhist Sun sẽ tắt tiến trình nền này khi tắt nút chuyển này hoặc khi đóng app này. Nếu được chấp nhận, quyền này chỉ yêu cầu 1 lần.",
+  "background_permission_content": "Ứng dụng sẽ yêu cầu quyền chạy nền. Quyền này cần thiết để thông báo bằng giọng nói hoạt động đúng ngay cả khi màn hình tắt. Buddhist Sun sẽ tắt tiến trình nền này khi tắt nút chuyển hoặc khi đóng ứng dụng. Nếu được chấp nhận, quyền này chỉ được yêu cầu một lần.",
   "@background_permission_content": {
     "description": "Ask for permission for background."
   },
@@ -284,7 +284,7 @@
   "moonPhase": "Tuần trăng:",
   "selectDate": "Chọn ngày",
   "selectedDate": "Ngày đã chọn:",
-  "moon": "trưa",
+  "moon": "Mặt trăng",
   "darkMode": "Chế độ tối",
   "color": "Màu",
   "material3": "Material 3",
@@ -298,7 +298,7 @@
   "autoStartDawnTimer": "Tự động bật hẹn giờ Rạng đông",
   "autoStartNoonTimer": "Tự động bật hẹn giờ Giữa trưa",
   "speech_only_within_2_hours": "Thông báo bằng giọng nói chỉ có thể được bật trong vòng 2 giờ so với thời gian mục tiêu.",
-  "safetyWarning": "Cảnh báo An toàn",
+  "safetyWarning": "Cảnh báo an toàn",
   "safetyWarningMessage": "An toàn đã BẬT. Thời gian của ứng dụng chênh lệch so với thời gian đài thiên văn là {minutes} phút.",
   "proceed": "Tiếp tục",
   "beTitle": "Phật lịch",
@@ -345,7 +345,7 @@
   "beWeek_5": "Sukkavāraṃ",
   "beWeek_6": "Soravāraṃ",
   "beFullMoon": "Trăng rằm",
-  "beNewMoon": "Trăng non",
+  "beNewMoon": "Trăng mới",
   "bePaliTemplate": "Ayaṃ\n{animal} saṃvacchare\n{season} utu asmiṃ utumhi\n{month} māsassa\n{paksha}\n{tithi}\n{weekday}\nidanti daṭṭhabbaṃ.",
   "beMonth_Magha": "Māgha",
   "beMonth_Phagguna": "Phagguna",
@@ -398,7 +398,7 @@
   "deathContemplationPrompt": "Vui lòng cài đặt ngày sinh và tuổi thọ kỳ vọng trong Cài đặt.",
   "lifeElapsed": "Đời sống đã trôi qua",
   "lifeRemaining": "Đời sống còn lại",
-  "lifeExceeded": "Bạn đã vượt qua tuổi thọ kỳ vọng. Mỗi khoảnh khắc đều là món quà quý giá.",
+  "lifeExceeded": "Bạn đã vượt qua tuổi thọ kỳ vọng. Mỗi khoảnh khắc là một món quà để thực hành Giáo pháp (Dhamma).",
   "editDeathSettings": "Chỉnh sửa ngày sinh & tuổi",
   "maranasatiQuote": "Mạng sống là không định trước, cái chết là chắc chắn. Hãy tinh tấn tu tập chớ có buông lung.",
   "compass": "La bàn",
@@ -439,10 +439,10 @@
   "timerModeTimed": "Định thời",
   "timerModeEndAt": "Kết thúc",
   "timerModeOpen": "Tự do",
-  "tapToChangeDuration": "Chạm để đổi thời lượng",
+  "tapToChangeDuration": "Chạm để đổi thời lượng & cài đặt sẵn",
   "tapToChangeEndTime": "Chạm để đổi giờ kết thúc",
   "openUnlimitedMode": "Chế độ tự do / Không giới hạn",
-  "openUnlimitedModeDesc": "Đếm thời gian liên tục cho đến khi bạn kết thúc. Chuông định kỳ sẽ reo theo cài đặt.",
+  "openUnlimitedModeDesc": "Đếm lên liên tục cho đến khi bạn kết thúc. Chuông định kỳ sẽ reo theo cài đặt bên dưới.",
   "bellsAndSettings": "Chuông & Cài đặt",
   "bellVolume": "Phần trăm âm lượng chuông",
   "phoneVolume": "Âm lượng điện thoại",
@@ -457,7 +457,7 @@
   "autoCloseTimer": "Tự động đóng màn hình hẹn giờ",
   "autoCloseTimerDesc": "Tự động đóng màn hình hẹn giờ sau khi chuông kết thúc reo xong",
   "timerRingStyle": "Kiểu vòng đếm thời gian",
-  "timerRingStyleDesc": "Kiểu giảm dần xóa vòng tròn khi thời gian trôi qua. Kiểu tăng dần lấp đầy vòng tròn.",
+  "timerRingStyleDesc": "Kiểu giảm dần xóa dần vòng tròn đặc khi thời gian trôi qua. Kiểu tăng dần lấp đầy vòng tròn.",
   "styleSubtractive": "Giảm dần (Mặc định)",
   "styleAdditive": "Tăng dần",
   "endSession": "Kết thúc thiền",
@@ -470,7 +470,7 @@
   "timerRemaining": "Còn lại",
   "timerDone": "Xong",
   "aboutTimer": "Thông tin đồng hồ thiền",
-  "timerInfoDialogContent": "Đồng hồ thanh tịnh dành cho thời khóa hành thiền của bạn.",
+  "timerInfoDialogContent": "Đồng hồ yên tĩnh, chuyên dành cho thời khóa hành thiền của bạn.\n\n• Định thời: Hành thiền trong một khoảng thời gian cố định.\n• Kết thúc: Hành thiền cho đến một thời điểm cụ thể trong ngày.\n• Tự do: Hành thiền tự do với chuông định kỳ tùy chọn.\n\nChạm vào vòng tròn đồng hồ trong khi đang thiền để tạm dừng hoặc tiếp tục.\n\nÂm thanh chuông được cung cấp bởi Freesound.org, Pixabay.com và Suno.com.",
   "tapScreenToResume": "Chạm màn hình để tiếp tục",
   "tapScreenToPause": "Chạm màn hình để tạm dừng",
   "setDuration": "Đặt thời lượng",
@@ -546,7 +546,289 @@
   "clear": "Xóa",
   "setLocale": "Chọn ngôn ngữ",
   "noData": "Không có dữ liệu",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "Đối với các thời thiền trên 3 giờ, vui lòng giữ màn hình sáng. Hệ thống có thể dừng bộ đếm nếu màn hình tắt."
+  "timerOvertime": "Quá giờ",
+  "finishSession": "Kết thúc",
+  "screenOffWarningOver3Hours": "Đối với các thời thiền trên 3 giờ, vui lòng giữ màn hình sáng. Hệ thống có thể dừng bộ đếm nếu màn hình tắt.",
+  "vitaminD": "Vitamin D",
+  "vitDTitle": "Hẹn giờ phơi nắng Vitamin D",
+  "vitDNoLocation": "Hãy đặt vị trí (thẻ GPS) để ước tính chính xác góc mặt trời và vitamin D.",
+  "vitDStatusGood": "Nắng tốt cho vitamin D — mặt trời trên 45°",
+  "vitDStatusLow": "Mặt trời dưới 45° — vitamin D giảm",
+  "vitDStatusNone": "Mặt trời quá thấp — hầu như không có vitamin D",
+  "vitDStatusNight": "Mặt trời đã lặn — không có vitamin D",
+  "vitDSunAngle": "Góc mặt trời",
+  "vitDUvIndex": "Chỉ số UV (ước tính)",
+  "vitDRate": "Tốc độ tạo vitamin D",
+  "vitDIuPerMin": "≈ {iu} IU/phút",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "Hiệu suất vitamin D",
+  "vitDBurnTime": "Cháy nắng sau",
+  "vitDMinutes": "{min} phút",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "Khung giờ vitamin D tốt nhất hôm nay (trên 45°): {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "Hôm nay mặt trời không lên tới 45° (cao nhất {deg}° lúc {time}). Vitamin D sẽ thấp.",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "Quy tắc bóng: khi bóng của quý vị ngắn hơn chiều cao cơ thể, mặt trời đang ở trên 45°.",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "ước tính lần này",
+  "vitDStart": "Bắt đầu phơi nắng",
+  "vitDStop": "Dừng & lưu",
+  "vitDGoalReached": "Đã đủ nhu cầu hằng ngày. Hãy nghỉ trong bóng râm.",
+  "vitDEnoughSun": "Hôm nay đã đủ nắng — từ đây nguy cơ cháy nắng tăng lên.",
+  "vitDToday": "Hôm nay",
+  "vitDOfDailyNeed": "trên nhu cầu hằng ngày ước tính {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "Liều cháy nắng hôm nay",
+  "vitDBurnHint": "Giữ dưới 50% — phơi nắng ngắn là đủ.",
+  "vitDBurnWarnMid": "Đã quá nửa liều cháy nắng. Nên che thân hoặc vào bóng râm.",
+  "vitDBurnWarnHigh": "Sắp bị cháy nắng. Xin hãy che thân và vào bóng râm.",
+  "vitDTodaySessions": "Các lần phơi nắng hôm nay",
+  "vitDNoSessions": "Hôm nay chưa có lần nào. Nhấn bắt đầu khi ra nắng.",
+  "vitDDeleteSession": "Xóa lần phơi nắng",
+  "vitDDeleteConfirm": "Xóa lần này khỏi tổng số hôm nay?",
+  "vitDSettings": "Cài đặt nắng",
+  "vitDSkinTitle": "Màu da",
+  "vitDSkinSubtitle": "Yếu tố quan trọng nhất cho thời gian cháy nắng.",
+  "vitDSkinType": "Loại {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "Rất trắng",
+  "vitDSkin2": "Trắng",
+  "vitDSkin3": "Trung bình",
+  "vitDSkin4": "Ngăm / nâu nhạt",
+  "vitDSkin5": "Nâu",
+  "vitDSkin6": "Nâu sẫm",
+  "vitDCoverageTitle": "Phần da phơi nắng",
+  "vitDCoverageSubtitle": "Lượng da tiếp xúc với nắng. Thay đổi cho mỗi lần phơi.",
+  "vitDCoverFullRobe": "Che cả hai vai",
+  "vitDCoverFullRobeDesc": "Đầu, tay, chân",
+  "vitDCoverOneShoulder": "Trịch vai bên phải",
+  "vitDCoverOneShoulderDesc": "Thêm cánh tay và vai phải",
+  "vitDCoverUpperBare": "Để trần thân trên",
+  "vitDCoverUpperBareDesc": "Chỉ mặc y dưới",
+  "vitDCoverBathing": "Khăn tắm",
+  "vitDCoverBathingDesc": "Từ eo đến gối",
+  "vitDSkyTitle": "Bầu trời",
+  "vitDSkyClear": "Quang đãng",
+  "vitDSkyPartly": "Ít mây",
+  "vitDSkyMostly": "Nhiều mây",
+  "vitDSkyOvercast": "U ám",
+  "vitDWeightTitle": "Cân nặng",
+  "vitDWeightSubtitle": "Dùng để tính diện tích da và nhu cầu hằng ngày.",
+  "vitDGoalFromWeight": "Nhu cầu hằng ngày ước tính: {iu} IU (khoảng 20 IU mỗi kg, 600–4.000 IU).",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "Hướng dẫn về nắng & vitamin D",
+  "vitDGuideBenefitsTitle": "Lợi ích",
+  "vitDGuideBenefits": "Vitamin D giúp xương và răng chắc khỏe, tăng sức cơ và hỗ trợ hệ miễn dịch. Thiếu vitamin D thường gặp ở chư Tăng Ni ít ra ngoài, đắp y kín người, hoặc sống trong chùa nhiều bóng râm. Phơi nắng một chút đều đặn là cách tự nhiên và miễn phí để tạo vitamin D.",
+  "vitDGuideNoonTitle": "Phơi ngắn buổi trưa so với phơi lâu buổi chiều",
+  "vitDGuideNoon": "Phơi nắng ngắn gần giữa trưa tốt hơn phơi lâu vào cuối chiều. Khi mặt trời cao (trên 45°), ánh sáng chứa nhiều UVB hơn — loại tia tạo vitamin D — nên quý vị tạo được nhiều vitamin D nhất trên mỗi đơn vị nguy cơ cháy nắng. Lúc 3 giờ chiều mặt trời thấp hơn: UVB giảm nhanh hơn nhiều so với UVA. Quý vị cháy nắng chậm hơn, nhưng để có cùng lượng vitamin D phải ở ngoài lâu hơn nhiều, và nhận nhiều UVA hơn — loại tia làm lão hóa da và tăng nguy cơ ung thư da. Vì vậy phơi lâu lúc 3 giờ chiều không an toàn hơn — chỉ kém hiệu quả hơn. Ví dụ: 10–15 phút buổi trưa có thể bằng một giờ hoặc hơn lúc 3 giờ chiều.",
+  "vitDGuideShortTitle": "Phơi ngắn và đều đặn",
+  "vitDGuideShort": "Việc tạo vitamin D của da sẽ chững lại: sau khoảng một nửa đến một liều cháy nắng, ở thêm sẽ tạo rất ít vitamin D nhưng vẫn tiếp tục gây hại cho da. Nhiều lần phơi ngắn trong tuần tốt hơn một lần phơi dài. Dừng lại trước khi da ửng hồng là đủ. Vitamin D được dự trữ trong cơ thể, nên bỏ lỡ một ngày cũng không sao.",
+  "vitDGuideDangersTitle": "Nguy hiểm",
+  "vitDGuideDangers": "Phơi nắng quá nhiều gây cháy nắng, tổn thương mắt, kiệt sức do nóng và mất nước, lão hóa da và ung thư da. Da trắng cháy nắng nhanh. Kính cửa sổ chặn UVB, nên ngồi sau kính không tạo được vitamin D. Nước, cát và đá sáng màu phản chiếu UV và làm tăng mức phơi nhiễm. Một số thuốc làm da nhạy cảm với ánh sáng. Hãy uống nước và bảo vệ mắt — đừng bao giờ nhìn thẳng vào mặt trời.",
+  "vitDGuideMonksTitle": "Lời khuyên cho chư Tăng",
+  "vitDGuideMonks": "Để trần vai phải hoặc cánh tay khi ngồi hay kinh hành trong tu viện một thời gian ngắn quanh giữa trưa thường là đủ đối với người da sẫm màu ở vùng nhiệt đới. Đầu cạo cũng bị phơi nắng, nên hãy che da đầu khi đi khất thực đường dài. Da sẫm màu cần lâu hơn để tạo cùng lượng vitamin D nhưng ít bị cháy nắng hơn. Ở vùng lạnh hoặc vào mùa mặt trời luôn dưới 45°, cơ thể không tạo được nhiều vitamin D — hãy hỏi bác sĩ về thực phẩm hoặc viên bổ sung.",
+  "vitDGuideMethodTitle": "Cách ước tính",
+  "vitDGuideMethod": "Góc mặt trời được tính từ vị trí GPS và thời gian. Chỉ số UV được ước tính cho trời quang (UVI ≈ 12.5 × sin(angle)^2.42) và giảm khi có mây. Liều cháy nắng (MED) phụ thuộc vào loại da. Khoảng 10.000 IU được tạo ra khi toàn thân nhận một liều cháy nắng; con số này được điều chỉnh theo diện tích da không che và kích thước cơ thể (từ cân nặng). Hiệu suất vitamin D giảm khi mặt trời dưới 45° và bằng không khi dưới 15°. Việc tạo vitamin D dừng khi liều trong ngày đạt một liều cháy nắng. Giá trị thực tế thay đổi theo tầng ôzôn, độ cao, ô nhiễm không khí, tuổi tác và sức khỏe — hãy xem các con số này chỉ là hướng dẫn sơ bộ.",
+  "vitDDisclaimer": "Miễn trừ trách nhiệm y tế: công cụ này chỉ đưa ra ước tính sơ bộ mang tính giáo dục. Đây không phải là lời khuyên y tế và không thể đo được mức vitamin D của quý vị. Phơi nắng có rủi ro, bao gồm cháy nắng và ung thư da. Hãy tham khảo bác sĩ có chuyên môn về xét nghiệm vitamin D, viên bổ sung hoặc các vấn đề về da, đặc biệt nếu quý vị có da trắng, có tiền sử ung thư da, hoặc đang dùng thuốc làm da nhạy cảm với ánh sáng.",
+  "vitDTabMonk": "Tu sĩ",
+  "vitDTabLay": "Nam",
+  "vitDCoverFaceHands": "Mặt và tay",
+  "vitDCoverFaceHandsDesc": "Áo dài tay, quần dài",
+  "vitDCoverShortSleeves": "Áo ngắn tay",
+  "vitDCoverShortSleevesDesc": "Áo thun, quần dài",
+  "vitDCoverShorts": "Quần short và áo thun",
+  "vitDCoverShortsDesc": "Cánh tay và cẳng chân",
+  "vitDCoverSwimwear": "Đồ bơi",
+  "vitDCoverSwimwearDesc": "Chỉ quần bơi",
+  "vitDDailyTarget": "Mục tiêu hằng ngày",
+  "vitDRemaining": "Còn cần {iu} IU",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "Thời gian mục tiêu",
+  "vitDTargetTimeLeft": "Thời gian mục tiêu còn lại",
+  "vitDTargetTimeFull": "cho toàn bộ mục tiêu, từ bây giờ",
+  "vitDTargetTimeRest": "để hoàn thành mục tiêu hôm nay",
+  "vitDTargetUnreachable": "Không thể đạt hôm nay trong điều kiện này",
+  "vitDTargetOverBurn": "Dài hơn một nửa thời gian cháy nắng ({min} phút). Để lộ thêm da, nằm xuống, hoặc chia ra nhiều ngày.",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "Mục tiêu hằng ngày",
+  "vitDTargetAuto": "Mục tiêu tự động theo cân nặng",
+  "vitDPostureTitle": "Tư thế",
+  "vitDPostureSubtitle": "Nằm xuống vào giữa trưa giúp nhiều da hướng về mặt trời hơn.",
+  "vitDPostureStanding": "Đứng",
+  "vitDPostureWalking": "Đi",
+  "vitDPostureSitting": "Ngồi",
+  "vitDPostureLying": "Nằm",
+  "vitDPostureFactor": "Vitamin D ×{f} lúc này so với đứng",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "Tóc mọc",
+  "vitDHairSubtitle": "Số ngày từ khi cạo đầu. Da đầu trần cũng tạo vitamin D.",
+  "vitDHairToday": "Cạo hôm nay • da đầu lộ hoàn toàn",
+  "vitDHairValue": "Cạo {days} ngày trước • da đầu lộ {pct}%",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "Tư thế và da đầu: ước tính được hiệu chỉnh cho người đứng thẳng. Nằm phẳng làm phía da lộ hướng lên trời, nên giữa trưa tạo vitamin D nhiều hơn tới khoảng 1.6×, nhưng ít hơn khi đứng lúc mặt trời thấp. Thời gian cháy nắng không đổi, vì phần da lộ nhiều nhất luôn hướng lên trời. Với tu sĩ, da đầu đã cạo (khoảng 3.5% cơ thể) được tính vào, và tóc mọc lại sẽ che dần trong hai tuần. Thời gian mục tiêu theo đường đi của mặt trời từ bây giờ và tính cả các lần trước trong hôm nay.",
+  "vitDTaperNote": "Quá trình tạo vitamin D chậm lại khi liều nắng trên da tăng dần, nên mỗi phút thêm cho ít hơn một chút.",
+  "vitDGuideBestTitle": "Cách tốt nhất: nhiều da, thời gian ngắn",
+  "vitDGuideBest": "Cháy nắng phụ thuộc vào việc mỗi vùng da ở dưới nắng bao lâu; vitamin D phụ thuộc vào lượng da được để lộ. Vì vậy hãy để lộ càng nhiều da càng tốt trong thời gian ngắn gần giữa trưa. Nằm xuống giúp nhiều da hướng về mặt trời cao hơn. Dành một nửa thời gian nằm ngửa và một nửa nằm sấp: mỗi bên chỉ nhận một nửa liều cháy nắng trong khi lượng vitamin D gần như không đổi. Che mặt và đầu bằng khăn, nhắm mắt, và đừng bao giờ ngủ quên dưới nắng. Với da sáng vào giữa trưa vùng nhiệt đới, 3–5 phút như vậy thường là đủ; da sẫm có thể cần 5–10 phút.",
+  "vitDGuideBurnTitle": "Về cháy nắng",
+  "vitDGuideBurn": "Cháy nắng là phản ứng của da trước tổn thương tế bào do UVB. Da đỏ lên sau 2–6 giờ và nặng nhất sau 12–24 giờ, nên bạn không cảm thấy khi đang ở dưới nắng. Các lần phơi trong cùng ngày cộng dồn: bốn lần 5 phút gây cháy gần bằng một lần 20 phút, vì da tự sửa chữa chậm trong nhiều giờ. Đồng hồ đo trong ứng dụng cộng tất cả các lần hôm nay và đặt lại lúc nửa đêm. Giữ dưới một nửa liều cháy nắng (50%) sẽ tránh da ửng hồng. Nguy cơ cháy nắng phần lớn đặt lại mỗi ngày, nhưng lão hóa da và nguy cơ ung thư da tích lũy suốt đời, nên các lần ngắn đều đặn tốt hơn các lần dài.",
+  "vitDTabLayFemale": "Nữ",
+  "vitDCoverSwimwearFemaleDesc": "Áo bơi và quần short",
+  "vitDCoverAngsa": "Y vai (aṅsa)",
+  "vitDCoverAngsaDesc": "Cánh tay phải, cẳng tay trái và ngực phải để trần",
+  "vitDSessionRunning": "ĐANG PHƠI NẮNG",
+  "vitDSessionIdle": "SẴN SÀNG",
+  "vitDBurnInfoTitle": "Về liều cháy nắng",
+  "vitDBurnInfo": "Liều cháy nắng được cộng dồn: nó cộng tất cả các lần phơi hôm nay. Bốn lần 5 phút được tính bằng một lần 20 phút, vì da tự sửa chữa chậm trong nhiều giờ. Liều được đặt lại lúc nửa đêm.\n\n100% nghĩa là da bạn có thể ửng hồng sau vài giờ. Giữ dưới 50% sẽ tránh được điều này.\n\nĐối với vitamin D, cách tốt nhất là để lộ nhiều da trong thời gian ngắn. Để lộ càng nhiều da càng tốt gần giữa trưa và giữ thời gian ngắn.\n\nNằm xuống: dành một nửa thời gian nằm ngửa, che mặt và đầu bằng khăn, và một nửa nằm sấp. Mỗi bên chỉ nhận một nửa liều cháy nắng, trong khi lượng vitamin D gần như không đổi.",
+  "vitDStartTooEarly": "Còn sớm ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "Muộn rồi — nắng dưới 45°",
+  "vitDStartNo45": "Hôm nay nắng không đạt 45°",
+  "vitDTodayInfoTitle": "Về ước tính hôm nay",
+  "vitDTodayInfo": "Tổng hôm nay cộng lượng vitamin D ước tính từ tất cả các lần phơi hôm nay, kể cả lần đang chạy. Tổng được đặt lại lúc nửa đêm.\n\nPhần trăm so sánh với mục tiêu hằng ngày của bạn là {iu} IU. Đạt 100% là đủ cho ngày đó; phơi thêm chỉ được thêm ít và làm tăng liều cháy nắng.\n\nĐây là ước tính sơ bộ, cùng đơn vị với thuốc bổ sung: khoảng 1.000 IU từ nắng có tác động lên nồng độ trong máu gần bằng một viên 1.000 IU. Lượng thực tế thay đổi theo sương mù, ôzôn, tuổi tác và lượng da hướng về mặt trời.\n\nKhuyến nghị chính thức là 600 IU mỗi ngày (800 IU nếu trên 70 tuổi). Mục tiêu tự động ở đây dùng khoảng 20 IU cho mỗi kg cân nặng; bạn có thể tự đặt mục tiêu trong Cài đặt nắng.\n\nVitamin D được dự trữ trong cơ thể nhiều tuần, nên tổng mỗi tuần quan trọng hơn bất kỳ ngày nào.",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "Tuần này",
+  "vitDWeekAvg": "Trung bình ≈ {iu} IU/ngày",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "Thiếu {iu} IU",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "Dư {iu} IU",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "Về tổng hằng tuần",
+  "vitDWeekInfo": "Vitamin D được dự trữ trong cơ thể nhiều tuần, nên một ngày nắng có thể bù cho ngày nhiều mây. Thẻ này cộng 7 ngày gần nhất (ít hơn nếu bạn mới bắt đầu) và so với 7 ngày mục tiêu hằng ngày.\n\nMỗi ngày được tính tối đa bằng 3 ngày, nên một lần phơi lớn không thể bù cho cả tuần.\n\nĐừng bao giờ ở ngoài nắng lâu hơn để bù. Giới hạn cháy nắng luôn tính theo ngày. Để bù những ngày bỏ lỡ, hãy để lộ thêm da hoặc nằm xuống vào ngày nắng tiếp theo.\n\nNếu cả tuần vẫn thấp, hãy cân nhắc thực phẩm giàu vitamin D hoặc thuốc bổ sung.",
+  "vitDCatchUpTitle": "Bù theo tuần",
+  "vitDCatchUpDesc": "Mục tiêu hôm nay bù phần thiếu của tuần (tối đa 3 ngày) hoặc giảm khi bạn đã dư. Đừng ở lâu hơn để bù — hãy để lộ thêm da.",
+  "vitDTodayTargetWeekly": "Mục tiêu hôm nay (theo tuần)",
+  "vitDCoveredByWeek": "Đã đủ cho tuần này",
+  "vitDOfTodayTarget": "của mục tiêu hôm nay {iu} IU",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "Phần còn lại sẽ được chia cho các ngày nắng tiếp theo.",
+  "vitDLowWeek": "Tuần này ít nắng — hãy cân nhắc thực phẩm giàu vitamin D hoặc thuốc bổ sung.",
+  "vitDTab": "D3",
+  "meditationTab": "Thiền",
+  "pasteFromMaps": "Dán từ Google Maps",
+  "readingLocation": "Đang đọc vị trí...",
+  "clipboardEmpty": "Bộ nhớ tạm trống",
+  "noCoordinatesFound": "Không tìm thấy tọa độ hoặc liên kết bản đồ hợp lệ",
+  "locationLoaded": "Đã tải tọa độ!",
+  "uposathaEveShaving": "Trước ngày Bố-tát (ngày cạo tóc) • Ngày mai là Bố-tát",
+  "moonSkyCompass3d": "La bàn bầu trời Mặt trăng 3D"
 }

@@ -88,6 +88,32 @@ const String MEDITATION_KEEP_SCREEN_ON = "meditationKeepScreenOn";
 const bool DEFAULT_MEDITATION_KEEP_SCREEN_ON = true;
 const String MEDITATION_AUTO_CLOSE_SCREEN = "meditationAutoCloseScreen";
 const bool DEFAULT_MEDITATION_AUTO_CLOSE_SCREEN = false;
+
+// Vitamin D calculator
+const String VITD_SKIN_TYPE = "vitDSkinType";
+const int DEFAULT_VITD_SKIN_TYPE = 3; // Fitzpatrick type 4
+const String VITD_COVERAGE = "vitDCoverage";
+const int DEFAULT_VITD_COVERAGE = 1; // one shoulder bare
+const String VITD_SKY = "vitDSky";
+const int DEFAULT_VITD_SKY = 0; // clear day
+const String VITD_WEIGHT_KG = "vitDWeightKg";
+const double DEFAULT_VITD_WEIGHT_KG = 60.0;
+const String VITD_POSTURE = "vitDPosture";
+const String VITD_HAIR_DAYS = "vitDHairDays"; // legacy, migrated to date
+const String VITD_SHAVE_DATE = "vitDShaveDate"; // local midnight, ms epoch
+const String VITD_COVER_TAB = "vitDCoverTab"; // 0 monk, 1 man, 2 woman
+const String VITD_COVER_MONK = "vitDCoverMonk";
+const String VITD_COVER_MAN = "vitDCoverMan";
+const String VITD_COVER_WOMAN = "vitDCoverWoman";
+const String VITD_CUSTOM_TARGET = "vitDCustomTarget"; // 0 = auto from weight
+const String VITD_SESSIONS = "vitDSessions";
+const String VITD_FIRST_USE = "vitDFirstUse"; // local midnight, ms epoch
+const String VITD_CATCH_UP = "vitDCatchUp";
+const String VITD_ACTIVE_START = "vitDActiveStart";
+const String VITD_ACTIVE_LAST_TICK = "vitDActiveLastTick";
+const String VITD_ACTIVE_IU = "vitDActiveIu";
+const String VITD_ACTIVE_MED = "vitDActiveMed";
+const String VITD_ACTIVE_SECONDS = "vitDActiveSeconds";
 const String MEDITATION_VOLUME = "meditationVolume";
 const int DEFAULT_MEDITATION_VOLUME = 80;
 const String MEDITATION_PRESETS = "meditationPresets";
@@ -448,6 +474,92 @@ class Prefs {
       DEFAULT_MEDITATION_AUTO_CLOSE_SCREEN;
   static set meditationAutoCloseScreen(bool value) =>
       instance.setBool(MEDITATION_AUTO_CLOSE_SCREEN, value);
+
+  // Vitamin D calculator getters & setters
+  static int get vitDSkinType =>
+      instance.getInt(VITD_SKIN_TYPE) ?? DEFAULT_VITD_SKIN_TYPE;
+  static set vitDSkinType(int value) =>
+      instance.setInt(VITD_SKIN_TYPE, value);
+
+  static int get vitDCoverage =>
+      instance.getInt(VITD_COVERAGE) ?? DEFAULT_VITD_COVERAGE;
+  static set vitDCoverage(int value) => instance.setInt(VITD_COVERAGE, value);
+
+  static int get vitDSky => instance.getInt(VITD_SKY) ?? DEFAULT_VITD_SKY;
+  static set vitDSky(int value) => instance.setInt(VITD_SKY, value);
+
+  static double get vitDWeightKg =>
+      instance.getDouble(VITD_WEIGHT_KG) ?? DEFAULT_VITD_WEIGHT_KG;
+  static set vitDWeightKg(double value) =>
+      instance.setDouble(VITD_WEIGHT_KG, value);
+
+  static int get vitDPosture => instance.getInt(VITD_POSTURE) ?? 0;
+  static set vitDPosture(int value) => instance.setInt(VITD_POSTURE, value);
+
+  static int get vitDHairDays => instance.getInt(VITD_HAIR_DAYS) ?? 0;
+
+  /// Date of the last head shave (local midnight, ms), 0 when never set.
+  static int get vitDShaveDate => instance.getInt(VITD_SHAVE_DATE) ?? 0;
+  static set vitDShaveDate(int value) =>
+      instance.setInt(VITD_SHAVE_DATE, value);
+
+  static int? get vitDCoverTab => instance.getInt(VITD_COVER_TAB);
+  static set vitDCoverTab(int? value) =>
+      instance.setInt(VITD_COVER_TAB, value ?? 0);
+
+  static int? get vitDCoverMonk => instance.getInt(VITD_COVER_MONK);
+  static set vitDCoverMonk(int? value) =>
+      instance.setInt(VITD_COVER_MONK, value ?? 0);
+
+  static int? get vitDCoverMan => instance.getInt(VITD_COVER_MAN);
+  static set vitDCoverMan(int? value) =>
+      instance.setInt(VITD_COVER_MAN, value ?? 0);
+
+  static int? get vitDCoverWoman => instance.getInt(VITD_COVER_WOMAN);
+  static set vitDCoverWoman(int? value) =>
+      instance.setInt(VITD_COVER_WOMAN, value ?? 0);
+
+  static int get vitDCustomTarget => instance.getInt(VITD_CUSTOM_TARGET) ?? 0;
+  static set vitDCustomTarget(int value) =>
+      instance.setInt(VITD_CUSTOM_TARGET, value);
+
+  /// First day the calculator was used (local midnight, ms), 0 if unset.
+  static int get vitDFirstUse => instance.getInt(VITD_FIRST_USE) ?? 0;
+  static set vitDFirstUse(int value) =>
+      instance.setInt(VITD_FIRST_USE, value);
+
+  /// Weekly catch-up: today's target makes up this week's shortfall.
+  static bool get vitDCatchUp => instance.getBool(VITD_CATCH_UP) ?? false;
+  static set vitDCatchUp(bool value) => instance.setBool(VITD_CATCH_UP, value);
+
+  /// JSON list of completed sun sessions.
+  static String get vitDSessions => instance.getString(VITD_SESSIONS) ?? '[]';
+  static set vitDSessions(String value) =>
+      instance.setString(VITD_SESSIONS, value);
+
+  /// Active session start (ms since epoch), 0 when no session is running.
+  static int get vitDActiveStart => instance.getInt(VITD_ACTIVE_START) ?? 0;
+  static set vitDActiveStart(int value) =>
+      instance.setInt(VITD_ACTIVE_START, value);
+
+  static int get vitDActiveLastTick =>
+      instance.getInt(VITD_ACTIVE_LAST_TICK) ?? 0;
+  static set vitDActiveLastTick(int value) =>
+      instance.setInt(VITD_ACTIVE_LAST_TICK, value);
+
+  static double get vitDActiveIu => instance.getDouble(VITD_ACTIVE_IU) ?? 0.0;
+  static set vitDActiveIu(double value) =>
+      instance.setDouble(VITD_ACTIVE_IU, value);
+
+  static double get vitDActiveMed =>
+      instance.getDouble(VITD_ACTIVE_MED) ?? 0.0;
+  static set vitDActiveMed(double value) =>
+      instance.setDouble(VITD_ACTIVE_MED, value);
+
+  static double get vitDActiveSeconds =>
+      instance.getDouble(VITD_ACTIVE_SECONDS) ?? 0.0;
+  static set vitDActiveSeconds(double value) =>
+      instance.setDouble(VITD_ACTIVE_SECONDS, value);
 
   static int get meditationVolume =>
       instance.getInt(MEDITATION_VOLUME) ?? DEFAULT_MEDITATION_VOLUME;

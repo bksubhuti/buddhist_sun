@@ -8,6 +8,8 @@ import 'package:buddhist_sun/views/meditation_timer_page.dart';
 import 'package:buddhist_sun/views/compass_page.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/views/death_contemplation_page.dart';
+import 'package:buddhist_sun/views/vitamin_d_page.dart';
+import 'package:buddhist_sun/widgets/vitamin_d_icon.dart';
 import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 //import 'package:buddhist_sun/views/dummy_page.dart';
 
@@ -53,8 +55,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
       case 0:
         return 'noon';
       case 1:
-        return 'moon';
+        return 'meditation_timer';
       case 2:
+        return 'moon';
+      case 3:
+        return 'vitamin_d';
+      case 4:
         return 'gps';
       default:
         return 'noon';
@@ -63,7 +69,7 @@ class Home_PageContainerState extends State<HomePageContainer> {
 
   int _calculateInitialIndex() {
     if (Prefs.lat == 1.1) {
-      return 2; // Unconfigured GPS, prioritize GPS setup
+      return 4; // Unconfigured GPS, prioritize GPS setup
     }
     final saved = Prefs.lastScreen;
     switch (saved) {
@@ -71,10 +77,14 @@ class Home_PageContainerState extends State<HomePageContainer> {
       case 'dawn': // if migrating from old 'dawn' or 'timer' key, go to noon
       case 'timer':
         return 0;
-      case 'moon':
+      case 'meditation_timer':
         return 1;
-      case 'gps':
+      case 'moon':
         return 2;
+      case 'vitamin_d':
+        return 3;
+      case 'gps':
+        return 4;
       default:
         return 0;
     }
@@ -98,9 +108,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
     final saved = Prefs.lastScreen;
     Widget? subPage;
     switch (saved) {
-      case 'meditation_timer':
-        subPage = const MeditationTimerPage();
-        break;
       case 'compass':
         subPage = const CompassPage();
         break;
@@ -139,6 +146,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
   late Home _page1;
   late MoonPage _page2;
   late GPSLocation _page3;
+  late VitaminDPage _page4;
+  late MeditationTimerPage _pageMeditation;
   //late DummyPage _dummyPage;
 
   late int _currentIndex;
@@ -199,6 +208,8 @@ class Home_PageContainerState extends State<HomePageContainer> {
     _page1 = Home();
     _page2 = MoonPage();
     _page3 = GPSLocation();
+    _page4 = const VitaminDPage(embedded: true);
+    _pageMeditation = const MeditationTimerPage(embedded: true);
 //    _page4 = ((isDesktop) ? DummyPage() : GPSLocation(goToHome: goToHome));
 
     _restoreSubPageIfNeeded();
@@ -237,8 +248,12 @@ class Home_PageContainerState extends State<HomePageContainer> {
             tooltip: AppLocalizations.of(context)!.help,
             onPressed: () {
               if (_currentIndex == 1) {
-                showMoonHelpDialog(context);
+                showMeditationTimerHelpDialog(context);
               } else if (_currentIndex == 2) {
+                showMoonHelpDialog(context);
+              } else if (_currentIndex == 3) {
+                showVitaminDHelpDialog(context);
+              } else if (_currentIndex == 4) {
                 showGpsHelpDialog(context);
               } else {
                 showHomeHelpDialog(context);
@@ -282,17 +297,6 @@ class Home_PageContainerState extends State<HomePageContainer> {
                   ),
                 ],
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.self_improvement),
-              title: ColoredText(AppLocalizations.of(context)!.meditationTimer),
-              onTap: () {
-                Navigator.pop(context); // close the drawer
-                _navigateAndRemember(
-                  const MeditationTimerPage(),
-                  'meditation_timer',
-                );
-              },
             ),
             ListTile(
               leading: const Icon(Icons.explore),
@@ -456,12 +460,33 @@ class Home_PageContainerState extends State<HomePageContainer> {
             BottomNavyBarItem(
                 activeColor: Theme.of(context).primaryColor,
                 title: Text(
+                  AppLocalizations.of(context)!.meditationTab,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.inverseSurface),
+                ),
+                icon: Icon(
+                  Icons.self_improvement,
+                  color: Theme.of(context).primaryColor,
+                )),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).primaryColor,
+                title: Text(
                   AppLocalizations.of(context)!.moon,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.inverseSurface),
                 ),
                 icon: Icon(
                   Icons.dark_mode,
+                  color: Theme.of(context).primaryColor,
+                )),
+            BottomNavyBarItem(
+                activeColor: Theme.of(context).primaryColor,
+                title: Text(
+                  AppLocalizations.of(context)!.vitDTab,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.inverseSurface),
+                ),
+                icon: VitaminDSunIcon(
                   color: Theme.of(context).primaryColor,
                 )),
             BottomNavyBarItem(
@@ -487,8 +512,10 @@ class Home_PageContainerState extends State<HomePageContainer> {
           },
           children: <Widget>[
             Home(isActive: _currentIndex == 0),
+            _pageMeditation,
             _page2,
-            GPSLocation(isActive: _currentIndex == 2),
+            _page4,
+            GPSLocation(isActive: _currentIndex == 4),
           ],
         ),
       ),

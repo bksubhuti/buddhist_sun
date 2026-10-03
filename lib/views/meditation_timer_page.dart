@@ -9,18 +9,27 @@ import 'package:buddhist_sun/src/models/prefs.dart';
 import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 
+/// With [embedded] it is a bottom-nav page (no own AppBar), like MoonPage.
 class MeditationTimerPage extends StatefulWidget {
-  const MeditationTimerPage({Key? key}) : super(key: key);
+  final bool embedded;
+
+  const MeditationTimerPage({Key? key, this.embedded = false})
+      : super(key: key);
 
   @override
   State<MeditationTimerPage> createState() => _MeditationTimerPageState();
 }
 
-class _MeditationTimerPageState extends State<MeditationTimerPage> {
+class _MeditationTimerPageState extends State<MeditationTimerPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
-    Prefs.lastScreen = 'meditation_timer';
+    // The bottom-nav container tracks lastScreen for the embedded page.
+    if (!widget.embedded) Prefs.lastScreen = 'meditation_timer';
   }
 
   static const List<int> _intervalOptions = [
@@ -68,26 +77,31 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    timerProvider.systemVolume == 0
-                        ? Icons.volume_off_outlined
-                        : (timerProvider.systemVolume < 50
-                            ? Icons.volume_down_outlined
-                            : Icons.volume_up_outlined),
-                    size: 20,
-                    color: primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    t.phoneVolume,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      timerProvider.systemVolume == 0
+                          ? Icons.volume_off_outlined
+                          : (timerProvider.systemVolume < 50
+                              ? Icons.volume_down_outlined
+                              : Icons.volume_up_outlined),
+                      size: 20,
+                      color: primary,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        t.phoneVolume,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 '${timerProvider.systemVolume}%',
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -115,24 +129,29 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    timerProvider.volume == 0
-                        ? Icons.notifications_off_outlined
-                        : Icons.notifications_active_outlined,
-                    size: 20,
-                    color: primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    t.bellVolume,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      timerProvider.volume == 0
+                          ? Icons.notifications_off_outlined
+                          : Icons.notifications_active_outlined,
+                      size: 20,
+                      color: primary,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        t.bellVolume,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 '${timerProvider.volume}%',
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -239,9 +258,78 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final timerProvider = context.watch<MeditationTimerProvider>();
     final t = AppLocalizations.of(context)!;
 
+    final body = SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 1. Mode Selector Tabs
+            _buildModeSelector(context, timerProvider),
+            const SizedBox(height: 16),
+
+            // 2. Timer Time Display (Show time card / tap to edit)
+            if (timerProvider.mode == MeditationTimerMode.timed) ...[
+              _buildTimedModeContent(context, timerProvider),
+              const SizedBox(height: 14),
+              _buildRecentTimesButtons(context, timerProvider),
+            ] else if (timerProvider.mode == MeditationTimerMode.endAt)
+              _buildEndAtModeContent(context, timerProvider)
+            else
+              _buildUnlimitedModeContent(context),
+
+            const SizedBox(height: 16),
+
+            // 3. Start Meditation Button (Below show time button)
+            FilledButton.icon(
+              onPressed: () => _startMeditation(context),
+              icon: const Icon(Icons.play_arrow_rounded, size: 36),
+              label: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    t.startMeditation,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+              style: FilledButton.styleFrom(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 4. Bell Volume (Below start button and above settings)
+            _buildVolumeCard(context, timerProvider),
+
+            const SizedBox(height: 16),
+
+            // 5. Expansion View for Bells & Other Settings
+            _buildSoundSettingsExpansionCard(context, timerProvider),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+
+    if (widget.embedded) {
+      return Container(color: Prefs.getChosenColor(context), child: body);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(t.meditationTimer),
@@ -253,70 +341,7 @@ class _MeditationTimerPageState extends State<MeditationTimerPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. Mode Selector Tabs
-              _buildModeSelector(context, timerProvider),
-              const SizedBox(height: 16),
-
-              // 2. Timer Time Display (Show time card / tap to edit)
-              if (timerProvider.mode == MeditationTimerMode.timed) ...[
-                _buildTimedModeContent(context, timerProvider),
-                const SizedBox(height: 14),
-                _buildRecentTimesButtons(context, timerProvider),
-              ] else if (timerProvider.mode == MeditationTimerMode.endAt)
-                _buildEndAtModeContent(context, timerProvider)
-              else
-                _buildUnlimitedModeContent(context),
-
-              const SizedBox(height: 16),
-
-              // 3. Start Meditation Button (Below show time button)
-              FilledButton.icon(
-                onPressed: () => _startMeditation(context),
-                icon: const Icon(Icons.play_arrow_rounded, size: 36),
-                label: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 8.0),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      t.startMeditation,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ),
-                style: FilledButton.styleFrom(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // 4. Bell Volume (Below start button and above settings)
-              _buildVolumeCard(context, timerProvider),
-
-              const SizedBox(height: 16),
-
-              // 5. Expansion View for Bells & Other Settings
-              _buildSoundSettingsExpansionCard(context, timerProvider),
-
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
+      body: body,
     );
   }
 

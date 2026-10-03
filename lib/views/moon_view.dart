@@ -558,14 +558,14 @@ class _MoonPageState extends State<MoonPage>
                               Icon(Icons.content_cut_rounded,
                                   color: primaryColor, size: 15),
                               const SizedBox(width: 6),
-                              Text(
-                                "Uposatha Eve (Shaving Day) • Tomorrow is Uposatha",
+                              Flexible(child: Text(
+                                AppLocalizations.of(context)!.uposathaEveShaving,
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              ),
+                              )),
                             ],
                           ),
                         ),
@@ -992,14 +992,14 @@ class _MoonPageState extends State<MoonPage>
                             color: theme.colorScheme.primary,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            "3D Moon Sky Compass",
+                          Flexible(child: Text(
+                            AppLocalizations.of(context)!.moonSkyCompass3d,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: theme.textTheme.titleMedium?.color,
                             ),
-                          ),
+                          )),
                         ],
                       ),
                       const SizedBox(height: 4),

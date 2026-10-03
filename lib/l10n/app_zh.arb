@@ -223,7 +223,7 @@
   "@background_disabled": {
     "description": "message to inform background disabled."
   },
-  "ok": "OK",
+  "ok": "确定",
   "@ok": {
     "description": "close dialog button."
   },
@@ -259,7 +259,7 @@
   "@theme": {
     "description": "For selecting the colors."
   },
-  "help_content": "算法:\n 计算依照让-米尔斯的天文算法公式进行。在南北纬72°间日出和日落的算值精度理论上偏差小于1分钟。请依预设时间恰当止息。 \n\n正午:\n正午屏面以简便方式显示GPS地址或所在城市的当日太阳日中时间。所有时间值参考了设定的安全时差。（见下）\n\n明相:\n明相屏面显示根据设定和相关太阳算法而产生的明相时间。 所有时间值计入设定的安全时差。 \n帕奥 = (日出时间-40分钟)。 \n龙树林 = (日出时间-30分钟)。 (见下) \n\nGPS:\n有网络且选择框打勾时，GPS会自动设定所在城市。 推荐使用GPS进行位置设定，这是计算正午时刻精度最佳的方式。此测试不包括 \"夏令时\" 区。\n\n设定:\n偏移:\n 此功能在 GPS状态下自动设置。 如果你选择在设定时使用城市搜索，你需要输入标准时差值 (GMT +- 本地时间). \n安全时差:\n 正午时间减去此值令其略早，明相时间加上此值令其略晚。 本算法中精度差小于1分钟，所以缺省安全时差设定为1分钟。\n明相:\n可选择适合您的明相时间。  龙树林以日出前30分钟为明相时分，而帕奥则以日出前40分钟为明相。安全时差会加在您选择的明相设定时间。 \n计时器:\n计时器屏面提供免操作语音提示。语音表示 \"文本转语音\"。 音量可以滑动调节。 通常情况下，屏面显示状态下语音提示可用。 若需, 您可以选择 \"屏幕常亮\" 以避免关屏或启动 \"关屏时使用TTS\" 功能。关屏时进入 \"后台\"运行，防止设备进入睡眠模式。 在确保其效果前，建议您多测试后台功能几次。有些手机可能不允许这类操作。我们不作任何保证。 关闭本应用，需要操作以停止后台运行任务。若你在手机顶部信息提示区（时间和信号等）看到本应用的太阳图标，则表示该应用正在后台运行中。否则，您将不会在此处见到该图标。该功能苹果系统用户尚未提供。\n 语音播报间隔为: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\n隐私:\n详细的隐私声明请见:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n 我们不搜集任何信息，我们也不建立网络连接。在关闭状态下，本应用不在后台运行。GPS功能只有在您按下GPS按钮才因此而有唯一的一次启用。虽然本应用基于来自pub.dev网站的其它程序包，但我可以肯定，您在使用时是安全的。上述程序包在本应用\"许可\"页面，以及GitHub程序库中，有详细列明。",
+  "help_content": "计算与算法：\nBuddhist Sun 的计算采用美国国家可再生能源实验室的太阳位置算法（NREL SPA）。较旧的算法（如 Meeus 算法）误差可达 1 分钟，而 NREL SPA 是国际公认的黄金标准，其太阳正午、日出及晨昏蒙影时刻的精度可达数秒之内。\n\n重要戒律提醒：\n虽然天文计算精确到数秒之内，比丘及持八戒/十戒的修行者仍应确保在时限到达前一分钟至三十秒停止吞咽任何食物并漱口，使太阳正午到来时口中或喉中不残留任何食物颗粒。\n\n应用功能：\n• 太阳正午与明相：高精度太阳正午时刻及可自定义的明相公式（帕奥 -40 分钟、龙树林 -30 分钟、天文晨光及自定义角度）。\n• 免手动语音倒计时：语音播报通知（TTS），支持关屏后台运行，在关键时间点提醒直至归零。\n• 戒律指南针：3D 大圆航线地球仪、2D 地图及佛教旋转表盘，指向菩提伽耶及其他朝圣圣地。\n• 月相与布萨日历：每日月相百分比，以及泰国、缅甸和斯里兰卡传统的布萨日 / 波耶日。\n• 太阳与日影（戒律比例）：实时显示立竿影子角度及指宽（angula）测量，用于实地验证正午。\n• 佛历（BE 日历）：佛历纪年计算、戒腊（vassa）计数及 Pakkha（半月）历日。\n• 禅修计时器：正念计时器，配有颂钵钟声、间隔钟声及预备时段。\n• 念死（Maraṇassati）：对死亡的正念，附预期寿命分析及观想提醒。\n• GPS 与 40,000+ 城市数据库：高精度 GPS 定位或全球离线城市查询。\n• 安全时差：可配置的安全缓冲（1–10 分钟），从正午时间中减去或加到明相时间上，令人安心。\n\n隐私：\nBuddhist Sun 不收集任何个人信息。\n完整声明：https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
   "@help_content": {
     "description": "instructions to use app."
   },
@@ -267,26 +267,26 @@
   "@about_content": {
     "description": "about content for menu item."
   },
-  "gps_permission_content": "请允准使用GPS，以便本应用获得GPS地址数据来计算太阳位置。按下GPS钮，仅执行一次数据采集。所采集数据仅在本APP范围内使用。",
+  "gps_permission_content": "将请求使用 GPS 的权限。这使 Buddhist Sun 能够获取 GPS 位置数据以计算太阳位置。每次按下 GPS 按钮时，仅采集一次 GPS 数据。数据不会发送到本应用之外。",
   "@gps_permission_content": {
     "description": "Notification to request gps permission."
   },
-  "background_permission_content": "请允准后台启用，以确保屏面显示期间语音提示功能可以正常使用。当您关闭启用或关闭本APP时，后台运程将随之终止。同意启用后，则本请求不再发出。",
+  "background_permission_content": "将请求后台运行权限。此权限用于确保即使在屏幕关闭时语音通知也能正常运行。当开关关闭或应用关闭时，Buddhist Sun 将关闭此后台进程。若获同意，此权限仅请求一次。",
   "@background_permission_content": {
     "description": "Ask for permission for background."
   },
   "dstNoticeTitle": "夏令时通知",
-  "verify": "确认",
+  "verify": "核对正午",
   "rateThisApp": "请评价",
   "prev": "后退",
   "next": "前进",
   "moonPhase": "月相",
   "selectDate": "选择日期",
   "selectedDate": "已选择日期",
-  "moon": "月",
-  "darkMode": "护眼模式",
+  "moon": "月亮",
+  "darkMode": "深色模式",
   "color": "颜色",
-  "material3": "材料3",
+  "material3": "Material 3",
   "uposathaCountry": "布萨国家",
   "autoUpdateGps": "自动更新 GPS",
   "refreshingGps": "正在刷新 GPS",
@@ -398,7 +398,7 @@
   "deathContemplationPrompt": "请在设置中设定您的出生日期和预期寿命。",
   "lifeElapsed": "已过生命",
   "lifeRemaining": "剩余生命",
-  "lifeExceeded": "您已超过预期寿命。每一个呼吸都是珍贵的恩赐。",
+  "lifeExceeded": "您已超过预期寿命。每一刻都是修习佛法（Dhamma）的珍贵礼物。",
   "editDeathSettings": "编辑出生日期与年龄",
   "maranasatiQuote": "生命无常，死亡定至。当勤精进，慎勿放逸。",
   "compass": "指南针",
@@ -442,7 +442,7 @@
   "tapToChangeDuration": "点击更改时长与预设",
   "tapToChangeEndTime": "点击更改结束时间",
   "openUnlimitedMode": "自由 / 无限模式",
-  "openUnlimitedModeDesc": "持续计时直至结束。将按下方设置鸣响间隔钟声。",
+  "openUnlimitedModeDesc": "持续正向计时直至您结束。间隔钟声将按下方设置鸣响。",
   "bellsAndSettings": "钟声与设置",
   "bellVolume": "钟声音量百分比",
   "phoneVolume": "手机音量",
@@ -457,7 +457,7 @@
   "autoCloseTimer": "自动关闭计时器屏幕",
   "autoCloseTimerDesc": "结束钟声响完后自动关闭计时器屏幕",
   "timerRingStyle": "计时环样式",
-  "timerRingStyleDesc": "递减模式随时间逐渐消除圆环，递增模式逐渐填满。",
+  "timerRingStyleDesc": "递减模式随时间流逝逐渐消除实心圆环，递增模式则逐渐将其填满。",
   "styleSubtractive": "递减（默认）",
   "styleAdditive": "递增",
   "endSession": "结束禅修",
@@ -470,7 +470,7 @@
   "timerRemaining": "剩余时间",
   "timerDone": "完成",
   "aboutTimer": "关于计时器",
-  "timerInfoDialogContent": "专为禅修静坐设计的清净计时器。",
+  "timerInfoDialogContent": "专为您的禅修而设的宁静计时器。\n\n• 定时：以固定时长禅修。\n• 结束于：禅修至一天中的指定时间。\n• 自由：自由禅修，可选间隔钟声。\n\n禅修期间点击计时圆环即可暂停或继续。\n\n钟声音频由 Freesound.org、Pixabay.com 和 Suno.com 提供。",
   "tapScreenToResume": "点击屏幕继续",
   "tapScreenToPause": "点击屏幕暂停",
   "setDuration": "设置时长",
@@ -546,7 +546,289 @@
   "clear": "清除",
   "setLocale": "选择语言",
   "noData": "暂无数据",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "超过3小时的禅修，请保持屏幕常亮。息屏可能导致系统终止后台计时器。"
+  "timerOvertime": "超时",
+  "finishSession": "结束禅修",
+  "screenOffWarningOver3Hours": "超过3小时的禅修，请保持屏幕常亮。息屏可能导致系统终止后台计时器。",
+  "vitaminD": "维生素D",
+  "vitDTitle": "维生素D日晒计时",
+  "vitDNoLocation": "请设置位置（GPS 页），以准确估算太阳高度角和维生素D。",
+  "vitDStatusGood": "适合合成维生素D — 太阳高于 45°",
+  "vitDStatusLow": "太阳低于 45° — 维生素D合成减少",
+  "vitDStatusNone": "太阳太低 — 几乎不能合成维生素D",
+  "vitDStatusNight": "太阳已落 — 无法合成维生素D",
+  "vitDSunAngle": "太阳高度角",
+  "vitDUvIndex": "UV 指数（估算）",
+  "vitDRate": "维生素D合成速率",
+  "vitDIuPerMin": "≈ {iu} IU/分钟",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "维生素D效率",
+  "vitDBurnTime": "晒伤时间",
+  "vitDMinutes": "{min} 分钟",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "今日最佳维生素D时段（高于 45°）：{start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "今天太阳达不到 45°（最高 {deg}°，于 {time}）。维生素D合成会很少。",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "影子法则：当您的影子比身高短时，太阳就高于 45°。",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "本次估算",
+  "vitDStart": "开始日晒",
+  "vitDStop": "停止并保存",
+  "vitDGoalReached": "已达每日所需。请到阴凉处休息。",
+  "vitDEnoughSun": "今天日晒已足 — 再晒晒伤风险会上升。",
+  "vitDToday": "今天",
+  "vitDOfDailyNeed": "占估算每日所需 {iu} IU",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "今日晒伤剂量",
+  "vitDBurnHint": "保持在 50% 以下 — 短时日晒就足够。",
+  "vitDBurnWarnMid": "已超过一半晒伤剂量。请考虑遮盖身体或移到阴凉处。",
+  "vitDBurnWarnHigh": "即将晒伤。请遮盖身体并到阴凉处。",
+  "vitDTodaySessions": "今日日晒记录",
+  "vitDNoSessions": "今天还没有记录。出去晒太阳时请按开始。",
+  "vitDDeleteSession": "删除记录",
+  "vitDDeleteConfirm": "从今日总量中移除此记录？",
+  "vitDSettings": "日晒设置",
+  "vitDSkinTitle": "肤色",
+  "vitDSkinSubtitle": "影响晒伤时间的最大因素。",
+  "vitDSkinType": "类型 {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "非常白皙",
+  "vitDSkin2": "白皙",
+  "vitDSkin3": "中等",
+  "vitDSkin4": "橄榄色 / 浅棕",
+  "vitDSkin5": "棕色",
+  "vitDSkin6": "深棕",
+  "vitDCoverageTitle": "皮肤暴露",
+  "vitDCoverageSubtitle": "有多少皮肤暴露在阳光下。每次日晒可分别更改。",
+  "vitDCoverFullRobe": "双肩覆盖",
+  "vitDCoverFullRobeDesc": "头、手、脚",
+  "vitDCoverOneShoulder": "偏袒右肩",
+  "vitDCoverOneShoulderDesc": "另加右臂和右肩",
+  "vitDCoverUpperBare": "上身裸露",
+  "vitDCoverUpperBareDesc": "仅穿下裙",
+  "vitDCoverBathing": "浴衣",
+  "vitDCoverBathingDesc": "腰至膝",
+  "vitDSkyTitle": "天空",
+  "vitDSkyClear": "晴朗",
+  "vitDSkyPartly": "少云",
+  "vitDSkyMostly": "多云",
+  "vitDSkyOvercast": "阴天",
+  "vitDWeightTitle": "体重",
+  "vitDWeightSubtitle": "用于计算皮肤面积和每日所需。",
+  "vitDGoalFromWeight": "估算每日所需：{iu} IU（约每公斤 20 IU，600–4,000 IU）。",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "日晒与维生素D指南",
+  "vitDGuideBenefitsTitle": "益处",
+  "vitDGuideBenefits": "维生素D有助于骨骼和牙齿坚固、肌肉有力，并支持免疫系统。常居室内、袈裟遮身严密，或住在树荫浓密寺院中的出家人普遍缺乏维生素D。适量规律地晒太阳，是自然又免费的补充方式。",
+  "vitDGuideNoonTitle": "正午短时日晒 vs. 午后长时日晒",
+  "vitDGuideNoon": "接近正午的短时日晒胜过傍晚前的长时日晒。太阳高时（高于 45°），阳光中含有更多 UVB，也就是合成维生素D的光线，因此每单位晒伤风险能合成最多的维生素D。下午 3 点太阳较低：UVB 比 UVA 下降得快得多。虽然晒伤较慢，但要得到同样的维生素D就必须晒更久，同时接受更多 UVA，而 UVA 会使皮肤老化并增加皮肤癌风险。所以下午 3 点长时间日晒并不更安全 — 只是效率更低。例如：正午 10–15 分钟可相当于下午 3 点一小时或更久。",
+  "vitDGuideShortTitle": "短时、规律的日晒",
+  "vitDGuideShort": "皮肤合成维生素D会趋于饱和：大约达到半个到一个晒伤剂量后，再多晒几乎不再增加维生素D，却持续损伤皮肤。一周内多次短时日晒胜过一次长时日晒。在皮肤变红之前及早停止就足够了。维生素D会储存在体内，所以少晒一天也无妨。",
+  "vitDGuideDangersTitle": "危险",
+  "vitDGuideDangers": "日晒过度会导致晒伤、眼睛损伤、中暑虚脱与脱水、皮肤老化和皮肤癌。白皙皮肤很快晒伤。玻璃窗会阻挡 UVB，所以坐在玻璃后面无法合成维生素D。水、沙子和浅色石材会反射 UV，增加暴露量。某些药物会使皮肤对光敏感。请多喝水并保护眼睛 — 切勿直视太阳。",
+  "vitDGuideMonksTitle": "给僧团的建议",
+  "vitDGuideMonks": "在热带地区，肤色较深者于正午前后在寺院中坐禅或经行时，短时间偏袒右肩或露出手臂，通常就已足够。剃度的头部也会暴露在阳光下，因此长时间托钵时请保护头皮。深色皮肤需要更长时间才能合成同样的维生素D，但较不易晒伤。在寒冷地区或太阳始终低于 45° 的季节，身体无法合成多少维生素D — 请向医生咨询饮食或补充剂。",
+  "vitDGuideMethodTitle": "估算方法",
+  "vitDGuideMethod": "太阳高度角根据您的 GPS 位置和时间计算。UV 指数按晴空估算（UVI ≈ 12.5 × sin(angle)^2.42），并根据云量下调。晒伤剂量（MED）取决于皮肤类型。全身接受一个晒伤剂量时约合成 10,000 IU；此数值再按未遮盖的皮肤面积和您的体型（由体重推算）进行换算。太阳低于 45° 时维生素D效率下降，低于 15° 时为零。当日剂量达到一个晒伤剂量时停止计算合成。实际数值会因臭氧、海拔、空气污染、年龄和健康状况而异 — 请仅将这些数字作为粗略参考。",
+  "vitDDisclaimer": "医疗免责声明：本计算器仅提供粗略的教育性估算，并非医疗建议，也无法测量您的维生素D水平。日晒有风险，包括晒伤和皮肤癌。关于维生素D检测、补充剂或皮肤问题，请咨询合格的医生，尤其是如果您皮肤白皙、有皮肤癌病史，或正在服用光敏性药物。",
+  "vitDTabMonk": "僧人",
+  "vitDTabLay": "男",
+  "vitDCoverFaceHands": "脸和手",
+  "vitDCoverFaceHandsDesc": "长袖、长裤",
+  "vitDCoverShortSleeves": "短袖",
+  "vitDCoverShortSleevesDesc": "T恤、长裤",
+  "vitDCoverShorts": "短裤和T恤",
+  "vitDCoverShortsDesc": "手臂和小腿",
+  "vitDCoverSwimwear": "泳装",
+  "vitDCoverSwimwearDesc": "仅穿泳裤",
+  "vitDDailyTarget": "每日目标",
+  "vitDRemaining": "还需 {iu} IU",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "目标时间",
+  "vitDTargetTimeLeft": "剩余目标时间",
+  "vitDTargetTimeFull": "从现在起完成全部目标",
+  "vitDTargetTimeRest": "完成今天的目标",
+  "vitDTargetUnreachable": "在当前条件下今天无法达到",
+  "vitDTargetOverBurn": "超过晒伤时间的一半（{min} 分钟）。请多露出皮肤、躺下，或分几天进行。",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "每日目标",
+  "vitDTargetAuto": "根据体重自动设定目标",
+  "vitDPostureTitle": "姿势",
+  "vitDPostureSubtitle": "正午躺下可让更多皮肤朝向太阳。",
+  "vitDPostureStanding": "站立",
+  "vitDPostureWalking": "行走",
+  "vitDPostureSitting": "坐",
+  "vitDPostureLying": "躺",
+  "vitDPostureFactor": "与站立相比，现在维生素D ×{f}",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "头发生长",
+  "vitDHairSubtitle": "剃头后的天数。光头头皮也能合成维生素D。",
+  "vitDHairToday": "今天剃头 • 头皮完全暴露",
+  "vitDHairValue": "剃头 {days} 天 • 头皮暴露 {pct}%",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "姿势与头皮：本估算以直立的人为基准。平躺时暴露面朝向天空，因此正午时可多产生约1.6×的维生素D，但太阳较低时比站立少。晒伤时间不变，因为暴露最多的皮肤总是朝向天空。对出家人，会计入剃光的头皮（约占身体3.5%），头发再生会在两周内逐渐遮挡。目标时间按从现在起太阳的路径计算，并包括今天之前的各次日晒。",
+  "vitDTaperNote": "随着皮肤累积的日晒量增加，维生素D的合成会变慢，因此每多晒一分钟所得会少一些。",
+  "vitDGuideBestTitle": "最佳方法：多露皮肤，短时间",
+  "vitDGuideBest": "晒伤取决于每块皮肤在阳光下的时间；维生素D取决于露出多少皮肤。所以在接近正午时，短时间内尽量多露出皮肤。躺下能让更多皮肤朝向高空的太阳。一半时间仰卧，一半时间俯卧：每一面只受到一半的晒伤剂量，而维生素D大致相同。用布遮住脸和头，闭上眼睛，千万不要在阳光下睡着。热带正午时，浅肤色这样晒3–5分钟通常就够了；深肤色可能需要5–10分钟。",
+  "vitDGuideBurnTitle": "关于晒伤",
+  "vitDGuideBurn": "晒伤是皮肤对UVB损伤细胞的反应。发红在2–6小时后出现，12–24小时后最严重，所以在阳光下时感觉不到。同一天的多次日晒会累加：四次各5分钟与一次20分钟的晒伤程度差不多，因为皮肤在许多小时内缓慢修复。本应用的计量表会累加今天所有的日晒，并在午夜重置。保持在晒伤剂量的一半（50%）以下可避免皮肤发红。晒伤风险大多每天重置，但皮肤老化和皮肤癌风险会终生累积，因此短而规律的日晒比长时间日晒更好。",
+  "vitDTabLayFemale": "女",
+  "vitDCoverSwimwearFemaleDesc": "泳衣上衣和短裤",
+  "vitDCoverAngsa": "覆肩衣（aṅsa）",
+  "vitDCoverAngsaDesc": "右臂、左前臂和右胸裸露",
+  "vitDSessionRunning": "日晒中",
+  "vitDSessionIdle": "就绪",
+  "vitDBurnInfoTitle": "关于晒伤剂量",
+  "vitDBurnInfo": "晒伤剂量是累积的：它会把今天所有的日晒加在一起。四次各5分钟与一次20分钟算作相同，因为皮肤在许多小时内缓慢修复。它在午夜重置。\n\n100% 表示几小时后皮肤很可能发红。保持在 50% 以下可以避免。\n\n对维生素D来说，最好的方法是露出更多皮肤、晒更短时间。在接近正午时尽量多露出皮肤，并缩短时间。\n\n躺下：一半时间仰卧，用布遮住脸和头，一半时间俯卧。每一面只受到一半的晒伤剂量，而维生素D大致相同。",
+  "vitDStartTooEarly": "太早（{time}）",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "太晚了 — 太阳低于45°",
+  "vitDStartNo45": "今天太阳达不到45°",
+  "vitDTodayInfoTitle": "关于今天的估算",
+  "vitDTodayInfo": "今日总量会把今天所有日晒（包括正在进行的一次）估算出的维生素D加在一起。它在午夜重置。\n\n百分比是与你的每日目标 {iu} IU 相比。达到 100% 当天就足够了；再多晒得益很少，还会增加晒伤剂量。\n\n这些都是粗略估算，单位与补充剂相同：来自阳光的约 1,000 IU 对血液水平的作用与一片 1,000 IU 的药片大致相同。实际数值会因雾霾、臭氧、年龄以及朝向太阳的皮肤面积而不同。\n\n官方建议为每天 600 IU（70 岁以上 800 IU）。这里的自动目标按每公斤体重约 20 IU 计算；你可以在日晒设置中自行设定。\n\n维生素D可在体内储存数周，因此每周总量比任何一天都更重要。",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "本周",
+  "vitDWeekAvg": "平均 ≈ 每天 {iu} IU",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "还差 {iu} IU",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "超出 {iu} IU",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "关于每周总量",
+  "vitDWeekInfo": "维生素D可在体内储存数周，所以晴天可以弥补阴天。此卡片累计最近 7 天（如果刚开始使用则更少），并与 7 天的每日目标相比较。\n\n每天最多只计 3 天的量，所以一次大量日晒无法弥补整周。\n\n千万不要为了补回而晒更久。晒伤限制始终按天计算。要弥补错过的日子，请在下一个晴天露出更多皮肤或躺下。\n\n如果整周仍然偏低，请考虑富含维生素D的食物或补充剂。",
+  "vitDCatchUpTitle": "每周补足",
+  "vitDCatchUpDesc": "今天的目标会补足本周的不足（最多 3 天的量），超前时则降低。千万不要为补足而晒更久——请露出更多皮肤。",
+  "vitDTodayTargetWeekly": "今天的目标（按周）",
+  "vitDCoveredByWeek": "本周已足够",
+  "vitDOfTodayTarget": "今天目标 {iu} IU 的",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "其余部分会分摊到接下来的晴天。",
+  "vitDLowWeek": "本周日照少——请考虑富含维生素D的食物或补充剂。",
+  "vitDTab": "D3",
+  "meditationTab": "禅修",
+  "pasteFromMaps": "从 Google 地图粘贴",
+  "readingLocation": "正在读取位置...",
+  "clipboardEmpty": "剪贴板为空",
+  "noCoordinatesFound": "未找到有效的坐标或地图链接",
+  "locationLoaded": "坐标已加载！",
+  "uposathaEveShaving": "布萨前夕（剃发日）• 明天是布萨日",
+  "moonSkyCompass3d": "3D 月空罗盘"
 }

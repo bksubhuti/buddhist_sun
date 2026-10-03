@@ -943,7 +943,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                         ],
                       ),
                       // Real-Time Clock Toggle Button (Activated vs Not Activated)
-                      OutlinedButton.icon(
+                      Flexible(child: OutlinedButton.icon(
                         onPressed: _toggleRealTimeClock,
                         icon: Icon(
                           _isLive
@@ -985,7 +985,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
-                      ),
+                      )),
                     ],
                   ),
 
@@ -1033,7 +1033,7 @@ class _SunShadowPageState extends State<SunShadowPage>
                                 .withValues(alpha: 0.45),
                           ),
                         ),
-                        Container(
+                        Flexible(child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
@@ -1060,8 +1060,9 @@ class _SunShadowPageState extends State<SunShadowPage>
                                     : Colors.amber[800],
                               ),
                               const SizedBox(width: 5),
-                              Text(
+                              Flexible(child: Text(
                                 t.scrubTime(timeStr),
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -1073,10 +1074,10 @@ class _SunShadowPageState extends State<SunShadowPage>
                                           ? Colors.amber[200]
                                           : Colors.amber[900]),
                                 ),
-                              ),
+                              )),
                             ],
                           ),
-                        ),
+                        )),
                         Text(
                           '23:59',
                           style: TextStyle(

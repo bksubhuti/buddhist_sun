@@ -5,19 +5,19 @@
   "sun": "සූර්යයා",
   "noon": "මධ්‍යාහ්නය",
   "dawn": "අරුණ",
-  "timer": "timer",
+  "timer": "ටයිමරය",
   "gps": "GPS",
   "settings": "සැකසුම්",
   "help": "උදව්",
   "about": "පිළිබඳ",
-  "licenses": "licenses",
+  "licenses": "බලපත්‍ර",
   "not_set": "Set කර නැත",
   "solar_noon": "ඉරමුදුන",
-  "gmt_offset": "GMT Offset",
+  "gmt_offset": "GMT වෙනස",
   "hours": "පැය",
-  "astronomical_twilight": "Astronomical Twilight",
-  "nautical_twilight": "Nautical Twilight",
-  "civil_twilight": "Civil Twilight",
+  "astronomical_twilight": "තාරකා විද්‍යාත්මක සන්ධ්‍යාලෝකය",
+  "nautical_twilight": "නාවික සන්ධ්‍යාලෝකය",
+  "civil_twilight": "සිවිල් සන්ධ්‍යාලෝකය",
   "sunrise": "හිරු උදාව",
   "custom_dawn": "අභිමත",
   "date": "දිනය",
@@ -29,14 +29,14 @@
   "speech_in_background": "පසුබිමේ කථාව",
   "volume": "ශබ්ද ප්‍රමාණය",
   "press_wait": "නව GPS සඳහා ඔබා රැඳී සිටින්න",
-  "get_gps": "Get GPS",
-  "save_gps": "Save GPS",
+  "get_gps": "GPS ලබාගන්න",
+  "save_gps": "GPS සුරකින්න",
   "set_gps_city": "අන්තර්ජාලය තුලින් නගරයේ නම GPS මඟින් සොයන්න",
   "previous_gps_is": "පෙර GPS අංශක",
   "decimal_number": "දශම සංඛ්යාව",
-  "current_offset_is": "Current GMT Offset",
-  "safety": "Safety Buffer",
-  "none": "none",
+  "current_offset_is": "වත්මන් GMT වෙනස",
+  "safety": "ආරක්ෂිත කාලය",
+  "none": "කිසිවක් නැත",
   "minute1": "මිනිත්තු 1",
   "minutes2": "මිනිත්තු 2",
   "minutes3": "මිනිත්තු 3",
@@ -49,28 +49,28 @@
   "na_uyana_angle": "නා-උයන (-7.7°)",
   "search_for_city": "නගරය සොයන්න",
   "gps_permission": "GPS අවසර",
-  "background_permission": "Background අවසර",
+  "background_permission": "පසුබිම් අවසරය",
   "error": "වරදක් සිදුවිය",
-  "notification": "Notification",
-  "running_in_background": "Buddhist Sun Running In Background",
-  "background_initialized": "Background Initialized",
-  "background_enabled": "Background Enabled",
-  "background_not_set": "Background not set",
-  "background_init_error": "Background initialize error",
-  "background_disabled": "Background disabled",
+  "notification": "දැනුම්දීම",
+  "running_in_background": "Buddhist Sun පසුබිමේ ක්‍රියාත්මකයි",
+  "background_initialized": "පසුබිම ආරම්භ විය",
+  "background_enabled": "පසුබිම සක්‍රියයි",
+  "background_not_set": "පසුබිම සකසා නැත",
+  "background_init_error": "පසුබිම ආරම්භ කිරීමේ දෝෂයකි",
+  "background_disabled": "පසුබිම අක්‍රියයි",
   "ok": "හරි",
   "yes": "ඔව්",
   "no": "නැහැ",
-  "cancel": "Cancel",
+  "cancel": "අවලංගු කරන්න",
   "gps_not_available": "GPS සොයාගත නොහැකි විය",
   "gps_recommend": "නිවැරදිම වේලාවන් සඳහා GPS අවශ්‍යයි. GPS අනුකුලතාව ලබා දීමට ඔබ කැමතිද?",
   "gps_internet_message": "අන්තර්ජාල පහසුකම් තිබේනම් නගරයේ නම GPS හරහා සොයාගත හැක.",
   "language": "භාෂාව",
-  "theme": "වර්ණමාලාව",
-  "help_content": "Calculations:\n The calculations are based on equations from Astronomical Algorithms, by Jean Meeus. The sunrise and sunset results are theoretically accurate to within a minute for locations between +/- 72° of latitud. Please consider stopping well before the stated time. \n\nNOON:\nThe Noon screen displays the Solar Noon for the current day as selected by GPS or City in an easy to view manner. All times reflect the safety from settings.  (see below) \n\nDAWN:\nThe Dawn screen displays the selected Dawn formula from the settings and also various solar calculations. All times reflect the safety from settings.  \nPa-Auk = ( Sunrise - 40 Minutes).  \nNa-uyana = ( Sunrise - 30 minutes)  (see below) \n\nGPS:\nGPS will automatically set the city if the Internet is on and the checkbox is checked.  It is recommended that you use the GPS settings for your location because the Solar Noon will be most accurate this way.  This was not tested with \"Day Light Savings\" locations.\n\nSETTINGS:\nOffset:\n This is automatically set when using GPS.  If you use City Search in settings, you must select an offset (GMT +- your local time). \nSaftey:\nThis subtracts minutes from the Noon time to make it earlier and adds to Dawnrise to make it later.  The formula is accurate within one minute so the default safety is 1 minute. \nDawn:\nChoose your prefered Dawnrise.  Na-Uyana uses Sunrise -30 minutes, and Pa-Auk uses Sunrise -40 minutes.  Safety will add x-Minutes to this time. \nTimer:\nThe Timer screen allows for hands free audio notifications.  Speech means \"Text to Speech\".  The volume is controlled by the slider.  Under normal conditions the speech notifications only work while the screen is on.  To fix this, you can make the screen stay awake with the \"Screen Always On\" switch, or you can enable the \"TTS with screen off\" feature.  This will enable \"background\" operation while your screen is off and prevent the device from entering sleep mode. You should test this background feature a few times before relying on it.  Some phones may not allow it. We are not responsible for anything.  When you close the applicaton, a method is called to stop the background task.  You will know the app is running in the background by the sun icon displayed in the top of your phone's notification area (where the time and signal bars are).  If Buddhist Sun is not in \"background mode\", you will not see a sun icon. This feature is not available for iOS users.\n The speech announcements are in the following minute intervals: 50,40,30,20,15,10,8,6,5,4,3,2,1,0 \n\nPrivacy:\nA full privacy statement is located at:\n https://americanmonk.org/privacy-policy-for-buddhist-sun-app/\n\n We do not collect information.",
-  "about_content": "Buddhist Sun යනු බෞද්ධ භික්ෂූන් වහන්සේලාට සහ භික්ෂුණීන්ගේ විනයට අදාළවූ ඒ ඒ ස්ථාන සඳහා මධ්‍යාහ්නය දැන ගැනීම සඳහා වූ කුඩා ඇප් එකකි. මම සාමාන්‍යයෙන් අතින් ආහාර ගන්නා නිසා, නිසි මධ්‍යාහ්නය දැන ගැනීමට මට \"hands free\" ක්‍රමයක් අවශ්‍ය විය. මේ ඇප් එකේ ටයිමරය  (timer) කෑමට ඉතිරිව ඇති කාලය දැන ගැනීමට මට උපකාරී වේ. මා මේ ඇප් එක භාවිතා කිරීමෙන් සතුටක් ලබන අතර ඔබටත් එසේ ලැබෙනු ඇතැයි මම බලාපොරොත්තු වෙමි. මෙය වැදගත් වන්නේ ඇයි? බෞද්ධ විනය පිළිපදින අයට මධ්‍යාහ්නයෙන් පසු ආහාර ගැනීමට අවසර නැත. මෙම විනය ක්‍රියාත්මකවන්නේ ඔරලෝසු වේලාවට වඩා හිරු මධ්‍යාහ්නගත වීමට අනුව ය. බුදුන් වහන්සේගේ කාලයේ ඔවුන්ට ඔරලෝසු නොතිබුණි. අට සිල් හෝ දශසිල් අනුගමනය කරන අයට ද  මෙම ඇප් එක ප්‍රයෝජනවත් විය හැකිය. මෙම යෙදුමේ නිරවද්‍යතාවය සත්‍යාපනය කිරීම සඳහා මෙම යොමුව (link) භාවිතා කරන්න. එමඟින් ඔබ ඉන්නා මොහොතත් ස්ථානයත් (\"present moment/location\") පෙන්නුම් කරයි. සඳහා අදහස් කෙරේ.  ",
-  "gps_permission_content": "Permission will be requested for GPS use. This allows for Buddhist Sun to know the GPS Location Data to calculate the sun's position. GPS is only collected once for each time the GPS button is pressed.  Data is not sent outside this app.",
-  "background_permission_content": "Permission will be requested for background use.  This permission is needed to enable speech notifications to run properly the screen on.  Buddhist Sun will turn off this Background process when the switch is turned off or the app is closed.  Permission will be requested only one time if accepted.",
+  "theme": "තේමාව",
+  "help_content": "ගණනය කිරීම් සහ ඇල්ගොරිතමය:\nBuddhist Sun හි ගණනය කිරීම් සිදු කරනු ලබන්නේ ජාතික පුනර්ජනනීය බලශක්ති විද්‍යාගාරයේ (National Renewable Energy Laboratory) සූර්ය පිහිටීම් ඇල්ගොරිතමය (NREL SPA) මගිනි. විනාඩි 1 ක් දක්වා දෝෂ සීමාවක් තිබූ පැරණි ඇල්ගොරිතම (Meeus වැනි) මෙන් නොව, NREL SPA ජාත්‍යන්තර ස්වර්ණ ප්‍රමිතිය වන අතර ඉර මුදුන් වේලාව, හිරු උදාව සහ සන්ධ්‍යා ආලෝක කාල සඳහා තත්පර කිහිපයක් ඇතුළත නිරවද්‍ය වේ.\n\nවැදගත් විනය පූර්වාරක්ෂාව:\nතාරකා විද්‍යාත්මක ගණනය තත්පර කිහිපයක් ඇතුළත නිරවද්‍ය වුවද, ඉර මුදුන් වන විට මුඛයේ හෝ උගුරේ කිසිදු ආහාර අංශුවක් ඉතිරි නොවන පරිදි, භික්ෂූන් වහන්සේලා සහ අටසිල් / දසසිල් රකින්නන් කාලය අවසන් වීමට විනාඩියක සිට තත්පර 30 දක්වා කාලයකට පෙර කිසිදු ආහාරයක් ගිල නොදමා මුඛය සේදීමට වග බලා ගත යුතුය.\n\nයෙදුමේ විශේෂාංග:\n• ඉර මුදුන සහ අරුණ: ඉහළ නිරවද්‍යතාවයකින් යුත් ඉර මුදුන් වේලාව සහ අභිමත පරිදි සකස් කළ හැකි අරුණ සූත්‍ර (Pa-Auk -40m, Na-Uyana -30m, තාරකා විද්‍යාත්මක සන්ධ්‍යා ආලෝක කාල සහ අභිමත කෝණ).\n• අත් භාවිතයෙන් තොර හඬ ගණන් කිරීම: තිරය නිවා ඇති විටද පසුබිමේ ක්‍රියාත්මක වන, වැදගත් කාල පරතරයන්හිදී ශුන්‍යය දක්වා අනතුරු අඟවන කථන හඬ දැනුම්දීම් (TTS).\n• විනය මාලිමාව: බුද්ධගයාව සහ අනෙකුත් පූජනීය වන්දනා ස්ථාන දෙසට යොමු කළ, මහා වෘත්ත (Great-Circle) මාර්ගය සහිත ත්‍රිමාණ (3D) පෘථිවි ගෝලය, ද්විමාණ (2D) සිතියම සහ බෞද්ධ භ්‍රමණ ඩයලය.\n• සඳ කලාව සහ පොහොය දින දර්ශනය: දෛනික චන්ද්‍ර කලා ප්‍රතිශතය සහ තායි, මියන්මාර් සහ ශ්‍රී ලාංකීය සම්ප්‍රදායන්ට අනුව සාම්ප්‍රදායික උපෝසථ / පොහොය දින.\n• හිරු සහ සෙවණැල්ල (විනය අනුපාතය): භෞතිකව මධ්‍යාහ්නය තහවුරු කර ගැනීම සඳහා සජීවී කූරු සෙවණැලි කෝණය සහ ඇඟිලි පළල (අඞ්ගුල) මිනුම.\n• බුද්ධ වර්ෂය (බු.ව. දින දර්ශනය): බුද්ධ වර්ෂ ගණනය කිරීම්, වස් ගණන සහ පක්ඛ දින දර්ශන දින.\n• භාවනා ටයිමරය: ගායන පාත්‍ර (singing bowl) නාද, අන්තරාල සීනු සහ සූදානම් වීමේ කාල සහිත සිහිකල්පනාවෙන් යුත් ටයිමරයක්.\n• මරණස්සති (මරණය පිළිබඳ භාවනාව): ආයු අපේක්ෂාව පිළිබඳ විශ්ලේෂණ සහ මෙනෙහි කිරීමේ සිහිකැඳවීම් සහිතව මරණය පිළිබඳ සිහිය.\n• GPS සහ නගර 40,000+ ක දත්ත ගබඩාව: ඉහළ නිරවද්‍යතාවයකින් යුත් GPS හඳුනාගැනීම හෝ ලොව පුරා නගර අන්තර්ජාලයෙන් තොරව සෙවීම.\n• ආරක්ෂිත කාලය: මනසේ සැනසීම සඳහා මධ්‍යාහ්නයෙන් අඩු කරන හෝ අරුණට එකතු කරන, සකස් කළ හැකි ආරක්ෂිත කාල සීමාව (විනාඩි 1–10).\n\nපෞද්ගලිකත්වය:\nBuddhist Sun පුද්ගලික තොරතුරු එකතු නොකරයි.\nසම්පූර්ණ ප්‍රකාශය: https://americanmonk.org/privacy-policy-for-buddhist-sun-app/",
+  "about_content": "Buddhist Sun යනු බෞද්ධ භික්ෂූන් වහන්සේලාට සහ භික්ෂුණීන් වහන්සේලාට, භික්ෂු විනයට අදාළ වන පරිදි ඉර මුදුන් වේලාව (මධ්‍යාහ්නය) පෙන්වීම සඳහා වූ කුඩා යෙදුමකි. මා සාමාන්‍යයෙන් අතින් දන් වළඳන නිසා, මධ්‍යාහ්නය ළං වන බව දැන ගැනීමට අත් භාවිතයෙන් තොර (\"hands free\") ක්‍රමයක් මට අවශ්‍ය විය. හඬ දැනුම්දීම් සක්‍රිය කළ ටයිමරය, දන් වැළඳීමට ඉතිරිව ඇති කාලය දැන ගැනීමට මට උපකාරී වේ.  මා මෙම යෙදුම භාවිතා කිරීමෙන් සතුටක් ලබන අතර, ඔබත් එසේ සතුටක් ලබනු ඇතැයි මම බලාපොරොත්තු වෙමි.\n\nමෙය වැදගත් වන්නේ ඇයි?\nබෞද්ධ භික්ෂු විනය පිළිපදින අයට මධ්‍යාහ්නයෙන් පසු ආහාර ගැනීමට අවසර නැත.  මෙම නීතිය ඔරලෝසුවට අනුව නොව, අහසේ හිරු මුදුනට පැමිණීම අනුව ක්‍රියාත්මක වේ. බුදුරජාණන් වහන්සේගේ කාලයේ ඔරලෝසු නොතිබුණි.  අටසිල් හෝ දසසිල් රකින අනෙක් අයටද මෙම යෙදුම ප්‍රයෝජනවත් විය හැකිය.\n\nමෙම යෙදුමේ නිරවද්‍යතාවය තහවුරු කර ගැනීමට https://www.kso.ac.at/beobachtungen/ephemeris_en.php  භාවිතා කරන ලෙස මම නිර්දේශ කරමි.  බුද්ධ වර්ෂ පිටුව සකස් කරන ලද්දේ Yogashrama හි Bhante Amarawali විසිනි. සම්බන්ධ කර ගැනීමට විද්‍යුත් තැපැල් ලිපිනය bhamarawali@gmail.com වේ.  මෙම යෙදුම අදහස් කර ඇත්තේ \"වර්තමාන මොහොත/ස්ථානය\" සඳහා භාවිතයටයි.\n\nමෙය ඔබට ඉක්මනින් සහ සුරක්ෂිතව නිවන් දැකීමට උපකාරී වේවා!",
+  "gps_permission_content": "GPS භාවිතය සඳහා අවසර ඉල්ලනු ඇත. මෙමගින් හිරුගේ පිහිටීම ගණනය කිරීම සඳහා Buddhist Sun හට GPS ස්ථාන දත්ත දැන ගැනීමට හැකි වේ. GPS බොත්තම ඔබන සෑම අවස්ථාවකදීම GPS දත්ත ලබා ගන්නේ එක් වරක් පමණි.  දත්ත මෙම යෙදුමෙන් පිටතට යවනු නොලැබේ.",
+  "background_permission_content": "පසුබිම් භාවිතය සඳහා අවසර ඉල්ලනු ඇත.  තිරය නිවා ඇති විටද කථන දැනුම්දීම් නිසි ලෙස ක්‍රියාත්මක වීමට මෙම අවසරය අවශ්‍ය වේ.  ස්විචය අක්‍රිය කළ විට හෝ යෙදුම වසා දැමූ විට Buddhist Sun මෙම පසුබිම් ක්‍රියාවලිය නවත්වයි.  අවසරය පිළිගත්තොත්, එය ඉල්ලනු ලබන්නේ එක් වරක් පමණි.",
   "dstSavingsNotice": "අවවාදයයි, මෙම යෙදුම දිවා ආලෝකය ඉතිරි කිරීමේ කාලය (DST) සඳහා ගණනය නොකරයි. කරුණාකර වෙනස්කම් පිළිබඳව දැනුවත් වන්න. DST සිදු වූ විට, ඔබට GPS හෝ සැකසීම් පටිත්තෙහි ඇති ඕෆ්සෙට් නැවත සැකසීමට අවශ්‍ය වේ.",
   "dstNoticeTitle": "දිවා ආලෝකය ඉතුරුම් දැන්වීම",
   "verify": "මධ්‍යහ්නය තහවුරු කරන්න.",
@@ -86,7 +86,7 @@
   "material3": "Material 3",
   "uposathaCountry": "උපෝසථ රට",
   "autoUpdateGps": "GPS ස්වයංක්‍රීයව යාවත්කාලීන කරන්න",
-  "refreshingGps": "GPS නැවත تازه කිරීම",
+  "refreshingGps": "GPS නැවත ලබාගනිමින්",
   "uposathaNotifications": "උපෝසථ දැනුම්දීම්:",
   "daysBefore": "පෙර දින ගණන:",
   "notificationTime": "දැනුම්දීමේ වේලාව:",
@@ -194,7 +194,7 @@
   "deathContemplationPrompt": "කරුණාකර සැකසුම් තුළ ඔබගේ උපන් දිනය සහ ආයු අපේක්ෂාව ඇතුළත් කරන්න.",
   "lifeElapsed": "ගත වූ ආයු කාලය",
   "lifeRemaining": "ඉතිරි ආයු කාලය",
-  "lifeExceeded": "ඔබ අපේක්ෂිත ආයු කාලය ඉක්මවා ඇත. සෑම මොහොතක්ම අතිශයින් වටිනා ත්‍යාගයකි.",
+  "lifeExceeded": "ඔබ අපේක්ෂිත ආයු කාලය ඉක්මවා ඇත. සෑම මොහොතක්ම ධර්ම ප්‍රතිපත්තිය සඳහා ලැබුණු ත්‍යාගයකි.",
   "editDeathSettings": "උපන් දිනය සහ වයස සංස්කරණය",
   "maranasatiQuote": "ජීවිතය අනියතය, මරණය නියතය. අප්‍රමාදීව කුසල් දහම්හි යෙදෙන්න.",
   "compass": "මාලිමාව",
@@ -211,7 +211,7 @@
   "place_kushinagar": "කුසිනාරා",
   "place_mahaCetiya": "රුවන්වැලිසැය",
   "place_toothRelicPagoda": "දළදා මාළිගාව",
-  "compassHelpContent": "1. පූජනීය බෞද්ධ සිද්ධස්ථානය වෙත නිවැරදි දිශාව සහ දුර ගණනය කිරීම සඳහා ඔබගේ ස්ථාන දත්ත (Location) ලබා ගැනීමට අවසර දෙන්න.\n\n2. ඔබ වන්දනාමාන කිරීමට බලාපොරොත්තු වන බෞද්ධ සිද්ධස්ථානය තෝරන්න (නැතහොත් ඔබගේම ස්ථානයක් ඇතුළත් කරන්න).\n\n3. ඔබගේ දුරකථනය භූමියට සමාන්තරව තබාගෙන, දර්ශකය කෙළින්ම ස්ථානයට යොමු වන තුරු සෙමින් හැරෙන්න.\n\n4. ඔබ නියමිත ඉලක්කයට මුහුණ ලා සිටින විට, මාලිමාව රන්වန် පැහැයෙන් බැබළෙන අතර ඔබ ඉලක්කයට මුහුණ දී ඇති බව තහවුරු කරයි.\n\n5. ගුවන් ගමන් මාර්ග සිතියම බැලීමට ඉහළ තීරුවේ ඇති ගෝලීය නිරූපකය ස්පර්ශ කරන්න. නැවත මාලිමාවට පැමිණීමට සිතියම මත ඇති කුඩා මාලිමාව ස්පර්ශ කරන්න.\n\n6. ඔබ නිවැරදි ඉලක්කයේ සිටින විට දැනුම් දීම සඳහා කම්පන (Vibration) මාදිලිය සක්‍රීය කළ හැක.\n\n7. පූජනීය ජය ශ්‍රී මහා බෝධීන් වහන්සේ හෝ සිද්ධස්ථානය දෙසට මුහුණලා වන්දනාමාන කිරීම හෝ භාවනා කිරීම සිදු කරන්න.",
+  "compassHelpContent": "1. පූජනීය බෞද්ධ සිද්ධස්ථානය වෙත නිවැරදි දිශාව සහ දුර ගණනය කිරීම සඳහා ඔබගේ ස්ථාන දත්ත (Location) ලබා ගැනීමට අවසර දෙන්න.\n\n2. ඔබ වන්දනාමාන කිරීමට බලාපොරොත්තු වන බෞද්ධ සිද්ධස්ථානය තෝරන්න (නැතහොත් ඔබගේම ස්ථානයක් ඇතුළත් කරන්න).\n\n3. ඔබගේ දුරකථනය භූමියට සමාන්තරව තබාගෙන, දර්ශකය කෙළින්ම ස්ථානයට යොමු වන තුරු සෙමින් හැරෙන්න.\n\n4. ඔබ නියමිත ඉලක්කයට මුහුණ ලා සිටින විට, මාලිමාව රන්වන් පැහැයෙන් බැබළෙන අතර ඔබ ඉලක්කයට මුහුණ දී ඇති බව තහවුරු කරයි.\n\n5. ගුවන් ගමන් මාර්ග සිතියම බැලීමට ඉහළ තීරුවේ ඇති ගෝලීය නිරූපකය ස්පර්ශ කරන්න. නැවත මාලිමාවට පැමිණීමට සිතියම මත ඇති කුඩා මාලිමාව ස්පර්ශ කරන්න.\n\n6. ඔබ නිවැරදි ඉලක්කයේ සිටින විට දැනුම් දීම සඳහා කම්පන (Vibration) මාදිලිය සක්‍රීය කළ හැක.\n\n7. පූජනීය ජය ශ්‍රී මහා බෝධීන් වහන්සේ හෝ සිද්ධස්ථානය දෙසට මුහුණලා වන්දනාමාන කිරීම හෝ භාවනා කිරීම සිදු කරන්න.",
   "locationPermissionRationaleTitle": "ස්ථානයට අවසරද?",
   "locationPermissionRationaleMessage": "ඔබ තෝරාගත් ස්ථානය වෙත දිශාව පෙන්වීමට බුද්ධ දිශානතියට ඔබේ ස්ථානය අවශ්‍ය වේ.",
   "locationPermissionRationaleNotNow": "දැන් නෙවෙයි",
@@ -235,10 +235,10 @@
   "timerModeTimed": "නියමිත",
   "timerModeEndAt": "අවසන්",
   "timerModeOpen": "විවෘත",
-  "tapToChangeDuration": "කාලය වෙනස් කිරීමට තට්ටු කරන්න",
+  "tapToChangeDuration": "කාලය සහ පෙරසැකසුම් වෙනස් කිරීමට තට්ටු කරන්න",
   "tapToChangeEndTime": "අවසන් වේලාව වෙනස් කිරීමට තට්ටු කරන්න",
   "openUnlimitedMode": "විවෘත / අසීමිත මාදිලිය",
-  "openUnlimitedModeDesc": "ඔබ අවසන් කරන තෙක් කාලය ගණනය වේ. වරින් වර සීනු නාද වේ.",
+  "openUnlimitedModeDesc": "ඔබ අවසන් කරන තෙක් කාලය නොකඩවා ඉහළට ගණන් කෙරේ. පහත සකසා ඇති පරිදි අන්තරාල සීනු නාද වේ.",
   "bellsAndSettings": "සීනු සහ සැකසුම්",
   "bellVolume": "සීනුවේ හඬ පරිමා ප්‍රතිශතය",
   "phoneVolume": "දුරකථන හඬ පරිමාව",
@@ -253,7 +253,7 @@
   "autoCloseTimer": "ටයිමර් තිරය ස්වයංක්‍රීයව වසන්න",
   "autoCloseTimerDesc": "අවසාන සීනුව නාද වී අවසන් වූ පසු ටයිමර් තිරය ස්වයංක්‍රීයව වසන්න",
   "timerRingStyle": "ටයිමර් වළල්ලේ විලාසය",
-  "timerRingStyleDesc": "අඩු කිරීමේ විලාසය කාලය ගතවන විට වෘත්තය ඉවත් කරයි. එකතු කිරීමේ විලාසය එය පුරවයි.",
+  "timerRingStyleDesc": "කාලය ගත වන විට \"අඩු කිරීම\" විලාසය පිරුණු වෘත්තය ක්‍රමයෙන් ඉවත් කරයි. \"එකතු කිරීම\" විලාසය එය ක්‍රමයෙන් පුරවයි.",
   "styleSubtractive": "අඩු කිරීම (පෙරනිමි)",
   "styleAdditive": "එකතු කිරීම",
   "endSession": "භාවනාව අවසන් කරන්න",
@@ -266,7 +266,7 @@
   "timerRemaining": "ඉතිරි කාලය",
   "timerDone": "නිමයි",
   "aboutTimer": "ටයිමරය පිළිබඳව",
-  "timerInfoDialogContent": "ඔබේ භාවනා පුහුණුව සඳහා නිහඬ ටයිමරයක්.\n\n• නියමිත කාලය: ස්ථාවර කාලයක් භාවනා කරන්න.\n• අවසන් වන වේලාව: දවසේ නිශ්චිත වේලාවක් දක්වා භාවනා කරන්න.\n• විවෘත: කැමති කාලයක් භාවනා කරන්න.\n\nනවත්වන්න හෝ නැවත අරඹන්න ටයිමර් වෘත්තය ස්පර්ශ කරන්න.\n\nFreesound.org, Pixabay.com සහ Suno.com වෙතින් ශබ්ද ලබාගෙන ඇත.",
+  "timerInfoDialogContent": "ඔබේ භාවනා පුහුණුව සඳහාම වෙන් වූ, නිහඬ ටයිමරයක්.\n\n• නියමිත: නියමිත කාලයක් භාවනා කරන්න.\n• අවසන්: දවසේ නිශ්චිත වේලාවක් දක්වා භාවනා කරන්න.\n• විවෘත: අවශ්‍ය නම් අන්තරාල සීනු සමඟ නිදහසේ භාවනා කරන්න.\n\nසැසියක් අතරතුර නවතා තැබීමට හෝ නැවත ආරම්භ කිරීමට ටයිමර් වෘත්තය මත තට්ටු කරන්න.\n\nශබ්ද Freesound.org, Pixabay.com සහ Suno.com හි අනුග්‍රහයෙනි.",
   "tapScreenToResume": "නැවත ආරම්භ කිරීමට තිරය ස්පර්ශ කරන්න",
   "tapScreenToPause": "තාවකාලිකව නැවැත්වීමට තිරය ස්පර්ශ කරන්න",
   "setDuration": "කාලය සකසන්න",
@@ -305,7 +305,7 @@
   "sunAtHorizon": "සූර්යයා ක්ෂිතිජයේ (<4°)",
   "belowHorizon": "ක්ෂිතිජයට පහළින්",
   "dailyMinShadow": "දෛනික අවම සෙවණැල්ල",
-  "timesPin": "× කිණිහිර ගුණය",
+  "timesPin": "× කණුවේ දිග",
   "realTimeClockActivated": "තත්‍ය කාලීන ඔරලෝසුව: සක්‍රීයයි",
   "realTimeClockInactive": "තත්‍ය කාලීන ඔරලෝසුව: අක්‍රීයයි",
   "scrubTime": "තෝරාගත් වේලාව: {time}",
@@ -342,7 +342,289 @@
   "clear": "මකන්න",
   "setLocale": "භාෂාව තෝරන්න",
   "noData": "දත්ත නැත",
-  "timerOvertime": "Overtime",
-  "finishSession": "Finish Session",
-  "screenOffWarningOver3Hours": "පැය 3කට වැඩි කාලසීමාවන් සඳහා තිරය ක්‍රියාත්මකව තබා ගන්න. තිරය ක්‍රියා විරහිත වුවහොත් පද්ධතිය මඟින් ටයිමරය නැවැත්විය හැක."
+  "timerOvertime": "අමතර කාලය",
+  "finishSession": "සැසිය අවසන් කරන්න",
+  "screenOffWarningOver3Hours": "පැය 3කට වැඩි කාලසීමාවන් සඳහා තිරය ක්‍රියාත්මකව තබා ගන්න. තිරය ක්‍රියා විරහිත වුවහොත් පද්ධතිය මඟින් ටයිමරය නැවැත්විය හැක.",
+  "vitaminD": "විටමින් D",
+  "vitDTitle": "විටමින් D හිරු කාලමානය",
+  "vitDNoLocation": "නිවැරදි හිරු කෝණය සහ විටමින් D ඇස්තමේන්තු සඳහා ඔබගේ ස්ථානය (GPS ටැබය) සකසන්න.",
+  "vitDStatusGood": "විටමින් D සඳහා හොඳ හිරු එළිය — හිරු 45° ට ඉහළින්",
+  "vitDStatusLow": "හිරු 45° ට පහළින් — විටමින් D අඩුයි",
+  "vitDStatusNone": "හිරු ඉතා පහළින් — විටමින් D නොමැති තරම්",
+  "vitDStatusNight": "හිරු බැස ඇත — විටමින් D නැත",
+  "vitDSunAngle": "හිරු කෝණය",
+  "vitDUvIndex": "UV දර්ශකය (ඇස්තමේන්තු)",
+  "vitDRate": "විටමින් D අනුපාතය",
+  "vitDIuPerMin": "≈ {iu} IU/මිනි.",
+  "@vitDIuPerMin": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDEfficiency": "විටමින් D කාර්යක්ෂමතාව",
+  "vitDBurnTime": "හිරුපිළිස්සීම වන්නේ",
+  "vitDMinutes": "මිනිත්තු {min}",
+  "@vitDMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowToday": "අද විටමින් D සඳහා හොඳම කාලය (45° ට ඉහළ): {start} – {end}",
+  "@vitDWindowToday": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWindowNever": "අද හිරු 45° දක්වා නොනඟී (උපරිමය {deg}°, {time} ට). විටමින් D අඩු වනු ඇත.",
+  "@vitDWindowNever": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDShadowRule": "සෙවණැලි රීතිය: ඔබේ සෙවණැල්ල ඔබේ උසට වඩා කෙටි නම්, හිරු 45° ට ඉහළින් ඇත.",
+  "vitDApproxIu": "≈ {iu} IU",
+  "@vitDApproxIu": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDThisSession": "මෙම වාරයේ ඇස්තමේන්තුව",
+  "vitDStart": "හිරු වාරය අරඹන්න",
+  "vitDStop": "නවතා සුරකින්න",
+  "vitDGoalReached": "දෛනික අවශ්‍යතාව සපිරිණි. සෙවණේ විවේක ගන්න.",
+  "vitDEnoughSun": "අදට ප්‍රමාණවත් හිරු එළිය — මෙතැන් සිට පිළිස්සීමේ අවදානම වැඩිවේ.",
+  "vitDToday": "අද",
+  "vitDOfDailyNeed": "ඇස්තමේන්තුගත දෛනික අවශ්‍යතාව වන {iu} IU න්",
+  "@vitDOfDailyNeed": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDBurnDose": "අද හිරුපිළිස්සීමේ මාත්‍රාව",
+  "vitDBurnHint": "50% ට අඩුවෙන් තබා ගන්න — කෙටි වාර ප්‍රමාණවත්ය.",
+  "vitDBurnWarnMid": "පිළිස්සීමේ මාත්‍රාවෙන් අඩකට වඩා. සිවුරෙන් වසා ගැනීම හෝ සෙවණට යාම සලකා බලන්න.",
+  "vitDBurnWarnHigh": "හිරුපිළිස්සීමට ආසන්නයි. කරුණාකර සිවුරෙන් වසාගෙන සෙවණට යන්න.",
+  "vitDTodaySessions": "අද වාර",
+  "vitDNoSessions": "අද තවම වාර නැත. හිරු එළියට යන විට අරඹන්න ඔබන්න.",
+  "vitDDeleteSession": "වාරය මකන්න",
+  "vitDDeleteConfirm": "මෙම වාරය අද එකතුවෙන් ඉවත් කරන්නද?",
+  "vitDSettings": "හිරු සැකසුම්",
+  "vitDSkinTitle": "සමේ වර්ණය",
+  "vitDSkinSubtitle": "පිළිස්සීමේ කාලයට බලපාන ප්‍රධානතම සාධකය.",
+  "vitDSkinType": "වර්ගය {n}",
+  "@vitDSkinType": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDSkin1": "ඉතා සුදු",
+  "vitDSkin2": "සුදු",
+  "vitDSkin3": "මධ්‍යම",
+  "vitDSkin4": "තලෙළා / ලා දුඹුරු",
+  "vitDSkin5": "දුඹුරු",
+  "vitDSkin6": "තද දුඹුරු",
+  "vitDCoverageTitle": "සම නිරාවරණය",
+  "vitDCoverageSubtitle": "හිරු එළියට නිරාවරණය වන සම ප්‍රමාණය. එක් එක් වාරය සඳහා වෙනස් කරන්න.",
+  "vitDCoverFullRobe": "උරහිස් දෙකම වසා",
+  "vitDCoverFullRobeDesc": "හිස, අත්, පාද",
+  "vitDCoverOneShoulder": "එක් උරහිසක් විවෘත",
+  "vitDCoverOneShoulderDesc": "සමඟ දකුණු අත සහ උරහිස",
+  "vitDCoverUpperBare": "උඩුකය විවෘත",
+  "vitDCoverUpperBareDesc": "අඳනය පමණි",
+  "vitDCoverBathing": "දිය සළුව",
+  "vitDCoverBathingDesc": "ඉණේ සිට දණහිස දක්වා",
+  "vitDSkyTitle": "අහස",
+  "vitDSkyClear": "පැහැදිලි",
+  "vitDSkyPartly": "අර්ධ වලාකුළු",
+  "vitDSkyMostly": "බොහෝ දුරට වලාකුළු",
+  "vitDSkyOvercast": "වලාකුළින් වැසී",
+  "vitDWeightTitle": "ශරීර බර",
+  "vitDWeightSubtitle": "සම් ප්‍රදේශය සහ දෛනික අවශ්‍යතාව ගණනයට භාවිතා වේ.",
+  "vitDGoalFromWeight": "ඇස්තමේන්තුගත දෛනික අවශ්‍යතාව: {iu} IU (කිලෝග්‍රෑමයකට 20 IU පමණ, 600–4,000 IU).",
+  "@vitDGoalFromWeight": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDGuideTitle": "හිරු එළිය සහ විටමින් D මාර්ගෝපදේශය",
+  "vitDGuideBenefitsTitle": "ප්‍රයෝජන",
+  "vitDGuideBenefits": "විටමින් D ශක්තිමත් අස්ථි හා දත්, මාංශ පේශි ශක්තිය සහ ප්‍රතිශක්තිකරණ පද්ධතියට උපකාරී වේ. ගෘහස්ථව වැඩ සිටින, සිවුරෙන් ශරීරය වසාගෙන සිටින, හෝ ඝන සෙවණ ඇති ආරාමවල වැඩ වසන පැවිද්දන් අතර විටමින් D ඌනතාව බහුලය. නිතිපතා ස්වල්ප හිරු එළියක් එය ලබා ගැනීමට ස්වාභාවික සහ නොමිලේ ලැබෙන මගකි.",
+  "vitDGuideNoonTitle": "කෙටි මධ්‍යාහ්න වාරය සහ දිගු සවස් වාරය",
+  "vitDGuideNoon": "සවස් වරුවේ දිගු වාරයකට වඩා මධ්‍යාහ්නය ආසන්නයේ කෙටි වාරයක් වඩා හොඳය. හිරු ඉහළින් (45° ට ඉහළ) ඇති විට ආලෝකයේ විටමින් D නිපදවන කිරණ වන UVB වැඩිපුර අඩංගු වේ; එබැවින් හිරුපිළිස්සීමේ අවදානමේ සෑම ඒකකයකටම වැඩිම විටමින් D ප්‍රමාණයක් නිපදවේ. ප.ව. 3 ට හිරු පහළින් ඇත: UVB, UVA ට වඩා බොහෝ වේගයෙන් අඩු වේ. ඔබ සෙමින් පිළිස්සුණත්, එම විටමින් D ප්‍රමාණය ලබා ගැනීමට බොහෝ වැඩි කාලයක් සිටිය යුතු අතර, සම වයසට යාමට සහ සමේ පිළිකා අවදානමට දායක වන UVA වැඩිපුර ලැබේ. එබැවින් ප.ව. 3 ට දිගු වාරයක් වඩා ආරක්ෂිත නොවේ — එය අඩු කාර්යක්ෂමය. උදාහරණය: මධ්‍යාහ්නයේ මිනිත්තු 10–15 ක් ප.ව. 3 ට පැයක් හෝ ඊට වැඩි කාලයකට සමාන විය හැක.",
+  "vitDGuideShortTitle": "කෙටි, නිතිපතා වාර",
+  "vitDGuideShort": "සමේ විටමින් D නිෂ්පාදනය සීමාවකට පැමිණ ස්ථාවර වේ: පිළිස්සීමේ මාත්‍රාවෙන් අඩක සිට එකක් පමණ පසු, වැඩි කාලයක් සිටීමෙන් විටමින් D ස්වල්පයක් පමණක් එකතු වන නමුත් සමට හානිය දිගටම එකතු වේ. එක් දිගු වාරයකට වඩා සතිය පුරා කෙටි වාර කිහිපයක් වඩා හොඳය. සම රෝස පැහැ ගැන්වීමට බොහෝ කලින් නැවැත්වීම ප්‍රමාණවත්ය. විටමින් D ශරීරයේ ගබඩා වන බැවින්, දිනක් මඟහැරීම ගැටලුවක් නොවේ.",
+  "vitDGuideDangersTitle": "අනතුරු",
+  "vitDGuideDangers": "අධික හිරු එළිය හිරුපිළිස්සීම, ඇස්වලට හානි, තාප වෙහෙස සහ විජලනය, සම වයසට යාම සහ සමේ පිළිකා ඇති කරයි. සුදු සම ඉක්මනින් පිළිස්සේ. වීදුරු ජනේල UVB අවහිර කරන බැවින්, වීදුරුවක් පිටුපස හිඳීමෙන් විටමින් D නොනිපදවේ. ජලය, වැලි සහ ලා පැහැ ගල් UV පරාවර්තනය කර නිරාවරණය වැඩි කරයි. සමහර ඖෂධ සම ආලෝකයට සංවේදී කරයි. පැන් වළඳන්න, ඇස් ආරක්ෂා කර ගන්න — කිසිවිටෙක හිරු දෙස නොබලන්න.",
+  "vitDGuideMonksTitle": "සංඝයා වහන්සේලා සඳහා උපදෙස්",
+  "vitDGuideMonks": "මධ්‍යාහ්නය ආසන්නයේ කෙටි කාලයක් ආරාමයේ වැඩ හිඳින විට හෝ සක්මන් කරන විට දකුණු උරහිස හෝ අත් විවෘත කිරීම, නිවර්තන කලාපයේ තද සම් වර්ග සඳහා සාමාන්‍යයෙන් ප්‍රමාණවත්ය. මුඩු කළ හිසද නිරාවරණය වන බැවින්, දිගු පිණ්ඩපාතයේදී හිස් කබල ආරක්ෂා කර ගන්න. තද සමට එම විටමින් D ප්‍රමාණය සඳහා වැඩි කාලයක් අවශ්‍ය වුවද, එය පහසුවෙන් නොපිළිස්සේ. හිරු 45° ට පහළින් පවතින ශීත දේශගුණවල හෝ කාලවලදී ශරීරයට වැඩි විටමින් D නිපදවිය නොහැක — ආහාර හෝ අතිරේක ගැන වෛද්‍යවරයකුගෙන් විමසන්න.",
+  "vitDGuideMethodTitle": "මෙය ඇස්තමේන්තු කරන ආකාරය",
+  "vitDGuideMethod": "හිරු කෝණය ඔබේ GPS ස්ථානය සහ වේලාව මඟින් ලැබේ. UV දර්ශකය පැහැදිලි අහසක් සඳහා ඇස්තමේන්තු කර (UVI ≈ 12.5 × sin(angle)^2.42) වලාකුළු සඳහා අඩු කෙරේ. පිළිස්සීමේ මාත්‍රාව (MED) සමේ වර්ගය මත රඳා පවතී. මුළු ශරීරයටම එක් පිළිස්සීමේ මාත්‍රාවක් ලැබුණු විට 10,000 IU පමණ නිපදවේ; මෙය විවෘත සම් ප්‍රදේශය සහ ඔබේ ශරීර ප්‍රමාණය (බර අනුව) අනුව පරිමාණය කෙරේ. හිරු 45° ට පහළින් ඇති විට විටමින් D කාර්යක්ෂමතාව අඩු වන අතර 15° ට පහළින් ශුන්‍ය වේ. දිනයේ මාත්‍රාව එක් පිළිස්සීමේ මාත්‍රාවකට ළඟා වන විට නිෂ්පාදනය නවතී. සැබෑ අගයන් ඕසෝන්, උන්නතාංශය, වායු දූෂණය, වයස සහ සෞඛ්‍යය අනුව වෙනස් වේ — මෙම අංක දළ මාර්ගෝපදේශ ලෙස සලකන්න.",
+  "vitDDisclaimer": "වෛද්‍ය වියාචනය: මෙම ගණකය දළ අධ්‍යාපනික ඇස්තමේන්තු පමණක් ලබා දෙයි. මෙය වෛද්‍ය උපදෙසක් නොවන අතර ඔබේ විටමින් D මට්ටම මැනිය නොහැක. හිරු එළියට නිරාවරණය වීම හිරුපිළිස්සීම සහ සමේ පිළිකා ඇතුළු අවදානම් දරයි. විටමින් D පරීක්ෂා කිරීම, අතිරේක, හෝ සම පිළිබඳ ගැටලු ගැන සුදුසුකම් ලත් වෛද්‍යවරයකුගෙන් විමසන්න, විශේෂයෙන් ඔබට සුදු සමක්, සමේ පිළිකා ඉතිහාසයක් ඇත්නම්, හෝ ආලෝක සංවේදීතාව ඇති කරන ඖෂධ ගන්නේ නම්.",
+  "vitDTabMonk": "භික්ෂුව",
+  "vitDTabLay": "පිරිමි",
+  "vitDCoverFaceHands": "මුහුණ සහ අත්",
+  "vitDCoverFaceHandsDesc": "දිග අත් කමිසය, දිග කලිසම",
+  "vitDCoverShortSleeves": "කෙටි අත්",
+  "vitDCoverShortSleevesDesc": "ටී-ෂර්ට්, දිග කලිසම",
+  "vitDCoverShorts": "කොට කලිසම සහ ටී-ෂර්ට්",
+  "vitDCoverShortsDesc": "අත් සහ යටි කකුල්",
+  "vitDCoverSwimwear": "පිහිනුම් ඇඳුම",
+  "vitDCoverSwimwearDesc": "පිහිනුම් කොට කලිසම පමණි",
+  "vitDDailyTarget": "දෛනික ඉලක්කය",
+  "vitDRemaining": "තව {iu} IU අවශ්‍යයි",
+  "@vitDRemaining": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTime": "ඉලක්ක කාලය",
+  "vitDTargetTimeLeft": "ඉතිරි ඉලක්ක කාලය",
+  "vitDTargetTimeFull": "මුළු ඉලක්කයටම, දැන් සිට",
+  "vitDTargetTimeRest": "අද ඉලක්කය සම්පූර්ණ කිරීමට",
+  "vitDTargetUnreachable": "මෙම තත්ත්වයන් යටතේ අද ළඟා විය නොහැක",
+  "vitDTargetOverBurn": "ඔබේ පිළිස්සීමේ කාලයෙන් භාගයකට (මිනිත්තු {min}) වඩා වැඩිය. තවත් සම නිරාවරණය කරන්න, වැතිර සිටින්න, නැතහොත් දින කිහිපයකට බෙදන්න.",
+  "@vitDTargetOverBurn": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDTargetTitle": "දෛනික ඉලක්කය",
+  "vitDTargetAuto": "බර අනුව ස්වයංක්‍රීය ඉලක්කය",
+  "vitDPostureTitle": "ඉරියව්ව",
+  "vitDPostureSubtitle": "මධ්‍යාහ්නයේ වැතිර සිටීමෙන් වැඩි සමක් හිරුට යොමු වේ.",
+  "vitDPostureStanding": "සිටගෙන",
+  "vitDPostureWalking": "ඇවිදිමින්",
+  "vitDPostureSitting": "වාඩි වී",
+  "vitDPostureLying": "වැතිර",
+  "vitDPostureFactor": "සිටගෙන සිටීමට සාපේක්ෂව දැන් විටමින් D ×{f}",
+  "@vitDPostureFactor": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDHairTitle": "කෙස් වර්ධනය",
+  "vitDHairSubtitle": "හිස මුඩු කළ දා සිට දින. හිස් කබලද විටමින් D නිපදවයි.",
+  "vitDHairToday": "අද මුඩු කළා • හිස් කබල සම්පූර්ණයෙන් නිරාවරණය",
+  "vitDHairValue": "මුඩු කර දින {days} • හිස් කබල {pct}% නිරාවරණය",
+  "@vitDHairValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "vitDGuideMethod2": "ඉරියව්ව සහ හිස් කබල: මෙම ඇස්තමේන්තුව කෙළින් සිටින පුද්ගලයෙකු සඳහා සකසා ඇත. වැතිර සිටීමෙන් නිරාවරණය වූ පැත්ත අහසට යොමු වන බැවින් මධ්‍යාහ්නයේ විටමින් D 1.6× පමණ දක්වා වැඩි වේ, නමුත් හිරු පහතින් ඇති විට සිටගෙන සිටීමට වඩා අඩුය. පිළිස්සීමේ කාලය වෙනස් නොවේ, මන්ද වඩාත්ම නිරාවරණය වූ සම සැමවිටම අහසට මුහුණලා ඇත. භික්ෂූන් සඳහා මුඩු කළ හිස් කබල (ශරීරයෙන් 3.5% පමණ) ගණන් ගනු ලැබේ, කෙස් වැඩීම සති දෙකක් තුළ එය ක්‍රමයෙන් සෙවණ කරයි. ඉලක්ක කාලය දැන් සිට හිරුගේ ගමන් මඟ අනුගමනය කරන අතර අද පෙර වාරද ඇතුළත් වේ.",
+  "vitDTaperNote": "ඔබේ සමට ලැබෙන හිරු මාත්‍රාව වැඩි වන විට විටමින් D නිෂ්පාදනය මන්දගාමී වේ, එබැවින් සෑම අමතර මිනිත්තුවක්ම ටිකක් අඩුවෙන් ලබා දෙයි.",
+  "vitDGuideBestTitle": "හොඳම ක්‍රමය: වැඩි සමක්, කෙටි කාලයක්",
+  "vitDGuideBest": "පිළිස්සීම රඳා පවතින්නේ සමේ එක් එක් කොටස හිරු එළියේ කොපමණ කාලයක් තිබේද යන්න මතය; විටමින් D රඳා පවතින්නේ කොපමණ සමක් නිරාවරණය වී ඇත්ද යන්න මතය. එබැවින් මධ්‍යාහ්නය ආසන්නයේ කෙටි කාලයක් හැකි තරම් සම නිරාවරණය කරන්න. වැතිර සිටීමෙන් වැඩි සමක් ඉහළ හිරුට යොමු වේ. කාලයෙන් භාගයක් උඩුබැලිව සහ භාගයක් යටිබැලිව ගත කරන්න: එක් එක් පැත්තට ලැබෙන්නේ පිළිස්සීමේ මාත්‍රාවෙන් භාගයක් පමණක් වන අතර විටමින් D ප්‍රමාණය එලෙසම පවතී. මුහුණ සහ හිස රෙද්දකින් වසා, ඇස් වසා ගන්න, හිරු එළියේ කිසිවිටෙක නින්දට නොයන්න. නිවර්තන මධ්‍යාහ්නයේ සුදු සමකට මෙලෙස මිනිත්තු 3–5ක් බොහෝ විට ප්‍රමාණවත්ය; තද සමකට මිනිත්තු 5–10ක් අවශ්‍ය විය හැක.",
+  "vitDGuideBurnTitle": "හිරු පිළිස්සීම ගැන",
+  "vitDGuideBurn": "හිරු පිළිස්සීම යනු සමේ සෛලවලට UVB මඟින් වන හානියට සමේ ප්‍රතිචාරයයි. රතු පැහැය පැය 2–6කට පසු පෙනෙන අතර පැය 12–24කට පසු උපරිම වේ, එබැවින් හිරු එළියේ සිටින විට එය දැනිය නොහැක. එකම දිනයේ වාර එකතු වේ: මිනිත්තු 5 බැගින් වාර හතරක් මිනිත්තු 20ක එක් වාරයක් තරම්ම පුළුස්සයි, මන්ද සම පැය ගණනාවක් පුරා සෙමින් සුව වේ. මෙම යෙදුමේ මීටරය අද සියලු වාර එකතු කර මධ්‍යම රාත්‍රියේ නැවත සකසයි. පිළිස්සීමේ මාත්‍රාවෙන් භාගයට (50%) වඩා අඩුවෙන් සිටීමෙන් රෝස පැහැය වළක්වා ගත හැක. පිළිස්සීමේ අවදානම බොහෝ දුරට දිනපතා නැවත සකස් වේ, නමුත් සම වයසට යාම සහ සමේ පිළිකා අවදානම ජීවිත කාලය පුරා එකතු වේ, එබැවින් දිගු වාරවලට වඩා කෙටි නිතිපතා වාර හොඳය.",
+  "vitDTabLayFemale": "ගැහැණු",
+  "vitDCoverSwimwearFemaleDesc": "පිහිනුම් උඩු කොටස සහ කොට කලිසම",
+  "vitDCoverAngsa": "අංසය (උරහිස් රෙද්ද)",
+  "vitDCoverAngsaDesc": "දකුණු අත, වම් ඉදිරි බාහුව, දකුණු පපුව විවෘත",
+  "vitDSessionRunning": "හිරු එළියේ",
+  "vitDSessionIdle": "සූදානම්",
+  "vitDBurnInfoTitle": "හිරු පිළිස්සීමේ මාත්‍රාව ගැන",
+  "vitDBurnInfo": "හිරු පිළිස්සීමේ මාත්‍රාව එකතු වේ: එය අද සියලු වාර එකතු කරයි. මිනිත්තු 5 බැගින් වාර හතරක් මිනිත්තු 20ක එක් වාරයකට සමාන වේ, මන්ද සම පැය ගණනාවක් පුරා සෙමින් සුව වේ. එය මධ්‍යම රාත්‍රියේ නැවත සකස් වේ.\n\n100% යනු පැය කිහිපයකට පසු ඔබේ සම රෝස පැහැ වීමට ඉඩ ඇති බවයි. 50%ට වඩා අඩුවෙන් සිටීමෙන් මෙය වළක්වා ගත හැක.\n\nවිටමින් D සඳහා හොඳම ක්‍රමය අඩු කාලයකට වැඩි සමක් නිරාවරණය කිරීමයි. මධ්‍යාහ්නය ආසන්නයේ හැකි තරම් සම නිරාවරණය කර වාරය කෙටි කරන්න.\n\nවැතිර සිටින්න: කාලයෙන් භාගයක් උඩුබැලිව, මුහුණ සහ හිස රෙද්දකින් වසා, සහ භාගයක් යටිබැලිව ගත කරන්න. එක් එක් පැත්තට ලැබෙන්නේ පිළිස්සීමේ මාත්‍රාවෙන් භාගයක් පමණක් වන අතර විටමින් D ප්‍රමාණය එලෙසම පවතී.",
+  "vitDStartTooEarly": "තවම කලින් ({time})",
+  "@vitDStartTooEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDStartTooLate": "ප්‍රමාදයි — හිරු 45°ට පහළින්",
+  "vitDStartNo45": "අද හිරු 45° නොවේ",
+  "vitDTodayInfoTitle": "අද ඇස්තමේන්තුව ගැන",
+  "vitDTodayInfo": "අද මුළු එකතුව අද සියලු වාරවලින් (දැනට ක්‍රියාත්මක වාරයද ඇතුළුව) ඇස්තමේන්තු කළ විටමින් D එකතු කරයි. එය මධ්‍යම රාත්‍රියේ නැවත සකස් වේ.\n\nප්‍රතිශතය එය ඔබේ දෛනික ඉලක්කය වන {iu} IU සමඟ සසඳයි. 100% ළඟා වීම දිනයට ප්‍රමාණවත්ය; වැඩි හිරු එළිය සුළු වශයෙන් එකතු කරන අතර පිළිස්සීමේ මාත්‍රාව වැඩි කරයි.\n\nමේවා අතිරේකවලට සමාන ඒකකවලින් දළ ඇස්තමේන්තු වේ: හිරුගෙන් IU 1,000ක් පමණ රුධිර මට්ටම්වලට IU 1,000 පෙත්තක් තරම්ම බලපායි. සැබෑ ප්‍රමාණ මීදුම, ඕසෝන්, වයස සහ හිරුට යොමු වූ සම ප්‍රමාණය අනුව වෙනස් වේ.\n\nනිල උපදෙස දිනකට IU 600 කි (වයස 70ට වැඩි අයට IU 800). මෙහි ස්වයංක්‍රීය ඉලක්කය ශරීර බර කිලෝග්‍රෑමයකට IU 20ක් පමණ භාවිත කරයි; ඔබට හිරු සැකසුම්වල ඔබේම ඉලක්කයක් සැකසිය හැක.\n\nවිටමින් D සති ගණනාවක් ශරීරයේ ගබඩා වන බැවින් ඕනෑම එක් දිනකට වඩා සතියේ මුළු එකතුව වැදගත් වේ.",
+  "@vitDTodayInfo": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeek": "මෙම සතිය",
+  "vitDWeekAvg": "සාමාන්‍යය ≈ දිනකට {iu} IU",
+  "@vitDWeekAvg": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekBehind": "{iu} IU අඩුයි",
+  "@vitDWeekBehind": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekAhead": "{iu} IU ඉදිරියෙන්",
+  "@vitDWeekAhead": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDWeekInfoTitle": "සතියේ එකතුව ගැන",
+  "vitDWeekInfo": "විටමින් D සති ගණනාවක් ශරීරයේ ගබඩා වන බැවින් හිරු පායන දිනයකට වලාකුළු සහිත දිනයක් ආවරණය කළ හැක. මෙම කාඩ්පත පසුගිය දින 7 (මෑතකදී ආරම්භ කළේ නම් අඩුවෙන්) එකතු කර ඔබේ දෛනික ඉලක්කයේ දින 7ක් සමඟ සසඳයි.\n\nඑක් එක් දිනයක් උපරිම දින 3ක වටිනාකමක් ලෙස ගණන් ගනී, එබැවින් එක් විශාල වාරයකට මුළු සතියම ආවරණය කළ නොහැක.\n\nඅඩුව පිරවීමට කිසිවිටෙක වැඩි වේලාවක් නොසිටින්න. පිළිස්සීමේ සීමාව සැමවිටම දිනකටය. මඟ හැරුණු දින පිරවීමට, ඊළඟ හිරු පායන දිනයේ වැඩි සමක් නිරාවරණය කරන්න හෝ වැතිර සිටින්න.\n\nසතිය අඩු මට්ටමක පවතී නම්, විටමින් D බහුල ආහාර හෝ අතිරේකයක් සලකා බලන්න.",
+  "vitDCatchUpTitle": "සතිපතා පිරවීම",
+  "vitDCatchUpDesc": "අද ඉලක්කය මෙම සතියේ අඩුව පුරවයි (දින 3ක් දක්වා) හෝ ඔබ ඉදිරියෙන් සිටින විට අඩු වේ. පිරවීමට කිසිවිටෙක වැඩි වේලාවක් නොසිටින්න — වැඩි සමක් නිරාවරණය කරන්න.",
+  "vitDTodayTargetWeekly": "අද ඉලක්කය (සතිපතා)",
+  "vitDCoveredByWeek": "මෙම සතියෙන් ආවරණය වී ඇත",
+  "vitDOfTodayTarget": "අද ඉලක්කය වන {iu} IU න්",
+  "@vitDOfTodayTarget": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDCatchUpSpread": "ඉතිරිය ඊළඟ හිරු පායන දිනවලට බෙදී යයි.",
+  "vitDLowWeek": "මෙම සතියේ හිරු අඩුයි — විටමින් D බහුල ආහාර හෝ අතිරේකයක් සලකා බලන්න.",
+  "vitDTab": "D3",
+  "meditationTab": "භාවනා",
+  "pasteFromMaps": "Google Maps වෙතින් අලවන්න",
+  "readingLocation": "ස්ථානය කියවමින්...",
+  "clipboardEmpty": "ක්ලිප්බෝඩය හිස්ය",
+  "noCoordinatesFound": "වලංගු ඛණ්ඩාංක හෝ සිතියම් සබැඳියක් හමු නොවීය",
+  "locationLoaded": "ඛණ්ඩාංක ලබා ගන්නා ලදී!",
+  "uposathaEveShaving": "පොහොය පෙර දිනය (හිස මුඩු කරන දිනය) • හෙට පොහොය",
+  "moonSkyCompass3d": "ත්‍රිමාන සඳ අහස් මාලිමාව"
 }
