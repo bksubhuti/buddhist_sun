@@ -788,7 +788,7 @@ class _VitaminDPageState extends State<VitaminDPage>
                     ),
                   ),
                   title: Text(
-                    '${_time(context, s.start)} – ${_time(context, s.end)}  •  ${t.vitDMinutes((s.seconds / 60).ceil().toString())}',
+                    '${_time(context, s.start)} – ${_time(context, s.end)}  •  ${t.vitDMinutes(formatSessionDuration(s.seconds))}',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   subtitle: Row(

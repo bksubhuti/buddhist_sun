@@ -185,6 +185,14 @@ void main() {
       expect(left, closeTo(4, 0.5));
     });
 
+    test('session duration formats as m:ss', () {
+      expect(formatSessionDuration(300.4), '5:00');
+      expect(formatSessionDuration(299.6), '5:00');
+      expect(formatSessionDuration(330), '5:30');
+      expect(formatSessionDuration(45), '0:45');
+      expect(formatSessionDuration(3725), '62:05');
+    });
+
     test('production saturates at one burn dose', () {
       final r = computeVitDRate(
         elevationDeg: 80,
@@ -455,6 +463,23 @@ void main() {
       final c2 = make();
       expect(c2.weekTotal, 0);
       c2.dispose();
+    });
+
+    test('a 5-minute session records 5:00, not 6', () {
+      clock = DateTime(2026, 10, 2, 12, 0);
+      final c = make();
+      c.start();
+      // Ticks every second, then Stop pressed a fraction over 5:00.
+      for (int i = 0; i < 300; i++) {
+        clock = clock.add(const Duration(seconds: 1));
+        c.refresh();
+      }
+      clock = clock.add(const Duration(milliseconds: 400));
+      c.stop();
+      final s = c.todaySessions.single;
+      expect(s.seconds, closeTo(300.4, 0.01));
+      expect(formatSessionDuration(s.seconds), '5:00');
+      c.dispose();
     });
 
     test('no vitamin D when the sun is low', () {

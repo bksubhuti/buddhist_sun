@@ -339,3 +339,12 @@ VitDSunWindow findVitDSunWindow(DateTime day, {double? lat, double? lng}) {
   return VitDSunWindow(
       start: start, end: end, peakElevation: peak, peakTime: peakTime);
 }
+
+/// Session length as m:ss (e.g. 300.4 s → "5:00"), rounded to the nearest
+/// second so a session stopped at 5:00 never reads as 6 minutes.
+String formatSessionDuration(double seconds) {
+  final total = seconds.round();
+  final m = total ~/ 60;
+  final sec = (total % 60).toString().padLeft(2, '0');
+  return '$m:$sec';
+}
