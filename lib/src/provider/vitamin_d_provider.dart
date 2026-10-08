@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vibration/vibration.dart';
 
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/open_meteo_uv.dart';
 import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/vitamin_d_calc.dart';
 
@@ -54,9 +55,10 @@ class VitDSession {
         seconds: (j['seconds'] as num).toDouble(),
         iu: (j['iu'] as num).toDouble(),
         med: (j['med'] as num).toDouble(),
-        coverage: VitDCoverage.values[(j['coverage'] as int)
-            .clamp(0, VitDCoverage.values.length - 1)],
-        sky: VitDSky.values[(j['sky'] as int).clamp(0, VitDSky.values.length - 1)],
+        coverage: VitDCoverage.values[
+            (j['coverage'] as int).clamp(0, VitDCoverage.values.length - 1)],
+        sky: VitDSky
+            .values[(j['sky'] as int).clamp(0, VitDSky.values.length - 1)],
         skin: VitDSkinType.values[
             (j['skin'] as int).clamp(0, VitDSkinType.values.length - 1)],
         posture: VitDPosture.values[((j['posture'] as int?) ?? 0)
@@ -85,15 +87,15 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   final double Function(DateTime) elevationAt;
   final DateTime Function() now;
 
-  VitDSkinType _skin = VitDSkinType.values[Prefs.vitDSkinType
-      .clamp(0, VitDSkinType.values.length - 1)];
-  VitDCoverage _coverage = VitDCoverage.values[Prefs.vitDCoverage
-      .clamp(0, VitDCoverage.values.length - 1)];
+  VitDSkinType _skin = VitDSkinType
+      .values[Prefs.vitDSkinType.clamp(0, VitDSkinType.values.length - 1)];
+  VitDCoverage _coverage = VitDCoverage
+      .values[Prefs.vitDCoverage.clamp(0, VitDCoverage.values.length - 1)];
   VitDSky _sky =
       VitDSky.values[Prefs.vitDSky.clamp(0, VitDSky.values.length - 1)];
   double _weightKg = Prefs.vitDWeightKg;
-  VitDPosture _posture = VitDPosture.values[
-      Prefs.vitDPosture.clamp(0, VitDPosture.values.length - 1)];
+  VitDPosture _posture = VitDPosture
+      .values[Prefs.vitDPosture.clamp(0, VitDPosture.values.length - 1)];
   late DateTime _shaveDate;
   late DateTime _firstUse;
   late int _coverTab;
@@ -119,12 +121,20 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
 
   VitDRate? _rate;
 
+  // Online UV data (Open-Meteo), refreshed at most hourly.
+  UvForecast? _uv = UvForecast.load(Prefs.vitDUvData);
+  double _uvScale = 1.0;
+  bool _uvActive = false;
+  bool _uvLoading = false;
+  bool _uvError = false;
+  DateTime? _uvTried;
+  bool _disposed = false;
+
   VitaminDController({
     double Function(DateTime)? elevationAt,
     DateTime Function()? now,
     this.alerts = true,
-  })  : elevationAt =
-            elevationAt ?? ((t) => getSolarPositionAt(t).elevation),
+  })  : elevationAt = elevationAt ?? ((t) => getSolarPositionAt(t).elevation),
         now = now ?? DateTime.now {
     _loadSessions();
     _loadShaveDate();
@@ -143,6 +153,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
       _catchUp();
       _startTicker();
     }
+    if (_uv != null) _uvScale = _clearScaleFor(_uv!);
     _refreshRate();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -160,6 +171,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
       Duration(milliseconds: (_activeSeconds * 1000).round());
   VitDRate get rate => _rate ?? _computeRate(now());
   VitDPosture get posture => _posture;
+
   /// Days since the head was shaved, counting up automatically each day.
   int get hairDays {
     final today = _midnight(now());
@@ -178,6 +190,18 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   bool get isCustomTarget => _customTarget > 0;
 
   bool get catchUp => Prefs.vitDCatchUp;
+
+  /// Online UV data switched on in settings.
+  bool get uvOnline => Prefs.vitDUvOnline;
+
+  /// Online: switched on, connected, and the live rate uses today's
+  /// downloaded UV data. Otherwise the offline estimate is in use.
+  bool get uvFromOnline => _uvActive;
+  bool get uvLoading => _uvLoading;
+  bool get uvError => _uvError;
+
+  /// Today's clear-sky correction (ozone, altitude, haze) vs the estimate.
+  double get uvScale => _uvActive ? _uvScale : 1.0;
 
   // ── Rolling 7-day window ─────────────────────────────────────────────
   /// Days of the window that count (prorated for new users), 1..7.
@@ -351,9 +375,23 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
 
   void setHairDays(int v) {
     _tick();
-    _shaveDate = _midnight(now())
-        .subtract(Duration(days: v.clamp(0, vitDMaxHairDays)));
+    _shaveDate =
+        _midnight(now()).subtract(Duration(days: v.clamp(0, vitDMaxHairDays)));
     Prefs.vitDShaveDate = _shaveDate.millisecondsSinceEpoch;
+    _targetDirty = true;
+    _refreshRate();
+    notifyListeners();
+  }
+
+  void setUvOnline(bool v) {
+    _tick();
+    Prefs.vitDUvOnline = v;
+    _uvError = false;
+    _uvTried = null;
+    if (!v && _sky == VitDSky.forecast) {
+      _sky = VitDSky.clear;
+      Prefs.vitDSky = _sky.index;
+    }
     _targetDirty = true;
     _refreshRate();
     notifyListeners();
@@ -443,9 +481,82 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
         weightKg: _weightKg,
         posture: _posture,
         hairDays: hairDays,
+        uvScale: _uvActive ? _uvScale : 1.0,
+        skyFactor: _sky == VitDSky.forecast && _uvActive
+            ? _uv!.cloudFactorAt(t)
+            : null,
       );
 
-  void _refreshRate() => _rate = _computeRate(now());
+  void _refreshRate() {
+    _ensureUv();
+    _rate = _computeRate(now());
+  }
+
+  // ── Online UV ────────────────────────────────────────────────────────
+  static bool get _hasLocation => !(Prefs.lat == 1.1 && Prefs.lng == 1.1);
+
+  /// Data source, today and the location rounded to ~10 km: new data when
+  /// any of them changes. Bump the source tag when the API changes.
+  String _uvKey() =>
+      'cams|${_dayKey(now())}|${Prefs.lat.toStringAsFixed(1)}|${Prefs.lng.toStringAsFixed(1)}';
+
+  /// Uses cached data when it is for today and here; downloads again when
+  /// it is missing or over an hour old (forecast clouds change). When the
+  /// last download failed (no connection) the offline estimate is used,
+  /// and it tries again every 5 minutes.
+  void _ensureUv() {
+    final online = uvOnline && _hasLocation;
+    _uvActive = online && !_uvError && _uv != null && _uv!.key == _uvKey();
+    if (!online || _uvLoading) return;
+    final t = now();
+    // Saved "in the future" means the clock was changed: fetch again.
+    final age = t.difference(_uv?.fetchedAt ?? t);
+    if (_uvActive && !age.isNegative && age < const Duration(hours: 1)) {
+      return;
+    }
+    if (_uvTried != null &&
+        !t.difference(_uvTried!).isNegative &&
+        t.difference(_uvTried!) < const Duration(minutes: 5)) {
+      return;
+    }
+    _fetchUv();
+  }
+
+  Future<void> _fetchUv() async {
+    _uvLoading = true;
+    _uvTried = now();
+    final data = await UvForecast.fetch(
+        lat: Prefs.lat, lng: Prefs.lng, key: _uvKey(), now: now());
+    _uvLoading = false;
+    if (_disposed) return;
+    // Credit time so far at the old rate before the UV changes.
+    _tick();
+    if (data != null) {
+      _uv = data;
+      _uvScale = _clearScaleFor(data);
+      Prefs.vitDUvData = jsonEncode(data.toJson());
+    }
+    _uvError = data == null;
+    _targetDirty = true;
+    _refreshRate();
+    notifyListeners();
+  }
+
+  /// Open-Meteo clear-sky UV vs the sun-angle estimate over today's hours
+  /// with useful sun: one steady factor for ozone, altitude and haze.
+  double _clearScaleFor(UvForecast d) {
+    final today = _dayKey(now());
+    double online = 0, estimate = 0;
+    for (int i = 0; i < d.times.length; i++) {
+      if (_dayKey(d.times[i]) != today) continue;
+      final el = elevationAt(d.times[i]);
+      if (el < vitDMinElevation) continue;
+      online += d.clearSky[i];
+      estimate += estimateUvIndex(el);
+    }
+    if (estimate < 1) return 1.0;
+    return (online / estimate).clamp(0.5, 2.0).toDouble();
+  }
 
   void _startTicker() {
     _ticker?.cancel();
@@ -548,8 +659,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   void _saveSessions() {
     final cutoff = now().subtract(const Duration(days: keepDays));
     _sessions.removeWhere((s) => s.start.isBefore(cutoff));
-    Prefs.vitDSessions =
-        jsonEncode(_sessions.map((s) => s.toJson()).toList());
+    Prefs.vitDSessions = jsonEncode(_sessions.map((s) => s.toJson()).toList());
   }
 
   static DateTime _midnight(DateTime t) => DateTime(t.year, t.month, t.day);
@@ -590,8 +700,8 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
     if (ms > 0) {
       _shaveDate = DateTime.fromMillisecondsSinceEpoch(ms);
     } else {
-      _shaveDate = _midnight(now()).subtract(Duration(
-          days: Prefs.vitDHairDays.clamp(0, vitDMaxHairDays)));
+      _shaveDate = _midnight(now()).subtract(
+          Duration(days: Prefs.vitDHairDays.clamp(0, vitDMaxHairDays)));
       Prefs.vitDShaveDate = _shaveDate.millisecondsSinceEpoch;
     }
   }
@@ -608,6 +718,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _disposed = true;
     WidgetsBinding.instance.removeObserver(this);
     _ticker?.cancel();
     super.dispose();

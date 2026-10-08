@@ -830,5 +830,19 @@
   "noCoordinatesFound": "Không tìm thấy tọa độ hoặc liên kết bản đồ hợp lệ",
   "locationLoaded": "Đã tải tọa độ!",
   "uposathaEveShaving": "Trước ngày Bố-tát (ngày cạo tóc) • Ngày mai là Bố-tát",
-  "moonSkyCompass3d": "La bàn bầu trời Mặt trăng 3D"
+  "moonSkyCompass3d": "La bàn bầu trời Mặt trăng 3D",
+  "vitDSkyForecast": "Dự báo",
+  "vitDSkyForecastHint": "“Dự báo” dùng dự báo mây của Open-Meteo. Mây thay đổi nhanh — khi nhìn thấy bầu trời, tự chọn thường chính xác hơn.",
+  "vitDUvIndexLabel": "Chỉ số UV",
+  "vitDUvSourceTitle": "Dữ liệu UV",
+  "vitDUvOnline": "Lấy dữ liệu UV trực tuyến",
+  "vitDUvOnlineDesc": "Open-Meteo điều chỉnh ước tính theo ôzôn, độ cao và khói bụi hôm nay, và thêm dự báo mây. Vị trí gần đúng của bạn được gửi khoảng mỗi giờ một lần khi trang này đang mở. Tắt: hoạt động hoàn toàn ngoại tuyến.",
+  "vitDUvSourceOffline": "Ngoại tuyến",
+  "vitDUvLoading": "Đang lấy dữ liệu UV…",
+  "vitDUvError": "Không lấy được dữ liệu UV — đang dùng ước tính ngoại tuyến.",
+  "vitDUvScale": "Ôzôn, độ cao và khói bụi hôm nay: ×{f} so với ước tính ngoại tuyến.",
+  "vitDUvAttribution": "Dữ liệu UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
+  "vitDUvInfoTitle": "Chỉ số UV",
+  "vitDUvInfo": "Chỉ số UV là cường độ ánh nắng gây cháy nắng ngay lúc này. Nó quyết định thời gian cháy nắng và tốc độ tạo vitamin D.\n\nNgoại tuyến: ước tính từ góc mặt trời cho trời quang, rồi giảm theo mây bạn chọn.\n\nTrực tuyến (Open-Meteo): còn điều chỉnh theo ôzôn, độ cao và khói bụi hôm nay tại vị trí của bạn. Chọn “Dự báo” ở mục Bầu trời để dùng mây dự báo, hoặc tự chọn mây.\n\n0–2 thấp • 3–5 trung bình • 6–7 cao • 8–10 rất cao • 11+ cực cao",
+  "vitDUvSourceOnline": "Trực tuyến"
 }

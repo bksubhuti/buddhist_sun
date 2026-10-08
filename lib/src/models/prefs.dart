@@ -114,6 +114,8 @@ const String VITD_ACTIVE_LAST_TICK = "vitDActiveLastTick";
 const String VITD_ACTIVE_IU = "vitDActiveIu";
 const String VITD_ACTIVE_MED = "vitDActiveMed";
 const String VITD_ACTIVE_SECONDS = "vitDActiveSeconds";
+const String VITD_UV_ONLINE = "vitDUvOnline"; // UV data from Open-Meteo
+const String VITD_UV_DATA = "vitDUvData"; // cached Open-Meteo JSON
 const String MEDITATION_VOLUME = "meditationVolume";
 const int DEFAULT_MEDITATION_VOLUME = 80;
 const String MEDITATION_PRESETS = "meditationPresets";
@@ -478,8 +480,7 @@ class Prefs {
   // Vitamin D calculator getters & setters
   static int get vitDSkinType =>
       instance.getInt(VITD_SKIN_TYPE) ?? DEFAULT_VITD_SKIN_TYPE;
-  static set vitDSkinType(int value) =>
-      instance.setInt(VITD_SKIN_TYPE, value);
+  static set vitDSkinType(int value) => instance.setInt(VITD_SKIN_TYPE, value);
 
   static int get vitDCoverage =>
       instance.getInt(VITD_COVERAGE) ?? DEFAULT_VITD_COVERAGE;
@@ -525,8 +526,7 @@ class Prefs {
 
   /// First day the calculator was used (local midnight, ms), 0 if unset.
   static int get vitDFirstUse => instance.getInt(VITD_FIRST_USE) ?? 0;
-  static set vitDFirstUse(int value) =>
-      instance.setInt(VITD_FIRST_USE, value);
+  static set vitDFirstUse(int value) => instance.setInt(VITD_FIRST_USE, value);
 
   /// Weekly catch-up: today's target makes up this week's shortfall.
   static bool get vitDCatchUp => instance.getBool(VITD_CATCH_UP) ?? false;
@@ -551,10 +551,17 @@ class Prefs {
   static set vitDActiveIu(double value) =>
       instance.setDouble(VITD_ACTIVE_IU, value);
 
-  static double get vitDActiveMed =>
-      instance.getDouble(VITD_ACTIVE_MED) ?? 0.0;
+  static double get vitDActiveMed => instance.getDouble(VITD_ACTIVE_MED) ?? 0.0;
   static set vitDActiveMed(double value) =>
       instance.setDouble(VITD_ACTIVE_MED, value);
+
+  static bool get vitDUvOnline => instance.getBool(VITD_UV_ONLINE) ?? true;
+  static set vitDUvOnline(bool value) =>
+      instance.setBool(VITD_UV_ONLINE, value);
+
+  static String get vitDUvData => instance.getString(VITD_UV_DATA) ?? '';
+  static set vitDUvData(String value) =>
+      instance.setString(VITD_UV_DATA, value);
 
   static double get vitDActiveSeconds =>
       instance.getDouble(VITD_ACTIVE_SECONDS) ?? 0.0;

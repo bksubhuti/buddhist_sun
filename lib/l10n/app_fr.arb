@@ -626,5 +626,19 @@
   "noCoordinatesFound": "Aucune coordonnée ou lien de carte valide trouvé",
   "locationLoaded": "Coordonnées chargées !",
   "uposathaEveShaving": "Veille d'Uposatha (jour de rasage) • Demain c'est Uposatha",
-  "moonSkyCompass3d": "Boussole céleste lunaire 3D"
+  "moonSkyCompass3d": "Boussole céleste lunaire 3D",
+  "vitDSkyForecast": "Prévision",
+  "vitDSkyForecastHint": "« Prévision » utilise la prévision nuageuse d'Open-Meteo. Les nuages changent vite : si vous voyez le ciel, votre propre choix est souvent meilleur.",
+  "vitDUvIndexLabel": "Indice UV",
+  "vitDUvSourceTitle": "Données UV",
+  "vitDUvOnline": "Obtenir les données UV en ligne",
+  "vitDUvOnlineDesc": "Open-Meteo corrige l'estimation selon l'ozone, l'altitude et la brume du jour, et ajoute une prévision nuageuse. Votre position approximative est envoyée environ une fois par heure tant que cette page est ouverte. Désactivé : fonctionne entièrement hors ligne.",
+  "vitDUvSourceOffline": "Hors ligne",
+  "vitDUvLoading": "Récupération des données UV…",
+  "vitDUvError": "Impossible d'obtenir les données UV — estimation hors ligne utilisée.",
+  "vitDUvScale": "Ozone, altitude et brume aujourd'hui : ×{f} par rapport à l'estimation hors ligne.",
+  "vitDUvAttribution": "Données UV : Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
+  "vitDUvInfoTitle": "Indice UV",
+  "vitDUvInfo": "L'indice UV est l'intensité du soleil qui brûle la peau en ce moment. Il fixe le temps avant coup de soleil et le rythme de production de vitamine D.\n\nHors ligne : estimé à partir de l'angle du soleil pour un ciel dégagé, puis réduit selon les nuages choisis.\n\nEn ligne (Open-Meteo) : corrigé aussi selon l'ozone, l'altitude et la brume du jour à votre position. Choisissez « Prévision » sous Ciel pour utiliser les nuages prévus, ou réglez les nuages vous-même.\n\n0–2 faible • 3–5 modéré • 6–7 élevé • 8–10 très élevé • 11+ extrême",
+  "vitDUvSourceOnline": "En ligne"
 }

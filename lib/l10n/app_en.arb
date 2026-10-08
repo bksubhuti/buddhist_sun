@@ -811,5 +811,26 @@
   "vitDTab": "D3",
   "meditationTab": "Meditate",
   "uposathaEveShaving": "Uposatha Eve (Shaving Day) • Tomorrow is Uposatha",
-  "moonSkyCompass3d": "3D Moon Sky Compass"
+  "moonSkyCompass3d": "3D Moon Sky Compass",
+  "vitDSkyForecast": "Forecast",
+  "vitDSkyForecastHint": "“Forecast” uses Open-Meteo's cloud forecast. Clouds change quickly — when you can see the sky, your own choice is often better.",
+  "vitDUvIndexLabel": "UV index",
+  "vitDUvSourceTitle": "UV data",
+  "vitDUvOnline": "Get UV data online",
+  "vitDUvOnlineDesc": "Open-Meteo corrects the estimate for today's ozone, altitude and haze, and adds a cloud forecast. Your approximate location is sent about once an hour while this page is open. Off: works fully offline.",
+  "vitDUvSourceOffline": "Offline",
+  "vitDUvLoading": "Getting UV data…",
+  "vitDUvError": "Could not get UV data — using the offline estimate.",
+  "vitDUvScale": "Ozone, altitude and haze today: ×{f} compared with the offline estimate.",
+  "@vitDUvScale": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUvAttribution": "UV data: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
+  "vitDUvInfoTitle": "UV index",
+  "vitDUvInfo": "The UV index is the strength of sunburning sunlight right now. It sets the burn time and the vitamin D rate.\n\nOffline: estimated from the sun's angle for a clear sky, then reduced for the clouds you choose.\n\nOnline (Open-Meteo): also corrected for today's ozone, altitude and haze at your location. Choose “Forecast” under Sky to use forecast clouds, or set the clouds yourself.\n\n0–2 low • 3–5 moderate • 6–7 high • 8–10 very high • 11+ extreme.",
+  "vitDUvSourceOnline": "Online"
 }

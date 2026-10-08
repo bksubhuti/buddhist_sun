@@ -10,6 +10,9 @@ import 'package:buddhist_sun/src/services/vitamin_d_calc.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/widgets/vitamin_d_painters.dart';
 
+/// Green for good sun, goals reached, low burn and the Online tag.
+const Color _vitDGreen = Color(0xFF43A047);
+
 /// Free vitamin D sun timer for monastics: live sun angle, estimated IU,
 /// per-session log and daily total, with all settings on the same scroll.
 /// With [embedded] it is a bottom-nav page (no own AppBar), like MoonPage.
@@ -148,6 +151,8 @@ class _VitaminDPageState extends State<VitaminDPage>
         return t.vitDSkyMostly;
       case VitDSky.overcast:
         return t.vitDSkyOvercast;
+      case VitDSky.forecast:
+        return t.vitDSkyForecast;
     }
   }
 
@@ -161,6 +166,8 @@ class _VitaminDPageState extends State<VitaminDPage>
         return Icons.cloud_rounded;
       case VitDSky.overcast:
         return Icons.cloud_queue_rounded;
+      case VitDSky.forecast:
+        return Icons.satellite_alt_rounded;
     }
   }
 
@@ -228,6 +235,10 @@ class _VitaminDPageState extends State<VitaminDPage>
               _buildNoLocationBanner(context),
               const SizedBox(height: 12),
             ],
+            _buildQuickBar(context),
+            const SizedBox(height: 8),
+            _buildUvRow(context),
+            const SizedBox(height: 12),
             _buildTimerCard(context),
             const SizedBox(height: 16),
             _buildSunCard(context),
@@ -293,7 +304,7 @@ class _VitaminDPageState extends State<VitaminDPage>
       statusIcon = Icons.nightlight_round;
       statusText = t.vitDStatusNight;
     } else if (el >= vitDOptimalElevation) {
-      statusColor = const Color(0xFF2E7D32);
+      statusColor = _vitDGreen;
       statusIcon = Icons.check_circle_rounded;
       statusText = t.vitDStatusGood;
     } else if (el > vitDMinElevation) {
@@ -361,7 +372,11 @@ class _VitaminDPageState extends State<VitaminDPage>
                   children: [
                     stat(t.vitDSunAngle, '${el.toStringAsFixed(1)}°',
                         color: primary),
-                    stat(t.vitDUvIndex, rate.uvIndex.toStringAsFixed(1)),
+                    stat(
+                        _c.uvFromOnline
+                            ? '${t.vitDUvIndexLabel} (${t.vitDUvSourceOnline})'
+                            : t.vitDUvIndex,
+                        rate.uvIndex.toStringAsFixed(1)),
                     stat(t.vitDRate,
                         t.vitDIuPerMin(rate.iuPerMinute.toStringAsFixed(0))),
                     stat(t.vitDEfficiency,
@@ -418,6 +433,199 @@ class _VitaminDPageState extends State<VitaminDPage>
     );
   }
 
+  /// Sky choices: "Forecast" only with online UV data.
+  List<VitDSky> get _skies => VitDSky.values
+      .where((s) => s != VitDSky.forecast || _c.uvOnline)
+      .toList();
+
+  List<VitDCoverage> get _coverChoices => _c.coverTab == 2
+      ? VitDCoverageInfo.female
+      : (_c.coverTab == 1 ? VitDCoverageInfo.lay : VitDCoverageInfo.monastic);
+
+  String _uvStatusText(AppLocalizations t) {
+    if (_c.uvLoading && !_c.uvFromOnline) return t.vitDUvLoading;
+    if (_c.uvFromOnline) return t.vitDUvScale(_c.uvScale.toStringAsFixed(2));
+    if (_c.uvError) return t.vitDUvError;
+    return t.vitDUvLoading;
+  }
+
+  // 0. Quick choices that change from day to day; they set the same
+  // values as the settings below.
+  Widget _buildQuickBar(BuildContext context) {
+    final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
+
+    Widget dropdown<T>({
+      required String label,
+      required T value,
+      required List<T> items,
+      required Widget Function(T) icon,
+      required String Function(T) text,
+      required ValueChanged<T> onChanged,
+      bool iconOnly = false,
+    }) =>
+        DropdownButtonFormField<T>(
+          // Keyed by value so it follows changes made in the settings below.
+          key: ValueKey('$label-$value'),
+          initialValue: items.contains(value) ? value : null,
+          isExpanded: true,
+          isDense: true,
+          // Icon-only fields show just the picture; the open menu has words.
+          selectedItemBuilder: iconOnly
+              ? (_) => items.map((v) => Center(child: icon(v))).toList()
+              : null,
+          decoration: InputDecoration(
+            labelText: iconOnly ? null : label,
+            isDense: true,
+            filled: true,
+            fillColor: theme.colorScheme.surface.withAlpha(160),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+          items: items
+              .map((v) => DropdownMenuItem<T>(
+                    value: v,
+                    child: Row(
+                      children: [
+                        icon(v),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(text(v),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 13)),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
+        );
+
+    return Row(
+      children: [
+        Expanded(
+          child: dropdown<VitDSky>(
+            label: t.vitDSkyTitle,
+            value: _c.sky,
+            items: _skies,
+            icon: (s) => Icon(_skyIcon(s), size: 18),
+            text: (s) => _skyLabel(t, s),
+            onChanged: _c.setSky,
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 76,
+          child: dropdown<VitDPosture>(
+            iconOnly: true,
+            label: t.vitDPostureTitle,
+            value: _c.posture,
+            items: VitDPosture.values,
+            icon: (p) => Icon(_postureIcon(p), size: 22),
+            text: (p) => _postureLabel(t, p),
+            onChanged: _c.setPosture,
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 76,
+          child: dropdown<VitDCoverage>(
+            iconOnly: true,
+            label: t.vitDCoverageTitle,
+            value: _c.coverage,
+            items: _coverChoices,
+            icon: (c) => SizedBox(
+              width: 16,
+              height: 22,
+              child: CustomPaint(
+                painter: CoveragePainter(
+                  coverage: c,
+                  skinColor: vitDSkinColors[_c.skin.index],
+                ),
+              ),
+            ),
+            text: (c) => _coverageLabel(t, c.maleEquivalent),
+            onChanged: _c.setCoverage,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// UV index now, and where it comes from (offline estimate or online).
+  Widget _buildUvRow(BuildContext context) {
+    final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
+    final primary = theme.colorScheme.primary;
+    final uvi = _c.rate.uvIndex;
+    final online = _c.uvFromOnline;
+    // Green tag when online, grey when offline.
+    final Color tagColor =
+        online ? _vitDGreen : theme.colorScheme.outline;
+    final Color uvColor = uvi >= 8
+        ? theme.colorScheme.error
+        : (uvi >= 6
+            ? const Color(0xFFEF6C00)
+            : (uvi >= 3 ? const Color(0xFFF9A825) : _vitDGreen));
+
+    return _tapCard(
+      context,
+      onTap: () => _showInfo(
+          context, Icons.wb_sunny_outlined, t.vitDUvInfoTitle, t.vitDUvInfo),
+      child: Row(
+        children: [
+          Icon(Icons.wb_sunny_outlined, size: 18, color: uvColor),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(t.vitDUvIndexLabel, style: theme.textTheme.bodyMedium),
+          ),
+          const SizedBox(width: 4),
+          Icon(Icons.info_outline_rounded, size: 18, color: primary),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: tagColor.withAlpha(35),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_c.uvOnline && _c.uvLoading)
+                  const Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CircularProgressIndicator(strokeWidth: 1.5)),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Icon(
+                        online ? Icons.cloud_done_outlined : Icons.cloud_off,
+                        size: 12,
+                        color: tagColor),
+                  ),
+                Text(online ? t.vitDUvSourceOnline : t.vitDUvSourceOffline,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        color: tagColor, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(uvi.toStringAsFixed(1),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold, color: uvColor)),
+        ],
+      ),
+    );
+  }
+
   // 2. Timer with session IU, today's total and burn meter.
   Widget _buildTimerCard(BuildContext context) {
     final theme = Theme.of(context);
@@ -434,7 +642,7 @@ class _VitaminDPageState extends State<VitaminDPage>
 
     final Color burnColor = med >= 0.75
         ? theme.colorScheme.error
-        : (med >= 0.5 ? const Color(0xFFEF6C00) : const Color(0xFF2E7D32));
+        : (med >= 0.5 ? const Color(0xFFEF6C00) : _vitDGreen);
 
     // Target: IU still needed today and the sun time to get it.
     final remaining = _c.remainingIu;
@@ -454,7 +662,7 @@ class _VitaminDPageState extends State<VitaminDPage>
     } else {
       targetTimeText = running
           ? _clock(Duration(seconds: (targetMins * 60).round()))
-          : t.vitDMinutes(targetMins.ceil().toString());
+          : t.vitDMinutes(formatSessionDuration(targetMins * 60));
       if (med >= 0.5) {
         targetNote = t.vitDEnoughSun;
       } else if (halfBurnMins != null && targetMins > halfBurnMins) {
@@ -670,7 +878,7 @@ class _VitaminDPageState extends State<VitaminDPage>
                     value: (pct / 100).clamp(0.0, 1.0),
                     minHeight: 10,
                     // Green = done, primary (purple) = still to go.
-                    color: const Color(0xFF2E7D32),
+                    color: _vitDGreen,
                     backgroundColor: primary.withAlpha(70),
                   ),
                 ),
@@ -831,7 +1039,7 @@ class _VitaminDPageState extends State<VitaminDPage>
     final theme = Theme.of(context);
     final t = AppLocalizations.of(context)!;
     final primary = theme.colorScheme.primary;
-    const green = Color(0xFF2E7D32);
+    const green = _vitDGreen;
     final daily = _c.dailyGoalIu.toDouble();
     final totals = _c.weekDayTotals;
     final counted = _c.weekDaysCounted;
@@ -1216,7 +1424,7 @@ class _VitaminDPageState extends State<VitaminDPage>
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: VitDSky.values
+              children: _skies
                   .map((s) => ChoiceChip(
                         avatar: Icon(_skyIcon(s), size: 18),
                         label: Text(_skyLabel(t, s)),
@@ -1225,6 +1433,30 @@ class _VitaminDPageState extends State<VitaminDPage>
                       ))
                   .toList(),
             ),
+            if (_c.uvOnline) ...[
+              const SizedBox(height: 6),
+              Text(t.vitDSkyForecastHint, style: theme.textTheme.bodySmall),
+            ],
+            sectionTitle(t.vitDUvSourceTitle),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: Icon(
+                  _c.uvOnline ? Icons.cloud_done_outlined : Icons.cloud_off,
+                  color: primary),
+              title: Text(t.vitDUvOnline, style: const TextStyle(fontSize: 14)),
+              subtitle: Text(t.vitDUvOnlineDesc,
+                  style: const TextStyle(fontSize: 12)),
+              value: _c.uvOnline,
+              onChanged: _hasLocation ? (v) => _c.setUvOnline(v) : null,
+            ),
+            if (_c.uvOnline) ...[
+              Text(_uvStatusText(t), style: theme.textTheme.bodySmall),
+              const SizedBox(height: 2),
+              Text(t.vitDUvAttribution,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colorScheme.onSurface.withAlpha(150))),
+            ],
             sectionTitle(t.vitDWeightTitle, t.vitDWeightSubtitle),
             Row(
               children: [

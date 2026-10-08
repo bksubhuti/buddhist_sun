@@ -68,8 +68,7 @@ extension VitDCoverageInfo on VitDCoverage {
   /// Fraction of total body surface exposed to the sun (rule of nines).
   /// Monastic values exclude the scalp, which is added via hair growth
   /// (see [exposedFractionFor]); lay values assume hair covers the scalp.
-  double get exposedFraction =>
-      const [
+  double get exposedFraction => const [
         0.085, 0.185, 0.585, 0.715, // monk
         0.10, 0.20, 0.38, 0.80, // lay male
         0.10, 0.20, 0.38, 0.75, // lay female (swim top covers the chest)
@@ -148,11 +147,13 @@ double postureFactor(VitDPosture posture, double elevationDeg) {
   }
 }
 
-/// Sky condition multiplier on clear-sky UV.
-enum VitDSky { clear, partlyCloudy, mostlyCloudy, overcast }
+/// Sky condition multiplier on clear-sky UV. [forecast] takes the cloud
+/// factor from online UV data (1.0 here is only the offline fallback).
+/// New values must be appended (index is persisted).
+enum VitDSky { clear, partlyCloudy, mostlyCloudy, overcast, forecast }
 
 extension VitDSkyInfo on VitDSky {
-  double get factor => const [1.0, 0.85, 0.6, 0.3][index];
+  double get factor => const [1.0, 0.85, 0.6, 0.3, 1.0][index];
 }
 
 /// Clear-sky UV Index estimate from solar elevation, scaled by sky factor.
@@ -213,8 +214,13 @@ VitDRate computeVitDRate({
   required double weightKg,
   VitDPosture posture = VitDPosture.standing,
   int hairDays = 0,
+  double uvScale = 1.0,
+  double? skyFactor,
 }) {
-  final uvi = estimateUvIndex(elevationDeg, skyFactor: sky.factor);
+  // [uvScale]: online clear-sky correction (ozone, altitude, haze).
+  // [skyFactor]: overrides [sky] with the forecast cloud factor.
+  final uvi = estimateUvIndex(elevationDeg,
+      skyFactor: (skyFactor ?? sky.factor) * uvScale);
   final eff = vitaminDElevationEfficiency(elevationDeg);
   final medPerMin = uvi * _wattsPerUvi * 60.0 / skin.medJm2;
   final iuPerMin = medPerMin *
@@ -267,9 +273,8 @@ VitDIncrement integrateExposure(
         ? 1.0
         : ((1.0 - medSoFar) / (1.0 - vitDSaturationStart)).clamp(0.0, 1.0);
   } else {
-    avgTaper = (_cumulativeTaper(medSoFar + dMed) -
-            _cumulativeTaper(medSoFar)) /
-        dMed;
+    avgTaper =
+        (_cumulativeTaper(medSoFar + dMed) - _cumulativeTaper(medSoFar)) / dMed;
   }
   return VitDIncrement(rate.iuPerMinute * minutes * avgTaper, dMed);
 }

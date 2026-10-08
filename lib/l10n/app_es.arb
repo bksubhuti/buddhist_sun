@@ -626,5 +626,19 @@
   "noCoordinatesFound": "No se encontraron coordenadas ni enlace de mapa válidos",
   "locationLoaded": "¡Coordenadas cargadas!",
   "uposathaEveShaving": "Víspera de Uposatha (día de rasurado) • Mañana es Uposatha",
-  "moonSkyCompass3d": "Brújula celeste lunar 3D"
+  "moonSkyCompass3d": "Brújula celeste lunar 3D",
+  "vitDSkyForecast": "Pronóstico",
+  "vitDSkyForecastHint": "“Pronóstico” usa el pronóstico de nubes de Open-Meteo. Las nubes cambian rápido: si puede ver el cielo, su propia elección suele ser mejor.",
+  "vitDUvIndexLabel": "Índice UV",
+  "vitDUvSourceTitle": "Datos UV",
+  "vitDUvOnline": "Obtener datos UV en línea",
+  "vitDUvOnlineDesc": "Open-Meteo corrige la estimación según el ozono, la altitud y la bruma de hoy, y añade un pronóstico de nubes. Su ubicación aproximada se envía aproximadamente una vez por hora mientras esta página está abierta. Desactivado: funciona totalmente sin conexión.",
+  "vitDUvSourceOffline": "Sin conexión",
+  "vitDUvLoading": "Obteniendo datos UV…",
+  "vitDUvError": "No se pudieron obtener datos UV; se usa la estimación sin conexión.",
+  "vitDUvScale": "Ozono, altitud y bruma hoy: ×{f} respecto a la estimación sin conexión.",
+  "vitDUvAttribution": "Datos UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
+  "vitDUvInfoTitle": "Índice UV",
+  "vitDUvInfo": "El índice UV es la intensidad de la luz solar que quema la piel en este momento. Determina el tiempo hasta la quemadura y el ritmo de vitamina D.\n\nSin conexión: se estima a partir del ángulo del sol con cielo despejado y se reduce según las nubes que elija.\n\nEn línea (Open-Meteo): además se corrige según el ozono, la altitud y la bruma de hoy en su ubicación. Elija “Pronóstico” en Cielo para usar las nubes pronosticadas, o indique las nubes usted mismo.\n\n0–2 bajo • 3–5 moderado • 6–7 alto • 8–10 muy alto • 11+ extremo",
+  "vitDUvSourceOnline": "En línea"
 }

@@ -830,5 +830,19 @@
   "noCoordinatesFound": "未找到有效的坐标或地图链接",
   "locationLoaded": "坐标已加载！",
   "uposathaEveShaving": "布萨前夕（剃发日）• 明天是布萨日",
-  "moonSkyCompass3d": "3D 月空罗盘"
+  "moonSkyCompass3d": "3D 月空罗盘",
+  "vitDSkyForecast": "预报",
+  "vitDSkyForecastHint": "“预报”使用 Open-Meteo 的云量预报。云变化很快——能看到天空时，自己选择往往更准确。",
+  "vitDUvIndexLabel": "紫外线指数",
+  "vitDUvSourceTitle": "紫外线数据",
+  "vitDUvOnline": "在线获取紫外线数据",
+  "vitDUvOnlineDesc": "Open-Meteo 根据今天的臭氧、海拔和雾霾修正估算值，并提供云量预报。打开此页面时，大约每小时发送一次您的大致位置。关闭：完全离线运行。",
+  "vitDUvSourceOffline": "离线",
+  "vitDUvLoading": "正在获取紫外线数据…",
+  "vitDUvError": "无法获取紫外线数据——使用离线估算。",
+  "vitDUvScale": "今天的臭氧、海拔和雾霾：为离线估算的 ×{f}。",
+  "vitDUvAttribution": "紫外线数据：Open-Meteo.com, Copernicus CAMS（CC BY 4.0）",
+  "vitDUvInfoTitle": "紫外线指数",
+  "vitDUvInfo": "紫外线指数是此刻导致晒伤的阳光强度。它决定晒伤时间和维生素 D 的生成速度。\n\n离线：根据太阳角度按晴空估算，再按您选择的云量减少。\n\n在线（Open-Meteo）：还会根据您所在位置今天的臭氧、海拔和雾霾进行修正。在“天空”中选择“预报”可使用预报云量，或自己设置云量。\n\n0–2 低 • 3–5 中等 • 6–7 高 • 8–10 很高 • 11+ 极高",
+  "vitDUvSourceOnline": "在线"
 }
