@@ -207,7 +207,6 @@ VitDRate computeVitDRate({
   int hairDays = 0,
   double uvScale = 1.0,
   double? skyFactor,
-  bool isUsa = false,
 }) {
   // [uvScale]: online clear-sky correction (ozone, altitude, haze).
   // [skyFactor]: overrides [sky] with the forecast cloud factor.
@@ -215,14 +214,11 @@ VitDRate computeVitDRate({
       skyFactor: (skyFactor ?? sky.factor) * uvScale);
   final eff = vitaminDElevationEfficiency(elevationDeg);
   final medPerMin = uvi * _wattsPerUvi * 60.0 / skin.medJm2;
-  // No IU estimate in the USA region (UV / sunburn timer only).
-  final iuPerMin = isUsa
-      ? 0.0
-      : medPerMin *
-          _iuPerFullBodyMed *
-          exposedFractionFor(coverage, hairDays) *
-          postureFactor(posture, elevationDeg) *
-          eff;
+  final iuPerMin = medPerMin *
+      _iuPerFullBodyMed *
+      exposedFractionFor(coverage, hairDays) *
+      postureFactor(posture, elevationDeg) *
+      eff;
   return VitDRate(
     elevation: elevationDeg,
     uvIndex: uvi,

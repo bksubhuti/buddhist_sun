@@ -21,7 +21,6 @@ void main() {
     await Prefs.instance.clear();
     Prefs.lat = 6.9271;
     Prefs.lng = 79.8612;
-    Prefs.countryCode = 'LK';
   });
 
   group('vitamin D model', () {
@@ -528,104 +527,15 @@ void main() {
       c.dispose();
     });
 
-    test('USA mode zeros out IU and activates safe sun timer', () {
-      Prefs.countryCode = 'US';
-      expect(Prefs.isUsaLocation, isTrue);
-      clock = DateTime(2026, 10, 2, 12, 0);
-      final c = make();
-      expect(c.isUsa, isTrue);
-      expect(c.rate.iuPerMinute, 0.0);
-      expect(c.rate.medPerMinute, greaterThan(0));
-      c.start();
-      clock = clock.add(const Duration(minutes: 5));
-      c.refresh();
-      expect(c.activeIu, 0.0);
-      expect(c.activeMed, greaterThan(0));
-      c.stop();
-      expect(c.todayIu, 0.0);
-      expect(c.todaySessions.first.iu, 0.0);
-      expect(c.todaySessions.first.med, greaterThan(0));
-      c.dispose();
-    });
-
-    test('US territories are detected as USA location', () {
-      for (final code in ['PR', 'GU', 'VI', 'AS', 'MP', 'USA']) {
-        Prefs.countryCode = code;
-        expect(Prefs.isUsaLocation, isTrue, reason: 'Failed for $code');
-      }
-    });
-
-    test('fail-closed behavior when location is completely unknown', () {
-      Prefs.countryCode = '';
-      Prefs.lat = 1.1;
-      Prefs.lng = 1.1;
-      // Fails closed to USA mode
-      expect(Prefs.isUsaLocation, isTrue);
-    });
-
-    test('traveling outside USA unlocks once GPS and country agree', () {
-      // User was in USA
-      Prefs.countryCode = 'US';
-      Prefs.lat = 40.7128; // New York
-      Prefs.lng = -74.0060;
-      expect(Prefs.isUsaLocation, isTrue);
-
-      // New GPS fix in Colombo, country code not yet refreshed: still USA
-      Prefs.lat = 6.9271;
-      Prefs.lng = 79.8612;
-      expect(Prefs.isUsaLocation, isTrue);
-
-      // Reverse geocoding / IP lookup updates the country: unlocked
-      Prefs.countryCode = 'LK';
-      expect(Prefs.isUsaLocation, isFalse);
-
-      // Thailand (Bangkok)
-      Prefs.lat = 13.7563;
-      Prefs.lng = 100.5018;
-      Prefs.countryCode = 'TH';
-      expect(Prefs.isUsaLocation, isFalse);
-
-      // Back to California: GPS alone is enough, even with a stale code
-      Prefs.lat = 37.7749;
-      Prefs.lng = -122.4194;
-      expect(Prefs.isUsaLocation, isTrue);
-    });
-
     test('declined GPS marker is not treated as a real location', () {
       Prefs.lat = 1.2; // set when the user cancels the GPS prompt
       Prefs.lng = 1.1;
       expect(Prefs.hasValidLocation, isFalse);
-      Prefs.countryCode = '';
-      expect(Prefs.isUsaLocation, isTrue);
-      Prefs.countryCode = 'US';
-      expect(Prefs.isUsaLocation, isTrue);
-      Prefs.countryCode = 'LK';
-      expect(Prefs.isUsaLocation, isFalse);
-    });
-
-    test('US country code wins over a non-US GPS fix', () {
-      Prefs.lat = 6.9271; // stale Colombo fix
+      Prefs.lat = 1.1;
+      expect(Prefs.hasValidLocation, isFalse);
+      Prefs.lat = 6.9271;
       Prefs.lng = 79.8612;
-      Prefs.countryCode = 'US';
-      expect(Prefs.isUsaLocation, isTrue);
-    });
-
-    test('outlying US islands are inside the US bounds', () {
-      const points = {
-        'Rose Atoll': [-14.55, -168.15],
-        'Swains Island': [-11.05, -171.08],
-        'Wake Island': [19.28, 166.65],
-        'Johnston Atoll': [16.73, -169.53],
-        'Palmyra Atoll': [5.88, -162.08],
-        'Navassa Island': [18.40, -75.01],
-        'Attu, Alaska': [52.93, 173.0],
-        'Key West': [24.55, -81.78],
-      };
-      points.forEach((name, p) {
-        expect(Prefs.inUsaBounds(p[0], p[1]), isTrue, reason: name);
-      });
-      expect(Prefs.inUsaBounds(6.9271, 79.8612), isFalse); // Colombo
-      expect(Prefs.inUsaBounds(13.7563, 100.5018), isFalse); // Bangkok
+      expect(Prefs.hasValidLocation, isTrue);
     });
   });
 }

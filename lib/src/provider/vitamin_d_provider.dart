@@ -158,7 +158,6 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ── Getters ──────────────────────────────────────────────────────────
-  bool get isUsa => Prefs.isUsaLocation;
   VitDSkinType get skin => _skin;
   VitDCoverage get coverage => _coverage;
   VitDSky get sky => _sky;
@@ -265,14 +264,6 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   /// whole time; afterwards it is the remainder. 0 when reached, null when
   /// not reachable (sun too low/setting, or saturation first).
   double? get targetMinutes {
-    if (isUsa) {
-      final medRemaining = (0.5 - todayMed).clamp(0.0, 1.0);
-      if (medRemaining <= 0) return 0;
-      if (rate.medPerMinute <= 0) return null;
-      // todayMed already includes the running session, so this is the
-      // time left from now.
-      return medRemaining / rate.medPerMinute;
-    }
     if (remainingIu <= 0) return 0;
     final t = now();
     if (_targetDirty ||
@@ -482,7 +473,6 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
         skyFactor: _sky == VitDSky.forecast && _uvActive
             ? _uv!.cloudFactorAt(t)
             : null,
-        isUsa: isUsa,
       );
 
   void _refreshRate() {
@@ -585,7 +575,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void _checkAlerts() {
-    if (!isUsa && !_targetAlerted && todayIu >= todayTargetIu) {
+    if (!_targetAlerted && todayIu >= todayTargetIu) {
       _targetAlerted = true;
       _vibrate(const [0, 300, 150, 300]);
     }
