@@ -12,8 +12,8 @@ import 'package:buddhist_sun/src/services/solar_calc.dart';
 ///  * Holick's rule of thumb: 1 MED on the whole body ≈ 10,000 IU
 ///    (conservative end of the 10,000–25,000 IU range).
 ///  * Fraction of body surface uncovered (rule of nines).
-///  * Body surface area from weight (Livingston & Lee 2001:
-///    BSA = 0.1173 · kg^0.6466), relative to a 1.8 m² reference adult.
+///  * All amounts are for an average adult: no body size or other personal
+///    body data is used (the app shows a static chart for adjusting).
 ///  * Low-sun penalty: below ~45° elevation the vitamin D-effective UVB
 ///    falls off faster than erythemal UV (longer ozone path), so efficiency
 ///    tapers linearly from 45° down to zero at 15°.
@@ -34,7 +34,6 @@ const double vitDOptimalElevation = 45.0;
 const double vitDMinElevation = 15.0;
 
 const double _iuPerFullBodyMed = 10000.0;
-const double _referenceBsa = 1.8;
 const double _wattsPerUvi = 0.025;
 
 enum VitDSkinType { type1, type2, type3, type4, type5, type6 }
@@ -171,16 +170,9 @@ double vitaminDElevationEfficiency(double elevationDeg) {
       (vitDOptimalElevation - vitDMinElevation);
 }
 
-/// Body surface area (m²) from weight alone (Livingston & Lee).
-double bodySurfaceArea(double weightKg) =>
-    0.1173 * math.pow(weightKg.clamp(20.0, 250.0), 0.6466);
-
-/// Suggested daily vitamin D amount in IU: ~20 IU/kg, rounded to 100,
-/// clamped to 600–4000 IU (IOM RDA to tolerable upper intake).
-int suggestedDailyIu(double weightKg) {
-  final raw = (weightKg * 20.0 / 100.0).round() * 100;
-  return raw.clamp(600, 4000);
-}
+/// Standard daily vitamin D target in IU for an average adult
+/// (~20 IU/kg at about 68 kg).
+const int vitDStandardDailyIu = 1400;
 
 /// Instantaneous rates for the given sun and person.
 class VitDRate {
@@ -211,11 +203,11 @@ VitDRate computeVitDRate({
   required VitDSkinType skin,
   required VitDCoverage coverage,
   required VitDSky sky,
-  required double weightKg,
   VitDPosture posture = VitDPosture.standing,
   int hairDays = 0,
   double uvScale = 1.0,
   double? skyFactor,
+  bool isUsa = false,
 }) {
   // [uvScale]: online clear-sky correction (ozone, altitude, haze).
   // [skyFactor]: overrides [sky] with the forecast cloud factor.
@@ -223,12 +215,14 @@ VitDRate computeVitDRate({
       skyFactor: (skyFactor ?? sky.factor) * uvScale);
   final eff = vitaminDElevationEfficiency(elevationDeg);
   final medPerMin = uvi * _wattsPerUvi * 60.0 / skin.medJm2;
-  final iuPerMin = medPerMin *
-      _iuPerFullBodyMed *
-      exposedFractionFor(coverage, hairDays) *
-      postureFactor(posture, elevationDeg) *
-      (bodySurfaceArea(weightKg) / _referenceBsa) *
-      eff;
+  // No IU estimate in the USA region (UV / sunburn timer only).
+  final iuPerMin = isUsa
+      ? 0.0
+      : medPerMin *
+          _iuPerFullBodyMed *
+          exposedFractionFor(coverage, hairDays) *
+          postureFactor(posture, elevationDeg) *
+          eff;
   return VitDRate(
     elevation: elevationDeg,
     uvIndex: uvi,

@@ -96,8 +96,7 @@ const String VITD_COVERAGE = "vitDCoverage";
 const int DEFAULT_VITD_COVERAGE = 1; // one shoulder bare
 const String VITD_SKY = "vitDSky";
 const int DEFAULT_VITD_SKY = 0; // clear day
-const String VITD_WEIGHT_KG = "vitDWeightKg";
-const double DEFAULT_VITD_WEIGHT_KG = 60.0;
+const String VITD_WEIGHT_KG = "vitDWeightKg"; // removed; deleted at startup
 const String VITD_POSTURE = "vitDPosture";
 const String VITD_HAIR_DAYS = "vitDHairDays"; // legacy, migrated to date
 const String VITD_SHAVE_DATE = "vitDShaveDate"; // local midnight, ms epoch
@@ -105,7 +104,7 @@ const String VITD_COVER_TAB = "vitDCoverTab"; // 0 monk, 1 man, 2 woman
 const String VITD_COVER_MONK = "vitDCoverMonk";
 const String VITD_COVER_MAN = "vitDCoverMan";
 const String VITD_COVER_WOMAN = "vitDCoverWoman";
-const String VITD_CUSTOM_TARGET = "vitDCustomTarget"; // 0 = auto from weight
+const String VITD_CUSTOM_TARGET = "vitDCustomTarget"; // 0 = standard target
 const String VITD_SESSIONS = "vitDSessions";
 const String VITD_FIRST_USE = "vitDFirstUse"; // local midnight, ms epoch
 const String VITD_CATCH_UP = "vitDCatchUp";
@@ -116,6 +115,9 @@ const String VITD_ACTIVE_MED = "vitDActiveMed";
 const String VITD_ACTIVE_SECONDS = "vitDActiveSeconds";
 const String VITD_UV_ONLINE = "vitDUvOnline"; // UV data from Open-Meteo
 const String VITD_UV_DATA = "vitDUvData"; // cached Open-Meteo JSON
+const String COUNTRY_CODE = "countryCode";
+const String DEFAULT_COUNTRY_CODE = "";
+const String VITD_DEBUG_FORCE_USA = "vitDDebugForceUsa";
 const String MEDITATION_VOLUME = "meditationVolume";
 const int DEFAULT_MEDITATION_VOLUME = 80;
 const String MEDITATION_PRESETS = "meditationPresets";
@@ -190,8 +192,14 @@ const defaultSelectedUposatha = UposathaCountry.Myanmar;
 class Prefs {
   static late final SharedPreferences instance;
 
-  static Future<SharedPreferences> init() async =>
-      instance = await SharedPreferences.getInstance();
+  static Future<SharedPreferences> init() async {
+    instance = await SharedPreferences.getInstance();
+    // Body weight is no longer used: do not keep it on the device.
+    if (instance.containsKey(VITD_WEIGHT_KG)) {
+      await instance.remove(VITD_WEIGHT_KG);
+    }
+    return instance;
+  }
 
   /// One-time migration: -6° dawn option inserted at index 3,
   /// so existing civil (3→4) and sunrise (4→5) must shift.
@@ -293,6 +301,11 @@ class Prefs {
 
   static double get lng => instance.getDouble(LNG) ?? DEFAULT_LNG;
   static set lng(double value) => instance.setDouble(LNG, value);
+
+  /// True when lat/lng come from a real GPS fix. Rejects the unset default
+  /// (1.1, 1.1) and the "user declined GPS" marker (lat 1.2).
+  static bool get hasValidLocation =>
+      !(lat == DEFAULT_LAT && lng == DEFAULT_LNG) && lat != 1.2;
 
   static double get offset => instance.getDouble(OFFSET) ?? DEFAULT_OFFSET;
   static set offset(double value) => instance.setDouble(OFFSET, value);
@@ -489,11 +502,6 @@ class Prefs {
   static int get vitDSky => instance.getInt(VITD_SKY) ?? DEFAULT_VITD_SKY;
   static set vitDSky(int value) => instance.setInt(VITD_SKY, value);
 
-  static double get vitDWeightKg =>
-      instance.getDouble(VITD_WEIGHT_KG) ?? DEFAULT_VITD_WEIGHT_KG;
-  static set vitDWeightKg(double value) =>
-      instance.setDouble(VITD_WEIGHT_KG, value);
-
   static int get vitDPosture => instance.getInt(VITD_POSTURE) ?? 0;
   static set vitDPosture(int value) => instance.setInt(VITD_POSTURE, value);
 
@@ -523,6 +531,79 @@ class Prefs {
   static int get vitDCustomTarget => instance.getInt(VITD_CUSTOM_TARGET) ?? 0;
   static set vitDCustomTarget(int value) =>
       instance.setInt(VITD_CUSTOM_TARGET, value);
+
+  static String get countryCode =>
+      instance.getString(COUNTRY_CODE) ?? DEFAULT_COUNTRY_CODE;
+  static set countryCode(String value) =>
+      instance.setString(COUNTRY_CODE, value);
+
+  /// Debug: force USA mode for testing. false = use real detection.
+  static bool get vitDDebugForceUsa =>
+      instance.getBool(VITD_DEBUG_FORCE_USA) ?? false;
+  static set vitDDebugForceUsa(bool value) =>
+      instance.setBool(VITD_DEBUG_FORCE_USA, value);
+
+  static const Set<String> _usTerritoryCodes = {
+    'US', 'USA',
+    'PR', 'PRI', // Puerto Rico
+    'VI', 'VIR', // U.S. Virgin Islands
+    'GU', 'GUM', // Guam
+    'AS', 'ASM', // American Samoa
+    'MP', 'MNP', // Northern Mariana Islands
+    'UM', 'UMI', // U.S. Minor Outlying Islands
+  };
+
+  /// Tests whether coordinates fall within any US territory bounding box.
+  /// Boxes are generous on purpose: a false "USA" only hides the IU numbers.
+  static bool inUsaBounds(double lat, double lng) {
+    bool box(double s, double n, double w, double e) =>
+        lat >= s && lat <= n && lng >= w && lng <= e;
+    // Lower 48
+    if (box(24.3, 49.5, -125.0, -66.5)) return true;
+    // Alaska (incl. Aleutians across the antimeridian)
+    if (box(51.0, 71.6, -180.0, -129.0) || box(51.0, 53.5, 172.0, 180.0)) {
+      return true;
+    }
+    // Hawaii incl. Midway and the NW Hawaiian Islands
+    if (box(18.5, 28.5, -178.5, -154.5)) return true;
+    // Puerto Rico & US Virgin Islands
+    if (box(17.5, 18.6, -67.5, -64.5)) return true;
+    // Navassa Island
+    if (box(18.3, 18.5, -75.1, -74.9)) return true;
+    // Guam & Northern Mariana Islands
+    if (box(13.0, 21.0, 144.0, 146.5)) return true;
+    // Wake Island
+    if (box(19.1, 19.4, 166.4, 166.8)) return true;
+    // American Samoa incl. Swains Island and Rose Atoll
+    if (box(-15.0, -11.0, -171.5, -168.0)) return true;
+    // Johnston Atoll
+    if (box(16.6, 16.9, -169.7, -169.3)) return true;
+    // Palmyra Atoll & Kingman Reef
+    if (box(5.7, 6.5, -162.6, -161.9)) return true;
+    // Howland, Baker & Jarvis Islands
+    if (box(-0.5, 0.9, -176.7, -159.9)) return true;
+    return false;
+  }
+
+  /// Whether the user may be in the USA or its territories (IU estimates
+  /// are then hidden). USA if EITHER the GPS fix is inside a US box OR the
+  /// country code (reverse geocoding / IP lookup) is a US code.
+  /// Fails closed (returns true) when location and country are both unknown.
+  static bool get isUsaLocation {
+    if (vitDDebugForceUsa) return true;
+
+    final gpsKnown = hasValidLocation;
+    if (gpsKnown && inUsaBounds(lat, lng)) return true;
+
+    final c = countryCode.toUpperCase().trim();
+    if (_usTerritoryCodes.contains(c)) return true;
+
+    // Neither signal says USA: unlock only if at least one signal is known.
+    if (gpsKnown || c.isNotEmpty) return false;
+
+    // No location and no country yet → fail closed.
+    return true;
+  }
 
   /// First day the calculator was used (local midnight, ms), 0 if unset.
   static int get vitDFirstUse => instance.getInt(VITD_FIRST_USE) ?? 0;

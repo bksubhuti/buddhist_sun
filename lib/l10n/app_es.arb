@@ -458,10 +458,15 @@
   "vitDSkyPartly": "Parcialmente nublado",
   "vitDSkyMostly": "Mayormente nublado",
   "vitDSkyOvercast": "Cubierto",
-  "vitDWeightTitle": "Peso corporal",
-  "vitDWeightSubtitle": "Se usa para el área de piel y la necesidad diaria.",
-  "vitDGoalFromWeight": "Necesidad diaria estimada: {iu} IU (unas 20 IU por kg, 600–4.000 IU).",
-  "@vitDGoalFromWeight": {
+  "vitDBodySizeTitle": "Tamaño corporal",
+  "vitDBodySizeSubtitle": "Todas las cifras son para un adulto medio (unos 68 kg / 150 lb). Use esta tabla para ajustarlas mentalmente.",
+  "vitDBodySizeWeight": "Peso",
+  "vitDBodySizeRate": "Vitamina D producida",
+  "vitDBodySizeNeed": "Necesidad diaria",
+  "vitDBodySizeTime": "Tiempo al sol",
+  "vitDBodySizeNote": "La app no pregunta su tamaño corporal, así que no guarda datos personales. Para usar su propia cifra, busque su peso en la tabla y fije su necesidad diaria como su objetivo propio más abajo. Un cuerpo más grande produce más vitamina D por minuto, pero también necesita más, así que el tiempo al sol cambia muy poco. El tiempo hasta la quemadura no depende del tamaño corporal.",
+  "vitDGoalStandard": "Objetivo diario: {iu} IU (unas 20 IU por kg para un adulto medio).",
+  "@vitDGoalStandard": {
     "placeholders": {
       "iu": {
         "type": "String"
@@ -480,7 +485,7 @@
   "vitDGuideMonksTitle": "Consejos para la Sangha",
   "vitDGuideMonks": "Descubrir el hombro derecho o los brazos mientras se está sentado o caminando en el monasterio durante un rato cerca del mediodía suele ser suficiente para los tipos de piel más oscuros en los trópicos. La cabeza rapada también queda expuesta, así que proteja el cuero cabelludo en las rondas largas de limosna. La piel más oscura necesita más tiempo para obtener la misma vitamina D, pero se quema con menos facilidad. En climas o estaciones frías en que el sol se mantiene por debajo de 45°, el cuerpo no puede producir mucha vitamina D — consulte a un médico sobre alimentos o suplementos.",
   "vitDGuideMethodTitle": "Cómo se calcula",
-  "vitDGuideMethod": "El ángulo solar se obtiene de su ubicación GPS y de la hora. El índice UV se estima para un cielo despejado (UVI ≈ 12.5 × sin(angle)^2.42) y se reduce según las nubes. La dosis de quemadura (MED) depende del tipo de piel. Se producen unas 10.000 IU cuando todo el cuerpo recibe una dosis de quemadura; esto se ajusta según el área de piel descubierta y su tamaño corporal (a partir del peso). La eficiencia de la vitamina D disminuye cuando el sol está por debajo de 45° y es cero por debajo de 15°. La producción se detiene cuando la dosis del día alcanza una dosis de quemadura. Los valores reales varían con el ozono, la altitud, la contaminación del aire, la edad y la salud — tome estas cifras como guías aproximadas.",
+  "vitDGuideMethod": "El ángulo solar se obtiene de su ubicación GPS y de la hora. El índice UV se estima para un cielo despejado (UVI ≈ 12.5 × sin(angle)^2.42) y se reduce según las nubes. La dosis de quemadura (MED) depende del tipo de piel. Se producen unas 10.000 IU cuando todo el cuerpo recibe una dosis de quemadura; esto se ajusta según el área de piel descubierta. Todas las cantidades son para un adulto medio. La eficiencia de la vitamina D disminuye cuando el sol está por debajo de 45° y es cero por debajo de 15°. La producción se detiene cuando la dosis del día alcanza una dosis de quemadura. Los valores reales varían con el ozono, la altitud, la contaminación del aire, la edad y la salud — tome estas cifras como guías aproximadas.",
   "vitDDisclaimer": "Aviso médico: esta calculadora ofrece solo estimaciones educativas aproximadas. No es un consejo médico y no puede medir su nivel de vitamina D. La exposición al sol conlleva riesgos, como quemaduras solares y cáncer de piel. Consulte a un médico cualificado sobre análisis de vitamina D, suplementos o problemas de la piel, especialmente si tiene la piel clara, antecedentes de cáncer de piel o toma medicamentos fotosensibilizantes.",
   "vitDTabMonk": "Monje",
   "vitDTabLay": "Hombre",
@@ -515,7 +520,7 @@
     }
   },
   "vitDTargetTitle": "Objetivo diario",
-  "vitDTargetAuto": "Objetivo automático según el peso",
+  "vitDTargetAuto": "Objetivo estándar para un adulto medio",
   "vitDPostureTitle": "Postura",
   "vitDPostureSubtitle": "Acostarse al mediodía orienta más piel hacia el sol.",
   "vitDPostureStanding": "De pie",
@@ -569,7 +574,7 @@
   "vitDStartTooLate": "Demasiado tarde — sol bajo 45°",
   "vitDStartNo45": "Hoy el sol no llega a 45°",
   "vitDTodayInfoTitle": "Sobre la estimación de hoy",
-  "vitDTodayInfo": "El total de hoy suma la vitamina D estimada de todas las sesiones de hoy, incluida la que está en curso. Se reinicia a medianoche.\n\nEl porcentaje lo compara con tu objetivo diario de {iu} IU. Llegar al 100% basta para el día; más sol aporta poco y aumenta la dosis de quemadura.\n\nSon estimaciones aproximadas en las mismas unidades que los suplementos: unas 1.000 IU de sol tienen aproximadamente el mismo efecto en sangre que una pastilla de 1.000 IU. Las cantidades reales varían con la bruma, el ozono, la edad y cuánta piel mira al sol.\n\nLa recomendación oficial es 600 IU al día (800 IU a partir de los 70 años). El objetivo automático usa unas 20 IU por kg de peso; puedes fijar el tuyo en Ajustes de sol.\n\nLa vitamina D se almacena en el cuerpo durante semanas, así que el total semanal importa más que cualquier día concreto.",
+  "vitDTodayInfo": "El total de hoy suma la vitamina D estimada de todas las sesiones de hoy, incluida la que está en curso. Se reinicia a medianoche.\n\nEl porcentaje lo compara con tu objetivo diario de {iu} IU. Llegar al 100% basta para el día; más sol aporta poco y aumenta la dosis de quemadura.\n\nSon estimaciones aproximadas en las mismas unidades que los suplementos: unas 1.000 IU de sol tienen aproximadamente el mismo efecto en sangre que una pastilla de 1.000 IU. Las cantidades reales varían con la bruma, el ozono, la edad y cuánta piel mira al sol.\n\nLa recomendación oficial es 600 IU al día (800 IU a partir de los 70 años). El objetivo estándar es de 1.400 IU para un adulto medio. Puedes fijar el tuyo en Ajustes de sol, donde la tabla de Tamaño corporal muestra cómo ajustarlo a tu tamaño.\n\nLa vitamina D se almacena en el cuerpo durante semanas, así que el total semanal importa más que cualquier día concreto.",
   "@vitDTodayInfo": {
     "placeholders": {
       "iu": {
@@ -639,6 +644,6 @@
   "vitDUvScale": "Ozono, altitud y bruma hoy: ×{f} respecto a la estimación sin conexión.",
   "vitDUvAttribution": "Datos UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Índice UV",
-  "vitDUvInfo": "El índice UV es la intensidad de la luz solar que quema la piel en este momento. Determina el tiempo hasta la quemadura y el ritmo de vitamina D.\n\nSin conexión: se estima a partir del ángulo del sol con cielo despejado y se reduce según las nubes que elija.\n\nEn línea (Open-Meteo): además se corrige según el ozono, la altitud y la bruma de hoy en su ubicación. Elija “Pronóstico” en Cielo para usar las nubes pronosticadas, o indique las nubes usted mismo.\n\n0–2 bajo • 3–5 moderado • 6–7 alto • 8–10 muy alto • 11+ extremo",
+  "vitDUvInfo": "El índice UV es la intensidad de la luz solar que quema la piel en este momento. Determina el tiempo hasta la quemadura y el ritmo de vitamina D.\n\nSin conexión: se estima a partir del ángulo del sol con cielo despejado y se reduce según las nubes que elija.\n\nEn línea (Open-Meteo): además se corrige según el ozono, la altitud y la bruma de hoy en su ubicación. Elija “Pronóstico” en Cielo para usar las nubes pronosticadas, o indique las nubes usted mismo.\n\n0–2 bajo • 3–5 moderado • 6–7 alto • 8–10 muy alto • 11+ extremo\n\nLos valores UV son calculados, no medidos. Distintas aplicaciones pueden diferir un 10–20%. Estamos comprobando estas cifras con mediciones en tierra en Sri Lanka.",
   "vitDUvSourceOnline": "En línea"
 }

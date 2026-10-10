@@ -648,10 +648,15 @@
   "vitDSkyPartly": "Partly cloudy",
   "vitDSkyMostly": "Mostly cloudy",
   "vitDSkyOvercast": "Overcast",
-  "vitDWeightTitle": "Body weight",
-  "vitDWeightSubtitle": "Used for skin area and daily need.",
-  "vitDGoalFromWeight": "Estimated daily need: {iu} IU (about 20 IU per kg, 600–4,000 IU).",
-  "@vitDGoalFromWeight": {
+  "vitDBodySizeTitle": "Body size",
+  "vitDBodySizeSubtitle": "All numbers are for an average adult (about 68 kg / 150 lb). Use this chart to adjust them in your mind.",
+  "vitDBodySizeWeight": "Weight",
+  "vitDBodySizeRate": "Vitamin D made",
+  "vitDBodySizeNeed": "Daily need",
+  "vitDBodySizeTime": "Sun time",
+  "vitDBodySizeNote": "The app does not ask for your body size, so it keeps no personal data. To use your own number, find your weight in the chart and set its daily need as your own target below. A larger body makes more vitamin D per minute but also needs more, so the sun time changes only a little. Sunburn time does not depend on body size.",
+  "vitDGoalStandard": "Daily target: {iu} IU (about 20 IU per kg for an average adult).",
+  "@vitDGoalStandard": {
     "placeholders": {
       "iu": {
         "type": "String"
@@ -670,7 +675,7 @@
   "vitDGuideMonksTitle": "Tips for the Sangha",
   "vitDGuideMonks": "Uncovering the right shoulder or the arms while sitting or walking in the monastery for a short time around midday is usually enough for darker skin types in the tropics. A shaved head is also exposed, so protect the scalp on long alms rounds. Darker skin needs longer for the same vitamin D but burns less easily. In cold climates or seasons when the sun stays below 45°, the body cannot make much vitamin D — ask a doctor about food or supplements.",
   "vitDGuideMethodTitle": "How this is estimated",
-  "vitDGuideMethod": "Sun angle comes from your GPS location and the time. UV index is estimated for a clear sky (UVI ≈ 12.5 × sin(angle)^2.42) and reduced for clouds. Burn dose (MED) depends on skin type. About 10,000 IU is made when the whole body receives one burn dose; this is scaled by the uncovered skin area and your body size (from weight). Vitamin D efficiency falls when the sun is below 45° and is zero below 15°. Production stops as the day's dose reaches one burn dose. Real values vary with ozone, altitude, air pollution, age and health — treat these numbers as rough guides.",
+  "vitDGuideMethod": "Sun angle comes from your GPS location and the time. UV index is estimated for a clear sky (UVI ≈ 12.5 × sin(angle)^2.42) and reduced for clouds. Burn dose (MED) depends on skin type. About 10,000 IU is made when the whole body receives one burn dose; this is scaled by the uncovered skin area. All amounts are for an average adult. Vitamin D efficiency falls when the sun is below 45° and is zero below 15°. Production stops as the day's dose reaches one burn dose. Real values vary with ozone, altitude, air pollution, age and health — treat these numbers as rough guides.",
   "vitDDisclaimer": "Medical disclaimer: this calculator gives rough educational estimates only. It is not medical advice and cannot measure your vitamin D level. Sun exposure carries risks, including sunburn and skin cancer. Consult a qualified doctor about vitamin D testing, supplements, or skin concerns, especially if you have fair skin, a history of skin cancer, or take light-sensitising medicine.",
   "vitDTabMonk": "Monk",
   "vitDTabLay": "Man",
@@ -705,7 +710,7 @@
     }
   },
   "vitDTargetTitle": "Daily target",
-  "vitDTargetAuto": "Automatic target from weight",
+  "vitDTargetAuto": "Standard target for an average adult",
   "vitDPostureTitle": "Posture",
   "vitDPostureSubtitle": "Lying down at midday turns more skin toward the sun.",
   "vitDPostureStanding": "Standing",
@@ -759,7 +764,7 @@
   "vitDStartTooLate": "Too late — sun below 45°",
   "vitDStartNo45": "No 45° sun today",
   "vitDTodayInfoTitle": "About today's estimate",
-  "vitDTodayInfo": "Today's total adds up the vitamin D estimated from all of today's sessions, including one that is running. It resets at midnight.\n\nThe percentage compares it with your daily target of {iu} IU. Reaching 100% is enough for the day; more sun adds little and raises the burn dose.\n\nThese are rough estimates in the same units as supplements: about 1,000 IU from the sun has roughly the same effect on blood levels as a 1,000 IU tablet. Real amounts vary with haze, ozone, age and how much skin faces the sun.\n\nOfficial advice is 600 IU a day (800 IU over age 70). The automatic target here uses about 20 IU per kg of body weight; you can set your own in Sun Settings.\n\nVitamin D is stored in the body for weeks, so the weekly total matters more than any single day.",
+  "vitDTodayInfo": "Today's total adds up the vitamin D estimated from all of today's sessions, including one that is running. It resets at midnight.\n\nThe percentage compares it with your daily target of {iu} IU. Reaching 100% is enough for the day; more sun adds little and raises the burn dose.\n\nThese are rough estimates in the same units as supplements: about 1,000 IU from the sun has roughly the same effect on blood levels as a 1,000 IU tablet. Real amounts vary with haze, ozone, age and how much skin faces the sun.\n\nOfficial advice is 600 IU a day (800 IU over age 70). The standard target is 1,400 IU for an average adult. You can set your own in Sun Settings, where the Body size chart shows how to adjust for your size.\n\nVitamin D is stored in the body for weeks, so the weekly total matters more than any single day.",
   "@vitDTodayInfo": {
     "placeholders": {
       "iu": {
@@ -831,6 +836,6 @@
   },
   "vitDUvAttribution": "UV data: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "UV index",
-  "vitDUvInfo": "The UV index is the strength of sunburning sunlight right now. It sets the burn time and the vitamin D rate.\n\nOffline: estimated from the sun's angle for a clear sky, then reduced for the clouds you choose.\n\nOnline (Open-Meteo): also corrected for today's ozone, altitude and haze at your location. Choose “Forecast” under Sky to use forecast clouds, or set the clouds yourself.\n\n0–2 low • 3–5 moderate • 6–7 high • 8–10 very high • 11+ extreme.",
+  "vitDUvInfo": "The UV index is the strength of sunburning sunlight right now. It sets the burn time and the vitamin D rate.\n\nOffline: estimated from the sun's angle for a clear sky, then reduced for the clouds you choose.\n\nOnline (Open-Meteo): also corrected for today's ozone, altitude and haze at your location. Choose “Forecast” under Sky to use forecast clouds, or set the clouds yourself.\n\n0–2 low • 3–5 moderate • 6–7 high • 8–10 very high • 11+ extreme.\n\nUV values are calculated, not measured. Different apps can differ by 10–20%. We are in the process of checking these numbers against ground measurements in Sri Lanka.",
   "vitDUvSourceOnline": "Online"
 }

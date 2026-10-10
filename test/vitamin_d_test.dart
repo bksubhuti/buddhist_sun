@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/models/vitd_body_size_chart.dart';
 import 'package:buddhist_sun/src/provider/vitamin_d_provider.dart';
 import 'package:buddhist_sun/src/services/vitamin_d_calc.dart';
 
@@ -17,6 +19,9 @@ void main() {
 
   setUp(() async {
     await Prefs.instance.clear();
+    Prefs.lat = 6.9271;
+    Prefs.lng = 79.8612;
+    Prefs.countryCode = 'LK';
   });
 
   group('vitamin D model', () {
@@ -34,14 +39,54 @@ void main() {
       expect(vitaminDElevationEfficiency(15), 0.0);
     });
 
-    test('body surface area for 70 kg is about 1.83 m²', () {
-      expect(bodySurfaceArea(70), closeTo(1.83, 0.02));
+    test('standard daily target is for an average adult', () {
+      expect(vitDStandardDailyIu, 1400);
     });
 
-    test('daily goal scales with weight and is clamped', () {
-      expect(suggestedDailyIu(60), 1200);
-      expect(suggestedDailyIu(20), 600);
-      expect(suggestedDailyIu(300), 4000);
+    // Body size is not an input. These tests only check the static chart
+    // shown in Sun Settings, using the published body surface area formula
+    // (Livingston & Lee) which exists here in the test, not in the app.
+    double bsa(double kg) => 0.1173 * math.pow(kg, 0.6466);
+    const double avgBsa = 1.8; // average adult, about 68 kg
+    String pct(double ratio) {
+      final p = ((ratio - 1) * 100).round();
+      if (p == 0) return '—';
+      return p > 0 ? '+$p%' : '−${-p}%';
+    }
+
+    test('body size chart matches the formula for each weight', () {
+      for (final (kg, lb, made, need, time) in vitDBodySizeChart) {
+        expect(lb, (kg * 2.20462).round(), reason: '$kg kg in lb');
+        expect(need, (kg * 20 / 100).round() * 100, reason: '$kg kg need');
+        final rate = bsa(kg.toDouble()) / avgBsa;
+        expect(made, pct(rate), reason: '$kg kg made');
+        final timeRatio = (need / vitDStandardDailyIu) / rate;
+        expect(time, pct(timeRatio), reason: '$kg kg time');
+      }
+    });
+
+    test('example weights: sun time changes little, burn time not at all',
+        () {
+      // Lying down, light skin (type 2), upper body bare, high sun.
+      final r = computeVitDRate(
+        elevationDeg: 75,
+        skin: VitDSkinType.type2,
+        coverage: VitDCoverage.upperBare,
+        sky: VitDSky.clear,
+        posture: VitDPosture.lying,
+      );
+      final avgMinutes = vitDStandardDailyIu / r.iuPerMinute;
+      for (final kg in [45.0, 50.0, 60.0, 68.3, 75.0, 90.0, 110.0]) {
+        // What a weight-based model would have said for this person.
+        final personalRate = r.iuPerMinute * bsa(kg) / avgBsa;
+        final personalNeed = (kg * 20 / 100).round() * 100;
+        final personalMinutes = personalNeed / personalRate;
+        // The standard (no body size) time is within 20% for 45–110 kg.
+        expect(personalMinutes / avgMinutes, inInclusiveRange(0.8, 1.2),
+            reason: '$kg kg');
+      }
+      // Burn time is the same for everyone with this skin and sun.
+      expect(r.minutesToBurn, isNotNull);
     });
 
     test('noon dose is plausible for skin type 4, one shoulder bare', () {
@@ -50,7 +95,6 @@ void main() {
         skin: VitDSkinType.type4,
         coverage: VitDCoverage.oneShoulder,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       // ~12 UVI → burn in roughly 25 minutes.
       expect(r.minutesToBurn!, inInclusiveRange(20, 35));
@@ -65,8 +109,7 @@ void main() {
             skin: VitDSkinType.type4,
             coverage: VitDCoverage.oneShoulder,
             sky: VitDSky.clear,
-            weightKg: 60,
-          );
+              );
       final noon = at(80);
       final afternoon = at(30);
       expect(noon.iuPerMinute / noon.medPerMinute,
@@ -79,8 +122,7 @@ void main() {
             skin: VitDSkinType.type3,
             coverage: c,
             sky: VitDSky.clear,
-            weightKg: 60,
-          ).iuPerMinute;
+              ).iuPerMinute;
       expect(iu(VitDCoverage.fullRobe), lessThan(iu(VitDCoverage.oneShoulder)));
       expect(iu(VitDCoverage.oneShoulder), lessThan(iu(VitDCoverage.upperBare)));
       expect(iu(VitDCoverage.upperBare), lessThan(iu(VitDCoverage.bathingCloth)));
@@ -126,7 +168,6 @@ void main() {
         skin: VitDSkinType.type5,
         coverage: VitDCoverage.oneShoulder,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       final m = minutesToProduce(
           targetIu: 500,
@@ -140,7 +181,6 @@ void main() {
         skin: VitDSkinType.type5,
         coverage: VitDCoverage.oneShoulder,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       expect(
           minutesToProduce(
@@ -157,7 +197,6 @@ void main() {
         skin: VitDSkinType.type2,
         coverage: VitDCoverage.upperBare,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       final secsToHalf = 0.5 / r.medPerMinute * 60;
       final first = integrateExposure(r, secsToHalf, 0);
@@ -174,7 +213,6 @@ void main() {
         skin: VitDSkinType.type2,
         coverage: VitDCoverage.oneShoulder,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       final four = integrateExposure(r, 240, 0);
       final left = minutesToProduce(
@@ -199,7 +237,6 @@ void main() {
         skin: VitDSkinType.type2,
         coverage: VitDCoverage.upperBare,
         sky: VitDSky.clear,
-        weightKg: 60,
       );
       final inc = integrateExposure(r, 600, 1.0);
       expect(inc.iu, 0);
@@ -307,10 +344,9 @@ void main() {
       c.dispose();
     });
 
-    test('custom target overrides weight, 0 returns to auto', () {
+    test('custom target overrides the standard, 0 returns to standard', () {
       clock = DateTime(2026, 10, 2, 12, 0);
       final c = make();
-      c.setWeightKg(70);
       expect(c.dailyGoalIu, 1400);
       c.setCustomTarget(2000);
       expect(c.dailyGoalIu, 2000);
@@ -490,6 +526,106 @@ void main() {
       c.stop();
       expect(c.todayIu, 0);
       c.dispose();
+    });
+
+    test('USA mode zeros out IU and activates safe sun timer', () {
+      Prefs.countryCode = 'US';
+      expect(Prefs.isUsaLocation, isTrue);
+      clock = DateTime(2026, 10, 2, 12, 0);
+      final c = make();
+      expect(c.isUsa, isTrue);
+      expect(c.rate.iuPerMinute, 0.0);
+      expect(c.rate.medPerMinute, greaterThan(0));
+      c.start();
+      clock = clock.add(const Duration(minutes: 5));
+      c.refresh();
+      expect(c.activeIu, 0.0);
+      expect(c.activeMed, greaterThan(0));
+      c.stop();
+      expect(c.todayIu, 0.0);
+      expect(c.todaySessions.first.iu, 0.0);
+      expect(c.todaySessions.first.med, greaterThan(0));
+      c.dispose();
+    });
+
+    test('US territories are detected as USA location', () {
+      for (final code in ['PR', 'GU', 'VI', 'AS', 'MP', 'USA']) {
+        Prefs.countryCode = code;
+        expect(Prefs.isUsaLocation, isTrue, reason: 'Failed for $code');
+      }
+    });
+
+    test('fail-closed behavior when location is completely unknown', () {
+      Prefs.countryCode = '';
+      Prefs.lat = 1.1;
+      Prefs.lng = 1.1;
+      // Fails closed to USA mode
+      expect(Prefs.isUsaLocation, isTrue);
+    });
+
+    test('traveling outside USA unlocks once GPS and country agree', () {
+      // User was in USA
+      Prefs.countryCode = 'US';
+      Prefs.lat = 40.7128; // New York
+      Prefs.lng = -74.0060;
+      expect(Prefs.isUsaLocation, isTrue);
+
+      // New GPS fix in Colombo, country code not yet refreshed: still USA
+      Prefs.lat = 6.9271;
+      Prefs.lng = 79.8612;
+      expect(Prefs.isUsaLocation, isTrue);
+
+      // Reverse geocoding / IP lookup updates the country: unlocked
+      Prefs.countryCode = 'LK';
+      expect(Prefs.isUsaLocation, isFalse);
+
+      // Thailand (Bangkok)
+      Prefs.lat = 13.7563;
+      Prefs.lng = 100.5018;
+      Prefs.countryCode = 'TH';
+      expect(Prefs.isUsaLocation, isFalse);
+
+      // Back to California: GPS alone is enough, even with a stale code
+      Prefs.lat = 37.7749;
+      Prefs.lng = -122.4194;
+      expect(Prefs.isUsaLocation, isTrue);
+    });
+
+    test('declined GPS marker is not treated as a real location', () {
+      Prefs.lat = 1.2; // set when the user cancels the GPS prompt
+      Prefs.lng = 1.1;
+      expect(Prefs.hasValidLocation, isFalse);
+      Prefs.countryCode = '';
+      expect(Prefs.isUsaLocation, isTrue);
+      Prefs.countryCode = 'US';
+      expect(Prefs.isUsaLocation, isTrue);
+      Prefs.countryCode = 'LK';
+      expect(Prefs.isUsaLocation, isFalse);
+    });
+
+    test('US country code wins over a non-US GPS fix', () {
+      Prefs.lat = 6.9271; // stale Colombo fix
+      Prefs.lng = 79.8612;
+      Prefs.countryCode = 'US';
+      expect(Prefs.isUsaLocation, isTrue);
+    });
+
+    test('outlying US islands are inside the US bounds', () {
+      const points = {
+        'Rose Atoll': [-14.55, -168.15],
+        'Swains Island': [-11.05, -171.08],
+        'Wake Island': [19.28, 166.65],
+        'Johnston Atoll': [16.73, -169.53],
+        'Palmyra Atoll': [5.88, -162.08],
+        'Navassa Island': [18.40, -75.01],
+        'Attu, Alaska': [52.93, 173.0],
+        'Key West': [24.55, -81.78],
+      };
+      points.forEach((name, p) {
+        expect(Prefs.inUsaBounds(p[0], p[1]), isTrue, reason: name);
+      });
+      expect(Prefs.inUsaBounds(6.9271, 79.8612), isFalse); // Colombo
+      expect(Prefs.inUsaBounds(13.7563, 100.5018), isFalse); // Bangkok
     });
   });
 }

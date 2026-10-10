@@ -662,10 +662,15 @@
   "vitDSkyPartly": "Ít mây",
   "vitDSkyMostly": "Nhiều mây",
   "vitDSkyOvercast": "U ám",
-  "vitDWeightTitle": "Cân nặng",
-  "vitDWeightSubtitle": "Dùng để tính diện tích da và nhu cầu hằng ngày.",
-  "vitDGoalFromWeight": "Nhu cầu hằng ngày ước tính: {iu} IU (khoảng 20 IU mỗi kg, 600–4.000 IU).",
-  "@vitDGoalFromWeight": {
+  "vitDBodySizeTitle": "Kích thước cơ thể",
+  "vitDBodySizeSubtitle": "Mọi con số đều tính cho một người lớn trung bình (khoảng 68 kg / 150 lb). Dùng bảng này để tự điều chỉnh trong đầu.",
+  "vitDBodySizeWeight": "Cân nặng",
+  "vitDBodySizeRate": "Vitamin D tạo ra",
+  "vitDBodySizeNeed": "Nhu cầu hằng ngày",
+  "vitDBodySizeTime": "Thời gian phơi nắng",
+  "vitDBodySizeNote": "Ứng dụng không hỏi kích thước cơ thể của bạn nên không lưu dữ liệu cá nhân nào. Để dùng con số của riêng bạn, hãy tìm cân nặng của bạn trong bảng và đặt nhu cầu hằng ngày tương ứng làm mục tiêu riêng ở bên dưới. Cơ thể lớn hơn tạo nhiều vitamin D hơn mỗi phút nhưng cũng cần nhiều hơn, nên thời gian phơi nắng chỉ thay đổi một chút. Thời gian đến khi cháy nắng không phụ thuộc vào kích thước cơ thể.",
+  "vitDGoalStandard": "Mục tiêu hằng ngày: {iu} IU (khoảng 20 IU mỗi kg cho một người lớn trung bình).",
+  "@vitDGoalStandard": {
     "placeholders": {
       "iu": {
         "type": "String"
@@ -684,7 +689,7 @@
   "vitDGuideMonksTitle": "Lời khuyên cho chư Tăng",
   "vitDGuideMonks": "Để trần vai phải hoặc cánh tay khi ngồi hay kinh hành trong tu viện một thời gian ngắn quanh giữa trưa thường là đủ đối với người da sẫm màu ở vùng nhiệt đới. Đầu cạo cũng bị phơi nắng, nên hãy che da đầu khi đi khất thực đường dài. Da sẫm màu cần lâu hơn để tạo cùng lượng vitamin D nhưng ít bị cháy nắng hơn. Ở vùng lạnh hoặc vào mùa mặt trời luôn dưới 45°, cơ thể không tạo được nhiều vitamin D — hãy hỏi bác sĩ về thực phẩm hoặc viên bổ sung.",
   "vitDGuideMethodTitle": "Cách ước tính",
-  "vitDGuideMethod": "Góc mặt trời được tính từ vị trí GPS và thời gian. Chỉ số UV được ước tính cho trời quang (UVI ≈ 12.5 × sin(angle)^2.42) và giảm khi có mây. Liều cháy nắng (MED) phụ thuộc vào loại da. Khoảng 10.000 IU được tạo ra khi toàn thân nhận một liều cháy nắng; con số này được điều chỉnh theo diện tích da không che và kích thước cơ thể (từ cân nặng). Hiệu suất vitamin D giảm khi mặt trời dưới 45° và bằng không khi dưới 15°. Việc tạo vitamin D dừng khi liều trong ngày đạt một liều cháy nắng. Giá trị thực tế thay đổi theo tầng ôzôn, độ cao, ô nhiễm không khí, tuổi tác và sức khỏe — hãy xem các con số này chỉ là hướng dẫn sơ bộ.",
+  "vitDGuideMethod": "Góc mặt trời được tính từ vị trí GPS và thời gian. Chỉ số UV được ước tính cho trời quang (UVI ≈ 12.5 × sin(angle)^2.42) và giảm khi có mây. Liều cháy nắng (MED) phụ thuộc vào loại da. Khoảng 10.000 IU được tạo ra khi toàn thân nhận một liều cháy nắng; con số này được điều chỉnh theo diện tích da không che. Mọi lượng đều tính cho một người lớn trung bình. Hiệu suất vitamin D giảm khi mặt trời dưới 45° và bằng không khi dưới 15°. Việc tạo vitamin D dừng khi liều trong ngày đạt một liều cháy nắng. Giá trị thực tế thay đổi theo tầng ôzôn, độ cao, ô nhiễm không khí, tuổi tác và sức khỏe — hãy xem các con số này chỉ là hướng dẫn sơ bộ.",
   "vitDDisclaimer": "Miễn trừ trách nhiệm y tế: công cụ này chỉ đưa ra ước tính sơ bộ mang tính giáo dục. Đây không phải là lời khuyên y tế và không thể đo được mức vitamin D của quý vị. Phơi nắng có rủi ro, bao gồm cháy nắng và ung thư da. Hãy tham khảo bác sĩ có chuyên môn về xét nghiệm vitamin D, viên bổ sung hoặc các vấn đề về da, đặc biệt nếu quý vị có da trắng, có tiền sử ung thư da, hoặc đang dùng thuốc làm da nhạy cảm với ánh sáng.",
   "vitDTabMonk": "Tu sĩ",
   "vitDTabLay": "Nam",
@@ -719,7 +724,7 @@
     }
   },
   "vitDTargetTitle": "Mục tiêu hằng ngày",
-  "vitDTargetAuto": "Mục tiêu tự động theo cân nặng",
+  "vitDTargetAuto": "Mục tiêu chuẩn cho người lớn trung bình",
   "vitDPostureTitle": "Tư thế",
   "vitDPostureSubtitle": "Nằm xuống vào giữa trưa giúp nhiều da hướng về mặt trời hơn.",
   "vitDPostureStanding": "Đứng",
@@ -773,7 +778,7 @@
   "vitDStartTooLate": "Muộn rồi — nắng dưới 45°",
   "vitDStartNo45": "Hôm nay nắng không đạt 45°",
   "vitDTodayInfoTitle": "Về ước tính hôm nay",
-  "vitDTodayInfo": "Tổng hôm nay cộng lượng vitamin D ước tính từ tất cả các lần phơi hôm nay, kể cả lần đang chạy. Tổng được đặt lại lúc nửa đêm.\n\nPhần trăm so sánh với mục tiêu hằng ngày của bạn là {iu} IU. Đạt 100% là đủ cho ngày đó; phơi thêm chỉ được thêm ít và làm tăng liều cháy nắng.\n\nĐây là ước tính sơ bộ, cùng đơn vị với thuốc bổ sung: khoảng 1.000 IU từ nắng có tác động lên nồng độ trong máu gần bằng một viên 1.000 IU. Lượng thực tế thay đổi theo sương mù, ôzôn, tuổi tác và lượng da hướng về mặt trời.\n\nKhuyến nghị chính thức là 600 IU mỗi ngày (800 IU nếu trên 70 tuổi). Mục tiêu tự động ở đây dùng khoảng 20 IU cho mỗi kg cân nặng; bạn có thể tự đặt mục tiêu trong Cài đặt nắng.\n\nVitamin D được dự trữ trong cơ thể nhiều tuần, nên tổng mỗi tuần quan trọng hơn bất kỳ ngày nào.",
+  "vitDTodayInfo": "Tổng hôm nay cộng lượng vitamin D ước tính từ tất cả các lần phơi hôm nay, kể cả lần đang chạy. Tổng được đặt lại lúc nửa đêm.\n\nPhần trăm so sánh với mục tiêu hằng ngày của bạn là {iu} IU. Đạt 100% là đủ cho ngày đó; phơi thêm chỉ được thêm ít và làm tăng liều cháy nắng.\n\nĐây là ước tính sơ bộ, cùng đơn vị với thuốc bổ sung: khoảng 1.000 IU từ nắng có tác động lên nồng độ trong máu gần bằng một viên 1.000 IU. Lượng thực tế thay đổi theo sương mù, ôzôn, tuổi tác và lượng da hướng về mặt trời.\n\nKhuyến nghị chính thức là 600 IU mỗi ngày (800 IU nếu trên 70 tuổi). Mục tiêu chuẩn là 1.400 IU cho một người lớn trung bình. Bạn có thể tự đặt mục tiêu trong Cài đặt nắng, nơi bảng Kích thước cơ thể cho thấy cách điều chỉnh theo vóc người của bạn.\n\nVitamin D được dự trữ trong cơ thể nhiều tuần, nên tổng mỗi tuần quan trọng hơn bất kỳ ngày nào.",
   "@vitDTodayInfo": {
     "placeholders": {
       "iu": {
@@ -843,6 +848,6 @@
   "vitDUvScale": "Ôzôn, độ cao và khói bụi hôm nay: ×{f} so với ước tính ngoại tuyến.",
   "vitDUvAttribution": "Dữ liệu UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Chỉ số UV",
-  "vitDUvInfo": "Chỉ số UV là cường độ ánh nắng gây cháy nắng ngay lúc này. Nó quyết định thời gian cháy nắng và tốc độ tạo vitamin D.\n\nNgoại tuyến: ước tính từ góc mặt trời cho trời quang, rồi giảm theo mây bạn chọn.\n\nTrực tuyến (Open-Meteo): còn điều chỉnh theo ôzôn, độ cao và khói bụi hôm nay tại vị trí của bạn. Chọn “Dự báo” ở mục Bầu trời để dùng mây dự báo, hoặc tự chọn mây.\n\n0–2 thấp • 3–5 trung bình • 6–7 cao • 8–10 rất cao • 11+ cực cao",
+  "vitDUvInfo": "Chỉ số UV là cường độ ánh nắng gây cháy nắng ngay lúc này. Nó quyết định thời gian cháy nắng và tốc độ tạo vitamin D.\n\nNgoại tuyến: ước tính từ góc mặt trời cho trời quang, rồi giảm theo mây bạn chọn.\n\nTrực tuyến (Open-Meteo): còn điều chỉnh theo ôzôn, độ cao và khói bụi hôm nay tại vị trí của bạn. Chọn “Dự báo” ở mục Bầu trời để dùng mây dự báo, hoặc tự chọn mây.\n\n0–2 thấp • 3–5 trung bình • 6–7 cao • 8–10 rất cao • 11+ cực cao\n\nGiá trị UV được tính toán, không phải đo trực tiếp. Các ứng dụng khác nhau có thể chênh lệch 10–20%. Chúng tôi đang đối chiếu các số liệu này với đo đạc mặt đất tại Sri Lanka.",
   "vitDUvSourceOnline": "Trực tuyến"
 }

@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:buddhist_sun/l10n/app_localizations.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/models/vitd_body_size_chart.dart';
 import 'package:buddhist_sun/src/provider/vitamin_d_provider.dart';
+import 'package:buddhist_sun/src/services/country_service.dart';
 import 'package:buddhist_sun/src/services/vitamin_d_calc.dart';
 import 'package:buddhist_sun/views/sun_shadow_view.dart';
 import 'package:buddhist_sun/widgets/vitamin_d_painters.dart';
@@ -35,7 +38,7 @@ class _VitaminDPageState extends State<VitaminDPage>
   VitDSunWindow? _window;
   DateTime _windowDay = DateTime(1970);
 
-  bool get _hasLocation => !(Prefs.lat == 1.1 && Prefs.lng == 1.1);
+  bool get _hasLocation => Prefs.hasValidLocation;
 
   @override
   void initState() {
@@ -45,6 +48,11 @@ class _VitaminDPageState extends State<VitaminDPage>
     _c = VitaminDController();
     _c.addListener(_onChange);
     _updateWindow();
+    // Re-check the region by IP: the saved GPS fix may be from another
+    // country (travel without a new GPS reading).
+    CountryService.getCountryCode().then((code) {
+      if (code != null && mounted && !_c.isRunning) _c.refresh();
+    });
     // Keep the sun display live when no session is running.
     _sunRefresh = Timer.periodic(const Duration(seconds: 30), (_) {
       if (!_c.isRunning) _c.refresh();
@@ -235,6 +243,10 @@ class _VitaminDPageState extends State<VitaminDPage>
               _buildNoLocationBanner(context),
               const SizedBox(height: 12),
             ],
+            if (_c.isUsa) ...[
+              _buildUsaBadge(context),
+              const SizedBox(height: 8),
+            ],
             _buildQuickBar(context),
             const SizedBox(height: 8),
             _buildUvRow(context),
@@ -284,6 +296,41 @@ class _VitaminDPageState extends State<VitaminDPage>
                 style: TextStyle(color: theme.colorScheme.onErrorContainer)),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUsaBadge(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primaryContainer.withAlpha(120),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.colorScheme.primary.withAlpha(80)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.shield_outlined,
+                size: 16, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'USA: Safe Sun & UV Timer',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -377,8 +424,9 @@ class _VitaminDPageState extends State<VitaminDPage>
                             ? '${t.vitDUvIndexLabel} (${t.vitDUvSourceOnline})'
                             : t.vitDUvIndex,
                         rate.uvIndex.toStringAsFixed(1)),
-                    stat(t.vitDRate,
-                        t.vitDIuPerMin(rate.iuPerMinute.toStringAsFixed(0))),
+                    if (!_c.isUsa)
+                      stat(t.vitDRate,
+                          t.vitDIuPerMin(rate.iuPerMinute.toStringAsFixed(0))),
                     stat(t.vitDEfficiency,
                         '${(rate.efficiency * 100).toStringAsFixed(0)}%'),
                     stat(
@@ -692,13 +740,16 @@ class _VitaminDPageState extends State<VitaminDPage>
                   textAlign: TextAlign.center,
                   style: theme.textTheme.labelMedium),
               const SizedBox(height: 2),
-              Text(value,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: primary,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  )),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(value,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: primary,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    )),
+              ),
               Text(sub,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall),
@@ -717,27 +768,38 @@ class _VitaminDPageState extends State<VitaminDPage>
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              targetCell(
-                catchUp ? t.vitDTodayTargetWeekly : t.vitDDailyTarget,
-                catchUp && todayTarget == 0
-                    ? '✓'
-                    : '${_iu(todayTarget.toDouble())} IU',
-                catchUp && todayTarget == 0
-                    ? t.vitDCoveredByWeek
-                    : t.vitDRemaining(_iu(remaining)),
-              ),
+              if (_c.isUsa)
+                targetCell(
+                  'Safe Sun Dose',
+                  '0.35 – 0.50 MED',
+                  '${(med * 100).toStringAsFixed(0)}% reached today',
+                )
+              else
+                targetCell(
+                  catchUp ? t.vitDTodayTargetWeekly : t.vitDDailyTarget,
+                  catchUp && todayTarget == 0
+                      ? '✓'
+                      : '${_iu(todayTarget.toDouble())} IU',
+                  catchUp && todayTarget == 0
+                      ? t.vitDCoveredByWeek
+                      : t.vitDRemaining(_iu(remaining)),
+                ),
               Container(
                   width: 1,
                   height: 56,
                   color: theme.colorScheme.outlineVariant),
               targetCell(
-                running ? t.vitDTargetTimeLeft : t.vitDTargetTime,
+                running
+                    ? (_c.isUsa ? 'Safe Time Left' : t.vitDTargetTimeLeft)
+                    : (_c.isUsa ? 'Safe Sun Time' : t.vitDTargetTime),
                 targetTimeText,
-                firstSession ? t.vitDTargetTimeFull : t.vitDTargetTimeRest,
+                _c.isUsa
+                    ? 'Time to ½ MED'
+                    : (firstSession ? t.vitDTargetTimeFull : t.vitDTargetTimeRest),
               ),
             ],
           ),
-          if (targetNote != null) ...[
+          if (targetNote != null && !_c.isUsa) ...[
             const SizedBox(height: 6),
             Text(targetNote,
                 textAlign: TextAlign.center,
@@ -787,15 +849,27 @@ class _VitaminDPageState extends State<VitaminDPage>
                         ),
                       ),
                     ),
-                    Text(
-                      t.vitDApproxIu(_iu(_c.activeIu)),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                          color: primary, fontWeight: FontWeight.bold),
-                    ),
-                    Text(t.vitDThisSession,
+                    if (!_c.isUsa) ...[
+                      Text(
+                        t.vitDApproxIu(_iu(_c.activeIu)),
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                            color: primary, fontWeight: FontWeight.bold),
+                      ),
+                      Text(t.vitDThisSession,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodySmall),
+                    ] else ...[
+                      Text(
+                        '${(_c.activeMed * 100).toStringAsFixed(0)}% MED',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                            color: primary, fontWeight: FontWeight.bold),
+                      ),
+                      const Text('Sunburn dose progress',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12)),
+                    ],
                   ],
                 ),
               ),
@@ -836,70 +910,72 @@ class _VitaminDPageState extends State<VitaminDPage>
             ),
           ),
           const Divider(height: 28),
-          // Today total vs need — tap anywhere for an explanation
-          _tapCard(
-            context,
-            onTap: () => _showInfo(
-                context,
-                Icons.wb_sunny_outlined,
-                t.vitDTodayInfoTitle,
-                t.vitDTodayInfo(_iu(todayTarget.toDouble()))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: Text(t.vitDToday,
-                                style: theme.textTheme.titleSmall
-                                    ?.copyWith(fontWeight: FontWeight.bold)),
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(Icons.info_outline_rounded,
-                              size: 18, color: primary),
-                        ],
+          if (!_c.isUsa) ...[
+            // Today total vs need — tap anywhere for an explanation
+            _tapCard(
+              context,
+              onTap: () => _showInfo(
+                  context,
+                  Icons.wb_sunny_outlined,
+                  t.vitDTodayInfoTitle,
+                  t.vitDTodayInfo(_iu(todayTarget.toDouble()))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(t.vitDToday,
+                                  style: theme.textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold)),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(Icons.info_outline_rounded,
+                                size: 18, color: primary),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                        '${t.vitDApproxIu(_iu(todayIu))}  •  ${pct.toStringAsFixed(0)}%',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold, color: primary)),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: (pct / 100).clamp(0.0, 1.0),
-                    minHeight: 10,
-                    // Green = done, primary (purple) = still to go.
-                    color: _vitDGreen,
-                    backgroundColor: primary.withAlpha(70),
+                      Text(
+                          '${t.vitDApproxIu(_iu(todayIu))}  •  ${pct.toStringAsFixed(0)}%',
+                          style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.bold, color: primary)),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                    catchUp
-                        ? t.vitDOfTodayTarget(_iu(todayTarget.toDouble()))
-                        : t.vitDOfDailyNeed(_iu(goal.toDouble())),
-                    style: theme.textTheme.bodySmall),
-                if (running && med >= vitDSaturationStart && remaining > 0) ...[
+                  const SizedBox(height: 6),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: (pct / 100).clamp(0.0, 1.0),
+                      minHeight: 10,
+                      // Green = done, primary (purple) = still to go.
+                      color: _vitDGreen,
+                      backgroundColor: primary.withAlpha(70),
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(t.vitDTaperNote,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(fontStyle: FontStyle.italic)),
+                  Text(
+                      catchUp
+                          ? t.vitDOfTodayTarget(_iu(todayTarget.toDouble()))
+                          : t.vitDOfDailyNeed(_iu(goal.toDouble())),
+                      style: theme.textTheme.bodySmall),
+                  if (running && med >= vitDSaturationStart && remaining > 0) ...[
+                    const SizedBox(height: 4),
+                    Text(t.vitDTaperNote,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(fontStyle: FontStyle.italic)),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          _buildWeekCard(context),
-          const SizedBox(height: 10),
+            const SizedBox(height: 10),
+            _buildWeekCard(context),
+            const SizedBox(height: 10),
+          ],
           // Sunburn meter — tap anywhere for an explanation
           _tapCard(
             context,
@@ -1016,10 +1092,16 @@ class _VitaminDPageState extends State<VitaminDPage>
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(t.vitDApproxIu(_iu(s.iu)),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary)),
+                      if (!_c.isUsa)
+                        Text(t.vitDApproxIu(_iu(s.iu)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary))
+                      else
+                        Text('${(s.med * 100).toStringAsFixed(0)}% MED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary)),
                       IconButton(
                         icon: const Icon(Icons.delete_outline, size: 20),
                         tooltip: t.vitDDeleteSession,
@@ -1211,7 +1293,54 @@ class _VitaminDPageState extends State<VitaminDPage>
     if (ok == true) _c.deleteSession(s);
   }
 
-  // 4. Settings: skin, robe coverage, weight, sky — same scroll view.
+  Widget _buildBodySizeChart(BuildContext context) {
+    final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
+    final head = theme.textTheme.labelSmall
+        ?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary);
+    final body = theme.textTheme.bodySmall
+        ?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
+    Widget cell(String s, TextStyle? style) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: Text(s, textAlign: TextAlign.center, style: style),
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Table(
+          border: TableBorder(
+              horizontalInside:
+                  BorderSide(color: theme.colorScheme.outlineVariant)),
+          children: [
+            TableRow(children: [
+              cell(t.vitDBodySizeWeight, head),
+              cell(t.vitDBodySizeRate, head),
+              cell(t.vitDBodySizeNeed, head),
+              cell(t.vitDBodySizeTime, head),
+            ]),
+            for (final r in vitDBodySizeChart)
+              TableRow(
+                decoration: r.$1 == 68
+                    ? BoxDecoration(
+                        color: theme.colorScheme.primaryContainer.withAlpha(90))
+                    : null,
+                children: [
+                  cell('${r.$1} kg\n${r.$2} lb', body),
+                  cell(r.$3, body),
+                  cell('${_iu(r.$4.toDouble())} IU', body),
+                  cell(r.$5, body),
+                ],
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(t.vitDBodySizeNote,
+            style: theme.textTheme.bodySmall?.copyWith(height: 1.4)),
+      ],
+    );
+  }
+
+  // 4. Settings: skin, robe coverage, sky, body size chart — same scroll view.
   Widget _buildSettingsCard(BuildContext context) {
     final theme = Theme.of(context);
     final t = AppLocalizations.of(context)!;
@@ -1457,71 +1586,70 @@ class _VitaminDPageState extends State<VitaminDPage>
                       fontStyle: FontStyle.italic,
                       color: theme.colorScheme.onSurface.withAlpha(150))),
             ],
-            sectionTitle(t.vitDWeightTitle, t.vitDWeightSubtitle),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _c.weightKg.clamp(30.0, 150.0),
-                    min: 30,
-                    max: 150,
-                    divisions: 120,
-                    label: '${_c.weightKg.round()} kg',
-                    onChanged: (v) => _c.setWeightKg(v.roundToDouble()),
-                  ),
-                ),
-                SizedBox(
-                  width: 92,
-                  child: Text(
-                    '${_c.weightKg.round()} kg\n${(_c.weightKg * 2.20462).round()} lb',
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            sectionTitle(t.vitDTargetTitle),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title:
-                  Text(t.vitDTargetAuto, style: const TextStyle(fontSize: 14)),
-              subtitle: Text(
-                  t.vitDGoalFromWeight(_iu(_c.autoGoalIu.toDouble())),
-                  style: const TextStyle(fontSize: 12)),
-              value: !_c.isCustomTarget,
-              onChanged: (auto) => _c.setCustomTarget(auto ? 0 : _c.autoGoalIu),
-            ),
-            if (_c.isCustomTarget)
-              Row(
-                children: [
-                  Expanded(
-                    child: Slider(
-                      value: _c.dailyGoalIu.toDouble().clamp(200, 5000),
-                      min: 200,
-                      max: 5000,
-                      divisions: 48,
-                      label: '${_c.dailyGoalIu} IU',
-                      onChanged: (v) =>
-                          _c.setCustomTarget((v / 100).round() * 100),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 92,
-                    child: Text('${_iu(_c.dailyGoalIu.toDouble())} IU',
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
+            if (!_c.isUsa) ...[
+              sectionTitle(t.vitDBodySizeTitle, t.vitDBodySizeSubtitle),
+              _buildBodySizeChart(context),
+              sectionTitle(t.vitDTargetTitle),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title:
+                    Text(t.vitDTargetAuto, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                    t.vitDGoalStandard(_iu(_c.autoGoalIu.toDouble())),
+                    style: const TextStyle(fontSize: 12)),
+                value: !_c.isCustomTarget,
+                onChanged: (auto) => _c.setCustomTarget(auto ? 0 : _c.autoGoalIu),
               ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(t.vitDCatchUpTitle,
-                  style: const TextStyle(fontSize: 14)),
-              subtitle:
-                  Text(t.vitDCatchUpDesc, style: const TextStyle(fontSize: 12)),
-              value: _c.catchUp,
-              onChanged: (v) => _c.setCatchUp(v),
-            ),
+              if (_c.isCustomTarget)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                        value: _c.dailyGoalIu.toDouble().clamp(200, 5000),
+                        min: 200,
+                        max: 5000,
+                        divisions: 48,
+                        label: '${_c.dailyGoalIu} IU',
+                        onChanged: (v) =>
+                            _c.setCustomTarget((v / 100).round() * 100),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 92,
+                      child: Text('${_iu(_c.dailyGoalIu.toDouble())} IU',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(t.vitDCatchUpTitle,
+                    style: const TextStyle(fontSize: 14)),
+                subtitle:
+                    Text(t.vitDCatchUpDesc, style: const TextStyle(fontSize: 12)),
+                value: _c.catchUp,
+                onChanged: (v) => _c.setCatchUp(v),
+              ),
+            ],
+            if (kDebugMode) ...[
+              const Divider(height: 24),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Debug: Force USA Mode',
+                    style: TextStyle(fontSize: 14)),
+                subtitle: Text(
+                    'Simulate USA mode (isUsaLocation: ${_c.isUsa})',
+                    style: const TextStyle(fontSize: 12)),
+                value: Prefs.vitDDebugForceUsa,
+                onChanged: (v) {
+                  setState(() {
+                    Prefs.vitDDebugForceUsa = v;
+                    _c.refresh();
+                  });
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -1604,16 +1732,41 @@ class _VitaminDPageState extends State<VitaminDPage>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.medical_information_outlined,
-              size: 20, color: theme.colorScheme.outline),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(t.vitDDisclaimer,
-                style: theme.textTheme.bodySmall?.copyWith(height: 1.4)),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.medical_information_outlined,
+                  size: 20, color: theme.colorScheme.outline),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(t.vitDDisclaimer,
+                    style: theme.textTheme.bodySmall?.copyWith(height: 1.4)),
+              ),
+            ],
           ),
+          if (_c.isUsa) ...[
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.shield_outlined,
+                    size: 20, color: theme.colorScheme.outline),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Regional notice: in the United States this tool works only as a UV and safe sun exposure timer. Vitamin D (IU) estimates are not available in this region. Target: 0.35 – 0.50 MED.',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        height: 1.4,
+                        fontStyle: FontStyle.italic,
+                        color: theme.colorScheme.outline),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

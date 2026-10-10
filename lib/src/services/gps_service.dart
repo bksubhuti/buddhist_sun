@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:buddhist_sun/src/models/prefs.dart';
+import 'package:buddhist_sun/src/services/country_service.dart';
 
 class GpsService {
   static Future<(String? errorMessage, Position? position, String cityName)>
@@ -46,14 +47,26 @@ class GpsService {
     }
 
     String city = "";
+    bool gotCountry = false;
     if (updateCity && Prefs.retrieveCityName) {
       try {
         List<Placemark> placemarks = await placemarkFromCoordinates(
             position.latitude, position.longitude);
         city = placemarks.first.subAdministrativeArea ?? "Unknown";
+        final iso = placemarks.first.isoCountryCode;
+        if (iso != null && iso.isNotEmpty) {
+          Prefs.countryCode = iso;
+          gotCountry = true;
+        }
       } catch (_) {
         city = "Unknown";
       }
+    }
+
+    // Keep the country code current so a stale one does not stick after
+    // travel. Falls back to an IP lookup when reverse geocoding gave none.
+    if (!gotCountry) {
+      CountryService.getCountryCode(); // background check
     }
 
     Prefs.lat = position.latitude;

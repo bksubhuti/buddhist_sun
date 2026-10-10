@@ -458,10 +458,15 @@
   "vitDSkyPartly": "Partiellement nuageux",
   "vitDSkyMostly": "Très nuageux",
   "vitDSkyOvercast": "Couvert",
-  "vitDWeightTitle": "Poids corporel",
-  "vitDWeightSubtitle": "Utilisé pour la surface de peau et le besoin quotidien.",
-  "vitDGoalFromWeight": "Besoin quotidien estimé : {iu} IU (environ 20 IU par kg, 600–4 000 IU).",
-  "@vitDGoalFromWeight": {
+  "vitDBodySizeTitle": "Corpulence",
+  "vitDBodySizeSubtitle": "Tous les chiffres concernent un adulte moyen (environ 68 kg / 150 lb). Utilisez ce tableau pour les ajuster mentalement.",
+  "vitDBodySizeWeight": "Poids",
+  "vitDBodySizeRate": "Vitamine D produite",
+  "vitDBodySizeNeed": "Besoin quotidien",
+  "vitDBodySizeTime": "Temps au soleil",
+  "vitDBodySizeNote": "L'application ne demande pas votre corpulence, elle ne garde donc aucune donnée personnelle. Pour utiliser votre propre chiffre, trouvez votre poids dans le tableau et fixez son besoin quotidien comme votre objectif ci-dessous. Un corps plus grand produit plus de vitamine D par minute mais en a aussi plus besoin, donc le temps au soleil change peu. Le temps avant le coup de soleil ne dépend pas de la corpulence.",
+  "vitDGoalStandard": "Objectif quotidien : {iu} IU (environ 20 IU par kg pour un adulte moyen).",
+  "@vitDGoalStandard": {
     "placeholders": {
       "iu": {
         "type": "String"
@@ -480,7 +485,7 @@
   "vitDGuideMonksTitle": "Conseils pour la Sangha",
   "vitDGuideMonks": "Découvrir l'épaule droite ou les bras en étant assis ou en marchant dans le monastère pendant un court moment vers midi suffit généralement pour les peaux plus foncées sous les tropiques. La tête rasée est aussi exposée : protégez le cuir chevelu lors des longues tournées d'aumônes. Une peau plus foncée a besoin de plus de temps pour la même vitamine D mais brûle moins facilement. Dans les climats ou saisons froids où le soleil reste sous 45°, le corps ne peut pas produire beaucoup de vitamine D — demandez conseil à un médecin sur l'alimentation ou les compléments.",
   "vitDGuideMethodTitle": "Méthode d'estimation",
-  "vitDGuideMethod": "L'angle solaire est calculé à partir de votre position GPS et de l'heure. L'indice UV est estimé pour un ciel dégagé (UVI ≈ 12.5 × sin(angle)^2.42) puis réduit selon les nuages. La dose de coup de soleil (MED) dépend du type de peau. Environ 10 000 IU sont produites lorsque tout le corps reçoit une dose de coup de soleil ; ce chiffre est ajusté selon la surface de peau découverte et votre corpulence (d'après le poids). L'efficacité de la vitamine D diminue quand le soleil est sous 45° et devient nulle sous 15°. La production s'arrête lorsque la dose du jour atteint une dose de coup de soleil. Les valeurs réelles varient selon l'ozone, l'altitude, la pollution de l'air, l'âge et la santé — considérez ces chiffres comme des repères approximatifs.",
+  "vitDGuideMethod": "L'angle solaire est calculé à partir de votre position GPS et de l'heure. L'indice UV est estimé pour un ciel dégagé (UVI ≈ 12.5 × sin(angle)^2.42) puis réduit selon les nuages. La dose de coup de soleil (MED) dépend du type de peau. Environ 10 000 IU sont produites lorsque tout le corps reçoit une dose de coup de soleil ; ce chiffre est ajusté selon la surface de peau découverte. Toutes les quantités concernent un adulte moyen. L'efficacité de la vitamine D diminue quand le soleil est sous 45° et devient nulle sous 15°. La production s'arrête lorsque la dose du jour atteint une dose de coup de soleil. Les valeurs réelles varient selon l'ozone, l'altitude, la pollution de l'air, l'âge et la santé — considérez ces chiffres comme des repères approximatifs.",
   "vitDDisclaimer": "Avertissement médical : ce calculateur ne fournit que des estimations éducatives approximatives. Il ne s'agit pas d'un avis médical et il ne peut pas mesurer votre taux de vitamine D. L'exposition au soleil comporte des risques, notamment coups de soleil et cancer de la peau. Consultez un médecin qualifié au sujet du dosage de la vitamine D, des compléments ou de problèmes de peau, surtout si vous avez la peau claire, des antécédents de cancer de la peau ou prenez des médicaments photosensibilisants.",
   "vitDTabMonk": "Moine",
   "vitDTabLay": "Homme",
@@ -515,7 +520,7 @@
     }
   },
   "vitDTargetTitle": "Objectif quotidien",
-  "vitDTargetAuto": "Objectif automatique selon le poids",
+  "vitDTargetAuto": "Objectif standard pour un adulte moyen",
   "vitDPostureTitle": "Posture",
   "vitDPostureSubtitle": "S'allonger à midi oriente plus de peau vers le soleil.",
   "vitDPostureStanding": "Debout",
@@ -569,7 +574,7 @@
   "vitDStartTooLate": "Trop tard — soleil sous 45°",
   "vitDStartNo45": "Pas de soleil à 45° aujourd'hui",
   "vitDTodayInfoTitle": "À propos de l'estimation du jour",
-  "vitDTodayInfo": "Le total du jour additionne la vitamine D estimée de toutes les séances d'aujourd'hui, y compris celle en cours. Il se remet à zéro à minuit.\n\nLe pourcentage le compare à votre objectif quotidien de {iu} IU. Atteindre 100 % suffit pour la journée ; plus de soleil apporte peu et augmente la dose de coup de soleil.\n\nCe sont des estimations approximatives dans les mêmes unités que les compléments : environ 1 000 IU de soleil ont à peu près le même effet sur le taux sanguin qu'un comprimé de 1 000 IU. Les quantités réelles varient avec la brume, l'ozone, l'âge et la surface de peau tournée vers le soleil.\n\nLa recommandation officielle est de 600 IU par jour (800 IU après 70 ans). L'objectif automatique utilise environ 20 IU par kg de poids ; vous pouvez fixer le vôtre dans les réglages du soleil.\n\nLa vitamine D est stockée dans le corps pendant des semaines : le total de la semaine compte plus qu'un seul jour.",
+  "vitDTodayInfo": "Le total du jour additionne la vitamine D estimée de toutes les séances d'aujourd'hui, y compris celle en cours. Il se remet à zéro à minuit.\n\nLe pourcentage le compare à votre objectif quotidien de {iu} IU. Atteindre 100 % suffit pour la journée ; plus de soleil apporte peu et augmente la dose de coup de soleil.\n\nCe sont des estimations approximatives dans les mêmes unités que les compléments : environ 1 000 IU de soleil ont à peu près le même effet sur le taux sanguin qu'un comprimé de 1 000 IU. Les quantités réelles varient avec la brume, l'ozone, l'âge et la surface de peau tournée vers le soleil.\n\nLa recommandation officielle est de 600 IU par jour (800 IU après 70 ans). L'objectif standard est de 1 400 IU pour un adulte moyen. Vous pouvez fixer le vôtre dans les réglages du soleil, où le tableau Corpulence montre comment l'adapter à votre taille.\n\nLa vitamine D est stockée dans le corps pendant des semaines : le total de la semaine compte plus qu'un seul jour.",
   "@vitDTodayInfo": {
     "placeholders": {
       "iu": {
@@ -639,6 +644,6 @@
   "vitDUvScale": "Ozone, altitude et brume aujourd'hui : ×{f} par rapport à l'estimation hors ligne.",
   "vitDUvAttribution": "Données UV : Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Indice UV",
-  "vitDUvInfo": "L'indice UV est l'intensité du soleil qui brûle la peau en ce moment. Il fixe le temps avant coup de soleil et le rythme de production de vitamine D.\n\nHors ligne : estimé à partir de l'angle du soleil pour un ciel dégagé, puis réduit selon les nuages choisis.\n\nEn ligne (Open-Meteo) : corrigé aussi selon l'ozone, l'altitude et la brume du jour à votre position. Choisissez « Prévision » sous Ciel pour utiliser les nuages prévus, ou réglez les nuages vous-même.\n\n0–2 faible • 3–5 modéré • 6–7 élevé • 8–10 très élevé • 11+ extrême",
+  "vitDUvInfo": "L'indice UV est l'intensité du soleil qui brûle la peau en ce moment. Il fixe le temps avant coup de soleil et le rythme de production de vitamine D.\n\nHors ligne : estimé à partir de l'angle du soleil pour un ciel dégagé, puis réduit selon les nuages choisis.\n\nEn ligne (Open-Meteo) : corrigé aussi selon l'ozone, l'altitude et la brume du jour à votre position. Choisissez « Prévision » sous Ciel pour utiliser les nuages prévus, ou réglez les nuages vous-même.\n\n0–2 faible • 3–5 modéré • 6–7 élevé • 8–10 très élevé • 11+ extrême\n\nLes valeurs UV sont calculées, pas mesurées. Elles peuvent différer de 10 à 20 % d'une application à l'autre. Nous vérifions ces chiffres avec des mesures au sol au Sri Lanka.",
   "vitDUvSourceOnline": "En ligne"
 }

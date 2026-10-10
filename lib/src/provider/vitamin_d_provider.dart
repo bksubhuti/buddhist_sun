@@ -93,7 +93,6 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
       .values[Prefs.vitDCoverage.clamp(0, VitDCoverage.values.length - 1)];
   VitDSky _sky =
       VitDSky.values[Prefs.vitDSky.clamp(0, VitDSky.values.length - 1)];
-  double _weightKg = Prefs.vitDWeightKg;
   VitDPosture _posture = VitDPosture
       .values[Prefs.vitDPosture.clamp(0, VitDPosture.values.length - 1)];
   late DateTime _shaveDate;
@@ -159,10 +158,10 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ── Getters ──────────────────────────────────────────────────────────
+  bool get isUsa => Prefs.isUsaLocation;
   VitDSkinType get skin => _skin;
   VitDCoverage get coverage => _coverage;
   VitDSky get sky => _sky;
-  double get weightKg => _weightKg;
   bool get isRunning => _activeStart != null;
   DateTime? get activeStart => _activeStart;
   double get activeIu => _activeIu;
@@ -184,9 +183,9 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   /// Coverage tab: 0 = monk, 1 = lay man, 2 = lay woman.
   int get coverTab => _coverTab;
 
-  /// Daily target: custom if set, otherwise from weight.
+  /// Daily target: custom if set, otherwise the average-adult standard.
   int get dailyGoalIu => _customTarget > 0 ? _customTarget : autoGoalIu;
-  int get autoGoalIu => suggestedDailyIu(_weightKg);
+  int get autoGoalIu => vitDStandardDailyIu;
   bool get isCustomTarget => _customTarget > 0;
 
   bool get catchUp => Prefs.vitDCatchUp;
@@ -266,6 +265,14 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   /// whole time; afterwards it is the remainder. 0 when reached, null when
   /// not reachable (sun too low/setting, or saturation first).
   double? get targetMinutes {
+    if (isUsa) {
+      final medRemaining = (0.5 - todayMed).clamp(0.0, 1.0);
+      if (medRemaining <= 0) return 0;
+      if (rate.medPerMinute <= 0) return null;
+      // todayMed already includes the running session, so this is the
+      // time left from now.
+      return medRemaining / rate.medPerMinute;
+    }
     if (remainingIu <= 0) return 0;
     final t = now();
     if (_targetDirty ||
@@ -355,15 +362,6 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  void setWeightKg(double v) {
-    _tick();
-    _weightKg = v;
-    Prefs.vitDWeightKg = v;
-    _targetDirty = true;
-    _refreshRate();
-    notifyListeners();
-  }
-
   void setPosture(VitDPosture v) {
     _tick();
     _posture = v;
@@ -403,7 +401,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  /// [iu] of 0 returns to the automatic target from weight.
+  /// [iu] of 0 returns to the standard average-adult target.
   void setCustomTarget(int iu) {
     _customTarget = iu;
     Prefs.vitDCustomTarget = iu;
@@ -478,13 +476,13 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
         skin: _skin,
         coverage: _coverage,
         sky: _sky,
-        weightKg: _weightKg,
         posture: _posture,
         hairDays: hairDays,
         uvScale: _uvActive ? _uvScale : 1.0,
         skyFactor: _sky == VitDSky.forecast && _uvActive
             ? _uv!.cloudFactorAt(t)
             : null,
+        isUsa: isUsa,
       );
 
   void _refreshRate() {
@@ -493,7 +491,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ── Online UV ────────────────────────────────────────────────────────
-  static bool get _hasLocation => !(Prefs.lat == 1.1 && Prefs.lng == 1.1);
+  static bool get _hasLocation => Prefs.hasValidLocation;
 
   /// Data source, today and the location rounded to ~10 km: new data when
   /// any of them changes. Bump the source tag when the API changes.
@@ -587,7 +585,7 @@ class VitaminDController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void _checkAlerts() {
-    if (!_targetAlerted && todayIu >= todayTargetIu) {
+    if (!isUsa && !_targetAlerted && todayIu >= todayTargetIu) {
       _targetAlerted = true;
       _vibrate(const [0, 300, 150, 300]);
     }
