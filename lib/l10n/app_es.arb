@@ -459,14 +459,22 @@
   "vitDSkyMostly": "Mayormente nublado",
   "vitDSkyOvercast": "Cubierto",
   "vitDBodySizeTitle": "Tamaño corporal",
-  "vitDBodySizeSubtitle": "Todas las cifras son para un adulto medio (unos 68 kg / 150 lb). Use esta tabla para ajustarlas mentalmente.",
+  "vitDBodySizeSubtitle": "Todas las cifras son para un adulto medio (unos 68 kg / 150 lb). Toque la fila más cercana a su peso para usar su necesidad diaria como objetivo.",
   "vitDBodySizeWeight": "Peso",
   "vitDBodySizeRate": "Vitamina D producida",
   "vitDBodySizeNeed": "Necesidad diaria",
   "vitDBodySizeTime": "Tiempo al sol",
-  "vitDBodySizeNote": "La app no pregunta su tamaño corporal, así que no guarda datos personales. Para usar su propia cifra, busque su peso en la tabla y fije su necesidad diaria como su objetivo propio más abajo. Un cuerpo más grande produce más vitamina D por minuto, pero también necesita más, así que el tiempo al sol cambia muy poco. El tiempo hasta la quemadura no depende del tamaño corporal.",
+  "vitDBodySizeNote": "La app no pregunta su tamaño corporal, así que no guarda datos personales; solo se guarda el objetivo en IU que usted elija. Un cuerpo más grande produce más vitamina D por minuto, pero también necesita más, así que el tiempo al sol cambia muy poco. El tiempo hasta la quemadura no depende del tamaño corporal.",
   "vitDGoalStandard": "Objetivo diario: {iu} IU (unas 20 IU por kg para un adulto medio).",
   "@vitDGoalStandard": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUseTarget": "¿Usar {iu} IU como tu objetivo diario?",
+  "@vitDUseTarget": {
     "placeholders": {
       "iu": {
         "type": "String"

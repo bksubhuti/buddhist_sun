@@ -663,14 +663,22 @@
   "vitDSkyMostly": "多云",
   "vitDSkyOvercast": "阴天",
   "vitDBodySizeTitle": "体型",
-  "vitDBodySizeSubtitle": "所有数字都按普通成年人（约 68 公斤 / 150 磅）计算。可用此表在心里自行调整。",
+  "vitDBodySizeSubtitle": "所有数字都按普通成年人（约 68 公斤 / 150 磅）计算。点按最接近你体重的一行，即可将其每日所需设为你的目标。",
   "vitDBodySizeWeight": "体重",
   "vitDBodySizeRate": "合成的维生素D",
   "vitDBodySizeNeed": "每日所需",
   "vitDBodySizeTime": "日晒时间",
-  "vitDBodySizeNote": "本应用不询问你的体型，因此不保存任何个人数据。如需使用你自己的数字，请在表中找到你的体重，并在下方把对应的每日所需设为你自己的目标。体型较大的人每分钟合成的维生素D更多，但需要的也更多，所以日晒时间只略有变化。晒伤时间与体型无关。",
+  "vitDBodySizeNote": "本应用不询问你的体型，因此不保存任何个人数据；只保存你选择的 IU 目标。体型较大的人每分钟合成的维生素D更多，但需要的也更多，所以日晒时间只略有变化。晒伤时间与体型无关。",
   "vitDGoalStandard": "每日目标：{iu} IU（普通成年人约每公斤 20 IU）。",
   "@vitDGoalStandard": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUseTarget": "将 {iu} IU 设为每日目标？",
+  "@vitDUseTarget": {
     "placeholders": {
       "iu": {
         "type": "String"

@@ -663,14 +663,22 @@
   "vitDSkyMostly": "Nhiều mây",
   "vitDSkyOvercast": "U ám",
   "vitDBodySizeTitle": "Kích thước cơ thể",
-  "vitDBodySizeSubtitle": "Mọi con số đều tính cho một người lớn trung bình (khoảng 68 kg / 150 lb). Dùng bảng này để tự điều chỉnh trong đầu.",
+  "vitDBodySizeSubtitle": "Mọi con số đều tính cho một người lớn trung bình (khoảng 68 kg / 150 lb). Chạm vào hàng gần nhất với cân nặng của bạn để dùng nhu cầu hằng ngày của hàng đó làm mục tiêu.",
   "vitDBodySizeWeight": "Cân nặng",
   "vitDBodySizeRate": "Vitamin D tạo ra",
   "vitDBodySizeNeed": "Nhu cầu hằng ngày",
   "vitDBodySizeTime": "Thời gian phơi nắng",
-  "vitDBodySizeNote": "Ứng dụng không hỏi kích thước cơ thể của bạn nên không lưu dữ liệu cá nhân nào. Để dùng con số của riêng bạn, hãy tìm cân nặng của bạn trong bảng và đặt nhu cầu hằng ngày tương ứng làm mục tiêu riêng ở bên dưới. Cơ thể lớn hơn tạo nhiều vitamin D hơn mỗi phút nhưng cũng cần nhiều hơn, nên thời gian phơi nắng chỉ thay đổi một chút. Thời gian đến khi cháy nắng không phụ thuộc vào kích thước cơ thể.",
+  "vitDBodySizeNote": "Ứng dụng không hỏi kích thước cơ thể của bạn nên không lưu dữ liệu cá nhân nào; chỉ mục tiêu IU bạn chọn được lưu. Cơ thể lớn hơn tạo nhiều vitamin D hơn mỗi phút nhưng cũng cần nhiều hơn, nên thời gian phơi nắng chỉ thay đổi một chút. Thời gian đến khi cháy nắng không phụ thuộc vào kích thước cơ thể.",
   "vitDGoalStandard": "Mục tiêu hằng ngày: {iu} IU (khoảng 20 IU mỗi kg cho một người lớn trung bình).",
   "@vitDGoalStandard": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUseTarget": "Dùng {iu} IU làm mục tiêu hằng ngày của bạn?",
+  "@vitDUseTarget": {
     "placeholders": {
       "iu": {
         "type": "String"

@@ -649,14 +649,22 @@
   "vitDSkyMostly": "Mostly cloudy",
   "vitDSkyOvercast": "Overcast",
   "vitDBodySizeTitle": "Body size",
-  "vitDBodySizeSubtitle": "All numbers are for an average adult (about 68 kg / 150 lb). Use this chart to adjust them in your mind.",
+  "vitDBodySizeSubtitle": "All numbers are for an average adult (about 68 kg / 150 lb). Tap the row closest to your weight to use its daily need as your target.",
   "vitDBodySizeWeight": "Weight",
   "vitDBodySizeRate": "Vitamin D made",
   "vitDBodySizeNeed": "Daily need",
   "vitDBodySizeTime": "Sun time",
-  "vitDBodySizeNote": "The app does not ask for your body size, so it keeps no personal data. To use your own number, find your weight in the chart and set its daily need as your own target below. A larger body makes more vitamin D per minute but also needs more, so the sun time changes only a little. Sunburn time does not depend on body size.",
+  "vitDBodySizeNote": "The app does not ask for your body size, so it keeps no personal data; only the IU target you choose is saved. A larger body makes more vitamin D per minute but also needs more, so the sun time changes only a little. Sunburn time does not depend on body size.",
   "vitDGoalStandard": "Daily target: {iu} IU (about 20 IU per kg for an average adult).",
   "@vitDGoalStandard": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUseTarget": "Use {iu} IU as your daily target?",
+  "@vitDUseTarget": {
     "placeholders": {
       "iu": {
         "type": "String"

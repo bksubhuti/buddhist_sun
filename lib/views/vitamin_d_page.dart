@@ -1222,10 +1222,38 @@ class _VitaminDPageState extends State<VitaminDPage>
         ?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary);
     final body = theme.textTheme.bodySmall
         ?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
-    Widget cell(String s, TextStyle? style) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-          child: Text(s, textAlign: TextAlign.center, style: style),
-        );
+    Widget cell(String s, TextStyle? style, [VoidCallback? onTap]) {
+      final text = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+        child: Text(s, textAlign: TextAlign.center, style: style),
+      );
+      return onTap == null ? text : InkWell(onTap: onTap, child: text);
+    }
+
+    // Tapping a row only sets the daily target (IU), after asking. The
+    // weight is never saved or used; the selected row follows from the
+    // saved target.
+    Future<void> pick(int needIu) async {
+      if (needIu == _c.dailyGoalIu) return;
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(t.vitDTargetTitle),
+          content: Text(t.vitDUseTarget(_iu(needIu.toDouble()))),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+            FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
+          ],
+        ),
+      );
+      if (ok == true) {
+        _c.setCustomTarget(needIu == vitDStandardDailyIu ? 0 : needIu);
+      }
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -1242,15 +1270,15 @@ class _VitaminDPageState extends State<VitaminDPage>
             ]),
             for (final r in vitDBodySizeChart)
               TableRow(
-                decoration: r.$1 == 68
+                decoration: r.$4 == _c.dailyGoalIu
                     ? BoxDecoration(
                         color: theme.colorScheme.primaryContainer.withAlpha(90))
                     : null,
                 children: [
-                  cell('${r.$1} kg\n${r.$2} lb', body),
-                  cell(r.$3, body),
-                  cell('${_iu(r.$4.toDouble())} IU', body),
-                  cell(r.$5, body),
+                  cell('${r.$1} kg\n${r.$2} lb', body, () => pick(r.$4)),
+                  cell(r.$3, body, () => pick(r.$4)),
+                  cell('${_iu(r.$4.toDouble())} IU', body, () => pick(r.$4)),
+                  cell(r.$5, body, () => pick(r.$4)),
                 ],
               ),
           ],

@@ -459,14 +459,22 @@
   "vitDSkyMostly": "Très nuageux",
   "vitDSkyOvercast": "Couvert",
   "vitDBodySizeTitle": "Corpulence",
-  "vitDBodySizeSubtitle": "Tous les chiffres concernent un adulte moyen (environ 68 kg / 150 lb). Utilisez ce tableau pour les ajuster mentalement.",
+  "vitDBodySizeSubtitle": "Tous les chiffres concernent un adulte moyen (environ 68 kg / 150 lb). Touchez la ligne la plus proche de votre poids pour utiliser son besoin quotidien comme objectif.",
   "vitDBodySizeWeight": "Poids",
   "vitDBodySizeRate": "Vitamine D produite",
   "vitDBodySizeNeed": "Besoin quotidien",
   "vitDBodySizeTime": "Temps au soleil",
-  "vitDBodySizeNote": "L'application ne demande pas votre corpulence, elle ne garde donc aucune donnée personnelle. Pour utiliser votre propre chiffre, trouvez votre poids dans le tableau et fixez son besoin quotidien comme votre objectif ci-dessous. Un corps plus grand produit plus de vitamine D par minute mais en a aussi plus besoin, donc le temps au soleil change peu. Le temps avant le coup de soleil ne dépend pas de la corpulence.",
+  "vitDBodySizeNote": "L'application ne demande pas votre corpulence, elle ne garde donc aucune donnée personnelle ; seul l'objectif en IU que vous choisissez est enregistré. Un corps plus grand produit plus de vitamine D par minute mais en a aussi plus besoin, donc le temps au soleil change peu. Le temps avant le coup de soleil ne dépend pas de la corpulence.",
   "vitDGoalStandard": "Objectif quotidien : {iu} IU (environ 20 IU par kg pour un adulte moyen).",
   "@vitDGoalStandard": {
+    "placeholders": {
+      "iu": {
+        "type": "String"
+      }
+    }
+  },
+  "vitDUseTarget": "Utiliser {iu} IU comme objectif quotidien ?",
+  "@vitDUseTarget": {
     "placeholders": {
       "iu": {
         "type": "String"

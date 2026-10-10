@@ -537,5 +537,22 @@ void main() {
       Prefs.lng = 79.8612;
       expect(Prefs.hasValidLocation, isTrue);
     });
+
+    test('picking a chart row sets only the IU target, never a weight', () {
+      clock = DateTime(2026, 10, 2, 12, 0);
+      final c = make();
+      final rateBefore = c.rate.iuPerMinute;
+      for (final (_, _, _, need, _) in vitDBodySizeChart) {
+        // Same rule as the chart: the standard row returns to the standard.
+        c.setCustomTarget(need == vitDStandardDailyIu ? 0 : need);
+        expect(c.dailyGoalIu, need);
+        // The vitamin D made per minute does not change with the row.
+        expect(c.rate.iuPerMinute, rateBefore);
+      }
+      expect(c.isCustomTarget, isTrue); // last row (110 kg) is custom
+      expect(Prefs.instance.getKeys().any((k) => k.toLowerCase().contains('weight')),
+          isFalse);
+      c.dispose();
+    });
   });
 }
