@@ -653,5 +653,10 @@
   "vitDUvAttribution": "Datos UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Índice UV",
   "vitDUvInfo": "El índice UV es la intensidad de la luz solar que quema la piel en este momento. Determina el tiempo hasta la quemadura y el ritmo de vitamina D.\n\nSin conexión: se estima a partir del ángulo del sol con cielo despejado y se reduce según las nubes que elija.\n\nEn línea (Open-Meteo): además se corrige según el ozono, la altitud y la bruma de hoy en su ubicación. Elija “Pronóstico” en Cielo para usar las nubes pronosticadas, o indique las nubes usted mismo.\n\n0–2 bajo • 3–5 moderado • 6–7 alto • 8–10 muy alto • 11+ extremo\n\nLos valores UV son calculados, no medidos. Distintas aplicaciones pueden diferir un 10–20%. Estamos comprobando estas cifras con mediciones en tierra en Sri Lanka.",
-  "vitDUvSourceOnline": "En línea"
+  "vitDUvSourceOnline": "En línea",
+  "screenAwakeLabel": "Pantalla activa",
+  "voiceLabel": "Voz",
+  "countdownSwitchesHelpTitle": "Interruptores de la cuenta atrás",
+  "screenAwakeHelp": "Evita que la pantalla se apague mientras la aplicación está abierta. Toque la taza de café para activarlo o desactivarlo.",
+  "voiceHelp": "Anuncia el tiempo que falta. La voz del teléfono lo dice de inmediato (en inglés) y luego se reproducen anuncios grabados (en inglés) hasta la hora objetivo. Funciona con la pantalla bloqueada. Se puede activar dentro de las 2 horas previas. Horas: faltando 60, 50, 40, 30, 20, 10, 8, 6, 5, 4, 3, 2, 1 minutos, y cuando la hora ha pasado."
 }

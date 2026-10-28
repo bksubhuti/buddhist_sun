@@ -240,6 +240,30 @@ class MeditationTimerProvider extends ChangeNotifier
         state == AppLifecycleState.hidden) {
       syncWithCurrentTime();
     }
+    // The OS can drop the wakelock while the app is backgrounded (notably the
+    // iOS idle timer), so re-assert it whenever we come back.
+    if (state == AppLifecycleState.resumed) {
+      _reapplyWakelock();
+    }
+  }
+
+  // Leave the screen on if the home screen's Screen Always On is set.
+  Future<void> _releaseWakelock() async {
+    if (Prefs.screenAlwaysOn) return;
+    try {
+      await WakelockPlus.disable();
+    } catch (_) {}
+  }
+
+  Future<void> _reapplyWakelock() async {
+    if (!_keepScreenOn) return;
+    if (_status != MeditationTimerStatus.running &&
+        _status != MeditationTimerStatus.paused) {
+      return;
+    }
+    try {
+      await WakelockPlus.enable();
+    } catch (_) {}
   }
 
   void syncWithCurrentTime() {
@@ -439,11 +463,12 @@ class MeditationTimerProvider extends ChangeNotifier
   void setKeepScreenOn(bool value) {
     _keepScreenOn = value;
     Prefs.meditationKeepScreenOn = value;
-    if (_status == MeditationTimerStatus.running) {
+    if (_status == MeditationTimerStatus.running ||
+        _status == MeditationTimerStatus.paused) {
       if (value) {
         WakelockPlus.enable();
       } else {
-        WakelockPlus.disable();
+        _releaseWakelock();
       }
     }
     notifyListeners();
@@ -657,9 +682,7 @@ class MeditationTimerProvider extends ChangeNotifier
       _elapsedSeconds = total >= 0 ? total : 0;
     }
     cancelMeditationNotifications();
-    try {
-      WakelockPlus.disable();
-    } catch (_) {}
+    _releaseWakelock();
 
     _status = MeditationTimerStatus.completed;
     notifyListeners();
@@ -692,6 +715,7 @@ class MeditationTimerProvider extends ChangeNotifier
 
     _status = MeditationTimerStatus.running;
     _startTick();
+    await _reapplyWakelock();
     await _audioService.resumeSession();
     notifyListeners();
   }
@@ -705,9 +729,7 @@ class MeditationTimerProvider extends ChangeNotifier
       _elapsedSeconds = total >= 0 ? total : 0;
     }
     await cancelMeditationNotifications();
-    try {
-      await WakelockPlus.disable();
-    } catch (_) {}
+    await _releaseWakelock();
 
     if (completed || _hasCompletedTarget) {
       _status = MeditationTimerStatus.completed;

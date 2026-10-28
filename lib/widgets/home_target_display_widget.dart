@@ -100,7 +100,7 @@ class _HomeTargetDisplayWidgetState extends State<HomeTargetDisplayWidget>
               ColoredText(
                 getSolarNoonTimeString(targetInfo.solarNoon),
                 style: const TextStyle(
-                  fontSize: 54,
+                  fontSize: 46,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -109,7 +109,7 @@ class _HomeTargetDisplayWidgetState extends State<HomeTargetDisplayWidget>
                 Icon(
                   Icons.health_and_safety_outlined,
                   color: primaryColor,
-                  size: 32,
+                  size: 27,
                 ),
               ],
             ],
@@ -156,7 +156,7 @@ class _HomeTargetDisplayWidgetState extends State<HomeTargetDisplayWidget>
 
         const SizedBox(height: 6),
 
-        // Just below: Dawn (not as big as Noon 54pt)
+        // Just below: Dawn (not as big as Noon 46pt)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

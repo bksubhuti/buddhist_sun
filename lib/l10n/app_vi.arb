@@ -857,5 +857,10 @@
   "vitDUvAttribution": "Dữ liệu UV: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Chỉ số UV",
   "vitDUvInfo": "Chỉ số UV là cường độ ánh nắng gây cháy nắng ngay lúc này. Nó quyết định thời gian cháy nắng và tốc độ tạo vitamin D.\n\nNgoại tuyến: ước tính từ góc mặt trời cho trời quang, rồi giảm theo mây bạn chọn.\n\nTrực tuyến (Open-Meteo): còn điều chỉnh theo ôzôn, độ cao và khói bụi hôm nay tại vị trí của bạn. Chọn “Dự báo” ở mục Bầu trời để dùng mây dự báo, hoặc tự chọn mây.\n\n0–2 thấp • 3–5 trung bình • 6–7 cao • 8–10 rất cao • 11+ cực cao\n\nGiá trị UV được tính toán, không phải đo trực tiếp. Các ứng dụng khác nhau có thể chênh lệch 10–20%. Chúng tôi đang đối chiếu các số liệu này với đo đạc mặt đất tại Sri Lanka.",
-  "vitDUvSourceOnline": "Trực tuyến"
+  "vitDUvSourceOnline": "Trực tuyến",
+  "screenAwakeLabel": "Giữ màn hình",
+  "voiceLabel": "Giọng nói",
+  "countdownSwitchesHelpTitle": "Công tắc đếm ngược",
+  "screenAwakeHelp": "Giữ màn hình không tắt khi ứng dụng đang mở. Chạm vào tách cà phê để bật hoặc tắt.",
+  "voiceHelp": "Đọc thời gian còn lại. Giọng điện thoại đọc ngay (bằng tiếng Anh), sau đó các thông báo ghi âm bằng ngôn ngữ của bạn phát cho đến giờ đích. Hoạt động cả khi khóa màn hình. Bật được trong vòng 2 giờ trước giờ đích. Thời điểm: còn 60, 50, 40, 30, 20, 10, 8, 6, 5, 4, 3, 2, 1 phút, và khi đã hết giờ."
 }

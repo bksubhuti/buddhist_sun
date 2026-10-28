@@ -104,25 +104,25 @@ class BackgroundTimePlayer {
   static String _getAudioAssetPath() {
     switch (Prefs.localeVal) {
       case 0:
-        return 'assets/audio/timer_countdown_120_en.m4a';
+        return 'assets/audio/timer_countdown_120_v2_en.m4a';
       case 1:
-        return 'assets/audio/timer_countdown_120_my.m4a';
+        return 'assets/audio/timer_countdown_120_v2_my.m4a';
       case 2:
-        return 'assets/audio/timer_countdown_120_si.m4a';
+        return 'assets/audio/timer_countdown_120_v2_si.m4a';
       case 3:
-        return 'assets/audio/timer_countdown_120_th.m4a';
+        return 'assets/audio/timer_countdown_120_v2_th.m4a';
       case 4:
-        return 'assets/audio/timer_countdown_120_km.m4a';
+        return 'assets/audio/timer_countdown_120_v2_km.m4a';
       case 5:
-        return 'assets/audio/timer_countdown_120_zh.m4a';
+        return 'assets/audio/timer_countdown_120_v2_zh.m4a';
       case 6:
-        return 'assets/audio/timer_countdown_120_vi.m4a';
+        return 'assets/audio/timer_countdown_120_v2_vi.m4a';
       case 7:
-        return 'assets/audio/timer_countdown_120_hi.m4a';
+        return 'assets/audio/timer_countdown_120_v2_hi.m4a';
       case 8:
-        return 'assets/audio/timer_countdown_120_bn.m4a';
+        return 'assets/audio/timer_countdown_120_v2_bn.m4a';
       default:
-        return 'assets/audio/timer_countdown_120_en.m4a';
+        return 'assets/audio/timer_countdown_120_v2_en.m4a';
     }
   }
 

@@ -653,5 +653,10 @@
   "vitDUvAttribution": "Données UV : Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "Indice UV",
   "vitDUvInfo": "L'indice UV est l'intensité du soleil qui brûle la peau en ce moment. Il fixe le temps avant coup de soleil et le rythme de production de vitamine D.\n\nHors ligne : estimé à partir de l'angle du soleil pour un ciel dégagé, puis réduit selon les nuages choisis.\n\nEn ligne (Open-Meteo) : corrigé aussi selon l'ozone, l'altitude et la brume du jour à votre position. Choisissez « Prévision » sous Ciel pour utiliser les nuages prévus, ou réglez les nuages vous-même.\n\n0–2 faible • 3–5 modéré • 6–7 élevé • 8–10 très élevé • 11+ extrême\n\nLes valeurs UV sont calculées, pas mesurées. Elles peuvent différer de 10 à 20 % d'une application à l'autre. Nous vérifions ces chiffres avec des mesures au sol au Sri Lanka.",
-  "vitDUvSourceOnline": "En ligne"
+  "vitDUvSourceOnline": "En ligne",
+  "screenAwakeLabel": "Écran allumé",
+  "voiceLabel": "Voix",
+  "countdownSwitchesHelpTitle": "Boutons du compte à rebours",
+  "screenAwakeHelp": "Empêche l'écran de s'éteindre pendant que l'application est ouverte. Touchez la tasse de café pour l'activer ou le désactiver.",
+  "voiceHelp": "Annonce le temps restant. La voix du téléphone le dit tout de suite (en anglais), puis des annonces enregistrées (en anglais) sont jouées jusqu'à l'heure cible. Fonctionne écran verrouillé. Activable dans les 2 heures précédentes. Moments : à 60, 50, 40, 30, 20, 10, 8, 6, 5, 4, 3, 2, 1 minutes restantes, et quand l'heure est passée."
 }

@@ -845,5 +845,10 @@
   "vitDUvAttribution": "UV data: Open-Meteo.com, Copernicus CAMS (CC BY 4.0)",
   "vitDUvInfoTitle": "UV index",
   "vitDUvInfo": "The UV index is the strength of sunburning sunlight right now. It sets the burn time and the vitamin D rate.\n\nOffline: estimated from the sun's angle for a clear sky, then reduced for the clouds you choose.\n\nOnline (Open-Meteo): also corrected for today's ozone, altitude and haze at your location. Choose “Forecast” under Sky to use forecast clouds, or set the clouds yourself.\n\n0–2 low • 3–5 moderate • 6–7 high • 8–10 very high • 11+ extreme.\n\nUV values are calculated, not measured. Different apps can differ by 10–20%. We are in the process of checking these numbers against ground measurements in Sri Lanka.",
-  "vitDUvSourceOnline": "Online"
+  "vitDUvSourceOnline": "Online",
+  "screenAwakeLabel": "Screen awake",
+  "voiceLabel": "Voice",
+  "countdownSwitchesHelpTitle": "Countdown switches",
+  "screenAwakeHelp": "Keeps the screen from turning off while the app is open. Tap the coffee cup to turn it on or off.",
+  "voiceHelp": "Speaks the time left. The phone's voice says it right away (in English), then recorded announcements play in your language until the target time. Works with the screen locked. Can be turned on within 2 hours of the target. Times: 60, 50, 40, 30, 20, 10, 8, 6, 5, 4, 3, 2, 1 minutes left, and when the time has passed."
 }

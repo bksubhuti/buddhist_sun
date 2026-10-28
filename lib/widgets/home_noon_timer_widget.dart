@@ -6,9 +6,12 @@ import 'package:buddhist_sun/src/services/solar_calc.dart';
 import 'package:buddhist_sun/src/services/solar_time.dart';
 import 'package:buddhist_sun/src/services/background_time_player.dart';
 import 'package:buddhist_sun/src/services/notification_service.dart';
+import 'package:buddhist_sun/widgets/screen_awake_toggle.dart';
+import 'package:buddhist_sun/widgets/app_help_dialog.dart';
 
 /// Compact, space-efficient Noon Countdown Timer pill widget for the Home screen.
-/// Displays the live countdown to Solar Noon and a quick toggle for Voice Announcements.
+/// Displays the live countdown to Solar Noon, a quick toggle for Voice Announcements
+/// and a Screen Always On (coffee cup) toggle.
 class HomeNoonTimerWidget extends StatefulWidget {
   final DateTime? currentTime;
   const HomeNoonTimerWidget({Key? key, this.currentTime}) : super(key: key);
@@ -167,6 +170,40 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
     }
   }
 
+  Widget _buildInfoButton(BuildContext context, ThemeData theme) {
+    return IconButton(
+      icon: const Icon(Icons.info_outline_rounded),
+      iconSize: 20,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+      color: theme.colorScheme.onSurface.withAlpha(140),
+      tooltip: AppLocalizations.of(context)!.help,
+      onPressed: () => _showSwitchesHelp(context),
+    );
+  }
+
+  void _showSwitchesHelp(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    showAppHelpDialog(
+      context,
+      title: t.countdownSwitchesHelpTitle,
+      icon: Icons.info_outline_rounded,
+      sections: [
+        HelpSection(
+          title: t.screenAwakeLabel,
+          icon: Icons.coffee,
+          content: t.screenAwakeHelp,
+        ),
+        HelpSection(
+          title: t.voiceLabel,
+          icon: Icons.record_voice_over,
+          content: t.voiceHelp,
+        ),
+      ],
+    );
+  }
+
   String _formatDuration(Duration diff, BuildContext context) {
     if (diff.isNegative) {
       return AppLocalizations.of(context)!.late;
@@ -209,25 +246,38 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
               width: 1.2,
             ),
           ),
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.check_circle_outline_rounded,
-                size: 26,
-                color: lateColor,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: 26,
+                    color: lateColor,
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                      child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            countdownStr,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                              color: lateColor,
+                            ),
+                          ))),
+                  const SizedBox(width: 4),
+                  _buildInfoButton(context, theme),
+                ],
               ),
-              const SizedBox(width: 10),
-              Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(
-                countdownStr,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                  color: lateColor,
-                ),
-              ))),
+              const SizedBox(height: 4),
+              // Bottom: Screen Always On (coffee cup) Toggle
+              const ScreenAwakeToggle(),
             ],
           ),
         ),
@@ -248,75 +298,57 @@ class _HomeNoonTimerWidgetState extends State<HomeNoonTimerWidget>
             width: _speakIsOn ? 1.5 : 1.0,
           ),
         ),
-        child: Row(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Left: Countdown Display
-            Icon(
-              Icons.hourglass_bottom_rounded,
-              size: 28,
-              color: primaryColor,
+            // Top: Countdown Display
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.hourglass_bottom_rounded,
+                  size: 28,
+                  color: primaryColor,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                    child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          countdownStr,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                            color: theme.textTheme.bodyLarge?.color,
+                          ),
+                        ))),
+                const SizedBox(width: 4),
+                _buildInfoButton(context, theme),
+              ],
             ),
-            const SizedBox(width: 8),
-            Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(
-              countdownStr,
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-                color: theme.textTheme.bodyLarge?.color,
-              ),
-            ))),
-
-            const SizedBox(width: 14),
-            // Vertical Divider
-            Container(
-              height: 24,
-              width: 1,
-              color: theme.colorScheme.outlineVariant.withAlpha(90),
-            ),
-            const SizedBox(width: 10),
-
-            // Right: Voice Announcements Toggle
-            Tooltip(
-              message: AppLocalizations.of(context)!.speech_notify,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: _toggleVoice,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 4.0, vertical: 2.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.volume_off,
-                        size: 19,
-                        color: !_speakIsOn
-                            ? theme.iconTheme.color?.withAlpha(160)
-                            : theme.iconTheme.color?.withAlpha(80),
-                      ),
-                      const SizedBox(width: 2),
-                      Transform.scale(
-                        scale: 0.75,
-                        child: Switch(
-                          value: _speakIsOn,
-                          onChanged: (val) => _toggleVoice(),
-                        ),
-                      ),
-                      const SizedBox(width: 2),
-                      Icon(
-                        Icons.record_voice_over,
-                        size: 20,
-                        color: _speakIsOn
-                            ? primaryColor
-                            : theme.iconTheme.color?.withAlpha(80),
-                      ),
-                    ],
+            const SizedBox(height: 4),
+            // Bottom: Screen Always On and Voice Announcements tap toggles.
+            // Wraps onto two lines on very narrow screens.
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
+              runSpacing: 4,
+              children: [
+                const ScreenAwakeToggle(),
+                Tooltip(
+                  message: AppLocalizations.of(context)!.speech_notify,
+                  child: TapToggleChip(
+                    value: _speakIsOn,
+                    onIcon: Icons.record_voice_over,
+                    offIcon: Icons.voice_over_off,
+                    label: AppLocalizations.of(context)!.voiceLabel,
+                    onTap: _toggleVoice,
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
